@@ -70,10 +70,11 @@ jobs:
                # if container is running, stop it
               if docker ps -a --format '{{.Names}}' | grep -Eq "^$CONTAINER_NAME$"; then
                  docker stop $CONTAINER_NAME || true
+                 # remove image and containers old
+                 docker rm $CONTAINER_NAME  
               fi
-              # remove image and containers old
-              docker rm $CONTAINER_NAME
-              docker rmi ghcr.io/phoenix-software-development/hyster-yale-frontend:latest
+
+              docker rmi ghcr.io/phoenix-software-development/hyster-yale-frontend:latest || true
               # pull and run
               docker pull ghcr.io/phoenix-software-development/hyster-yale-frontend:latest
               docker run -p 3005:3005 -d --name=hysteryale-fe --restart unless-stopped ghcr.io/phoenix-software-development/hyster-yale-frontend:latest
