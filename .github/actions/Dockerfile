@@ -22,7 +22,7 @@ RUN yarn build
 # expose the port
 EXPOSE 3005
 
-# HEALTHCHECK
+# HEALTHCHECKs
 # HEALTHCHECK --interval=30s --timeout=5s \
 #   CMD curl -fs http://localhost:3005 || exit 1
 
