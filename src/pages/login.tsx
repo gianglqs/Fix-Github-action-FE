@@ -82,7 +82,7 @@ export default function LoginPage() {
    const handleSubmitLogin = loginForm.handleSubmit((formData: LoginFormValues) => {
       const transformData = {
          grant_type: 'password',
-         username: formData?.email,
+         email: formData?.email,
          password: formData?.password,
       };
 
@@ -99,12 +99,12 @@ export default function LoginPage() {
          },
       };
       axios
-         .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/token`, transformData, options)
+         .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/login`, transformData, options)
          .then((response) => {
             console.log(response);
-            const access_token = response.data.access_token;
-            const name = response.data.user.userName;
-            const role = response.data.user.role;
+            const access_token = response.data.data.access_token;
+            const name = response.data.data.name;
+            const role = response.data.data.role;
             setCookie(null, 'token', access_token, { maxAge: 604800 }); // 7 days
             setCookie(null, 'role', role, { maxAge: 604800 });
             setCookie(null, 'name', name, { maxAge: 604800 });

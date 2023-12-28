@@ -29,7 +29,7 @@ const DialogCreateUser: React.FC<any> = (props) => {
 
    const handleSubmitForm = createForm.handleSubmit(async (data: CreateUserFormValues) => {
       const transformData = {
-         userName: data.userName,
+         name: data.userName,
          email: data.email,
          password: data.password,
          role: {
