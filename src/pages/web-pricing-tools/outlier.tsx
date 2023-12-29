@@ -605,6 +605,14 @@ export default function Outlier() {
             <Paper elevation={1} sx={{ marginTop: 2 }}>
                <Grid container sx={{ height: 'calc(60vh - 211px)' }}>
                   <DataGridPro
+                     sx={{
+                        '& .MuiDataGrid-columnHeaderTitle': {
+                           textOverflow: 'clip',
+                           whiteSpace: 'break-spaces',
+                           lineHeight: 1.2,
+                        },
+                     }}
+                     columnHeaderHeight={50}
                      hideFooter
                      disableColumnMenu
                      // tableHeight={740}

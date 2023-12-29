@@ -14,7 +14,7 @@ export async function getServerSideProps(context) {
 
       return {
          redirect: {
-            destination: '/dashboard',
+            destination: '/web-pricing-tools/admin/dashboard',
             permanent: false,
          },
       };
@@ -22,7 +22,7 @@ export async function getServerSideProps(context) {
       if (error.response?.status == 403)
          return {
             redirect: {
-               destination: '/bookingOrder',
+               destination: '/web-pricing-tools/bookingOrder',
                permanent: false,
             },
          };

@@ -521,7 +521,7 @@ export default function Adjustment() {
          setTotalColor('#DFB95E');
          n++;
       }
-      if (n > 1) setTotalColor('#D09903');
+      if (n > 1) setTotalColor('#9EB9F9');
    }
 
    const isZeroOrEmpty = (number: string) => {
@@ -537,7 +537,7 @@ export default function Adjustment() {
       ) {
          n++;
          setCostAdjColor('#FFCC99');
-         setTotalColor('#FFCC99');
+         setTotalColor('#FFDFBD');
          costAdjOld = dataCalculator.costAdjPercentage;
       }
       if (
@@ -546,13 +546,13 @@ export default function Adjustment() {
       ) {
          n++;
          setFreightAdjColor('#f7c0a9');
-         setTotalColor('#f7c0a9');
+         setTotalColor('#FFD7C6');
          dnAdjOld = dataCalculator.freightAdj;
       }
       if (dataCalculator.fxAdj !== fxAdjOld && !isZeroOrEmpty(dataCalculator.fxAdj)) {
          n++;
          setFxAdjColor('#e9d4c4');
-         setTotalColor('#e9d4c4');
+         setTotalColor('#F6EEE8');
          fxAdjOld = dataCalculator.fxAdj;
       }
       if (
@@ -560,12 +560,12 @@ export default function Adjustment() {
          !isZeroOrEmpty(dataCalculator.dnAdjPercentage)
       ) {
          n++;
-         setDnAdjColor('#f9d06d');
-         setTotalColor('#f9d06d');
+         setDnAdjColor('#FFE198');
+         setTotalColor('#FFECBD');
          dnAdjOld = dataCalculator.dnAdjPercentage;
       }
       //
-      if (n > 1) setTotalColor('#FFC72C');
+      if (n > 1) setTotalColor('#BECFF6');
       else if (n === 0) setTotalColor('');
       console.log(costAdjOld);
    }, [costAdjColor, freightAdjColor, fxAdjColor, dnAdjColor]);
@@ -785,7 +785,6 @@ export default function Adjustment() {
             <Paper elevation={1} sx={{ marginTop: 2 }}>
                <Grid container sx={{ height: 'calc(100vh - 263px)' }}>
                   <DataGridPro
-                     //className={`${cellStyle['& .MuiDataGrid-cell']} ${cellStyle['& .css-1ey3qrw-MuiDataGrid-root']}`}
                      sx={{
                         '& .MuiDataGrid-cell': {
                            padding: 0,
@@ -793,10 +792,15 @@ export default function Adjustment() {
                         '& .css-1ey3qrw-MuiDataGrid-root': {
                            padding: 0,
                         },
+                        '& .MuiDataGrid-columnHeaderTitle': {
+                           textOverflow: 'clip',
+                           whiteSpace: 'break-spaces',
+                           lineHeight: 1.2,
+                        },
                      }}
                      hideFooter
                      disableColumnMenu
-                     //tableHeight={740}
+                     columnHeaderHeight={70}
                      rowHeight={30}
                      slots={{
                         toolbar: GridToolbar,

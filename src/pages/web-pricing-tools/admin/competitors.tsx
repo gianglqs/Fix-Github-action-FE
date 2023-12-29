@@ -14,8 +14,6 @@ import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import CreateIcon from '@mui/icons-material/AddCircle';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -25,57 +23,36 @@ import { AccountCircle, ReplayOutlined as ReloadIcon } from '@mui/icons-material
 import { Button, Popover } from '@mui/material';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { dashboardStore } from '@/store/reducers';
-import { createAction } from '@reduxjs/toolkit';
+import { commonStore, competitorColorStore } from '@/store/reducers';
 import { useRouter } from 'next/router';
 
 import { iconColumn } from '@/utils/columnProperties';
 import dashboardApi from '@/api/dashboard.api';
 
-import { AppFooter, AppSearchBar, DataTable, EditIcon } from '@/components';
-import { DialogCreateUser } from '@/components/Dialog/Module/Dashboard/CreateDialog';
-import { DeactiveUserDialog } from '@/components/Dialog/Module/Dashboard/DeactiveUserDialog';
-import { DialogUpdateUser } from '@/components/Dialog/Module/Dashboard/UpdateDialog';
+import {
+   AppFooter,
+   AppLayout,
+   AppSearchBar,
+   DataTable,
+   DataTablePagination,
+   EditIcon,
+} from '@/components';
 import Image from 'next/image';
 import { bindPopover, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
-import useStyles from '@/components/App/Layout/styles';
 import authApi from '@/api/auth.api';
-import { destroyCookie } from 'nookies';
+import { destroyCookie, parseCookies } from 'nookies';
 import axios from 'axios';
-import { parseCookies, setCookie } from 'nookies';
+import { DialogUpdateCompetitor } from '@/components/Dialog/Module/CompetitorColorDialog/UpdateDialog';
+import competitorColorApi from '@/api/competitorColor.api';
+import { createAction } from '@reduxjs/toolkit';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const logo = require('../public/logo.svg');
+const logo = require('@/public/logo.svg');
 
 const drawerWidth: number = 240;
 
 interface AppBarProps extends MuiAppBarProps {
    open?: boolean;
-}
-
-export async function getServerSideProps(context) {
-   try {
-      let cookies = parseCookies(context);
-      let token = cookies['token'];
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkTokenOfAdmin`, null, {
-         headers: {
-            Authorization: 'Bearer ' + token,
-         },
-      });
-
-      return {
-         props: {},
-      };
-   } catch (error) {
-      var des = '/login';
-      if (error.response.status == 403) des = '/bookingOrder';
-
-      return {
-         redirect: {
-            destination: des,
-            permanent: false,
-         },
-      };
-   }
 }
 
 const AppBar = styled(MuiAppBar, {
@@ -122,15 +99,38 @@ const Drawer = styled(MuiDrawer, {
    },
 }));
 
-export default function Dashboard() {
+export async function getServerSideProps(context) {
+   try {
+      let cookies = parseCookies(context);
+      let token = cookies['token'];
+      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkTokenOfAdmin`, null, {
+         headers: {
+            Authorization: 'Bearer ' + token,
+         },
+      });
+
+      return {
+         props: {},
+      };
+   } catch (error) {
+      var des = '/login';
+      if (error.response.status == 403) des = '/web-pricing-tools/bookingOrder';
+
+      return {
+         redirect: {
+            destination: des,
+            permanent: false,
+         },
+      };
+   }
+}
+export default function competitors() {
    const [open, setOpen] = useState(true);
-   createAction(`dashboard/GET_LIST`);
-   const entityApp = 'dashboard';
+   const router = useRouter();
+
+   const entityApp = 'competitorColor';
    const getListAction = useMemo(() => createAction(`${entityApp}/GET_LIST`), [entityApp]);
    const resetStateAction = useMemo(() => createAction(`${entityApp}/RESET_STATE`), [entityApp]);
-   const router = useRouter();
-   const dispatch = useDispatch();
-   const listUser = useSelector(dashboardStore.selectUserList);
 
    useEffect(() => {
       dispatch(getListAction());
@@ -142,6 +142,10 @@ export default function Dashboard() {
       };
    }, [router.pathname]);
 
+   const dispatch = useDispatch();
+   const tableState = useSelector(commonStore.selectTableState);
+   const listCompetitorColor = useSelector(competitorColorStore.selectCompetitorColorList);
+
    const toggleDrawer = () => {
       setOpen(!open);
    };
@@ -150,82 +154,43 @@ export default function Dashboard() {
       popupId: 'demoPopover',
    });
 
-   const classes = useStyles();
-
-   const defaultValue = {
-      userName: '',
-      password: '',
-      email: '',
-      role: 1,
-      defaultLocale: 'us',
-   };
-
-   const [dialogCreateUser, setDialogCreateUser] = useState({
-      open: false,
-      detail: defaultValue as any,
-   });
-
-   const [updateUserState, setUpdateUserState] = useState({
+   const [updateColorState, setUpdateColorState] = useState({
       open: false,
       detail: {} as any,
    });
-
-   const [deactivateUserState, setDeactivateUserState] = useState({
-      open: false,
-      detail: {} as any,
-   });
-
-   const handleOpenCreateDialog = () => {
-      setDialogCreateUser({
-         open: true,
-         detail: defaultValue,
-      });
-   };
-
-   const handleCloseCreateDialog = () => {
-      setDialogCreateUser({
-         open: false,
-         detail: defaultValue,
-      });
-   };
-
-   const handleCloseDeactiveUser = () => {
-      setDeactivateUserState({
-         open: false,
-         detail: {},
-      });
-   };
-
-   const handleOpenDeactivateUser = (row) => {
-      setDeactivateUserState({
-         open: true,
-         detail: { userName: row?.userName, id: row?.id, isActive: row?.active },
-      });
-   };
 
    const handleSearch = async (event, searchQuery) => {
-      const { data } = await dashboardApi.getUser({ search: searchQuery });
-      dispatch(dashboardStore.actions.setUserList(JSON.parse(data)?.userList));
+      dispatch(competitorColorStore.actions.setCompetitorColorSearch(searchQuery));
+      handleChangePage(1);
+   };
+   const handleChangePage = (pageNo: number) => {
+      dispatch(commonStore.actions.setTableState({ pageNo }));
+      dispatch(competitorColorStore.sagaGetList());
    };
 
-   const handleOpenUpdateUserDialog = async (userId) => {
+   const handleChangePerPage = (perPage: number) => {
+      dispatch(commonStore.actions.setTableState({ perPage }));
+      handleChangePage(1);
+   };
+
+   const handleOpenUpdateColorDialog = async (id) => {
       try {
          // Get init data
 
-         const { data } = await dashboardApi.getDetailUser(userId);
+         const { data } = await competitorColorApi.getCompetitorColorById({ id });
 
          // Open form
-         setUpdateUserState({
+         setUpdateColorState({
             open: true,
-            detail: JSON.parse(data)?.userDetails,
+            detail: JSON.parse(data)?.competitorColorDetail,
          });
       } catch (error) {
          // dispatch(commonStore.actions.setErrorMessage(error))
       }
    };
 
-   const handleCloseUpdateUserDialog = () => {
-      setUpdateUserState({
+   const handleCloseUpdateColorDialog = () => {
+      setUpdateColorState({
          open: false,
          detail: {},
       });
@@ -234,7 +199,7 @@ export default function Dashboard() {
    const handleLogOut = () => {
       try {
          authApi.logOut();
-         destroyCookie(null, 'token');
+         destroyCookie(null, 'token', { path: '/' });
          router.push('/login');
       } catch (err) {
          console.log(err);
@@ -243,43 +208,20 @@ export default function Dashboard() {
 
    const columns = [
       {
-         field: 'email',
+         field: 'groupName',
          flex: 0.8,
-         headerName: 'Email',
+         headerName: 'Competitor Name',
       },
       {
-         field: 'role',
+         field: 'colorCode',
          flex: 0.8,
-         headerName: 'Role',
+         headerName: 'Color Code',
+      },
+      {
+         flex: 0.8,
+         headerName: 'Color',
          renderCell(params) {
-            return <span>{params.row.role.roleName}</span>;
-         },
-      },
-      {
-         field: 'name',
-         flex: 0.8,
-         headerName: 'Name',
-      },
-      {
-         field: 'lastLogin',
-         flex: 0.4,
-         headerName: 'Last Login',
-      },
-      {
-         ...iconColumn,
-         field: 'active',
-         flex: 0.3,
-         headerName: 'Status',
-         renderCell(params) {
-            return (
-               <Button
-                  variant="outlined"
-                  color={`${params.row.active ? 'primary' : 'error'}`}
-                  onClick={() => handleOpenDeactivateUser(params.row)}
-               >
-                  {params.row.active ? 'Active' : 'Locked'}
-               </Button>
-            );
+            return <div style={{ backgroundColor: params.row.colorCode, width: 30, height: 30 }} />;
          },
       },
       {
@@ -288,7 +230,7 @@ export default function Dashboard() {
          headerName: 'Edit',
          flex: 0.2,
          renderCell(params) {
-            return <EditIcon onClick={() => handleOpenUpdateUserDialog(params.row.id)} />;
+            return <EditIcon onClick={() => handleOpenUpdateColorDialog(params.row.id)} />;
          },
       },
    ];
@@ -369,7 +311,7 @@ export default function Dashboard() {
                </Toolbar>
                <Divider />
                <List component="nav">
-                  <Link href={`/bookingOrder`}>
+                  <Link href={`/web-pricing-tools/bookingOrder`}>
                      <ListItemButton>
                         <ListItemIcon>
                            <DashboardIcon />
@@ -377,7 +319,7 @@ export default function Dashboard() {
                         <ListItemText primary="Dashboard" />
                      </ListItemButton>
                   </Link>
-                  <Link href={`/competitors`}>
+                  <Link href={`/web-pricing-tools/admin/competitors`}>
                      <ListItemButton>
                         <ListItemIcon>
                            <DashboardIcon />
@@ -385,7 +327,7 @@ export default function Dashboard() {
                         <ListItemText primary="Competitors" />
                      </ListItemButton>
                   </Link>
-                  <Link href={`/dashboard`}>
+                  <Link href={`/web-pricing-tools/admin/dashboard`}>
                      <ListItemButton>
                         <ListItemIcon>
                            <PeopleIcon />
@@ -413,15 +355,6 @@ export default function Dashboard() {
                      <ReloadIcon />
                      Reload
                   </Button>
-                  <Button
-                     onClick={handleOpenCreateDialog}
-                     variant="contained"
-                     style={{ marginLeft: 5 }}
-                     color="primary"
-                  >
-                     <CreateIcon />
-                     New User
-                  </Button>
                </Grid>
                <Grid container sx={{ padding: 1, paddingLeft: 1.5 }}>
                   <AppSearchBar onSearch={handleSearch}></AppSearchBar>
@@ -431,21 +364,25 @@ export default function Dashboard() {
                      <DataTable
                         hideFooter
                         disableColumnMenu
-                        checkboxSelection
-                        tableHeight={795}
+                        tableHeight={720}
                         rowHeight={50}
-                        rows={listUser}
+                        rows={listCompetitorColor}
                         columns={columns}
                      />
                   </Grid>
+                  <DataTablePagination
+                     page={tableState.pageNo}
+                     perPage={tableState.perPage}
+                     totalItems={tableState.totalItems}
+                     onChangePage={handleChangePage}
+                     onChangePerPage={handleChangePerPage}
+                  />
                   <AppFooter />
                </Paper>
             </Box>
          </Box>
 
-         <DialogCreateUser {...dialogCreateUser} onClose={handleCloseCreateDialog} />
-         <DeactiveUserDialog {...deactivateUserState} onClose={handleCloseDeactiveUser} />
-         <DialogUpdateUser {...updateUserState} onClose={handleCloseUpdateUserDialog} />
+         <DialogUpdateCompetitor {...updateColorState} onClose={handleCloseUpdateColorDialog} />
       </>
    );
 }

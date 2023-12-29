@@ -87,7 +87,6 @@ export default function Indicators() {
 
    // select data Filter in store
    const initDataFilter = useSelector(indicatorStore.selectInitDataFilter);
-   console.log(initDataFilter);
 
    const [dataFilter, setDataFilter] = useState(defaultValueFilterIndicator);
    const listTotalRow = useSelector(indicatorStore.selectTotalRow);
@@ -109,12 +108,12 @@ export default function Indicators() {
       series: [],
    });
 
-   const [regionError, setRegionError] = useState(false);
+   const [regionError, setRegionError] = useState({ error: true });
 
    const handleFilterCompetitiveLandscape = async () => {
       try {
          if (swotDataFilter.regions == null) {
-            setRegionError(true);
+            setRegionError({ error: true });
             return;
          }
 
@@ -127,14 +126,10 @@ export default function Indicators() {
             categories: swotDataFilter.categories,
             series: swotDataFilter.series,
          });
-         let totalPrice = 0;
-         let totalLeadTime = 0;
-         const datasets = competitiveLandscape.map((item) => {
-            totalPrice += item.competitorPricing;
-            totalLeadTime += item.competitorLeadTime;
 
+         const datasets = competitiveLandscape.map((item) => {
             return {
-               label: `${item.competitorName}`,
+               label: `${item.color.groupName}`,
                data: [
                   {
                      x: item.competitorPricing,
@@ -164,8 +159,11 @@ export default function Indicators() {
             }
          })
       );
-      if (swotDataFilter.regions != null) setRegionError(false);
    };
+   useEffect(() => {
+      console.log(swotDataFilter);
+      if (swotDataFilter.regions != null) setRegionError({ error: false });
+   }, [swotDataFilter]);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -213,7 +211,7 @@ export default function Indicators() {
             setLoading(false);
             dispatch(commonStore.actions.setSuccessMessage('Import successfully'));
             handleFilterIndicator();
-            await handleFilterCompetitiveLandscape();
+            handleFilterCompetitiveLandscape();
          })
          .catch((error) => {
             setLoading(false);
@@ -518,10 +516,7 @@ export default function Indicators() {
       maintainAspectRatio: false,
       plugins: {
          legend: {
-            display: false,
-         },
-         htmlLegend: {
-            containerID: 'legend-container',
+            display: true,
          },
          title: {
             display: true,
@@ -631,84 +626,6 @@ export default function Indicators() {
             text: 'Year',
             display: true,
          },
-      },
-   };
-
-   const getOrCreateLegendList = (chart, id) => {
-      const legendContainer = document.getElementById(id);
-      let listContainer = legendContainer.querySelector('ul');
-
-      if (!listContainer) {
-         listContainer = document.createElement('ul');
-         listContainer.style.display = 'flex';
-         listContainer.style.flexDirection = 'row';
-         listContainer.style.margin = '0';
-         listContainer.style.padding = '0';
-
-         legendContainer.appendChild(listContainer);
-      }
-
-      return listContainer;
-   };
-
-   const htmlLegendPlugin = {
-      id: 'htmlLegend',
-      afterUpdate(chart, args, options) {
-         const ul = getOrCreateLegendList(chart, options.containerID);
-
-         // Remove old legend items
-         while (ul.firstChild) {
-            ul.firstChild.remove();
-         }
-
-         // Reuse the built-in legendItems generator
-         const items = chart.options.plugins.legend.labels.generateLabels(chart);
-
-         ul.style.display = 'flex';
-         ul.style.flexFlow = 'wrap column';
-         ul.style.maxHeight = '450px';
-
-         items.forEach((item) => {
-            const li = document.createElement('li');
-            li.style.alignItems = 'center';
-            li.style.cursor = 'pointer';
-            li.style.display = 'flex';
-            li.style.flexDirection = 'row';
-            li.style.marginLeft = '10px';
-
-            li.onclick = () => {
-               chart.setDatasetVisibility(
-                  item.datasetIndex,
-                  !chart.isDatasetVisible(item.datasetIndex)
-               );
-               chart.update();
-            };
-
-            // Color box
-            const boxSpan = document.createElement('span');
-            boxSpan.style.background = item.fillStyle;
-            boxSpan.style.borderColor = item.strokeStyle;
-            boxSpan.style.borderWidth = item.lineWidth + 'px';
-            boxSpan.style.display = 'inline-block';
-            boxSpan.style.height = '15px';
-            boxSpan.style.marginRight = '5px';
-            boxSpan.style.width = '20px';
-
-            // Text
-            const textContainer = document.createElement('p');
-            textContainer.style.color = item.fontColor;
-            textContainer.style.margin = '0';
-            textContainer.style.padding = '0';
-            textContainer.style.width = 'fit-content';
-            textContainer.style.textDecoration = item.hidden ? 'line-through' : '';
-
-            const text = document.createTextNode(item.text);
-            textContainer.appendChild(text);
-
-            li.appendChild(boxSpan);
-            li.appendChild(textContainer);
-            ul.appendChild(li);
-         });
       },
    };
 
@@ -876,14 +793,14 @@ export default function Indicators() {
                         <UploadFileDropZone
                            handleUploadFile={handleImportFile}
                            buttonName="Import Competitor File"
-                           sx={{ width: '100%', height: 24 }}
+                           sx={{ width: '100%', height: 24, minWidth: 165 }}
                         />
                      </Grid>
                      <Grid item xs={2}>
                         <UploadFileDropZone
                            handleUploadFile={handleUploadForecastFile}
                            buttonName="Import Forecast File"
-                           sx={{ width: '100%', height: 24 }}
+                           sx={{ width: '100%', height: 24, minWidth: 165 }}
                         />
                      </Grid>
                   </>
@@ -892,9 +809,16 @@ export default function Indicators() {
             <Paper elevation={1} sx={{ marginTop: 2 }}>
                <Grid container sx={{ height: 'calc(67vh - 275px)', minHeight: '200px' }}>
                   <DataGridPro
+                     sx={{
+                        '& .MuiDataGrid-columnHeaderTitle': {
+                           textOverflow: 'clip',
+                           whiteSpace: 'break-spaces',
+                           lineHeight: 1.2,
+                        },
+                     }}
+                     columnHeaderHeight={70}
                      hideFooter
                      disableColumnMenu
-                     // tableHeight={390}
                      slots={{
                         toolbar: GridToolbar,
                      }}
@@ -988,7 +912,7 @@ export default function Indicators() {
                         renderOption={(prop, option) => `${option.value}`}
                         getOptionLabel={(option) => `${option.value}`}
                         helperText="Missing value"
-                        error={regionError}
+                        error={regionError.error}
                         required
                      />
                   </Grid>
@@ -1062,32 +986,15 @@ export default function Indicators() {
                   </Grid>
                </Grid>
                <Grid
-                  container
-                  xs={10}
+                  item
+                  xs={9}
                   sx={{
                      height: '55vh',
                      width: 'fit-content',
                      position: 'relative',
                   }}
                >
-                  <Grid item xs={9}>
-                     <Bubble
-                        options={options}
-                        data={competitiveLandscapeData}
-                        plugins={[htmlLegendPlugin]}
-                     />
-                  </Grid>
-                  <Grid item xs={3}>
-                     <div
-                        id="legend-container"
-                        style={{
-                           overflow: 'scroll',
-                           overflowY: 'hidden',
-                           width: 'fit-content',
-                           marginTop: 50,
-                        }}
-                     ></div>
-                  </Grid>
+                  <Bubble options={options} data={competitiveLandscapeData} />
                </Grid>
             </Grid>
          </AppLayout>

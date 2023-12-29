@@ -30,7 +30,7 @@ const DialogUpdateCompetitor: React.FC<any> = (props) => {
    const handleSubmitForm = updateColorForm.handleSubmit(async (data: any) => {
       const transformedData = {
          id: detail?.id,
-         competitorName: data.competitorName,
+         groupName: data.groupName,
          colorCode: chosenColor,
       };
       try {

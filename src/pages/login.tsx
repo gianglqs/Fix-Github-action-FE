@@ -46,7 +46,7 @@ export async function getServerSideProps(context) {
 
       return {
          redirect: {
-            destination: '/dashboard',
+            destination: '/web-pricing-tools/admin/dashboard',
             permanent: false,
          },
       };
@@ -54,7 +54,7 @@ export async function getServerSideProps(context) {
       if (error.response?.status == 403)
          return {
             redirect: {
-               destination: '/bookingOrder',
+               destination: '/web-pricing-tools/bookingOrder',
                permanent: false,
             },
          };
@@ -86,8 +86,6 @@ export default function LoginPage() {
          password: formData?.password,
       };
 
-      const redirect_to = 'dashboard';
-
       const options = {
          method: 'POST',
          headers: {
@@ -105,15 +103,15 @@ export default function LoginPage() {
             const access_token = response.data.data.access_token;
             const name = response.data.data.name;
             const role = response.data.data.role;
-            setCookie(null, 'token', access_token, { maxAge: 604800 }); // 7 days
+            setCookie(null, 'token', access_token, { maxAge: 604800, path: '/' }); // 7 days
             setCookie(null, 'role', role, { maxAge: 604800 });
             setCookie(null, 'name', name, { maxAge: 604800 });
 
             // setCookie(null, 'redirect_to', redirect_to, { maxAge: 2147483647 });
-            router.push(redirect_to);
+            router.push('/web-pricing-tools/admin/dashboard');
          })
          .catch((error) => {
-            dispatch(commonStore.actions.setErrorMessage(error.response.data.message));
+            dispatch(commonStore.actions.setErrorMessage('Error on signing in'));
          });
    });
 

@@ -1,4 +1,4 @@
-import { AppLayout, AppTextField, DataTable } from '@/components';
+import { AppAutocomplete, AppLayout, AppTextField, DataTable } from '@/components';
 
 import _ from 'lodash';
 
@@ -88,6 +88,10 @@ export default function MarginAnalysis() {
       setSeries({ value: value, error: false });
    };
 
+   const [regionValue, setRegionValue] = useState({ value: 'Asia' });
+   const [targetMargin, setTargetMargin] = useState(0);
+   const [marginGuideline, setMarginGuideline] = useState(0);
+
    const handleCalculateMargin = async () => {
       if (plant == null) {
          dispatch(commonStore.actions.setErrorMessage('Please open a file to calculate!'));
@@ -96,13 +100,16 @@ export default function MarginAnalysis() {
 
       try {
          const transformData = {
-            modelCode: valueSearch.value,
-            type: typeValue.value,
-            currency: valueCurrency,
-            fileUUID: cookies['fileUUID'],
-            orderNumber: orderNumberValue.value,
-            plant: plant,
-            series: series.value,
+            marginData: {
+               modelCode: valueSearch.value,
+               type: typeValue.value,
+               currency: valueCurrency,
+               fileUUID: cookies['fileUUID'],
+               orderNumber: orderNumberValue.value,
+               plant: plant,
+               series: series.value,
+            },
+            region: regionValue.value,
          };
 
          setLoading(true);
@@ -122,6 +129,9 @@ export default function MarginAnalysis() {
 
          setMarginAnalysisSummary(analysisSummary);
          setListDataAnalysis(marginAnalystData);
+
+         setTargetMargin(data?.TargetMargin);
+         setMarginGuideline(data?.MarginGuideline);
 
          setOpenAccordion(true);
          setOpenAccordionTable(true);
@@ -269,6 +279,25 @@ export default function MarginAnalysis() {
       },
    ];
 
+   const regionOptions = [
+      {
+         value: 'Asia',
+      },
+      {
+         value: 'Australia',
+      },
+      {
+         value: 'India',
+      },
+      {
+         value: 'Pacific',
+      },
+   ];
+
+   const handleChangeRegionOptions = (option) => {
+      setRegionValue({ value: option.value });
+   };
+
    return (
       <>
          <AppLayout entity="margin_analysis">
@@ -306,7 +335,7 @@ export default function MarginAnalysis() {
                      sx={{ width: '100%', height: 24 }}
                   />
                </Grid>
-               <Grid item sx={{ width: '10%', minWidth: 50 }} xs={0.5}>
+               <Grid item sx={{ width: '10%', minWidth: 50 }} xs={0.3}>
                   <AppTextField
                      label="#"
                      onChange={(e) => handleTypeValue(e.target.value)}
@@ -322,7 +351,7 @@ export default function MarginAnalysis() {
                      error={valueSearch.error}
                   />
                </Grid>
-               <Grid item sx={{ width: '10%', minWidth: 140 }} xs={1}>
+               <Grid item sx={{ width: '10%', minWidth: 100 }} xs={0.5}>
                   <AppTextField
                      label="Series"
                      value={series.value}
@@ -335,6 +364,19 @@ export default function MarginAnalysis() {
                      label="Order Number #"
                      onChange={(e) => handleOrderNumber(e.target.value)}
                      value={orderNumberValue.value}
+                  />
+               </Grid>
+
+               <Grid item sx={{ width: '10%', minWidth: 100 }} xs={0.8}>
+                  <AppAutocomplete
+                     options={regionOptions}
+                     label="Region"
+                     value={regionValue.value}
+                     onChange={(e, option) => handleChangeRegionOptions(option)}
+                     disableListWrap
+                     primaryKeyOption="value"
+                     renderOption={(prop, option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
 
@@ -787,14 +829,14 @@ export default function MarginAnalysis() {
                                        variant="body1"
                                        component="span"
                                     >
-                                       AOP 2022
+                                       AOP 2023
                                     </Typography>
                                     <Typography
                                        sx={{ fontWeight: 'bold' }}
                                        variant="body1"
                                        component="span"
                                     >
-                                       0
+                                       {regionValue.value}
                                     </Typography>
                                  </div>
                                  <div className="space-between-element">
@@ -810,7 +852,7 @@ export default function MarginAnalysis() {
                                        variant="body1"
                                        component="span"
                                     >
-                                       0
+                                       {targetMargin * 100}%
                                     </Typography>
                                  </div>
                                  <div className="space-between-element">
@@ -826,7 +868,7 @@ export default function MarginAnalysis() {
                                        variant="body1"
                                        component="span"
                                     >
-                                       0
+                                       {marginGuideline * 100}%
                                     </Typography>
                                  </div>
                               </Paper>

@@ -63,7 +63,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       const otherOptions = _.keysIn(menuObj);
       return _.map(otherOptions, (name) => (
          <Link
-            href={`${name}`}
+            href={`/web-pricing-tools/${name}`}
             style={{ textDecoration: 'none', cursor: 'pointer', color: '#000' }}
          >
             <Typography
@@ -80,7 +80,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
 
    const handleLogOut = () => {
       try {
-         destroyCookie(null, 'token');
+         destroyCookie(null, 'token', { path: '/' });
          router.push('/login');
       } catch (err) {
          console.log(err);
@@ -89,7 +89,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
 
    const handleAdminPage = () => {
       try {
-         router.push('/dashboard');
+         router.push('/web-pricing-tools/admin/dashboard');
       } catch (err) {
          console.log(err);
       }
