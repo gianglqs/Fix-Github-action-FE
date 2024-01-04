@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useStyles from './styles';
 
 import { Router, useRouter } from 'next/router';
@@ -15,6 +15,7 @@ import { usePopupState, bindPopover, bindTrigger } from 'material-ui-popup-state
 import { AppLayoutProps } from './type';
 import AppFooter from '../Footer';
 import { destroyCookie, parseCookies } from 'nookies';
+import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/ChangePasswordDialog';
 
 const AppLayout: React.FC<AppLayoutProps> = (props) => {
    const { children, entity, heightBody } = props;
@@ -37,6 +38,11 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
 
    let cookies = parseCookies();
    let userRoleCookies = cookies['role'];
+   const [userName, setUserName] = useState('');
+
+   useEffect(() => {
+      setUserName(cookies['name']);
+   }, []);
 
    useEffect(() => {
       dispatch(getListAction());
@@ -70,7 +76,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
                variant="body1"
                fontWeight="fontWeightMedium"
                className={classes.label}
-               color={router.pathname === `/${name}` ? '#e7a800' : ''}
+               color={router.pathname === `/web-pricing-tools/${name}` ? '#e7a800' : ''}
             >
                {menuObj[name]}
             </Typography>
@@ -89,10 +95,30 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
 
    const handleAdminPage = () => {
       try {
+         popupState.close();
          router.push('/web-pricing-tools/admin/dashboard');
       } catch (err) {
          console.log(err);
       }
+   };
+   const [changePasswordState, setChangePasswordState] = useState({
+      open: false,
+      detail: {} as any,
+   });
+
+   const handleOpenChangePasswordDialog = () => {
+      popupState.close();
+      setChangePasswordState({
+         open: true,
+         detail: {},
+      });
+   };
+
+   const handleCloseChangePasswordDialog = () => {
+      setChangePasswordState({
+         open: false,
+         detail: {},
+      });
    };
 
    return (
@@ -109,6 +135,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
                {...bindTrigger(popupState)}
                data-testid="profile-testid"
             >
+               <div style={{ marginRight: 10, fontSize: 20 }}>{userName}</div>
                <AccountCircle style={{ marginRight: 5, fontSize: 20 }} />
             </div>
          </AppBar>
@@ -148,6 +175,14 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
             )}
             <Typography
                style={{ margin: 10, cursor: 'pointer' }}
+               onClick={handleOpenChangePasswordDialog}
+               data-testid="user-item-testid"
+               id="logout__testid"
+            >
+               Change Password
+            </Typography>
+            <Typography
+               style={{ margin: 10, cursor: 'pointer' }}
                onClick={handleLogOut}
                data-testid="user-item-testid"
                id="logout__testid"
@@ -156,6 +191,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
             </Typography>
          </Popover>
          <AppFooter />
+         <DialogChangePassword {...changePasswordState} onClose={handleCloseChangePasswordDialog} />
       </>
    );
 };

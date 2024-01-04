@@ -53,8 +53,8 @@ const DialogCreateUser: React.FC<any> = (props) => {
 
    const roleOptions = useMemo(
       () => [
-         { id: 1, description: 'Admin' },
-         { id: 2, description: 'User' },
+         { id: 1, roleName: 'ADMIN' },
+         { id: 2, roleName: 'USER' },
       ],
       []
    );

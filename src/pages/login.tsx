@@ -81,7 +81,6 @@ export default function LoginPage() {
 
    const handleSubmitLogin = loginForm.handleSubmit((formData: LoginFormValues) => {
       const transformData = {
-         grant_type: 'password',
          email: formData?.email,
          password: formData?.password,
       };
@@ -89,7 +88,7 @@ export default function LoginPage() {
       const options = {
          method: 'POST',
          headers: {
-            'content-type': 'application/x-www-form-urlencoded',
+            'content-type': 'application/json',
          },
          auth: {
             username: 'client',
@@ -104,8 +103,8 @@ export default function LoginPage() {
             const name = response.data.data.name;
             const role = response.data.data.role;
             setCookie(null, 'token', access_token, { maxAge: 604800, path: '/' }); // 7 days
-            setCookie(null, 'role', role, { maxAge: 604800 });
-            setCookie(null, 'name', name, { maxAge: 604800 });
+            setCookie(null, 'role', role, { maxAge: 604800, path: '/' });
+            setCookie(null, 'name', name, { maxAge: 604800, path: '/' });
 
             // setCookie(null, 'redirect_to', redirect_to, { maxAge: 2147483647 });
             router.push('/web-pricing-tools/admin/dashboard');

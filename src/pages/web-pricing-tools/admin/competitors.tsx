@@ -11,14 +11,8 @@ import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import PeopleIcon from '@mui/icons-material/People';
 import { AccountCircle, ReplayOutlined as ReloadIcon } from '@mui/icons-material';
 import { Button, Popover } from '@mui/material';
 
@@ -27,16 +21,9 @@ import { commonStore, competitorColorStore } from '@/store/reducers';
 import { useRouter } from 'next/router';
 
 import { iconColumn } from '@/utils/columnProperties';
-import dashboardApi from '@/api/dashboard.api';
+import { NavBar } from '@/components/App/NavBar';
 
-import {
-   AppFooter,
-   AppLayout,
-   AppSearchBar,
-   DataTable,
-   DataTablePagination,
-   EditIcon,
-} from '@/components';
+import { AppFooter, AppSearchBar, DataTable, DataTablePagination, EditIcon } from '@/components';
 import Image from 'next/image';
 import { bindPopover, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
 import authApi from '@/api/auth.api';
@@ -45,6 +32,7 @@ import axios from 'axios';
 import { DialogUpdateCompetitor } from '@/components/Dialog/Module/CompetitorColorDialog/UpdateDialog';
 import competitorColorApi from '@/api/competitorColor.api';
 import { createAction } from '@reduxjs/toolkit';
+import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/ChangePasswordDialog';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('@/public/logo.svg');
@@ -132,6 +120,13 @@ export default function competitors() {
    const getListAction = useMemo(() => createAction(`${entityApp}/GET_LIST`), [entityApp]);
    const resetStateAction = useMemo(() => createAction(`${entityApp}/RESET_STATE`), [entityApp]);
 
+   const cookies = parseCookies();
+   const [userName, setUserName] = useState('');
+
+   useEffect(() => {
+      setUserName(cookies['name']);
+   }, []);
+
    useEffect(() => {
       dispatch(getListAction());
    }, [getListAction, router.query]);
@@ -198,6 +193,8 @@ export default function competitors() {
 
    const handleLogOut = () => {
       try {
+         popupState.close();
+
          authApi.logOut();
          destroyCookie(null, 'token', { path: '/' });
          router.push('/login');
@@ -235,6 +232,26 @@ export default function competitors() {
       },
    ];
 
+   const [changePasswordState, setChangePasswordState] = useState({
+      open: false,
+      detail: {} as any,
+   });
+
+   const handleOpenChangePasswordDialog = () => {
+      popupState.close();
+      setChangePasswordState({
+         open: true,
+         detail: {},
+      });
+   };
+
+   const handleCloseChangePasswordDialog = () => {
+      setChangePasswordState({
+         open: false,
+         detail: {},
+      });
+   };
+
    return (
       <>
          <Box sx={{ display: 'flex' }}>
@@ -266,8 +283,9 @@ export default function competitors() {
                      {/* Dashboard */}
                   </Typography>
                   <IconButton color="inherit">
-                     <Badge color="secondary">
-                        <div {...bindTrigger(popupState)} data-testid="profile-testid">
+                     <Badge color="secondary" {...bindTrigger(popupState)}>
+                        <div style={{ fontSize: 20, marginRight: 10 }}>{userName}</div>
+                        <div data-testid="profile-testid">
                            <AccountCircle style={{ marginRight: 5, fontSize: 20 }} />
                         </div>
                      </Badge>
@@ -285,6 +303,14 @@ export default function competitors() {
                   }}
                   disableRestoreFocus
                >
+                  <Typography
+                     style={{ margin: 10, cursor: 'pointer' }}
+                     onClick={handleOpenChangePasswordDialog}
+                     data-testid="user-item-testid"
+                     id="logout__testid"
+                  >
+                     Change Password
+                  </Typography>
                   <Typography
                      style={{ margin: 10, cursor: 'pointer' }}
                      onClick={handleLogOut}
@@ -311,30 +337,7 @@ export default function competitors() {
                </Toolbar>
                <Divider />
                <List component="nav">
-                  <Link href={`/web-pricing-tools/bookingOrder`}>
-                     <ListItemButton>
-                        <ListItemIcon>
-                           <DashboardIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Dashboard" />
-                     </ListItemButton>
-                  </Link>
-                  <Link href={`/web-pricing-tools/admin/competitors`}>
-                     <ListItemButton>
-                        <ListItemIcon>
-                           <DashboardIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Competitors" />
-                     </ListItemButton>
-                  </Link>
-                  <Link href={`/web-pricing-tools/admin/dashboard`}>
-                     <ListItemButton>
-                        <ListItemIcon>
-                           <PeopleIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Users" />
-                     </ListItemButton>
-                  </Link>
+                  <NavBar />
                </List>
             </Drawer>
             <Box
@@ -383,6 +386,7 @@ export default function competitors() {
          </Box>
 
          <DialogUpdateCompetitor {...updateColorState} onClose={handleCloseUpdateColorDialog} />
+         <DialogChangePassword {...changePasswordState} onClose={handleCloseChangePasswordDialog} />
       </>
    );
 }

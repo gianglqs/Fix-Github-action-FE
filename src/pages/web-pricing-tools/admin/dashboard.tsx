@@ -11,38 +11,32 @@ import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import CreateIcon from '@mui/icons-material/AddCircle';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import PeopleIcon from '@mui/icons-material/People';
 import { AccountCircle, ReplayOutlined as ReloadIcon } from '@mui/icons-material';
 import { Button, Popover } from '@mui/material';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { dashboardStore } from '@/store/reducers';
+import { commonStore, dashboardStore } from '@/store/reducers';
 import { createAction } from '@reduxjs/toolkit';
 import { useRouter } from 'next/router';
 
 import { iconColumn } from '@/utils/columnProperties';
 import dashboardApi from '@/api/dashboard.api';
 
-import { AppFooter, AppSearchBar, DataTable, EditIcon } from '@/components';
+import { AppFooter, AppSearchBar, DataTable, DataTablePagination, EditIcon } from '@/components';
 import { DialogCreateUser } from '@/components/Dialog/Module/Dashboard/CreateDialog';
 import { DeactiveUserDialog } from '@/components/Dialog/Module/Dashboard/DeactiveUserDialog';
 import { DialogUpdateUser } from '@/components/Dialog/Module/Dashboard/UpdateDialog';
 import Image from 'next/image';
 import { bindPopover, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
-import useStyles from '@/components/App/Layout/styles';
-import authApi from '@/api/auth.api';
 import { destroyCookie } from 'nookies';
 import axios from 'axios';
-import { parseCookies, setCookie } from 'nookies';
+import { parseCookies } from 'nookies';
+import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/ChangePasswordDialog';
+import { NavBar } from '@/components/App/NavBar';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('@/public/logo.svg');
 
@@ -131,6 +125,23 @@ export default function Dashboard() {
    const router = useRouter();
    const dispatch = useDispatch();
    const listUser = useSelector(dashboardStore.selectUserList);
+   const tableState = useSelector(commonStore.selectTableState);
+   const cookies = parseCookies();
+   const [userName, setUserName] = useState('');
+
+   useEffect(() => {
+      setUserName(cookies['name']);
+   }, []);
+
+   const handleChangePage = (pageNo: number) => {
+      dispatch(commonStore.actions.setTableState({ pageNo }));
+      dispatch(dashboardStore.sagaGetList());
+   };
+
+   const handleChangePerPage = (perPage: number) => {
+      dispatch(commonStore.actions.setTableState({ perPage }));
+      handleChangePage(1);
+   };
 
    useEffect(() => {
       dispatch(getListAction());
@@ -149,8 +160,6 @@ export default function Dashboard() {
       variant: 'popover',
       popupId: 'demoPopover',
    });
-
-   const classes = useStyles();
 
    const defaultValue = {
       userName: '',
@@ -171,6 +180,11 @@ export default function Dashboard() {
    });
 
    const [deactivateUserState, setDeactivateUserState] = useState({
+      open: false,
+      detail: {} as any,
+   });
+
+   const [changePasswordState, setChangePasswordState] = useState({
       open: false,
       detail: {} as any,
    });
@@ -220,7 +234,7 @@ export default function Dashboard() {
             detail: JSON.parse(data)?.userDetails,
          });
       } catch (error) {
-         // dispatch(commonStore.actions.setErrorMessage(error))
+         dispatch(commonStore.actions.setErrorMessage(error));
       }
    };
 
@@ -231,8 +245,25 @@ export default function Dashboard() {
       });
    };
 
+   const handleOpenChangePasswordDialog = () => {
+      popupState.close();
+      setChangePasswordState({
+         open: true,
+         detail: {},
+      });
+   };
+
+   const handleCloseChangePasswordDialog = () => {
+      setChangePasswordState({
+         open: false,
+         detail: {},
+      });
+   };
+
    const handleLogOut = () => {
       try {
+         popupState.close();
+
          destroyCookie(null, 'token', { path: '/' });
          router.push('/login');
       } catch (err) {
@@ -247,28 +278,34 @@ export default function Dashboard() {
          headerName: 'Email',
       },
       {
-         field: 'role',
-         flex: 0.8,
-         headerName: 'Role',
-         renderCell(params) {
-            return <span>{params.row.role.roleName}</span>;
-         },
-      },
-      {
          field: 'name',
          flex: 0.8,
          headerName: 'Name',
       },
       {
+         field: 'role',
+         flex: 0.4,
+         headerName: 'Role',
+         headerAlign: 'center',
+         align: 'center',
+         renderCell(params) {
+            return <span>{params.row.role.roleName}</span>;
+         },
+      },
+      {
          field: 'lastLogin',
          flex: 0.4,
          headerName: 'Last Login',
+         headerAlign: 'center',
+         align: 'center',
       },
       {
          ...iconColumn,
          field: 'active',
-         flex: 0.3,
+         flex: 0.4,
          headerName: 'Status',
+         headerAlign: 'center',
+         align: 'center',
          renderCell(params) {
             return (
                <Button
@@ -285,7 +322,9 @@ export default function Dashboard() {
          ...iconColumn,
          field: 'id',
          headerName: 'Edit',
-         flex: 0.2,
+         flex: 0.4,
+         headerAlign: 'center',
+         align: 'center',
          renderCell(params) {
             return <EditIcon onClick={() => handleOpenUpdateUserDialog(params.row.id)} />;
          },
@@ -323,8 +362,9 @@ export default function Dashboard() {
                      {/* Dashboard */}
                   </Typography>
                   <IconButton color="inherit">
-                     <Badge color="secondary">
-                        <div {...bindTrigger(popupState)} data-testid="profile-testid">
+                     <Badge color="secondary" {...bindTrigger(popupState)}>
+                        <div style={{ fontSize: 20, marginRight: 10 }}>{userName}</div>
+                        <div data-testid="profile-testid">
                            <AccountCircle style={{ marginRight: 5, fontSize: 20 }} />
                         </div>
                      </Badge>
@@ -342,6 +382,14 @@ export default function Dashboard() {
                   }}
                   disableRestoreFocus
                >
+                  <Typography
+                     style={{ margin: 10, cursor: 'pointer' }}
+                     onClick={() => handleOpenChangePasswordDialog()}
+                     data-testid="user-item-testid"
+                     id="logout__testid"
+                  >
+                     Change Password
+                  </Typography>
                   <Typography
                      style={{ margin: 10, cursor: 'pointer' }}
                      onClick={handleLogOut}
@@ -368,30 +416,7 @@ export default function Dashboard() {
                </Toolbar>
                <Divider />
                <List component="nav">
-                  <Link href={`/web-pricing-tools/bookingOrder`}>
-                     <ListItemButton>
-                        <ListItemIcon>
-                           <DashboardIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Dashboard" />
-                     </ListItemButton>
-                  </Link>
-                  <Link href={`/web-pricing-tools/admin/competitors`}>
-                     <ListItemButton>
-                        <ListItemIcon>
-                           <DashboardIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Competitors" />
-                     </ListItemButton>
-                  </Link>
-                  <Link href={`/web-pricing-tools/admin/dashboard`}>
-                     <ListItemButton>
-                        <ListItemIcon>
-                           <PeopleIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Users" />
-                     </ListItemButton>
-                  </Link>
+                  <NavBar />
                </List>
             </Drawer>
             <Box
@@ -425,18 +450,34 @@ export default function Dashboard() {
                <Grid container sx={{ padding: 1, paddingLeft: 1.5 }}>
                   <AppSearchBar onSearch={handleSearch}></AppSearchBar>
                </Grid>
-               <Paper elevation={1} sx={{ marginLeft: 1.5, marginRight: 1.5 }}>
-                  <Grid container>
+               <Paper elevation={1} sx={{ marginTop: 2 }}>
+                  <Grid container sx={{ height: 'calc(100vh - 275px)', minHeight: '200px' }}>
                      <DataTable
+                        sx={{
+                           '& .MuiDataGrid-columnHeaderTitle': {
+                              textOverflow: 'clip',
+                              whiteSpace: 'break-spaces',
+                              lineHeight: 1.2,
+                           },
+                        }}
+                        columnHeaderHeight={80}
                         hideFooter
                         disableColumnMenu
-                        checkboxSelection
-                        tableHeight={795}
                         rowHeight={50}
                         rows={listUser}
+                        rowBuffer={35}
+                        rowThreshold={25}
                         columns={columns}
+                        getRowId={(params) => params.id}
                      />
                   </Grid>
+                  <DataTablePagination
+                     page={tableState.pageNo}
+                     perPage={tableState.perPage}
+                     totalItems={tableState.totalItems}
+                     onChangePage={handleChangePage}
+                     onChangePerPage={handleChangePerPage}
+                  />
                   <AppFooter />
                </Paper>
             </Box>
@@ -445,6 +486,7 @@ export default function Dashboard() {
          <DialogCreateUser {...dialogCreateUser} onClose={handleCloseCreateDialog} />
          <DeactiveUserDialog {...deactivateUserState} onClose={handleCloseDeactiveUser} />
          <DialogUpdateUser {...updateUserState} onClose={handleCloseUpdateUserDialog} />
+         <DialogChangePassword {...changePasswordState} onClose={handleCloseChangePasswordDialog} />
       </>
    );
 }
