@@ -112,6 +112,8 @@ const DialogCreateUser: React.FC<any> = (props) => {
                   control={createForm.control}
                   name="role"
                   label="User Role"
+                  renderOption={(prop, option) => `${option?.roleName}`}
+                  getOptionLabel={(option) => `${option?.roleName}`}
                   required
                   options={roleOptions}
                />
