@@ -16,6 +16,8 @@ import { AppLayoutProps } from './type';
 import AppFooter from '../Footer';
 import { destroyCookie, parseCookies } from 'nookies';
 import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/ChangePasswordDialog';
+import Image from 'next/image';
+const logo = require('@/public/logo.svg');
 
 const AppLayout: React.FC<AppLayoutProps> = (props) => {
    const { children, entity, heightBody } = props;
@@ -126,7 +128,16 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
          <Head>
             <title>{'Hyster - Yale'}</title>
          </Head>
+
          <AppBar className={classes.header__container} position="static">
+            <a
+               href={`/web-pricing-tools/${
+                  userRoleCookies == 'ADMIN' ? `admin/dashboard` : `bookingOrder`
+               }`}
+               style={{ width: 185, height: 60 }}
+            >
+               <Image src={logo} width={185} height={60} alt="Hyster-Yale" />
+            </a>
             <nav className={classes.navigation} role="nav">
                {renderMenu()}
             </nav>
