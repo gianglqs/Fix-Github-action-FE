@@ -63,50 +63,50 @@ export default function MarginAnalysis() {
       setValueCurrency(event.target.value);
    };
 
-   const [valueSearch, setValueSearch] = useState({ value: '', error: false });
-   const handleSearch = (value) => {
-      setValueSearch({ value: value, error: false });
-   };
-
    const [listDataAnalysis, setListDataAnalysis] = useState([]);
    const [marginAnalysisSummary, setMarginAnalysisSummary] = useState(null);
    const [openAccordion, setOpenAccordion] = useState(true);
    const [openAccordionTable, setOpenAccordionTable] = useState(true);
    const [uploadedFile, setUploadedFile] = useState({ name: '' });
    const [loading, setLoading] = useState(false);
-   const [plant, setPlant] = useState();
-   const [typeValue, setTypeValue] = useState({ value: '', error: false });
-   const handleTypeValue = (value) => {
-      setTypeValue({ value: value, error: false });
+
+   const [typeValue, setTypeValue] = useState({ value: 'None', error: false });
+   const handleTypeValue = (option) => {
+      setTypeValue({ value: option, error: false });
    };
-   const [orderNumberValue, setOrderNumberValue] = useState({ value: '' });
-   const handleOrderNumber = (value) => {
-      setOrderNumberValue({ value: value });
+
+   const [orderNumberValue, setOrderNumberValue] = useState({ value: 'None' });
+   const handleOrderNumber = (option) => {
+      setOrderNumberValue({ value: option });
    };
+
    const [series, setSeries] = useState({ value: '', error: false });
-   const handleSeriesValue = (value) => {
-      setSeries({ value: value, error: false });
+   const handleSeriesValue = (option) => {
+      setSeries({ value: option, error: false });
    };
 
    const [regionValue, setRegionValue] = useState({ value: 'Asia' });
+   const handleChangeRegionOptions = (option) => {
+      setRegionValue({ value: option.value });
+   };
+
+   const [modelCodeValue, setModelCodeValue] = useState({ value: 'None' });
+   const handleChangeModelCodeValue = (option) => {
+      setModelCodeValue({ value: option });
+   };
+
    const [targetMargin, setTargetMargin] = useState(0);
-   const [marginGuideline, setMarginGuideline] = useState(0);
 
    const handleCalculateMargin = async () => {
-      if (plant == null) {
-         dispatch(commonStore.actions.setErrorMessage('Please open a file to calculate!'));
-         return;
-      }
-
       try {
          const transformData = {
             marginData: {
-               modelCode: valueSearch.value,
-               type: typeValue.value,
+               modelCode: modelCodeValue.value == 'None' ? '' : modelCodeValue.value,
+               type: typeValue.value == 'None' ? 0 : typeValue.value,
                currency: valueCurrency,
                fileUUID: cookies['fileUUID'],
-               orderNumber: orderNumberValue.value,
-               plant: plant,
+               orderNumber: orderNumberValue.value == 'None' ? '' : orderNumberValue.value,
+               plant: 'SN',
                series: series.value,
             },
             region: regionValue.value,
@@ -131,7 +131,6 @@ export default function MarginAnalysis() {
          setListDataAnalysis(marginAnalystData);
 
          setTargetMargin(data?.TargetMargin);
-         setMarginGuideline(data?.MarginGuideline);
 
          setOpenAccordion(true);
          setOpenAccordionTable(true);
@@ -148,9 +147,10 @@ export default function MarginAnalysis() {
 
       let token = cookies['token'];
       setLoading(true);
+
       axios({
          method: 'post',
-         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}marginData/checkFilePlant`,
+         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}marginData/readNOVOFile`,
          data: formData,
          headers: {
             'Content-Type': 'multipart/form-data',
@@ -159,19 +159,43 @@ export default function MarginAnalysis() {
       })
          .then(function (response) {
             setLoading(false);
-            setPlant(response.data.marginAnalystData.plant);
-            setTypeValue({ value: response.data.marginAnalystData.type, error: false });
-            setSeries({ value: response.data.marginAnalystData.series, error: false });
-            setValueSearch({ value: response.data.marginAnalystData.modelCode, error: false });
             setCookie(null, 'fileUUID', response.data.fileUUID);
-            setOrderNumberValue({ value: '' });
+
+            const types = response.data.marginFilters.types;
+            const modelCodes = response.data.marginFilters.modelCodes;
+            const series = response.data.marginFilters.series;
+            const orderNumbers = response.data.marginFilters.orderNumbers;
+
+            const sortCharacter = (a, b) => {
+               const nameA = a.value.toUpperCase(); // ignore upper and lowercase
+               const nameB = b.value.toUpperCase(); // ignore upper and lowercase
+               if (nameA < nameB) {
+                  return -1;
+               }
+               if (nameA > nameB) {
+                  return 1;
+               }
+               return 0;
+            };
+
+            types.sort((a, b) => a.value - b.value);
+            modelCodes.sort((a, b) => sortCharacter(a, b));
+            series.sort((a, b) => sortCharacter(a, b));
+            orderNumbers.sort((a, b) => sortCharacter(a, b));
+
+            setMarginFilter({
+               type: [{ value: 'None' }, ...types],
+               modelCode: [{ value: 'None' }, ...modelCodes],
+               series: series,
+               orderNumber: [{ value: 'None' }, ...orderNumbers],
+            });
          })
          .catch(function (response) {
             setLoading(false);
+            console.log(response);
             dispatch(commonStore.actions.setErrorMessage(response.response.data.message));
          });
    };
-
    const handleImportMacroFile = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
@@ -247,6 +271,11 @@ export default function MarginAnalysis() {
          headerName: 'Series',
       },
       {
+         field: 'plant',
+         flex: 0.8,
+         headerName: 'Plant',
+      },
+      {
          field: 'listPrice',
          flex: 0.8,
          headerName: 'List Price',
@@ -279,6 +308,23 @@ export default function MarginAnalysis() {
       },
    ];
 
+   const [marginFilter, setMarginFilter] = useState({
+      type: [],
+      modelCode: [],
+      series: [],
+      orderNumber: [],
+   });
+
+   useEffect(() => {
+      console.log(marginFilter);
+      setTypeValue({ value: marginFilter.type[0]?.value, error: false });
+      setModelCodeValue({ value: marginFilter.modelCode[0]?.value });
+      setSeries({ value: marginFilter.series[0]?.value, error: false });
+      setOrderNumberValue({ value: marginFilter.orderNumber[0]?.value });
+
+      console.log(typeValue, modelCodeValue, series, orderNumberValue);
+   }, [marginFilter]);
+
    const regionOptions = [
       {
          value: 'Asia',
@@ -293,10 +339,6 @@ export default function MarginAnalysis() {
          value: 'Pacific',
       },
    ];
-
-   const handleChangeRegionOptions = (option) => {
-      setRegionValue({ value: option.value });
-   };
 
    return (
       <>
@@ -335,35 +377,52 @@ export default function MarginAnalysis() {
                      sx={{ width: '100%', height: 24 }}
                   />
                </Grid>
-               <Grid item sx={{ width: '10%', minWidth: 50 }} xs={0.3}>
-                  <AppTextField
+               <Grid item sx={{ width: '10%', minWidth: 50 }} xs={0.5}>
+                  <AppAutocomplete
+                     options={marginFilter.type}
                      label="#"
-                     onChange={(e) => handleTypeValue(e.target.value)}
                      value={typeValue.value}
-                     error={typeValue.error}
+                     onChange={(e, option) => handleTypeValue(option.value)}
+                     disableListWrap
+                     primaryKeyOption="value"
+                     renderOption={(prop, option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
                <Grid item sx={{ width: '10%', minWidth: 140 }} xs={1}>
-                  <AppTextField
-                     label="Model Code #"
-                     onChange={(e) => handleSearch(e.target.value)}
-                     value={valueSearch.value}
-                     error={valueSearch.error}
+                  <AppAutocomplete
+                     options={marginFilter.modelCode}
+                     label="Model Code"
+                     value={modelCodeValue.value}
+                     onChange={(e, option) => handleChangeModelCodeValue(option.value)}
+                     disableListWrap
+                     primaryKeyOption="value"
+                     renderOption={(prop, option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
                <Grid item sx={{ width: '10%', minWidth: 100 }} xs={0.5}>
-                  <AppTextField
+                  <AppAutocomplete
+                     options={marginFilter.series}
                      label="Series"
                      value={series.value}
-                     error={series.error}
-                     onChange={(e) => handleSeriesValue(e.target.value)}
+                     onChange={(e, option) => handleSeriesValue(option.value)}
+                     disableListWrap
+                     primaryKeyOption="value"
+                     renderOption={(prop, option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
                <Grid item sx={{ width: '10%', minWidth: 140 }} xs={1}>
-                  <AppTextField
-                     label="Order Number #"
-                     onChange={(e) => handleOrderNumber(e.target.value)}
+                  <AppAutocomplete
+                     options={marginFilter.orderNumber}
+                     label="Order Number"
                      value={orderNumberValue.value}
+                     onChange={(e, option) => handleOrderNumber(option.value)}
+                     disableListWrap
+                     primaryKeyOption="value"
+                     renderOption={(prop, option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
 
@@ -408,12 +467,7 @@ export default function MarginAnalysis() {
                </Grid>
 
                <Grid item sx={{}}>
-                  <Typography fontSize={16} sx={{ paddingBottom: 1 }}>
-                     File uploaded: {uploadedFile.name}
-                  </Typography>
-                  <Typography fontSize={16} sx={{ paddingBottom: 1 }}>
-                     Plant: {plant}
-                  </Typography>
+                  <Typography fontSize={16}>File uploaded: {uploadedFile.name}</Typography>
                </Grid>
                <Grid item sx={{ width: '10%' }} />
 
@@ -853,22 +907,6 @@ export default function MarginAnalysis() {
                                        component="span"
                                     >
                                        {targetMargin * 100}%
-                                    </Typography>
-                                 </div>
-                                 <div className="space-between-element">
-                                    <Typography
-                                       sx={{ fontWeight: 'bold' }}
-                                       variant="body1"
-                                       component="span"
-                                    >
-                                       Margin guideline % ={'>'}
-                                    </Typography>
-                                    <Typography
-                                       sx={{ fontWeight: 'bold' }}
-                                       variant="body1"
-                                       component="span"
-                                    >
-                                       {marginGuideline * 100}%
                                     </Typography>
                                  </div>
                               </Paper>
