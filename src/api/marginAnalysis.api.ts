@@ -1,14 +1,7 @@
 import HttpService from '@/helper/HttpService';
 import type { GetServerSidePropsContext } from 'next';
-import HttpService from '@/helper/HttpService';
-import type { GetServerSidePropsContext } from 'next';
 
 class MarginAnalysisApi extends HttpService<any> {
-   getListMarginAnalysis = (data: any) => {
-      return this.post<any>(`marginAnalystData`, {
-         ...data,
-      });
-   };
    getListMarginAnalysis = (data: any) => {
       return this.post<any>(`marginAnalystData`, {
          ...data,
@@ -29,7 +22,7 @@ class MarginAnalysisApi extends HttpService<any> {
    };
 
    checkFilePlant = (data: any) => {
-      return this.importData<any>('marginData/checkFilePlant', data);
+      return this.importData<any>('marginData/readNOVOFile', data);
    };
 
    importMacroFile = (data: any) => {
