@@ -5,9 +5,6 @@ import marginAnalysisApi from '@/api/marginAnalysis.api';
 
 function* fetchMarginAnalysis() {
    try {
-      const { data } = yield* call(marginAnalysisApi.getDealerList);
-
-      yield put(marginAnalysisStore.actions.setDealerList(JSON.parse(data)?.dealers));
    } catch (error) {}
 }
 
