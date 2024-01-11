@@ -52,29 +52,11 @@ import axios from 'axios';
 import { parseCookies } from 'nookies';
 import { rowColor } from '@/theme/colorRow';
 
-export async function getServerSideProps(context) {
-   try {
-      let cookies = parseCookies(context);
-      let token = cookies['token'];
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkToken`, null, {
-         headers: {
-            Authorization: 'Bearer ' + token,
-         },
-      });
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import { GetServerSidePropsContext } from 'next';
 
-      return {
-         props: {},
-      };
-   } catch (error) {
-      console.error('token error', error);
-
-      return {
-         redirect: {
-            destination: '/login',
-            permanent: false,
-         },
-      };
-   }
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+   return await checkTokenBeforeLoadPage(context);
 }
 
 export default function Outlier() {

@@ -16,6 +16,9 @@ class ShipmentApi extends HttpService<any> {
       this.saveToken(context);
       return this.instance.post<T>(`getShipmentData`, data, { params, responseType });
    };
+   importDataShipment = (data: any) => {
+      return this.importData<any>('importNewShipment', data);
+   };
 }
 
 const shipmentApi = new ShipmentApi('shipment');

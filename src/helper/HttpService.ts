@@ -1,5 +1,5 @@
-import axios, { AxiosInstance, ResponseType } from 'axios';
-import nookies, { parseCookies } from 'nookies';
+import axios, { AxiosError, AxiosInstance, ResponseType } from 'axios';
+import { parseCookies, setCookie } from 'nookies';
 import { plural } from 'pluralize';
 import type { GetServerSidePropsContext } from 'next';
 import Router from 'next/router';
@@ -22,15 +22,54 @@ class HttpService<GetList = any> {
       return { data, status } as any;
    }
 
-   private handleErrorRes(error) {
+   private async handleErrorRes(error) {
       let formatError = {};
       if (error?.response) {
          const { data, status } = error.response;
          const isServer = typeof window === 'undefined';
          switch (status) {
             case 401:
-               nookies.destroy(null, 'token');
-               if (!isServer) Router.replace('/login');
+               if (!isServer) {
+                  const cookies = parseCookies();
+                  const refresh_token = cookies['refresh_token'];
+
+                  try {
+                     const response = await axios.post(
+                        `${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/refreshToken`,
+                        {
+                           refreshToken: refresh_token,
+                        }
+                     );
+                     const accessToken = response.data.data.accessToken;
+                     setCookie(null, 'token', accessToken, {
+                        maxAge: 604800,
+                        path: '/',
+                     });
+                     const newRequest = {
+                        ...error.config,
+                        headers: {
+                           ...error.config.headers,
+                           Authorization: 'Bearer ' + accessToken,
+                        },
+                     };
+                     if (newRequest.url.includes('import')) {
+                        newRequest.headers['Content-Type'] = 'multipart/form-data';
+                     }
+                     return await axios(newRequest);
+                  } catch (error) {
+                     if (error.response.status == 400 || error.response.status == 404) {
+                        // BAD request
+                        formatError = {
+                           status: error.response.status,
+                           message: error.response.data.message,
+                        };
+                        return Promise.reject(formatError);
+                     } else {
+                        Router.push('/login');
+                        return;
+                     }
+                  }
+               }
                break;
             case 503:
                if (!isServer) Router.replace('/maintenance');
@@ -40,6 +79,7 @@ class HttpService<GetList = any> {
          }
          const { message, ...restData } = data;
          formatError = { message, status, ...restData };
+         console.log('from response error: ', formatError);
       }
       // Aborted request case
       if (error?.code === 'ECONNABORTED') {
@@ -54,18 +94,29 @@ class HttpService<GetList = any> {
    }
 
    protected saveToken = (context: GetServerSidePropsContext = null as any) => {
-      let cookies = {} as Record<string, string>;
-      if (context) {
-         cookies = nookies.get(context);
-      } else {
-         cookies = parseCookies();
-      }
-
-      const token = cookies['token'];
-
+      const cookies = parseCookies(context);
+      const accessToken = cookies['token'];
       // Set token if had
-      if (token) {
-         this.instance.defaults.headers.common.Authorization = `Bearer ${token}`;
+      if (accessToken) {
+         this.instance.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+         this.instance.defaults.headers.common = {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+         };
+      } else {
+         delete this.instance.defaults.headers.Authorization;
+      }
+   };
+
+   protected setHeaderForApiTransferFile = (context: GetServerSidePropsContext = null as any) => {
+      const cookies = parseCookies(context);
+      const accessToken = cookies['token'];
+      // Set token if had
+      if (accessToken) {
+         this.instance.defaults.headers.common = {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'multipart/form-data',
+         };
       } else {
          delete this.instance.defaults.headers.Authorization;
       }
@@ -95,6 +146,15 @@ class HttpService<GetList = any> {
       context: GetServerSidePropsContext = null as any
    ) => {
       this.saveToken(context);
+      return this.instance.post<T>(endpoint, data);
+   };
+
+   importData = <T = any>(
+      endpoint: string,
+      data = {} as Record<string, any>,
+      context: GetServerSidePropsContext = null as any
+   ) => {
+      this.setHeaderForApiTransferFile(context);
       return this.instance.post<T>(endpoint, data);
    };
 

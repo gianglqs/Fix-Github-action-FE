@@ -4,6 +4,9 @@ FROM node:18-alpine
 # sets the working directory 
 WORKDIR /hysteryale-frontend/
 
+ARG TAG_VERSION=latest
+LABEL version=$TAG_VERSION
+
 # copy source code
 # COPY public/ /hysteryale-frontend/public
 # COPY src/ /hysteryale-frontend/src
