@@ -1,77 +1,67 @@
-import { useMemo } from "react"
+import { useMemo } from 'react';
 
-import _ from "lodash"
-import { format } from "date-fns"
-import { DATE_FORMAT } from "@/utils/constant"
+import _ from 'lodash';
+import { format } from 'date-fns';
+import { DATE_FORMAT } from '@/utils/constant';
 
-import type { DialogCalendarProps } from "./type"
-import { AppDialog } from "../../Module/AppDialog/AppDialog"
-import CalendarPicker from "@mui/lab/CalendarPicker"
-import { DateCalendar } from "@mui/x-date-pickers"
+import type { DialogCalendarProps } from './type';
+import { AppDialog } from '../../Module/AppDialog/AppDialog';
+import CalendarPicker from '@mui/lab/CalendarPicker';
+import { DateCalendar } from '@mui/x-date-pickers';
 
 const DialogCalendar: React.FC<DialogCalendarProps> = (props) => {
-  const {
-    date,
-    minDate,
-    maxDate,
-    disabled,
-    onChange,
-    onClose,
-    ...dialogProps
-  } = props
+   const { date, minDate, maxDate, disabled, onChange, onClose, ...dialogProps } = props;
 
-  const formatDate = useMemo(() => {
-    if (date) {
-      return new Date(date)
-    }
-    return null
-  }, [date])
+   const formatDate = useMemo(() => {
+      if (date) {
+         return new Date(date);
+      }
+      return null;
+   }, [date]);
 
-  const formatMinDate = useMemo(() => {
-    if (minDate && _.isString(minDate)) {
-      return new Date(minDate)
-    }
-    if (minDate && minDate instanceof Date) {
-      return minDate
-    }
-    return null
-  }, [minDate])
+   const formatMinDate = useMemo(() => {
+      if (minDate && _.isString(minDate)) {
+         return new Date(minDate);
+      }
+      if (minDate && minDate instanceof Date) {
+         return minDate;
+      }
+      return null;
+   }, [minDate]);
 
-  const formatMaxDate = useMemo(() => {
-    if (maxDate && _.isString(maxDate)) {
-      return new Date(maxDate)
-    }
-    if (maxDate && maxDate instanceof Date) {
-      return maxDate
-    }
-    return null
-  }, [maxDate])
+   const formatMaxDate = useMemo(() => {
+      if (maxDate && _.isString(maxDate)) {
+         return new Date(maxDate);
+      }
+      if (maxDate && maxDate instanceof Date) {
+         return maxDate;
+      }
+      return null;
+   }, [maxDate]);
 
-  const handleSelectDate = (date: Date) => {
-    const stringDate = format(date, DATE_FORMAT)
+   const handleSelectDate = (date: Date) => {
+      const stringDate = format(date, DATE_FORMAT);
 
-    onChange(event, stringDate, date)
-    onClose(event, null)
-  }
+      onChange(event, stringDate, date);
+      onClose(event, null);
+   };
 
-  console.log(formatDate)
-
-  return (
-    <AppDialog maxWidth="xs" onClose={onClose} {...dialogProps}>
-      <DateCalendar
-        disabled={disabled}
-        value={formatDate}
-        minDate={formatMinDate}
-        maxDate={formatMaxDate}
-        onChange={handleSelectDate}
-      />
-    </AppDialog>
-  )
-}
+   return (
+      <AppDialog maxWidth="xs" onClose={onClose} {...dialogProps}>
+         <DateCalendar
+            disabled={disabled}
+            value={formatDate}
+            minDate={formatMinDate}
+            maxDate={formatMaxDate}
+            onChange={handleSelectDate}
+         />
+      </AppDialog>
+   );
+};
 
 DialogCalendar.defaultProps = {
-  minDate: null,
-  maxDate: null,
-}
+   minDate: null,
+   maxDate: null,
+};
 
-export default DialogCalendar
+export default DialogCalendar;
