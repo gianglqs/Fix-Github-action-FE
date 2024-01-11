@@ -28,11 +28,12 @@ import Image from 'next/image';
 import { bindPopover, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
 import authApi from '@/api/auth.api';
 import { destroyCookie, parseCookies } from 'nookies';
-import axios from 'axios';
 import { DialogUpdateCompetitor } from '@/components/Dialog/Module/CompetitorColorDialog/UpdateDialog';
 import competitorColorApi from '@/api/competitorColor.api';
 import { createAction } from '@reduxjs/toolkit';
 import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/ChangePasswordDialog';
+import { checkTokenBeforeLoadPageAdmin } from '@/utils/checkTokenBeforeLoadPage';
+import { GetServerSidePropsContext } from 'next';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('@/public/logo.svg');
@@ -41,6 +42,10 @@ const drawerWidth: number = 240;
 
 interface AppBarProps extends MuiAppBarProps {
    open?: boolean;
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+   return await checkTokenBeforeLoadPageAdmin(context);
 }
 
 const AppBar = styled(MuiAppBar, {
@@ -87,31 +92,6 @@ const Drawer = styled(MuiDrawer, {
    },
 }));
 
-export async function getServerSideProps(context) {
-   try {
-      let cookies = parseCookies(context);
-      let token = cookies['token'];
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkTokenOfAdmin`, null, {
-         headers: {
-            Authorization: 'Bearer ' + token,
-         },
-      });
-
-      return {
-         props: {},
-      };
-   } catch (error) {
-      var des = '/login';
-      if (error.response.status == 403) des = '/web-pricing-tools/bookingOrder';
-
-      return {
-         redirect: {
-            destination: des,
-            permanent: false,
-         },
-      };
-   }
-}
 export default function competitors() {
    const [open, setOpen] = useState(true);
    const router = useRouter();
@@ -197,6 +177,7 @@ export default function competitors() {
 
          authApi.logOut();
          destroyCookie(null, 'token', { path: '/' });
+         destroyCookie(null, 'refresh_token', { path: '/' });
          router.push('/login');
       } catch (err) {
          console.log(err);

@@ -7,7 +7,7 @@ import { indicatorStore, commonStore } from '@/store/reducers';
 import { Button, CircularProgress } from '@mui/material';
 
 import { rowColor } from '@/theme/colorRow';
-import { AppLayout, DataTablePagination, DataTable, AppAutocomplete } from '@/components';
+import { AppLayout, DataTablePagination, AppAutocomplete } from '@/components';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
@@ -42,33 +42,14 @@ ChartJS.register(
    Title,
    ChartAnnotation
 );
-import axios from 'axios';
 import { parseCookies } from 'nookies';
 import { useDropzone } from 'react-dropzone';
 
-export async function getServerSideProps(context) {
-   try {
-      let cookies = parseCookies(context);
-      let token = cookies['token'];
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkToken`, null, {
-         headers: {
-            Authorization: 'Bearer ' + token,
-         },
-      });
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import { GetServerSidePropsContext } from 'next';
 
-      return {
-         props: {},
-      };
-   } catch (error) {
-      console.error('token error', error);
-
-      return {
-         redirect: {
-            destination: '/login',
-            permanent: false,
-         },
-      };
-   }
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+   return await checkTokenBeforeLoadPage(context);
 }
 
 export default function Indicators() {
@@ -196,18 +177,9 @@ export default function Indicators() {
       let formData = new FormData();
       formData.append('file', file);
 
-      let token = cookies['token'];
-      setLoading(true);
-      axios({
-         method: 'post',
-         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}importIndicatorsFile`,
-         data: formData,
-         headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: 'Bearer ' + token,
-         },
-      })
-         .then(async () => {
+      indicatorApi
+         .importIndicatorFile(formData)
+         .then(() => {
             setLoading(false);
             dispatch(commonStore.actions.setSuccessMessage('Import successfully'));
             handleFilterIndicator();
@@ -223,17 +195,8 @@ export default function Indicators() {
       let formData = new FormData();
       formData.append('file', file);
 
-      let token = cookies['token'];
-      setLoading(true);
-      axios({
-         method: 'post',
-         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}uploadForecastFile`,
-         data: formData,
-         headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: 'Bearer ' + token,
-         },
-      })
+      indicatorApi
+         .importForecastFile(formData)
          .then(() => {
             setLoading(false);
             dispatch(commonStore.actions.setSuccessMessage('Upload successfully'));

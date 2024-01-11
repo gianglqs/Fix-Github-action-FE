@@ -30,38 +30,15 @@ import { parseCookies, setCookie } from 'nookies';
 
 import ClearIcon from '@mui/icons-material/Clear';
 import React from 'react';
-import { Else, If, Then, When } from 'react-if';
+import { When } from 'react-if';
 import { UserInfoContext } from '@/provider/UserInfoContext';
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import bookingApi from '@/api/booking.api';
 
-export async function getServerSideProps(context) {
-   try {
-      let cookies = parseCookies(context);
-      let token = cookies['token'];
-      let userRoleCookies = cookies['role'];
+import { GetServerSidePropsContext } from 'next';
 
-      const response = await axios.post(
-         `${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkToken`,
-         null,
-         {
-            headers: {
-               Authorization: 'Bearer ' + token,
-            },
-         }
-      );
-
-      return {
-         props: {},
-      };
-   } catch (error) {
-      console.error('token error', error);
-
-      return {
-         redirect: {
-            destination: '/login',
-            permanent: false,
-         },
-      };
-   }
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+   return await checkTokenBeforeLoadPage(context);
 }
 
 interface FileChoosed {
@@ -358,7 +335,6 @@ export default function Booking() {
    let heightTable = 263;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
-   console.log(userRole);
    if (userRole === 'ADMIN') {
       heightTable = 298;
    }
@@ -372,26 +348,17 @@ export default function Booking() {
          formData.append('files', file);
       });
 
-      let token = cookies['token'];
-      axios({
-         method: 'post',
-         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}importNewBooking`,
-         data: formData,
-         headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: 'Bearer ' + token,
-         },
-      })
-         .then(function (response) {
+      bookingApi
+         .importDataBooking(formData)
+         .then((response) => {
             setLoading(false);
-            setCookie(null, 'fileUUID', response.data.fileUUID);
             handleWhenImportSuccessfully(response);
          })
-         .catch(function (response) {
+         .catch((error) => {
             // stop spiner
             setLoading(false);
             //show message
-            dispatch(commonStore.actions.setErrorMessage(response.response.data.message));
+            dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
 

@@ -17,7 +17,7 @@ import AppFooter from '../Footer';
 import { destroyCookie, parseCookies } from 'nookies';
 import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/ChangePasswordDialog';
 import Image from 'next/image';
-const logo = require('@/public/logo.svg');
+const smallLogo = require('@/public/smallLogo.svg');
 
 const AppLayout: React.FC<AppLayoutProps> = (props) => {
    const { children, entity, heightBody } = props;
@@ -89,6 +89,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
    const handleLogOut = () => {
       try {
          destroyCookie(null, 'token', { path: '/' });
+         destroyCookie(null, 'refresh_token', { path: '/' });
          router.push('/login');
       } catch (err) {
          console.log(err);
@@ -136,7 +137,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
                }`}
                style={{ width: 185, height: 60 }}
             >
-               <Image src={logo} width={185} height={60} alt="Hyster-Yale" />
+               <Image src={smallLogo} width={90} height={55} alt="Hyster-Yale" />
             </a>
             <nav className={classes.navigation} role="nav">
                {renderMenu()}
