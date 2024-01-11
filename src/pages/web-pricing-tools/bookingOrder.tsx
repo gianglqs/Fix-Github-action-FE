@@ -25,8 +25,6 @@ import { produce } from 'immer';
 
 import { defaultValueFilterOrder } from '@/utils/defaultValues';
 import { DataGridPro, GridCellParams, GridToolbar } from '@mui/x-data-grid-pro';
-import axios from 'axios';
-import { parseCookies, setCookie } from 'nookies';
 
 import ClearIcon from '@mui/icons-material/Clear';
 import React from 'react';
@@ -329,8 +327,6 @@ export default function Booking() {
          flex: 0.6,
       },
    ];
-
-   let cookies = parseCookies();
 
    let heightTable = 263;
    const { userRole } = useContext(UserInfoContext);
