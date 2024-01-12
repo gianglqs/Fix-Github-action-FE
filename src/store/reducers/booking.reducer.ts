@@ -11,6 +11,7 @@ export const initialState = {
    totalRow: [] as any[],
    initDataFilter: {} as any,
    defaultValueFilterBooking: defaultValueFilterOrder as any,
+   ExchangeRateList: [] as any[],
 };
 
 const bookingSlice = createSlice({
@@ -19,6 +20,9 @@ const bookingSlice = createSlice({
    reducers: {
       setBookingList(state, { payload }: PayloadAction<any[]>) {
          state.bookingOrdersList = payload;
+      },
+      setExchangeRateList(state, { payload }: PayloadAction<any[]>) {
+         state.ExchangeRateList = payload;
       },
       setTotalRow(state, { payload }: PayloadAction<any[]>) {
          state.totalRow = payload;
@@ -46,6 +50,10 @@ export const selectState = (state: RootReducerType) => state[name];
 export const selectBookingList = createSelector(selectState, (state) => state.bookingOrdersList);
 export const selectTotalRow = createSelector(selectState, (state) => state.totalRow);
 export const selectInitDataFilter = createSelector(selectState, (state) => state.initDataFilter);
+export const selectExchangeRateList = createSelector(
+   selectState,
+   (state) => state.ExchangeRateList
+);
 
 export const selectDefaultValueFilterBooking = createSelector(
    selectState,
