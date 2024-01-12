@@ -41,6 +41,7 @@ import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import bookingApi from '@/api/booking.api';
 
 import { GetServerSidePropsContext } from 'next';
+import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -55,12 +56,17 @@ export default function Booking() {
    const listBookingOrder = useSelector(bookingStore.selectBookingList);
    const listTotalRow = useSelector(bookingStore.selectTotalRow);
    const initDataFilter = useSelector(bookingStore.selectInitDataFilter);
+   const listExchangeRate = useSelector(bookingStore.selectExchangeRateList);
 
    const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
 
    const [loading, setLoading] = useState(false);
 
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
+
+   const [listOrder, setListOrder] = useState(listBookingOrder);
+
+   const [totalRow, setTotalRow] = useState(listTotalRow);
 
    const appendFileIntoList = (file) => {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
@@ -392,10 +398,22 @@ export default function Booking() {
    const [currency, setCurrency] = useState('USD');
 
    const handleChange = (event) => {
-      // setCurrency(event.target.value);
+      setCurrency(event.target.value);
    };
+   console.log(listOrder);
 
-   useEffect(() => {});
+   useEffect(() => {
+      setListOrder(listBookingOrder);
+      setTotalRow(listTotalRow);
+
+      setListOrder((prev) => {
+         return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
+      });
+
+      setTotalRow((prev) => {
+         return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
+      });
+   }, [listBookingOrder, listTotalRow, currency]);
 
    return (
       <>
@@ -685,7 +703,7 @@ export default function Booking() {
                      slots={{
                         toolbar: GridToolbar,
                      }}
-                     rows={listBookingOrder}
+                     rows={listOrder}
                      rowBuffer={35}
                      rowThreshold={25}
                      columns={columns}
