@@ -24,29 +24,11 @@ import { useDropzone } from 'react-dropzone';
 import { parseCookies, setCookie } from 'nookies';
 import axios from 'axios';
 
-export async function getServerSideProps(context) {
-   try {
-      let cookies = parseCookies(context);
-      let token = cookies['token'];
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkToken`, null, {
-         headers: {
-            Authorization: 'Bearer ' + token,
-         },
-      });
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import { GetServerSidePropsContext } from 'next';
 
-      return {
-         props: {},
-      };
-   } catch (error) {
-      console.error('token error', error);
-
-      return {
-         redirect: {
-            destination: '/login',
-            permanent: false,
-         },
-      };
-   }
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+   return await checkTokenBeforeLoadPage(context);
 }
 export default function MarginAnalysis() {
    const dispatch = useDispatch();
@@ -144,20 +126,11 @@ export default function MarginAnalysis() {
    const handleOpenMarginFile = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
-
-      let token = cookies['token'];
       setLoading(true);
 
-      axios({
-         method: 'post',
-         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}marginData/readNOVOFile`,
-         data: formData,
-         headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: 'Bearer ' + token,
-         },
-      })
-         .then(function (response) {
+      marginAnalysisApi
+         .checkFilePlant(formData)
+         .then((response) => {
             setLoading(false);
             setCookie(null, 'fileUUID', response.data.fileUUID);
 
@@ -190,59 +163,41 @@ export default function MarginAnalysis() {
                orderNumber: [{ value: 'None' }, ...orderNumbers],
             });
          })
-         .catch(function (response) {
+         .catch((error) => {
             setLoading(false);
-            console.log(response);
-            dispatch(commonStore.actions.setErrorMessage(response.response.data.message));
+            dispatch(commonStore.actions.setErrorMessage(error.response.data.message));
          });
    };
    const handleImportMacroFile = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
-
-      let token = cookies['token'];
       setLoading(true);
-      axios({
-         method: 'post',
-         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}importMacroFile`,
-         data: formData,
-         headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: 'Bearer ' + token,
-         },
-      })
-         .then(function (response) {
+
+      marginAnalysisApi
+         .importMacroFile(formData)
+         .then((response) => {
             setLoading(false);
             dispatch(commonStore.actions.setSuccessMessage('Import successfully'));
          })
-         .catch(function (response) {
+         .catch((error) => {
             setLoading(false);
-            dispatch(commonStore.actions.setErrorMessage());
+            dispatch(commonStore.actions.setErrorMessage(error.response.data.message));
          });
    };
 
    const handleImportPowerBi = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
-
-      let token = cookies['token'];
       setLoading(true);
-      axios({
-         method: 'post',
-         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}importPowerBiFile`,
-         data: formData,
-         headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: 'Bearer ' + token,
-         },
-      })
-         .then(function (response) {
+      marginAnalysisApi
+         .importPowerBiFile(formData)
+         .then((response) => {
             setLoading(false);
             dispatch(commonStore.actions.setSuccessMessage('Import successfully'));
          })
-         .catch(function (response) {
+         .catch((error) => {
             setLoading(false);
-            dispatch(commonStore.actions.setSuccessMessage(response.response.data.message));
+            dispatch(commonStore.actions.setErrorMessage(error.response.data.message));
          });
    };
 

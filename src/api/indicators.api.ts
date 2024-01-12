@@ -46,6 +46,14 @@ class IndicatorApi extends HttpService<any> {
       this.saveToken(context);
       return this.instance.post<T>(`getCompetitorData`, data, { params, responseType });
    };
+
+   importIndicatorFile = (data: any) => {
+      return this.importData<any>('importIndicatorsFile', data);
+   };
+
+   importForecastFile = (data: any) => {
+      return this.importData<any>('uploadForecastFile', data);
+   };
 }
 
 const indicatorApi = new IndicatorApi('indicator');

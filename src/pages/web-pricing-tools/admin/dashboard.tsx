@@ -32,10 +32,10 @@ import { DialogUpdateUser } from '@/components/Dialog/Module/Dashboard/UpdateDia
 import Image from 'next/image';
 import { bindPopover, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
 import { destroyCookie } from 'nookies';
-import axios from 'axios';
 import { parseCookies } from 'nookies';
 import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/ChangePasswordDialog';
 import { NavBar } from '@/components/App/NavBar';
+import { checkTokenBeforeLoadPageAdmin } from '@/utils/checkTokenBeforeLoadPage';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('@/public/logo.svg');
@@ -46,30 +46,10 @@ interface AppBarProps extends MuiAppBarProps {
    open?: boolean;
 }
 
-export async function getServerSideProps(context) {
-   try {
-      let cookies = parseCookies(context);
-      let token = cookies['token'];
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkTokenOfAdmin`, null, {
-         headers: {
-            Authorization: 'Bearer ' + token,
-         },
-      });
+import { GetServerSidePropsContext } from 'next';
 
-      return {
-         props: {},
-      };
-   } catch (error) {
-      var des = '/login';
-      if (error.response.status == 403) des = '/web-pricing-tools/bookingOrder';
-
-      return {
-         redirect: {
-            destination: des,
-            permanent: false,
-         },
-      };
-   }
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+   return await checkTokenBeforeLoadPageAdmin(context);
 }
 
 const AppBar = styled(MuiAppBar, {
@@ -265,6 +245,7 @@ export default function Dashboard() {
          popupState.close();
 
          destroyCookie(null, 'token', { path: '/' });
+         destroyCookie(null, 'refresh_token', { path: '/' });
          router.push('/login');
       } catch (err) {
          console.log(err);

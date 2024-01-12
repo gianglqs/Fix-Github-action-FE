@@ -18,6 +18,8 @@ import { LoginFormValues } from '@/types/auth';
 import { AppFooter } from '@/components';
 
 import Image from 'next/image';
+import { GetServerSidePropsContext } from 'next';
+import { checkTokenBeforeLoadPageLogin } from '@/utils/checkTokenBeforeLoadPage';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('../public/logo.svg');
@@ -34,34 +36,8 @@ const StyledFormContainer = styled(Paper)(({ theme }) => ({
    padding: theme.spacing(3),
 }));
 
-export async function getServerSideProps(context) {
-   try {
-      let cookies = parseCookies(context);
-      let token = cookies['token'];
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkTokenOfAdmin`, null, {
-         headers: {
-            Authorization: 'Bearer ' + token,
-         },
-      });
-
-      return {
-         redirect: {
-            destination: '/web-pricing-tools/admin/dashboard',
-            permanent: false,
-         },
-      };
-   } catch (error) {
-      if (error.response?.status == 403)
-         return {
-            redirect: {
-               destination: '/web-pricing-tools/bookingOrder',
-               permanent: false,
-            },
-         };
-      return {
-         props: {},
-      };
-   }
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+   return await checkTokenBeforeLoadPageLogin(context);
 }
 
 export default function LoginPage() {
@@ -98,18 +74,27 @@ export default function LoginPage() {
       axios
          .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/login`, transformData, options)
          .then((response) => {
-            console.log(response);
-            const access_token = response.data.data.access_token;
+            const accessToken = response.data.data.accessToken;
+            const refreshToken = response.data.data.refreshToken;
             const name = response.data.data.name;
             const role = response.data.data.role;
-            setCookie(null, 'token', access_token, { maxAge: 604800, path: '/' }); // 7 days
+
+            setCookie(null, 'token', accessToken, {
+               maxAge: 604800,
+               path: '/',
+            });
+            // save refresh_token in cookies
+            setCookie(null, 'refresh_token', refreshToken, {
+               maxAge: 604800,
+               path: '/',
+            });
+
             setCookie(null, 'role', role, { maxAge: 604800, path: '/' });
             setCookie(null, 'name', name, { maxAge: 604800, path: '/' });
 
-            // setCookie(null, 'redirect_to', redirect_to, { maxAge: 2147483647 });
             router.push('/web-pricing-tools/admin/dashboard');
          })
-         .catch((error) => {
+         .catch(() => {
             dispatch(commonStore.actions.setErrorMessage('Error on signing in'));
          });
    });

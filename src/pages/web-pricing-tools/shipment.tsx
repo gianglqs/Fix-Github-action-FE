@@ -28,30 +28,12 @@ import { DataGridPro, GridCellParams, GridToolbar } from '@mui/x-data-grid-pro';
 import axios from 'axios';
 import { rowColor } from '@/theme/colorRow';
 import { UserInfoContext } from '@/provider/UserInfoContext';
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import { GetServerSidePropsContext } from 'next';
+import shipmentApi from '@/api/shipment.api';
 
-export async function getServerSideProps(context) {
-   try {
-      let cookies = parseCookies(context);
-      let token = cookies['token'];
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkToken`, null, {
-         headers: {
-            Authorization: 'Bearer ' + token,
-         },
-      });
-
-      return {
-         props: {},
-      };
-   } catch (error) {
-      console.error('token error', error);
-
-      return {
-         redirect: {
-            destination: '/login',
-            permanent: false,
-         },
-      };
-   }
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+   return await checkTokenBeforeLoadPage(context);
 }
 interface FileChoosed {
    name: string;
@@ -416,7 +398,7 @@ export default function Shipment() {
    let heightTable = 263;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
-   console.log(userRole);
+
    if (userRole === 'ADMIN') {
       heightTable = 298;
    }
@@ -427,28 +409,40 @@ export default function Shipment() {
    const handleUploadFile = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
-
-      let token = cookies['token'];
-      axios({
-         method: 'post',
-         url: `${process.env.NEXT_PUBLIC_BACKEND_URL}importNewShipment`,
-         data: formData,
-         headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: 'Bearer ' + token,
-         },
-      })
-         .then(function (response) {
+      shipmentApi
+         .importDataShipment(formData)
+         .then((response) => {
             setLoading(false);
-            setCookie(null, 'fileUUID', response.data.fileUUID);
             handleWhenImportSuccessfully(response);
          })
-         .catch(function (response) {
-            // show message in screen
+         .catch((error) => {
+            // stop spiner
             setLoading(false);
-            //show messages
-            dispatch(commonStore.actions.setErrorMessage(response.response.data.message));
+            //show message
+            dispatch(commonStore.actions.setErrorMessage(error.message));
          });
+
+      // let token = cookies['token'];
+      // axios({
+      //    method: 'post',
+      //    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}importNewShipment`,
+      //    data: formData,
+      //    headers: {
+      //       'Content-Type': 'multipart/form-data',
+      //       Authorization: 'Bearer ' + token,
+      //    },
+      // })
+      //    .then(function (response) {
+      //       setLoading(false);
+      //       setCookie(null, 'fileUUID', response.data.fileUUID);
+      //       handleWhenImportSuccessfully(response);
+      //    })
+      //    .catch(function (response) {
+      //       // show message in screen
+      //       setLoading(false);
+      //       //show messages
+      //       dispatch(commonStore.actions.setErrorMessage(response.response.data.message));
+      //    });
    };
 
    const handleWhenImportSuccessfully = (res) => {

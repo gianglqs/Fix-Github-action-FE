@@ -89,6 +89,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
    const handleLogOut = () => {
       try {
          destroyCookie(null, 'token', { path: '/' });
+         destroyCookie(null, 'refresh_token', { path: '/' });
          router.push('/login');
       } catch (err) {
          console.log(err);

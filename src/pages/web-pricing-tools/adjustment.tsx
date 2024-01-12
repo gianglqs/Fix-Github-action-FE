@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
@@ -11,13 +11,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
 
-import {
-   AppAutocomplete,
-   AppDateField,
-   AppLayout,
-   AppTextField,
-   DataTablePagination,
-} from '@/components';
+import { AppAutocomplete, AppLayout, AppTextField, DataTablePagination } from '@/components';
 
 import _ from 'lodash';
 import { produce } from 'immer';
@@ -27,39 +21,20 @@ import {
    defaultValueCaculatorForAjustmentCost,
 } from '@/utils/defaultValues';
 import { DataGridPro, GridCellParams, GridToolbar } from '@mui/x-data-grid-pro';
-import axios from 'axios';
-import { parseCookies } from 'nookies';
+
 import CellColor, {
    CellPercentageColor,
    CellText,
    NoneAdjustValueCell,
 } from '@/components/DataTable/CellColor';
 import { makeStyles } from '@mui/styles';
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import { GetServerSidePropsContext } from 'next';
 
-export async function getServerSideProps(context) {
-   try {
-      let cookies = parseCookies(context);
-      let token = cookies['token'];
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkToken`, null, {
-         headers: {
-            Authorization: 'Bearer ' + token,
-         },
-      });
-
-      return {
-         props: {},
-      };
-   } catch (error) {
-      console.error('token error', error);
-
-      return {
-         redirect: {
-            destination: '/login',
-            permanent: false,
-         },
-      };
-   }
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+   return await checkTokenBeforeLoadPage(context);
 }
+
 const resetPaddingCell = makeStyles({
    '& .MuiDataGrid-cell': {
       padding: 0,
