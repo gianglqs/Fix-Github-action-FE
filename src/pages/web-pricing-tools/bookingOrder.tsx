@@ -10,7 +10,14 @@ import { rowColor } from '@/theme/colorRow';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Button, CircularProgress, ListItem } from '@mui/material';
+import {
+   Button,
+   CircularProgress,
+   FormControlLabel,
+   ListItem,
+   Radio,
+   RadioGroup,
+} from '@mui/material';
 
 import {
    AppAutocomplete,
@@ -380,6 +387,16 @@ export default function Booking() {
       setUploadedFile(updateUploaded);
    };
 
+   // ======= CONVERT CURRENCY ========
+
+   const [currency, setCurrency] = useState('USD');
+
+   const handleChange = (event) => {
+      // setCurrency(event.target.value);
+   };
+
+   useEffect(() => {});
+
    return (
       <>
          <AppLayout entity="booking">
@@ -561,7 +578,41 @@ export default function Booking() {
                      Filter
                   </Button>
                </Grid>
+
+               <Grid item>
+                  <RadioGroup
+                     row
+                     value={currency}
+                     onChange={handleChange}
+                     aria-labelledby="demo-row-radio-buttons-group-label"
+                     name="row-radio-buttons-group"
+                     sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginLeft: 1,
+                        height: '90%',
+                     }}
+                  >
+                     <FormControlLabel
+                        sx={{
+                           height: '80%',
+                        }}
+                        value="USD"
+                        control={<Radio />}
+                        label="USD"
+                     />
+                     <FormControlLabel
+                        sx={{
+                           height: '80%',
+                        }}
+                        value="AUD"
+                        control={<Radio />}
+                        label="AUD"
+                     />
+                  </RadioGroup>
+               </Grid>
             </Grid>
+
             <When condition={userRoleState === 'ADMIN'}>
                <Grid container spacing={1} sx={{ marginTop: '3px' }}>
                   <Grid item xs={1}>
