@@ -122,7 +122,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
          detail: {},
       });
    };
-
+   console.log(userRoleCookies);
    return (
       <>
          <Head>
@@ -132,11 +132,17 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
          <AppBar className={classes.header__container} position="static">
             <a
                href={`/web-pricing-tools/${
-                  userRoleCookies == 'ADMIN' ? `admin/dashboard` : `bookingOrder`
+                  userRoleCookies === 'ADMIN' ? `admin/dashboard` : `bookingOrder`
                }`}
-               style={{ width: 185, height: 60 }}
+               style={{ width: 35, height: 35 }}
             >
-               <Image src={smallLogo} width={90} height={55} alt="Hyster-Yale" />
+               <Image
+                  src={smallLogo}
+                  width={35}
+                  height={35}
+                  alt="Hyster-Yale"
+                  style={{ padding: 2 }}
+               />
             </a>
             <nav className={classes.navigation} role="nav">
                {renderMenu()}
@@ -146,7 +152,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
                {...bindTrigger(popupState)}
                data-testid="profile-testid"
             >
-               <div style={{ marginRight: 10, fontSize: 20 }}>{userName}</div>
+               <div style={{ marginRight: 10, fontSize: 16 }}>{userName}</div>
                <AccountCircle style={{ marginRight: 5, fontSize: 20 }} />
             </div>
          </AppBar>

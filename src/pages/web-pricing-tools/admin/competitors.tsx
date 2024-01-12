@@ -283,10 +283,14 @@ export default function competitors() {
                      {/* Dashboard */}
                   </Typography>
                   <IconButton color="inherit">
-                     <Badge color="secondary" {...bindTrigger(popupState)}>
-                        <div style={{ fontSize: 20, marginRight: 10 }}>{userName}</div>
+                     <Badge
+                        color="secondary"
+                        {...bindTrigger(popupState)}
+                        style={{ alignItems: 'center' }}
+                     >
+                        <div style={{ fontSize: 16, marginRight: 10 }}>{userName}</div>
                         <div data-testid="profile-testid">
-                           <AccountCircle style={{ marginRight: 5, fontSize: 20 }} />
+                           <AccountCircle style={{ marginRight: 5, marginTop: 3, fontSize: 20 }} />
                         </div>
                      </Badge>
                   </IconButton>
