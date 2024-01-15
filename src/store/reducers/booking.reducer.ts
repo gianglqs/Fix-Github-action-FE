@@ -11,7 +11,7 @@ export const initialState = {
    totalRow: [] as any[],
    initDataFilter: {} as any,
    defaultValueFilterBooking: defaultValueFilterOrder as any,
-   ExchangeRateList: [] as any[],
+   exchangeRateList: [] as any[],
 };
 
 const bookingSlice = createSlice({
@@ -22,7 +22,7 @@ const bookingSlice = createSlice({
          state.bookingOrdersList = payload;
       },
       setExchangeRateList(state, { payload }: PayloadAction<any[]>) {
-         state.ExchangeRateList = payload;
+         state.exchangeRateList = payload;
       },
       setTotalRow(state, { payload }: PayloadAction<any[]>) {
          state.totalRow = payload;
@@ -52,7 +52,7 @@ export const selectTotalRow = createSelector(selectState, (state) => state.total
 export const selectInitDataFilter = createSelector(selectState, (state) => state.initDataFilter);
 export const selectExchangeRateList = createSelector(
    selectState,
-   (state) => state.ExchangeRateList
+   (state) => state.exchangeRateList
 );
 
 export const selectDefaultValueFilterBooking = createSelector(
