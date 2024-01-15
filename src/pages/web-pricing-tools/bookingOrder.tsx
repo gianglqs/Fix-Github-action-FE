@@ -68,6 +68,8 @@ export default function Booking() {
 
    const [totalRow, setTotalRow] = useState(listTotalRow);
 
+   const [currency, setCurrency] = useState('USD');
+
    const appendFileIntoList = (file) => {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
    };
@@ -180,7 +182,7 @@ export default function Booking() {
       {
          field: 'dealerNet',
          flex: 0.8,
-         headerName: "DN ('000 USD)",
+         headerName: `DN ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNet)}</span>;
@@ -189,7 +191,7 @@ export default function Booking() {
       {
          field: 'dealerNetAfterSurCharge',
          flex: 0.8,
-         headerName: "DN After Surcharge ('000 USD)",
+         headerName: `DN After Surcharge ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNetAfterSurCharge)}</span>;
@@ -198,7 +200,7 @@ export default function Booking() {
       {
          field: 'totalCost',
          flex: 0.8,
-         headerName: "Total Cost ('000 USD)",
+         headerName: `Total Cost ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.totalCost)}</span>;
@@ -207,7 +209,7 @@ export default function Booking() {
       {
          field: 'marginAfterSurCharge',
          flex: 0.7,
-         headerName: "Margin $ After Surcharge ('000 USD)",
+         headerName: `Margin $ After Surcharge ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.marginAfterSurCharge)}</span>;
@@ -395,12 +397,9 @@ export default function Booking() {
 
    // ======= CONVERT CURRENCY ========
 
-   const [currency, setCurrency] = useState('USD');
-
    const handleChange = (event) => {
       setCurrency(event.target.value);
    };
-   console.log(listOrder);
 
    useEffect(() => {
       setListOrder(listBookingOrder);
@@ -413,6 +412,8 @@ export default function Booking() {
       setTotalRow((prev) => {
          return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
       });
+      console.log('list');
+      console.log('total');
    }, [listBookingOrder, listTotalRow, currency]);
 
    return (
@@ -743,7 +744,7 @@ export default function Booking() {
                   columnHeaderHeight={0}
                   disableColumnMenu
                   rowHeight={30}
-                  rows={listTotalRow}
+                  rows={totalRow}
                   rowBuffer={35}
                   rowThreshold={25}
                   columns={totalColumns}
