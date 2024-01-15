@@ -22,10 +22,12 @@ function* fetchBooking() {
 
       const dataBooking = JSON.parse(String(data)).listBookingOrder;
       const dataTotalRow = JSON.parse(String(data)).total;
+      const dataExchangeRate = JSON.parse(String(data)).listExchangeRate;
 
       yield put(bookingStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
       yield put(bookingStore.actions.setBookingList(dataBooking));
       yield put(bookingStore.actions.setTotalRow(dataTotalRow));
+      yield put(bookingStore.actions.setExchangeRateList(dataExchangeRate));
 
       yield put(
          commonStore.actions.setTableState({
