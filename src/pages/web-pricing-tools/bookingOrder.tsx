@@ -358,6 +358,7 @@ export default function Booking() {
       files.map((file) => {
          formData.append('files', file);
       });
+      console.log(formData);
 
       bookingApi
          .importDataBooking(formData)
@@ -412,8 +413,6 @@ export default function Booking() {
       setTotalRow((prev) => {
          return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
       });
-      console.log('list');
-      console.log('total');
    }, [listBookingOrder, listTotalRow, currency]);
 
    return (
