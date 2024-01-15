@@ -20,6 +20,9 @@ export const convertCurrencyOfDataBookingOrder = (
 
          updatedElement.marginAfterSurCharge = Number(element.marginAfterSurCharge) * Number(rate);
 
+         updatedElement.netRevenue &&
+            (updatedElement.netRevenue = Number(element.netRevenue) * Number(rate));
+
          updatedElement.currency = { currency: targetCurrency };
       }
       return updatedElement;
