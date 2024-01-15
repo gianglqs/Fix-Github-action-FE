@@ -358,7 +358,6 @@ export default function Booking() {
       files.map((file) => {
          formData.append('files', file);
       });
-      console.log(formData);
 
       bookingApi
          .importDataBooking(formData)
