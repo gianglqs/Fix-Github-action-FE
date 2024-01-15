@@ -64,6 +64,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       adjustment: 'Adjustment of Cost Indicators',
       trends: 'Trends',
       outlier: 'Outliers',
+      product: 'Product',
       report: 'Reports',
    };
 
