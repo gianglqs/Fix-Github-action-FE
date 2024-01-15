@@ -10,7 +10,14 @@ import { rowColor } from '@/theme/colorRow';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Button, CircularProgress, ListItem } from '@mui/material';
+import {
+   Button,
+   CircularProgress,
+   FormControlLabel,
+   ListItem,
+   Radio,
+   RadioGroup,
+} from '@mui/material';
 
 import {
    AppAutocomplete,
@@ -25,8 +32,6 @@ import { produce } from 'immer';
 
 import { defaultValueFilterOrder } from '@/utils/defaultValues';
 import { DataGridPro, GridCellParams, GridToolbar } from '@mui/x-data-grid-pro';
-import axios from 'axios';
-import { parseCookies, setCookie } from 'nookies';
 
 import ClearIcon from '@mui/icons-material/Clear';
 import React from 'react';
@@ -36,6 +41,7 @@ import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import bookingApi from '@/api/booking.api';
 
 import { GetServerSidePropsContext } from 'next';
+import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -50,12 +56,19 @@ export default function Booking() {
    const listBookingOrder = useSelector(bookingStore.selectBookingList);
    const listTotalRow = useSelector(bookingStore.selectTotalRow);
    const initDataFilter = useSelector(bookingStore.selectInitDataFilter);
+   const listExchangeRate = useSelector(bookingStore.selectExchangeRateList);
 
    const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
 
    const [loading, setLoading] = useState(false);
 
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
+
+   const [listOrder, setListOrder] = useState(listBookingOrder);
+
+   const [totalRow, setTotalRow] = useState(listTotalRow);
+
+   const [currency, setCurrency] = useState('USD');
 
    const appendFileIntoList = (file) => {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
@@ -169,7 +182,7 @@ export default function Booking() {
       {
          field: 'dealerNet',
          flex: 0.8,
-         headerName: "DN ('000 USD)",
+         headerName: `DN ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNet)}</span>;
@@ -178,7 +191,7 @@ export default function Booking() {
       {
          field: 'dealerNetAfterSurCharge',
          flex: 0.8,
-         headerName: "DN After Surcharge ('000 USD)",
+         headerName: `DN After Surcharge ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNetAfterSurCharge)}</span>;
@@ -187,7 +200,7 @@ export default function Booking() {
       {
          field: 'totalCost',
          flex: 0.8,
-         headerName: "Total Cost ('000 USD)",
+         headerName: `Total Cost ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.totalCost)}</span>;
@@ -196,7 +209,7 @@ export default function Booking() {
       {
          field: 'marginAfterSurCharge',
          flex: 0.7,
-         headerName: "Margin $ After Surcharge ('000 USD)",
+         headerName: `Margin $ After Surcharge ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.marginAfterSurCharge)}</span>;
@@ -330,8 +343,6 @@ export default function Booking() {
       },
    ];
 
-   let cookies = parseCookies();
-
    let heightTable = 263;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
@@ -383,6 +394,25 @@ export default function Booking() {
       const updateUploaded = uploadedFile.filter((file) => file.name != fileName);
       setUploadedFile(updateUploaded);
    };
+
+   // ======= CONVERT CURRENCY ========
+
+   const handleChange = (event) => {
+      setCurrency(event.target.value);
+   };
+
+   useEffect(() => {
+      setListOrder(listBookingOrder);
+      setTotalRow(listTotalRow);
+
+      setListOrder((prev) => {
+         return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
+      });
+
+      setTotalRow((prev) => {
+         return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
+      });
+   }, [listBookingOrder, listTotalRow, currency]);
 
    return (
       <>
@@ -565,7 +595,41 @@ export default function Booking() {
                      Filter
                   </Button>
                </Grid>
+
+               <Grid item>
+                  <RadioGroup
+                     row
+                     value={currency}
+                     onChange={handleChange}
+                     aria-labelledby="demo-row-radio-buttons-group-label"
+                     name="row-radio-buttons-group"
+                     sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginLeft: 1,
+                        height: '90%',
+                     }}
+                  >
+                     <FormControlLabel
+                        sx={{
+                           height: '80%',
+                        }}
+                        value="USD"
+                        control={<Radio />}
+                        label="USD"
+                     />
+                     <FormControlLabel
+                        sx={{
+                           height: '80%',
+                        }}
+                        value="AUD"
+                        control={<Radio />}
+                        label="AUD"
+                     />
+                  </RadioGroup>
+               </Grid>
             </Grid>
+
             <When condition={userRoleState === 'ADMIN'}>
                <Grid container spacing={1} sx={{ marginTop: '3px' }}>
                   <Grid item xs={1}>
@@ -638,7 +702,7 @@ export default function Booking() {
                      slots={{
                         toolbar: GridToolbar,
                      }}
-                     rows={listBookingOrder}
+                     rows={listOrder}
                      rowBuffer={35}
                      rowThreshold={25}
                      columns={columns}
@@ -678,7 +742,7 @@ export default function Booking() {
                   columnHeaderHeight={0}
                   disableColumnMenu
                   rowHeight={30}
-                  rows={listTotalRow}
+                  rows={totalRow}
                   rowBuffer={35}
                   rowThreshold={25}
                   columns={totalColumns}

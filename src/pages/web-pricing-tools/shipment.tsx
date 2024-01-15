@@ -7,7 +7,15 @@ import { shipmentStore, commonStore } from '@/store/reducers';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Button, CircularProgress, ListItem, Typography } from '@mui/material';
+import {
+   Button,
+   CircularProgress,
+   FormControlLabel,
+   ListItem,
+   Radio,
+   RadioGroup,
+   Typography,
+} from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import { parseCookies, setCookie } from 'nookies';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -31,6 +39,7 @@ import { UserInfoContext } from '@/provider/UserInfoContext';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import shipmentApi from '@/api/shipment.api';
+import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -48,6 +57,13 @@ export default function Shipment() {
    const listTotalRow = useSelector(shipmentStore.selectTotalRow);
 
    const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
+
+   const [listOrder, setListOrder] = useState(listShipment);
+
+   const [totalRow, setTotalRow] = useState(listTotalRow);
+
+   const [currency, setCurrency] = useState('USD');
+   const listExchangeRate = useSelector(shipmentStore.selectExchangeRateList);
 
    //  const [uploadedFile, setUploadedFile] = useState({ name: '' });
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
@@ -163,7 +179,7 @@ export default function Shipment() {
       {
          field: 'dealerNet',
          flex: 0.8,
-         headerName: "DN ('000 USD)",
+         headerName: `DN ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNet)}</span>;
@@ -172,7 +188,7 @@ export default function Shipment() {
       {
          field: 'dealerNetAfterSurCharge',
          flex: 0.8,
-         headerName: "DN After Surcharge ('000 USD)",
+         headerName: `DN After Surcharge ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNetAfterSurCharge)}</span>;
@@ -181,7 +197,7 @@ export default function Shipment() {
       {
          field: 'totalCost',
          flex: 0.8,
-         headerName: "Total Cost ('000 USD)",
+         headerName: `Total Cost ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.totalCost)}</span>;
@@ -190,7 +206,7 @@ export default function Shipment() {
       {
          field: 'netRevenue',
          flex: 0.8,
-         headerName: "Net Revenue ('000 USD)",
+         headerName: `Net Revenue ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.netRevenue)}</span>;
@@ -199,7 +215,7 @@ export default function Shipment() {
       {
          field: 'marginAfterSurCharge',
          flex: 0.8,
-         headerName: "Margin $ After Surcharge ('000 USD)",
+         headerName: `Margin $ After Surcharge ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.marginAfterSurCharge)}</span>;
@@ -421,30 +437,7 @@ export default function Shipment() {
             //show message
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
-
-      // let token = cookies['token'];
-      // axios({
-      //    method: 'post',
-      //    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}importNewShipment`,
-      //    data: formData,
-      //    headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //       Authorization: 'Bearer ' + token,
-      //    },
-      // })
-      //    .then(function (response) {
-      //       setLoading(false);
-      //       setCookie(null, 'fileUUID', response.data.fileUUID);
-      //       handleWhenImportSuccessfully(response);
-      //    })
-      //    .catch(function (response) {
-      //       // show message in screen
-      //       setLoading(false);
-      //       //show messages
-      //       dispatch(commonStore.actions.setErrorMessage(response.response.data.message));
-      //    });
    };
-
    const handleWhenImportSuccessfully = (res) => {
       //show message
       dispatch(commonStore.actions.setSuccessMessage(res.data.message));
@@ -469,6 +462,25 @@ export default function Shipment() {
    const appendFileIntoList = (file) => {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
    };
+
+   // ======= CONVERT CURRENCY ========
+
+   const handleChange = (event) => {
+      setCurrency(event.target.value);
+   };
+
+   useEffect(() => {
+      setListOrder(listShipment);
+      setTotalRow(listTotalRow);
+
+      setListOrder((prev) => {
+         return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
+      });
+
+      setTotalRow((prev) => {
+         return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
+      });
+   }, [listShipment, listTotalRow, currency]);
 
    return (
       <>
@@ -652,6 +664,38 @@ export default function Shipment() {
                      Filter
                   </Button>
                </Grid>
+               <Grid item>
+                  <RadioGroup
+                     row
+                     value={currency}
+                     onChange={handleChange}
+                     aria-labelledby="demo-row-radio-buttons-group-label"
+                     name="row-radio-buttons-group"
+                     sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginLeft: 1,
+                        height: '90%',
+                     }}
+                  >
+                     <FormControlLabel
+                        sx={{
+                           height: '80%',
+                        }}
+                        value="USD"
+                        control={<Radio />}
+                        label="USD"
+                     />
+                     <FormControlLabel
+                        sx={{
+                           height: '80%',
+                        }}
+                        value="AUD"
+                        control={<Radio />}
+                        label="AUD"
+                     />
+                  </RadioGroup>
+               </Grid>
             </Grid>
             {userRoleState === 'ADMIN' && (
                <Grid container spacing={1} sx={{ marginTop: '3px' }}>
@@ -724,7 +768,7 @@ export default function Shipment() {
                         toolbar: GridToolbar,
                      }}
                      rowHeight={30}
-                     rows={listShipment}
+                     rows={listOrder}
                      rowBuffer={35}
                      rowThreshold={25}
                      columns={columns}
@@ -764,7 +808,7 @@ export default function Shipment() {
                   columnHeaderHeight={0}
                   disableColumnMenu
                   rowHeight={30}
-                  rows={listTotalRow}
+                  rows={totalRow}
                   rowBuffer={35}
                   rowThreshold={25}
                   columns={totalColumns}

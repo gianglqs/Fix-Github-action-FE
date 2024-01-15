@@ -11,13 +11,11 @@ export const checkTokenBeforeLoadPage = async (context: GetServerSidePropsContex
    try {
       const cookies = parseCookies(context);
       const accessToken = cookies['token'];
-      console.log('check token truoc khi load trang');
       await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkToken`, null, {
          headers: {
             Authorization: 'Bearer ' + accessToken,
          },
       });
-      console.log('check token thanh cong');
 
       return {
          props: {},
