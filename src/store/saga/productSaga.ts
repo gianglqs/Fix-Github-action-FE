@@ -18,8 +18,6 @@ function* fetchProduct() {
          perPage: tableState.perPage,
       });
 
-      console.log('dang o trong product');
-
       const initDataFilter = yield* call(productApi.getInitDataFilter);
 
       const dataProduct = JSON.parse(String(data)).listData;

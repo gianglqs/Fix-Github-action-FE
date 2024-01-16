@@ -50,12 +50,7 @@ export default function Product() {
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
          produce(prev, (draft) => {
-            if (
-               _.includes(
-                  ['orderNo', 'fromDate', 'toDate', 'marginPercentage', 'aopMarginPercentageGroup'],
-                  field
-               )
-            ) {
+            if (_.includes(['modelCode'], field)) {
                draft[field] = option;
             } else {
                draft[field] = option.map(({ value }) => value);
@@ -126,7 +121,7 @@ export default function Product() {
       },
       {
          field: 'image',
-         flex: 0.7,
+         flex: 0.4,
          headerName: 'Image',
          renderCell(params) {
             return <span>{params.row.model}</span>;
@@ -207,7 +202,7 @@ export default function Product() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     options={initDataFilter.regions}
+                     options={initDataFilter.classes}
                      label="Class"
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
                      limitTags={2}
@@ -251,7 +246,7 @@ export default function Product() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     options={initDataFilter.dealers}
+                     options={initDataFilter.family}
                      label="Family"
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'family')}
@@ -281,7 +276,7 @@ export default function Product() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
-                     options={initDataFilter.models}
+                     options={initDataFilter.brands}
                      label="Brand"
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'brands')}
@@ -296,10 +291,10 @@ export default function Product() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     options={initDataFilter.segments}
+                     options={initDataFilter.truckType}
                      label="Truck Type"
                      sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'segments')}
+                     onChange={(e, option) => handleChangeDataFilter(option, 'truckType')}
                      limitTags={1}
                      disableListWrap
                      primaryKeyOption="value"
