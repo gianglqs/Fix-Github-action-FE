@@ -13,19 +13,19 @@ function* fetchProduct() {
          defaultValueFilterProduct: select(productStore.selectDefaultValueFilterProduct),
       });
 
-      const { data } = yield* call(productApi.getListData, defaultValueFilterProduct, {
+      const { data } = yield* call(productApi.getListProduct, defaultValueFilterProduct, {
          pageNo: tableState.pageNo,
          perPage: tableState.perPage,
       });
 
+      console.log('dang o trong product');
+
       const initDataFilter = yield* call(productApi.getInitDataFilter);
 
       const dataProduct = JSON.parse(String(data)).listData;
-      const dataTotalRow = JSON.parse(String(data)).total;
 
       yield put(productStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
       yield put(productStore.actions.setProductList(dataProduct));
-      yield put(productStore.actions.setTotalRow(dataTotalRow));
 
       yield put(
          commonStore.actions.setTableState({
@@ -35,8 +35,8 @@ function* fetchProduct() {
    } catch (error) {}
 }
 
-function* dashboardSaga() {
+function* productSaga() {
    yield takeEvery(productStore.sagaGetList, fetchProduct);
 }
 
-export default dashboardSaga;
+export default productSaga;
