@@ -169,7 +169,7 @@ export default function Booking() {
          flex: 0.6,
          headerName: 'Models',
          renderCell(params) {
-            return <span>{params.row.model}</span>;
+            return <span>{params.row.productDimension.modelCode}</span>;
          },
       },
       {
@@ -226,6 +226,15 @@ export default function Booking() {
                   {formatNumberPercentage(params?.row.marginPercentageAfterSurCharge * 100)}
                </span>
             );
+         },
+      },
+      {
+         field: 'aopmarginPercentage',
+         flex: 0.6,
+         headerName: 'AOP Margin %',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumberPercentage(params?.row.aopmarginPercentage * 100)}</span>;
          },
       },
    ];
@@ -336,6 +345,10 @@ export default function Booking() {
          renderCell(params) {
             return <span>{formatNumber(params?.row.marginAfterSurCharge)}</span>;
          },
+      },
+      {
+         field: 'marginPercentageAfterSurCharges',
+         flex: 0.6,
       },
       {
          field: 'marginPercentageAfterSurCharges',
