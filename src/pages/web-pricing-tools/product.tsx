@@ -103,38 +103,34 @@ export default function Product() {
 
    const columns = [
       {
-         field: 'orderNo',
+         field: 'modeCode',
          flex: 0.4,
-         headerName: 'Order #',
-      },
-      {
-         field: 'date',
-         flex: 0.5,
-         headerName: 'Create at',
-         renderCell(params) {
-            return <span>{formatDate(params?.row?.date)}</span>;
-         },
-      },
-      {
-         field: 'region',
-         flex: 0.5,
-         headerName: 'Region',
+         headerName: 'Model Code',
          renderCell(params) {
             return <span>{params.row.region?.region}</span>;
          },
       },
       {
-         field: 'ctryCode',
-         flex: 0.3,
-         headerName: 'Country',
+         field: 'brand',
+         flex: 0.5,
+         headerName: 'Brand',
+         renderCell(params) {
+            return <span>{params.row.model}</span>;
+         },
       },
       {
-         field: 'dealerName',
-         flex: 1.2,
-         headerName: 'Dealer Name',
+         field: 'clazz',
+         flex: 0.5,
+         headerName: 'Class',
       },
       {
-         field: 'Plant',
+         field: 'segment',
+         flex: 0.6,
+         headerName: 'Segment',
+      },
+
+      {
+         field: 'plant',
          flex: 0.6,
          headerName: 'Plant',
          renderCell(params) {
@@ -142,147 +138,45 @@ export default function Product() {
          },
       },
       {
-         field: 'truckClass',
-         flex: 0.6,
-         headerName: 'Class',
+         field: 'metaSeries',
+         flex: 0.3,
+         headerName: 'MetaSeries',
          renderCell(params) {
             return <span>{params.row.productDimension?.clazz}</span>;
          },
       },
       {
-         field: 'series',
-         flex: 0.4,
-         headerName: 'Series',
+         field: 'family',
+         flex: 0.6,
+         headerName: 'Family',
          renderCell(params) {
             return <span>{params.row.series}</span>;
          },
       },
+
       {
-         field: 'model',
+         field: 'truckType',
          flex: 0.6,
-         headerName: 'Models',
+         headerName: 'Truck Type',
          renderCell(params) {
             return <span>{params.row.model}</span>;
          },
       },
       {
-         field: 'quantity',
-         flex: 0.3,
-         headerName: 'Qty',
-         ...formatNumbericColumn,
-      },
-   ];
-
-   const totalColumns = [
-      {
-         field: 'orderNo',
-         flex: 0.4,
-         headerName: 'Order #',
-      },
-      {
-         field: 'date',
-         flex: 0.5,
-         headerName: 'Create at',
-         renderCell(params) {
-            return <span>{formatDate(params?.row?.date)}</span>;
-         },
-      },
-      {
-         field: 'region',
-         flex: 0.5,
-         headerName: 'Region',
-         renderCell(params) {
-            return <span>{params.row.region?.region}</span>;
-         },
-      },
-      {
-         field: 'ctryCode',
-         flex: 0.3,
-         headerName: 'Country',
-      },
-      {
-         field: 'dealerName',
-         flex: 1.2,
-         headerName: 'Dealer Name',
-      },
-      {
-         field: 'Plant',
-         flex: 0.6,
-         headerName: 'Plant',
-         renderCell(params) {
-            return <span>{params.row.productDimension?.plant}</span>;
-         },
-      },
-      {
-         field: 'truckClass',
-         flex: 0.6,
-         headerName: 'Class',
-         renderCell(params) {
-            return <span>{params.row.productDimension?.clazz}</span>;
-         },
-      },
-      {
-         field: 'series',
-         flex: 0.4,
-         headerName: 'Series',
-         renderCell(params) {
-            return <span>{params.row.series}</span>;
-         },
-      },
-      {
-         field: 'model',
-         flex: 0.6,
-         headerName: 'Models',
-         renderCell(params) {
-            return <span>{params.row.model}</span>;
-         },
-      },
-      {
-         field: 'quantity',
-         flex: 0.3,
-         headerName: 'Qty',
-         ...formatNumbericColumn,
-      },
-
-      {
-         field: 'dealerNet',
-         flex: 0.8,
-         headerName: "DN ('000 USD)",
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNet)}</span>;
-         },
-      },
-      {
-         field: 'dealerNetAfterSurCharge',
-         flex: 0.8,
-         headerName: "DN After Surcharge ('000 USD)",
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNetAfterSurCharge)}</span>;
-         },
-      },
-      {
-         field: 'totalCost',
-         flex: 0.8,
-         headerName: 'Total Cost',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.totalCost)}</span>;
-         },
-      },
-      {
-         field: 'marginAfterSurCharge',
+         field: 'image',
          flex: 0.7,
-         headerName: 'Margin $ After Surcharge',
-         ...formatNumbericColumn,
+         headerName: 'Image',
          renderCell(params) {
-            return <span>{formatNumber(params?.row.marginAfterSurCharge)}</span>;
+            return <span>{params.row.model}</span>;
          },
       },
       {
-         field: 'marginPercentageAfterSurCharges',
-         flex: 0.6,
+         field: 'description',
+         flex: 1,
+         headerName: 'Description',
+         renderCell(params) {
+            return <span>{params.row.model}</span>;
+         },
       },
    ];
 
@@ -347,16 +241,16 @@ export default function Product() {
                      <AppTextField
                         onChange={(e) => handleChangeDataFilter(e.target.value, 'orderNo')}
                         name="orderNo"
-                        label="Order #"
-                        placeholder="Search order by ID"
+                        label="Model Code"
+                        placeholder="Search order by Model"
                      />
                   </Grid>
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
                      options={initDataFilter.regions}
-                     label="Region"
-                     onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
+                     label="Class"
+                     onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
                      limitTags={2}
                      disableListWrap
                      primaryKeyOption="value"
@@ -399,9 +293,9 @@ export default function Product() {
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
                      options={initDataFilter.dealers}
-                     label="Dealer"
+                     label="Family"
                      sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'dealers')}
+                     onChange={(e, option) => handleChangeDataFilter(option, 'family')}
                      limitTags={1}
                      disableListWrap
                      primaryKeyOption="value"
@@ -414,36 +308,6 @@ export default function Product() {
                <Grid item xs={2}>
                   <AppAutocomplete
                      options={initDataFilter.classes}
-                     label="Class"
-                     sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
-                     limitTags={1}
-                     disableListWrap
-                     primaryKeyOption="value"
-                     multiple
-                     disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
-                     getOptionLabel={(option) => `${option.value}`}
-                  />
-               </Grid>
-               <Grid item xs={2}>
-                  <AppAutocomplete
-                     options={initDataFilter.models}
-                     label="Model"
-                     sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'models')}
-                     limitTags={1}
-                     disableListWrap
-                     primaryKeyOption="value"
-                     multiple
-                     disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
-                     getOptionLabel={(option) => `${option.value}`}
-                  />
-               </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
-                  <AppAutocomplete
-                     options={initDataFilter.segments}
                      label="Segment"
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'segments')}
@@ -458,58 +322,35 @@ export default function Product() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
-                     options={initDataFilter.AOPMarginPercentageGroup}
-                     label="AOP Margin %"
+                     options={initDataFilter.models}
+                     label="Brand"
+                     sx={{ height: 25, zIndex: 10 }}
+                     onChange={(e, option) => handleChangeDataFilter(option, 'brands')}
+                     limitTags={1}
+                     disableListWrap
                      primaryKeyOption="value"
-                     onChange={(e, option) =>
-                        handleChangeDataFilter(
-                           _.isNil(option) ? '' : option?.value,
-                           'aopMarginPercentageGroup'
-                        )
-                     }
-                     disableClearable={false}
+                     multiple
+                     disableCloseOnSelect
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={4}>
-                  <Grid item xs={6} sx={{ paddingRight: 0.5 }}>
-                     <AppAutocomplete
-                        options={initDataFilter.marginPercentageGroup}
-                        label="Margin %"
-                        onChange={(e, option) =>
-                           handleChangeDataFilter(
-                              _.isNil(option) ? '' : option?.value,
-                              'marginPercentage'
-                           )
-                        }
-                        disableClearable={false}
-                        primaryKeyOption="value"
-                        renderOption={(prop, option) => `${option.value}`}
-                        getOptionLabel={(option) => `${option.value}`}
-                     />
-                  </Grid>
-               </Grid>
-               <Grid item xs={2}>
-                  <AppDateField
-                     label="From Date"
-                     name="from_date"
-                     onChange={(e, value) =>
-                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
-                     }
-                     value={dataFilter?.fromDate}
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+                  <AppAutocomplete
+                     options={initDataFilter.segments}
+                     label="Truck Type"
+                     sx={{ height: 25, zIndex: 10 }}
+                     onChange={(e, option) => handleChangeDataFilter(option, 'segments')}
+                     limitTags={1}
+                     disableListWrap
+                     primaryKeyOption="value"
+                     multiple
+                     disableCloseOnSelect
+                     renderOption={(prop, option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2}>
-                  <AppDateField
-                     label="To Date"
-                     name="toDate"
-                     onChange={(e, value) =>
-                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
-                     }
-                     value={dataFilter?.toDate}
-                  />
-               </Grid>
+
                <Grid item xs={2}>
                   <Button
                      variant="contained"
@@ -624,21 +465,6 @@ export default function Product() {
                      </div>
                   ) : null}
                </Grid>
-               <DataGridPro
-                  sx={rowColor}
-                  getCellClassName={(params: GridCellParams<any, any, number>) => {
-                     return 'total';
-                  }}
-                  hideFooter
-                  columnHeaderHeight={0}
-                  disableColumnMenu
-                  rowHeight={30}
-                  rows={listTotalRow}
-                  rowBuffer={35}
-                  rowThreshold={25}
-                  columns={totalColumns}
-                  getRowId={(params) => params.orderNo}
-               />
 
                <DataTablePagination
                   page={tableState.pageNo}
