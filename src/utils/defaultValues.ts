@@ -53,4 +53,5 @@ export const defaultValueFilterProduct = {
    segments: [],
    brands: [],
    family: [],
+   truckType: [],
 } as any;
