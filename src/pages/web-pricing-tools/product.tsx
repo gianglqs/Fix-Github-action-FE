@@ -1,36 +1,19 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 
-import { formatNumbericColumn } from '@/utils/columnProperties';
-import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
 import { productStore, commonStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
 
-import { rowColor } from '@/theme/colorRow';
-
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import {
-   Button,
-   CircularProgress,
-   FormControlLabel,
-   ListItem,
-   Radio,
-   RadioGroup,
-} from '@mui/material';
+import { Button, CircularProgress, ListItem } from '@mui/material';
 
-import {
-   AppAutocomplete,
-   AppDateField,
-   AppLayout,
-   AppTextField,
-   DataTablePagination,
-} from '@/components';
+import { AppAutocomplete, AppLayout, AppTextField, DataTablePagination } from '@/components';
 
 import _ from 'lodash';
 import { produce } from 'immer';
 
-import { defaultValueFilterOrder } from '@/utils/defaultValues';
+import { defaultValueFilterProduct } from '@/utils/defaultValues';
 import { DataGridPro, GridCellParams, GridToolbar } from '@mui/x-data-grid-pro';
 
 import ClearIcon from '@mui/icons-material/Clear';
@@ -38,10 +21,8 @@ import React from 'react';
 import { When } from 'react-if';
 import { UserInfoContext } from '@/provider/UserInfoContext';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
-import bookingApi from '@/api/booking.api';
 
 import { GetServerSidePropsContext } from 'next';
-import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -54,10 +35,9 @@ interface FileChoosed {
 export default function Product() {
    const dispatch = useDispatch();
    const listProduct = useSelector(productStore.selectProductList);
-   const listTotalRow = useSelector(productStore.selectTotalRow);
    const initDataFilter = useSelector(productStore.selectInitDataFilter);
 
-   const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
+   const [dataFilter, setDataFilter] = useState(defaultValueFilterProduct);
 
    const [loading, setLoading] = useState(false);
 
@@ -84,7 +64,7 @@ export default function Product() {
       );
    };
 
-   const handleFilterOrderBooking = () => {
+   const handleFilterProduct = () => {
       dispatch(productStore.actions.setDefaultValueFilterProduct(dataFilter));
       handleChangePage(1);
    };
@@ -103,20 +83,14 @@ export default function Product() {
 
    const columns = [
       {
-         field: 'modeCode',
+         field: 'modelCode',
          flex: 0.4,
          headerName: 'Model Code',
-         renderCell(params) {
-            return <span>{params.row.region?.region}</span>;
-         },
       },
       {
          field: 'brand',
-         flex: 0.5,
+         flex: 0.3,
          headerName: 'Brand',
-         renderCell(params) {
-            return <span>{params.row.model}</span>;
-         },
       },
       {
          field: 'clazz',
@@ -124,43 +98,31 @@ export default function Product() {
          headerName: 'Class',
       },
       {
+         field: 'plant',
+         flex: 0.5,
+         headerName: 'Plant',
+      },
+      {
          field: 'segment',
-         flex: 0.6,
+         flex: 0.8,
          headerName: 'Segment',
       },
 
       {
-         field: 'plant',
-         flex: 0.6,
-         headerName: 'Plant',
-         renderCell(params) {
-            return <span>{params.row.productDimension?.plant}</span>;
-         },
-      },
-      {
          field: 'metaSeries',
          flex: 0.3,
          headerName: 'MetaSeries',
-         renderCell(params) {
-            return <span>{params.row.productDimension?.clazz}</span>;
-         },
       },
       {
          field: 'family',
          flex: 0.6,
          headerName: 'Family',
-         renderCell(params) {
-            return <span>{params.row.series}</span>;
-         },
       },
 
       {
          field: 'truckType',
          flex: 0.6,
          headerName: 'Truck Type',
-         renderCell(params) {
-            return <span>{params.row.model}</span>;
-         },
       },
       {
          field: 'image',
@@ -174,9 +136,6 @@ export default function Product() {
          field: 'description',
          flex: 1,
          headerName: 'Description',
-         renderCell(params) {
-            return <span>{params.row.model}</span>;
-         },
       },
    ];
 
@@ -190,25 +149,25 @@ export default function Product() {
       setUserRoleState(userRole);
    });
 
-   const handleUploadFile = async (files) => {
-      let formData = new FormData();
-      files.map((file) => {
-         formData.append('files', file);
-      });
+   // const handleUploadFile = async (files) => {
+   //    let formData = new FormData();
+   //    files.map((file) => {
+   //       formData.append('files', file);
+   //    });
 
-      bookingApi
-         .importDataBooking(formData)
-         .then((response) => {
-            setLoading(false);
-            handleWhenImportSuccessfully(response);
-         })
-         .catch((error) => {
-            // stop spiner
-            setLoading(false);
-            //show message
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
-   };
+   //    bookingApi
+   //       .importDataBooking(formData)
+   //       .then((response) => {
+   //          setLoading(false);
+   //          handleWhenImportSuccessfully(response);
+   //       })
+   //       .catch((error) => {
+   //          // stop spiner
+   //          setLoading(false);
+   //          //show message
+   //          dispatch(commonStore.actions.setErrorMessage(error.message));
+   //       });
+   // };
 
    const handleWhenImportSuccessfully = (res) => {
       //show message
@@ -217,15 +176,15 @@ export default function Product() {
       dispatch(productStore.sagaGetList());
    };
 
-   const handleImport = () => {
-      if (uploadedFile.length > 0) {
-         // resert message
-         setLoading(true);
-         handleUploadFile(uploadedFile);
-      } else {
-         dispatch(commonStore.actions.setErrorMessage('No file choosed'));
-      }
-   };
+   // const handleImport = () => {
+   //    if (uploadedFile.length > 0) {
+   //       // resert message
+   //       setLoading(true);
+   //       handleUploadFile(uploadedFile);
+   //    } else {
+   //       dispatch(commonStore.actions.setErrorMessage('No file choosed'));
+   //    }
+   // };
 
    const handleRemove = (fileName) => {
       const updateUploaded = uploadedFile.filter((file) => file.name != fileName);
@@ -234,7 +193,7 @@ export default function Product() {
 
    return (
       <>
-         <AppLayout entity="booking">
+         <AppLayout entity="product">
             <Grid container spacing={1}>
                <Grid item xs={4}>
                   <Grid item xs={12}>
@@ -354,7 +313,7 @@ export default function Product() {
                <Grid item xs={2}>
                   <Button
                      variant="contained"
-                     onClick={handleFilterOrderBooking}
+                     onClick={handleFilterProduct}
                      sx={{ width: '100%', height: 24 }}
                   >
                      Filter
@@ -368,13 +327,13 @@ export default function Product() {
                      <UploadFileDropZone
                         uploadedFile={uploadedFile}
                         setUploadedFile={appendFileIntoList}
-                        handleUploadFile={handleUploadFile}
+                        //  handleUploadFile={handleUploadFile}
                      />
                   </Grid>
                   <Grid item xs={1}>
                      <Button
                         variant="contained"
-                        onClick={handleImport}
+                        // onClick={handleImport}
                         sx={{ width: '100%', height: 24 }}
                      >
                         Import
@@ -438,7 +397,7 @@ export default function Product() {
                      rowBuffer={35}
                      rowThreshold={25}
                      columns={columns}
-                     getRowId={(params) => params.orderNo}
+                     getRowId={(params) => params.modelCode}
                   />
                   {loading ? (
                      <div
