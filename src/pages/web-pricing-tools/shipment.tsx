@@ -166,7 +166,7 @@ export default function Shipment() {
          flex: 0.6,
          headerName: 'Models',
          renderCell(params) {
-            return <span>{params.row.model}</span>;
+            return <span>{params.row.productDimension.modelCode}</span>;
          },
       },
       {
