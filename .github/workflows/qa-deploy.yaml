@@ -3,7 +3,7 @@ name: Deploy QA Hyster-yale-frontend
 on:
    push:
       branches:
-         - 'qa*'
+         - 'qa-deploy'
 
 jobs:
    build-qa-image:
