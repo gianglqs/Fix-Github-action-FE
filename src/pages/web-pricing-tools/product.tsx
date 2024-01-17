@@ -8,7 +8,13 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { Button, CircularProgress, ListItem } from '@mui/material';
 
-import { AppAutocomplete, AppLayout, AppTextField, DataTablePagination } from '@/components';
+import {
+   AppAutocomplete,
+   AppLayout,
+   AppTextField,
+   DataTablePagination,
+   EditIcon,
+} from '@/components';
 
 import _ from 'lodash';
 import { produce } from 'immer';
@@ -23,6 +29,7 @@ import { UserInfoContext } from '@/provider/UserInfoContext';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 
 import { GetServerSidePropsContext } from 'next';
+import { iconColumn } from '@/utils/columnProperties';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -131,6 +138,15 @@ export default function Product() {
          field: 'description',
          flex: 1,
          headerName: 'Description',
+      },
+      {
+         ...iconColumn,
+         field: 'id',
+         headerName: 'Edit',
+         flex: 0.2,
+         renderCell(params) {
+            return <EditIcon /*onClick={() => handleOpenUpdateColorDialog(params.row.id)}*/ />;
+         },
       },
    ];
 
