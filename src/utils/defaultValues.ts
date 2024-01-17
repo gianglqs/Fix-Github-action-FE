@@ -44,3 +44,14 @@ export const defaultValueCaculatorForAjustmentCost = {
    fxAdj: '',
    dnAdjPercentage: '',
 };
+
+export const defaultValueFilterProduct = {
+   modelCode: '',
+   plants: [],
+   metaSeries: [],
+   classes: [],
+   segments: [],
+   brands: [],
+   family: [],
+   truckType: [],
+} as any;
