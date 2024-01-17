@@ -46,7 +46,7 @@ export const defaultValueCaculatorForAjustmentCost = {
 };
 
 export const defaultValueFilterProduct = {
-   modelCost: '',
+   modelCode: '',
    plants: [],
    metaSeries: [],
    classes: [],

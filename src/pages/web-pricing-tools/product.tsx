@@ -193,10 +193,10 @@ export default function Product() {
                <Grid item xs={4}>
                   <Grid item xs={12}>
                      <AppTextField
-                        onChange={(e) => handleChangeDataFilter(e.target.value, 'orderNo')}
+                        onChange={(e) => handleChangeDataFilter(e.target.value, 'modelCode')}
                         name="orderNo"
                         label="Model Code"
-                        placeholder="Search order by Model"
+                        placeholder="Search Product by Model"
                      />
                   </Grid>
                </Grid>
@@ -261,7 +261,7 @@ export default function Product() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
-                     options={initDataFilter.classes}
+                     options={initDataFilter.segments}
                      label="Segment"
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'segments')}
