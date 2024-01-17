@@ -349,9 +349,18 @@ export default function Booking() {
       {
          field: 'marginPercentageAfterSurCharges',
          flex: 0.6,
+         headerName: 'Margin % After Surcharge',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return (
+               <span>
+                  {formatNumberPercentage(params?.row.marginPercentageAfterSurCharge * 100)}
+               </span>
+            );
+         },
       },
       {
-         field: 'marginPercentageAfterSurCharges',
+         field: 'noShow',
          flex: 0.6,
       },
    ];
