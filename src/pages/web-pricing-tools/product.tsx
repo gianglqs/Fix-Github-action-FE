@@ -30,6 +30,7 @@ import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 
 import { GetServerSidePropsContext } from 'next';
 import { iconColumn } from '@/utils/columnProperties';
+import { DialogUpdateProduct } from '@/components/Dialog/Module/ProductManangerDialog/UpdateDialog';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -131,7 +132,7 @@ export default function Product() {
          flex: 0.4,
          headerName: 'Image',
          renderCell(params) {
-            return <span>{params.row.model}</span>;
+            return <div style={{ backgroundImage: params.row.image, width: 30, height: 30 }} />;
          },
       },
       {
@@ -145,7 +146,7 @@ export default function Product() {
          headerName: 'Edit',
          flex: 0.2,
          renderCell(params) {
-            return <EditIcon /*onClick={() => handleOpenUpdateColorDialog(params.row.id)}*/ />;
+            return <EditIcon onClick={() => handleOpenUpdateColorDialog(params.row.id)} />;
          },
       },
    ];
@@ -200,6 +201,34 @@ export default function Product() {
    const handleRemove = (fileName) => {
       const updateUploaded = uploadedFile.filter((file) => file.name != fileName);
       setUploadedFile(updateUploaded);
+   };
+
+   const [updateColorState, setUpdateColorState] = useState({
+      open: false,
+      detail: {} as any,
+   });
+
+   const handleOpenUpdateColorDialog = async (id) => {
+      try {
+         // Get init data
+
+         //   const { data } = await competitorColorApi.getCompetitorColorById({ id });
+
+         // Open form
+         setUpdateColorState({
+            open: true,
+            detail: '',
+         });
+      } catch (error) {
+         // dispatch(commonStore.actions.setErrorMessage(error))
+      }
+   };
+
+   const handleCloseUpdateColorDialog = () => {
+      setUpdateColorState({
+         open: false,
+         detail: {},
+      });
    };
 
    return (
@@ -445,6 +474,7 @@ export default function Product() {
                />
             </Paper>
          </AppLayout>
+         <DialogUpdateProduct {...updateColorState} onClose={handleCloseUpdateColorDialog} />
       </>
    );
 }
