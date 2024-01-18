@@ -12,6 +12,7 @@ import {
    AppAutocomplete,
    AppLayout,
    AppTextField,
+   DataTable,
    DataTablePagination,
    EditIcon,
 } from '@/components';
@@ -142,20 +143,29 @@ export default function Product() {
       },
       {
          ...iconColumn,
-         field: 'id',
          headerName: 'Edit',
          flex: 0.2,
          renderCell(params) {
-            return <EditIcon onClick={() => handleOpenUpdateColorDialog(params.row.id)} />;
+            return (
+               <EditIcon
+                  onClick={() =>
+                     handleOpenUpdateColorDialog(
+                        params.row.modelCode,
+                        params.row.image,
+                        params.row.description
+                     )
+                  }
+               />
+            );
          },
       },
    ];
 
-   let heightTable = 263;
+   let heightTable = 198;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
    if (userRole === 'ADMIN') {
-      heightTable = 298;
+      heightTable = 233;
    }
    useEffect(() => {
       setUserRoleState(userRole);
@@ -203,29 +213,29 @@ export default function Product() {
       setUploadedFile(updateUploaded);
    };
 
-   const [updateColorState, setUpdateColorState] = useState({
+   const [updateProductState, setUpdateProductState] = useState({
       open: false,
       detail: {} as any,
    });
 
-   const handleOpenUpdateColorDialog = async (id) => {
+   const handleOpenUpdateColorDialog = async (modelCode: string, imageUrl: string, des: string) => {
       try {
-         // Get init data
-
-         //   const { data } = await competitorColorApi.getCompetitorColorById({ id });
-
          // Open form
-         setUpdateColorState({
+         setUpdateProductState({
             open: true,
-            detail: '',
+            detail: {
+               modelCode: modelCode,
+               image: imageUrl,
+               description: des,
+            },
          });
       } catch (error) {
          // dispatch(commonStore.actions.setErrorMessage(error))
       }
    };
 
-   const handleCloseUpdateColorDialog = () => {
-      setUpdateColorState({
+   const handleCloseUpdateProductDialog = () => {
+      setUpdateProductState({
          open: false,
          detail: {},
       });
@@ -418,8 +428,8 @@ export default function Product() {
             </When>
 
             <Paper elevation={1} sx={{ marginTop: 2 }}>
-               <Grid container sx={{ height: `calc(100vh - ${heightTable}px)` }}>
-                  <DataGridPro
+               <Grid container>
+                  <DataTable
                      hideFooter
                      disableColumnMenu
                      sx={{
@@ -428,6 +438,7 @@ export default function Product() {
                            lineHeight: 1.2,
                         },
                      }}
+                     tableHeight={`calc(100vh - ${heightTable}px)`}
                      columnHeaderHeight={60}
                      rowHeight={30}
                      slots={{
@@ -474,7 +485,7 @@ export default function Product() {
                />
             </Paper>
          </AppLayout>
-         <DialogUpdateProduct {...updateColorState} onClose={handleCloseUpdateColorDialog} />
+         <DialogUpdateProduct {...updateProductState} onClose={handleCloseUpdateProductDialog} />
       </>
    );
 }

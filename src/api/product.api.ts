@@ -19,6 +19,10 @@ class ProductApi extends HttpService<any> {
       this.saveToken(context);
       return this.instance.post<T>(`product/getData`, data, { params, responseType });
    };
+
+   updateProduct = (data: any) => {
+      return this.put<any>(`product/updateProduct`, data);
+   };
 }
 
 const bookingApi = new ProductApi('product');

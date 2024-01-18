@@ -3,15 +3,12 @@ import { AppDialog } from '../AppDialog/AppDialog';
 import { useEffect, useMemo, useState } from 'react';
 import { Grid, Typography } from '@mui/material';
 import FormControlledTextField from '@/components/FormController/TextField';
-import { SketchPicker } from 'react-color';
-import { yupResolver } from '@hookform/resolvers/yup';
-import getValidationSchema from '../Dashboard/validationSchema';
 import { useForm } from 'react-hook-form';
 import { AppTextField } from '@/components/App';
-import competitorColorApi from '@/api/competitorColor.api';
 import { commonStore, competitorColorStore } from '@/store/reducers';
 import { useSelector } from 'react-redux';
 import ChooseImage from '@/components/App/chooseImage';
+import productApi from '@/api/product.api';
 
 const DialogUpdateProduct: React.FC<any> = (props) => {
    const { open, onClose, detail } = props;
@@ -19,49 +16,42 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
    const dispatch = useDispatch();
    const [loading, setLoading] = useState(false);
 
-   const [chosenColor, setChosenColor] = useState(detail.colorCode);
+   const [info, setInfo] = useState(detail);
 
-   const updateColorForm = useForm({
+   const updateProduct = useForm({
       shouldUnregister: false,
       defaultValues: detail,
    });
 
-   const search = useSelector(competitorColorStore.selectCompetitorColorSearch);
-
-   const handleSubmitForm = updateColorForm.handleSubmit(async (data: any) => {
+   const handleSubmitForm = updateProduct.handleSubmit(async () => {
       const transformedData = {
-         id: detail?.id,
-         groupName: data.groupName,
-         colorCode: chosenColor,
+         modelCode: detail?.modelCode,
+         image: info.image,
+         description: info.description,
       };
       try {
          setLoading(true);
-         await competitorColorApi.updateCompetitorColor(transformedData);
+         await productApi.updateProduct(transformedData);
 
-         const competitorColorList = await competitorColorApi.getCompetitorColor({
-            search: search,
-         });
-         dispatch(
-            competitorColorStore.actions.setCompetitorColorList(
-               JSON.parse(competitorColorList?.data)?.competitorColors
-            )
-         );
+         // dispatch(
+         //    competitorColorStore.actions.setCompetitorColorList(
+         //       JSON.parse(competitorColorList?.data)?.competitorColors
+         //    )
+         // );
 
-         dispatch(commonStore.actions.setSuccessMessage('Update Competitor Color successfully'));
+         dispatch(commonStore.actions.setSuccessMessage('Update Product successfully!'));
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error?.message));
       }
       onClose();
       setLoading(false);
    });
-
-   const handleChooseColor = (color) => {
-      setChosenColor(color.hex);
-   };
+   console.log('info', info);
+   console.log('detail', detail);
 
    useEffect(() => {
-      setChosenColor(detail.colorCode);
-      updateColorForm.reset(detail);
+      setInfo(detail);
+      updateProduct.reset(detail);
    }, [detail]);
 
    return (
@@ -79,20 +69,20 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
             spacing={2}
          >
             <Grid item xs={3}>
-               <ChooseImage />
+               <ChooseImage image={info.image} setInfo={setInfo} />
             </Grid>
             <Grid item xs={9}>
-               <Typography variant="h5" component="h2">
-                  MH370
+               <Typography variant="h6" component="h2">
+                  {info.modelCode}
                </Typography>
 
                <div style={{ width: 20, height: 10 }}></div>
 
                <FormControlledTextField
-                  control={updateColorForm.control}
+                  control={updateProduct.control}
                   name="description"
                   label="Description"
-                  defaultValue={chosenColor}
+                  defaultValue={info.description}
                   multiline
                />
             </Grid>
