@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 export default function ChooseImage(props) {
-   const { image, setInfo } = props;
+   const { image, setImage } = props;
    const [isHovered, setIsHovered] = useState(false);
    const [imageUrl, setImageUrl] = useState(image);
 
@@ -16,7 +16,7 @@ export default function ChooseImage(props) {
 
       reader.onload = () => {
          setImageUrl(reader.result);
-         setInfo((preInfo) => ({ ...preInfo, image: reader.result }));
+         setImage(reader.result);
       };
 
       reader.readAsDataURL(file);

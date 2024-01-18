@@ -17,6 +17,7 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
    const [loading, setLoading] = useState(false);
 
    const [info, setInfo] = useState(detail);
+   const [imageFile, setImageFile] = useState(null);
 
    const updateProduct = useForm({
       shouldUnregister: false,
@@ -26,7 +27,7 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
    const handleSubmitForm = updateProduct.handleSubmit(async () => {
       const transformedData = {
          modelCode: detail?.modelCode,
-         image: info.image,
+         image: imageFile,
          description: info.description,
       };
       try {
@@ -69,7 +70,7 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
             spacing={2}
          >
             <Grid item xs={3}>
-               <ChooseImage image={info.image} setInfo={setInfo} />
+               <ChooseImage image={info.image} setImage={setImageFile} />
             </Grid>
             <Grid item xs={9}>
                <Typography variant="h6" component="h2">
