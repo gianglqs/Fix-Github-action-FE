@@ -21,7 +21,7 @@ class ProductApi extends HttpService<any> {
    };
 
    updateProduct = (data: any) => {
-      return this.put<any>(`product/updateProduct`, data);
+      return this.updateFile<any>(`product/updateProduct`, data);
    };
 }
 
