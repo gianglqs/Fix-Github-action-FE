@@ -1,11 +1,10 @@
 import { useDispatch } from 'react-redux';
 import { AppDialog } from '../AppDialog/AppDialog';
-import { useEffect, useMemo, useState } from 'react';
-import { Grid, TextField, Typography } from '@mui/material';
-import FormControlledTextField from '@/components/FormController/TextField';
+import { useEffect, useState } from 'react';
+import { Grid, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { AppTextField } from '@/components/App';
-import { commonStore, competitorColorStore, productStore } from '@/store/reducers';
+import { commonStore, productStore } from '@/store/reducers';
 import ChooseImage from '@/components/App/chooseImage';
 import productApi from '@/api/product.api';
 
