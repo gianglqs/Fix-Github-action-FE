@@ -183,7 +183,7 @@ class HttpService<GetList = any> {
       context: GetServerSidePropsContext = null as any
    ) => {
       this.setHeaderForApiTransferFile(context);
-      return this.instance.post<T>(endpoint, data);
+      return this.instance.put<T>(endpoint, data);
    };
 }
 
