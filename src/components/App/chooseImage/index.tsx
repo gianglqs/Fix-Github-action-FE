@@ -2,6 +2,7 @@ import { IconButton } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { getProductImagePath } from '@/utils/imagePath';
 
 export default function ChooseImage(props) {
    const { image, setImage } = props;
@@ -16,7 +17,7 @@ export default function ChooseImage(props) {
 
       reader.onload = () => {
          setImageUrl(reader.result);
-         setImage(reader.result);
+         setImage(file);
       };
 
       reader.readAsDataURL(file);
@@ -28,10 +29,9 @@ export default function ChooseImage(props) {
          'image/png': ['.png'],
       },
    });
-   console.log('image', image);
 
    useEffect(() => {
-      setImageUrl(image);
+      setImageUrl(getProductImagePath(image));
    }, [image]);
 
    return (

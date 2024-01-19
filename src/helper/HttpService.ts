@@ -115,7 +115,7 @@ class HttpService<GetList = any> {
       if (accessToken) {
          this.instance.defaults.headers.common = {
             Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'multipart/form-data',
+            //'Content-Type': 'multipart/form-data',
          };
       } else {
          delete this.instance.defaults.headers.Authorization;
@@ -183,7 +183,7 @@ class HttpService<GetList = any> {
       context: GetServerSidePropsContext = null as any
    ) => {
       this.setHeaderForApiTransferFile(context);
-      return this.instance.put<T>(endpoint, data);
+      return this.instance.post<T>(endpoint, data);
    };
 }
 

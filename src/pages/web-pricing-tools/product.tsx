@@ -21,7 +21,7 @@ import _ from 'lodash';
 import { produce } from 'immer';
 
 import { defaultValueFilterProduct } from '@/utils/defaultValues';
-import { DataGridPro, GridCellParams, GridToolbar } from '@mui/x-data-grid-pro';
+import { GridToolbar } from '@mui/x-data-grid-pro';
 
 import ClearIcon from '@mui/icons-material/Clear';
 import React from 'react';
@@ -129,14 +129,6 @@ export default function Product() {
          headerName: 'Truck Type',
       },
       {
-         field: 'image',
-         flex: 0.4,
-         headerName: 'Image',
-         renderCell(params) {
-            return <div style={{ backgroundImage: params.row.image, width: 30, height: 30 }} />;
-         },
-      },
-      {
          field: 'description',
          flex: 1,
          headerName: 'Description',
@@ -215,7 +207,7 @@ export default function Product() {
 
    const [updateProductState, setUpdateProductState] = useState({
       open: false,
-      detail: {} as any,
+      preValue: {} as any,
    });
 
    const handleOpenUpdateColorDialog = async (modelCode: string, imageUrl: string, des: string) => {
@@ -223,7 +215,7 @@ export default function Product() {
          // Open form
          setUpdateProductState({
             open: true,
-            detail: {
+            preValue: {
                modelCode: modelCode,
                image: imageUrl,
                description: des,
@@ -237,7 +229,7 @@ export default function Product() {
    const handleCloseUpdateProductDialog = () => {
       setUpdateProductState({
          open: false,
-         detail: {},
+         preValue: {},
       });
    };
 

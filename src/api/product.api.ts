@@ -23,6 +23,11 @@ class ProductApi extends HttpService<any> {
    updateProduct = (data: any) => {
       return this.updateFile<any>(`product/updateProduct`, data);
    };
+
+   // hashName of image are saved in DB
+   getImage = (imageName: any) => {
+      return this.get<any>(`loadImage/product/${imageName}`);
+   };
 }
 
 const bookingApi = new ProductApi('product');

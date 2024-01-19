@@ -5,40 +5,37 @@ import { Grid, Typography } from '@mui/material';
 import FormControlledTextField from '@/components/FormController/TextField';
 import { useForm } from 'react-hook-form';
 import { AppTextField } from '@/components/App';
-import { commonStore, competitorColorStore } from '@/store/reducers';
+import { commonStore, competitorColorStore, productStore } from '@/store/reducers';
 import { useSelector } from 'react-redux';
 import ChooseImage from '@/components/App/chooseImage';
 import productApi from '@/api/product.api';
 
 const DialogUpdateProduct: React.FC<any> = (props) => {
-   const { open, onClose, detail } = props;
+   const { open, onClose, preValue } = props;
 
    const dispatch = useDispatch();
    const [loading, setLoading] = useState(false);
 
-   const [info, setInfo] = useState(detail);
-   const [imageFile, setImageFile] = useState(null);
+   const [newValue, setNewValue] = useState(preValue);
+   const [imageFile, setImageFile] = useState(null); // image value - not link !
 
    const updateProduct = useForm({
       shouldUnregister: false,
-      defaultValues: detail,
+      defaultValues: preValue,
    });
 
+   const updateForm = new FormData();
+
    const handleSubmitForm = updateProduct.handleSubmit(async () => {
-      const transformedData = {
-         modelCode: detail?.modelCode,
-         image: imageFile,
-         description: info.description,
-      };
+      updateForm.append('image', imageFile);
+      updateForm.append('modelCode', preValue?.modelCode);
+      updateForm.append('description', newValue.description);
+      console.log(updateForm);
       try {
          setLoading(true);
-         await productApi.updateProduct(transformedData);
+         await productApi.updateProduct(updateForm);
 
-         // dispatch(
-         //    competitorColorStore.actions.setCompetitorColorList(
-         //       JSON.parse(competitorColorList?.data)?.competitorColors
-         //    )
-         // );
+         dispatch(productStore.sagaGetList());
 
          dispatch(commonStore.actions.setSuccessMessage('Update Product successfully!'));
       } catch (error) {
@@ -47,13 +44,11 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
       onClose();
       setLoading(false);
    });
-   console.log('info', info);
-   console.log('detail', detail);
 
    useEffect(() => {
-      setInfo(detail);
-      updateProduct.reset(detail);
-   }, [detail]);
+      setNewValue(preValue);
+      updateProduct.reset(preValue);
+   }, [preValue]);
 
    return (
       <AppDialog
@@ -70,11 +65,11 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
             spacing={2}
          >
             <Grid item xs={3}>
-               <ChooseImage image={info.image} setImage={setImageFile} />
+               <ChooseImage image={newValue.image} setImage={setImageFile} />
             </Grid>
             <Grid item xs={9}>
                <Typography variant="h6" component="h2">
-                  {info.modelCode}
+                  {newValue.modelCode}
                </Typography>
 
                <div style={{ width: 20, height: 10 }}></div>
@@ -83,7 +78,8 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
                   control={updateProduct.control}
                   name="description"
                   label="Description"
-                  defaultValue={info.description}
+                  defaultValue={newValue.description}
+                  onChange={(e) => setNewValue(prev => {...prev, description:e.target.value})}
                   multiline
                />
             </Grid>
