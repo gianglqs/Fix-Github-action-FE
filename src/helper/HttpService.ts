@@ -115,7 +115,7 @@ class HttpService<GetList = any> {
       if (accessToken) {
          this.instance.defaults.headers.common = {
             Authorization: `Bearer ${accessToken}`,
-            //'Content-Type': 'multipart/form-data',
+            'Content-Type': 'multipart/form-data',
          };
       } else {
          delete this.instance.defaults.headers.Authorization;
