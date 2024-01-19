@@ -1,12 +1,11 @@
 import { useDispatch } from 'react-redux';
 import { AppDialog } from '../AppDialog/AppDialog';
 import { useEffect, useMemo, useState } from 'react';
-import { Grid, Typography } from '@mui/material';
+import { Grid, TextField, Typography } from '@mui/material';
 import FormControlledTextField from '@/components/FormController/TextField';
 import { useForm } from 'react-hook-form';
 import { AppTextField } from '@/components/App';
 import { commonStore, competitorColorStore, productStore } from '@/store/reducers';
-import { useSelector } from 'react-redux';
 import ChooseImage from '@/components/App/chooseImage';
 import productApi from '@/api/product.api';
 
@@ -14,10 +13,12 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
    const { open, onClose, preValue } = props;
 
    const dispatch = useDispatch();
-   const [loading, setLoading] = useState(false);
 
    const [newValue, setNewValue] = useState(preValue);
-   const [imageFile, setImageFile] = useState(null); // image value - not link !
+
+   const [imageFile, setImageFile] = useState(null); // image data - not link !
+
+   const [enableSubmitForm, setEnableSubmitForm] = useState(false);
 
    const updateProduct = useForm({
       shouldUnregister: false,
@@ -26,13 +27,26 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
 
    const updateForm = new FormData();
 
+   // if there are any changes -> allow submit
+   useEffect(() => {
+      if (newValue.description !== preValue.description || imageFile) {
+         setEnableSubmitForm(true);
+      } else {
+         setEnableSubmitForm(false);
+      }
+   }, [imageFile, newValue.description]);
+
    const handleSubmitForm = updateProduct.handleSubmit(async () => {
-      updateForm.append('image', imageFile);
       updateForm.append('modelCode', preValue?.modelCode);
-      updateForm.append('description', newValue.description);
-      console.log(updateForm);
+
+      // if have change image
+      imageFile && updateForm.append('image', imageFile);
+
+      // if have change description
+      if (newValue.description !== preValue.description)
+         updateForm.append('description', newValue.description);
+
       try {
-         setLoading(true);
          await productApi.updateProduct(updateForm);
 
          dispatch(productStore.sagaGetList());
@@ -41,8 +55,7 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error?.message));
       }
-      onClose();
-      setLoading(false);
+      handleCloseForm();
    });
 
    useEffect(() => {
@@ -50,12 +63,17 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
       updateProduct.reset(preValue);
    }, [preValue]);
 
+   const handleCloseForm = () => {
+      setImageFile(null);
+      onClose();
+   };
+
    return (
       <AppDialog
          open={open}
-         loading={loading}
+         loading={!enableSubmitForm}
          onOk={handleSubmitForm}
-         onClose={onClose}
+         onClose={handleCloseForm}
          title="Update Product"
          okText="Save"
       >
@@ -74,12 +92,14 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
 
                <div style={{ width: 20, height: 10 }}></div>
 
-               <FormControlledTextField
-                  control={updateProduct.control}
+               <AppTextField
                   name="description"
+                  id="outlined-required"
                   label="Description"
                   defaultValue={newValue.description}
-                  onChange={(e) => setNewValue(prev => {...prev, description:e.target.value})}
+                  onChange={(e) =>
+                     setNewValue((prev) => ({ ...prev, description: e.target.value }))
+                  }
                   multiline
                />
             </Grid>
