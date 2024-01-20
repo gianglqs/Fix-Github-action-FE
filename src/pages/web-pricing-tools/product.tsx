@@ -32,6 +32,8 @@ import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import { iconColumn } from '@/utils/columnProperties';
 import { DialogUpdateProduct } from '@/components/Dialog/Module/ProductManangerDialog/UpdateDialog';
+import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
+import { selectDataRowById } from '@/utils/selectRowById';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -231,6 +233,29 @@ export default function Product() {
          open: false,
          preValue: {},
       });
+   };
+
+   // ===== show Product detail =======
+   const [productDetailState, setProductDetailState] = useState({
+      open: false,
+      data: null,
+   });
+
+   const handleCloseProductDetail = () => {
+      setProductDetailState({
+         open: false,
+         data: null,
+      });
+   };
+
+   const handleOpenProductDetailDialog = (row) => {
+      const data = selectDataRowById(listProduct, 'modelCode', row.id);
+      console.log(' data product ', data);
+      data &&
+         setProductDetailState({
+            open: true,
+            data: data[0],
+         });
    };
 
    return (
@@ -441,31 +466,8 @@ export default function Product() {
                      rowThreshold={25}
                      columns={columns}
                      getRowId={(params) => params.modelCode}
+                     onRowClick={handleOpenProductDetailDialog}
                   />
-                  {loading ? (
-                     <div
-                        style={{
-                           top: 0,
-                           left: 0,
-                           right: 0,
-                           bottom: 0,
-                           backgroundColor: 'rgba(0,0,0, 0.3)',
-                           position: 'absolute',
-                           display: 'flex',
-                           justifyContent: 'center',
-                           alignItems: 'center',
-                           zIndex: 1001,
-                        }}
-                     >
-                        <CircularProgress
-                           color="info"
-                           size={60}
-                           sx={{
-                              position: 'relative',
-                           }}
-                        />
-                     </div>
-                  ) : null}
                </Grid>
 
                <DataTablePagination
@@ -478,6 +480,7 @@ export default function Product() {
             </Paper>
          </AppLayout>
          <DialogUpdateProduct {...updateProductState} onClose={handleCloseUpdateProductDialog} />
+         <ProductDetailDialog {...productDetailState} onClose={handleCloseProductDetail} />
       </>
    );
 }
