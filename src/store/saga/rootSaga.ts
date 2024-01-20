@@ -9,6 +9,7 @@ import trendsSaga from './trendsSaga';
 import adjustmentSaga from './adjustmentSaga';
 import competitorColorSaga from './competitorColorSaga';
 import productSaga from './productSaga';
+import partSaga from './partSaga';
 
 function* rootSaga() {
    yield fork(dashboardSaga);
@@ -21,6 +22,7 @@ function* rootSaga() {
    yield fork(adjustmentSaga);
    yield fork(competitorColorSaga);
    yield fork(productSaga);
+   yield fork(partSaga);
 }
 
 export default rootSaga;
