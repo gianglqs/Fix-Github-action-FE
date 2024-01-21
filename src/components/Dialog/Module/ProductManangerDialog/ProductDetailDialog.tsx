@@ -1,7 +1,16 @@
 import { useDispatch } from 'react-redux';
 import { AppDialog } from '../AppDialog/AppDialog';
 import { useEffect, useState } from 'react';
-import { Dialog, Grid, Paper, TextField, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+   Dialog,
+   Grid,
+   Paper,
+   TextField,
+   Tooltip,
+   Typography,
+   useMediaQuery,
+   useTheme,
+} from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { AppTextField } from '@/components/App';
 import { commonStore, partStore, productStore } from '@/store/reducers';
@@ -13,6 +22,16 @@ import { GridToolbar } from '@mui/x-data-grid-pro';
 import { useSelector } from 'react-redux';
 import { defaultValueFilterPart } from '@/utils/defaultValues';
 import { getProductImagePath } from '@/utils/imagePath';
+import partApi from '@/api/part.api';
+import { formatNumber } from '@/utils/formatCell';
+import {
+   centerColumn,
+   centerHeaderColumn,
+   formatNumbericColumn,
+   iconColumn,
+} from '@/utils/columnProperties';
+import { PartCellImage } from '@/components/App/Image/Cell/PartCell';
+import ImageIcon from '@mui/icons-material/Image';
 
 const ProductDetailDialog: React.FC<any> = (props) => {
    const { open, onClose, data } = props;
@@ -28,6 +47,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    const [clazz, setClazz] = useState();
    const [description, setDescription] = useState();
    const [image, setImage] = useState();
+
    useEffect(() => {
       if (data) {
          setModelCode(data.modelCode);
@@ -43,32 +63,63 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       }
    }, [data]);
 
-   const resetData = () => {
-      setModelCode(null);
-      setBrand(null);
-      setTruckType(null);
-      setPlant(null);
-      setMetaseries(null);
-      setSegment(null);
-      setFamily(null);
-      setClazz(null);
-      setDescription(null);
-      setImage(null);
-   };
-
    // ======== for list Part =========
 
-   let heightTable = 198;
+   let heightTable = 298;
    const dispatch = useDispatch();
-   const listPartFromStore = useSelector(partStore.selectPartList);
-   const initDataFilterFromStore = useSelector(partStore.selectInitDataFilter);
+
    const tableState = useSelector(commonStore.selectTableState);
 
-   const [listPart, setListPart] = useState(listPartFromStore);
-   const [dataFilter, setDataFilter] = useState(defaultValueFilterPart);
+   const [listPart, setListPart] = useState([]);
+   const [initDataFilter, setInitDataFilter] = useState([]);
+   const [dataFilterForGetParts, setDataFilterForGetParts] = useState({
+      modelCode: null,
+      orderNumbers: [],
+   });
+   const [pageNo, setPageNo] = useState(1);
+   const [perPage, setPerPage] = useState(50);
+   const [totalItems, setTotalItems] = useState();
+
+   // set data filter when open parts
    useEffect(() => {
-      setListPart(listPartFromStore);
-   }, [listPartFromStore]);
+      modelCode && setDataFilterForGetParts((prev) => ({ ...prev, modelCode: modelCode }));
+   }, [modelCode]);
+
+   // for OrderNo filter
+   useEffect(() => {
+      if (modelCode) {
+         productApi
+            .getProductDetailFilter(modelCode)
+            .then((response) => {
+               setInitDataFilter(response.data.orderNos);
+            })
+            .catch((error) => {
+               console.log(error);
+            });
+      }
+   }, [modelCode]);
+
+   // get ListPart
+   const getDataPartByFilter = () => {
+      partApi
+         .getPartsForProductDetail(dataFilterForGetParts, { pageNo, perPage })
+         .then((response) => {
+            setListPart(response.data.listPart);
+         })
+         .catch((error) => {
+            console.log(error);
+         });
+   };
+
+   //load Parts when open Dialog (when setup dataFilterForGetParts is successfully)
+   useEffect(() => {
+      getDataPartByFilter();
+   }, [dataFilterForGetParts]);
+
+   // load Parts when click Filter
+   const handleClickFilter = () => {
+      getDataPartByFilter();
+   };
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
@@ -82,50 +133,46 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    const columns = [
       {
-         field: 'modelCode',
-         flex: 0.4,
-         headerName: 'Model Code',
-      },
-      {
-         field: 'brand',
+         field: 'partNumber',
          flex: 0.3,
-         headerName: 'Brand',
+         headerName: 'Part Number',
       },
       {
-         field: 'clazz',
-         flex: 0.5,
-         headerName: 'Class',
+         field: 'image',
+         flex: 0.2,
+         headerName: 'image',
+         ...centerHeaderColumn,
+         ...iconColumn,
+         renderCell(params) {
+            return (
+               <Tooltip title="Add" placement="top-start" arrow>
+                  <ImageIcon />
+               </Tooltip>
+            );
+         },
       },
       {
-         field: 'plant',
-         flex: 0.5,
-         headerName: 'Plant',
+         field: 'currency',
+         flex: 0.2,
+         headerName: 'Currency',
+         ...centerColumn,
+         renderCell(params) {
+            return <span>{params.row.currency?.currency}</span>;
+         },
       },
       {
-         field: 'segment',
-         flex: 0.8,
-         headerName: 'Segment',
-      },
-
-      {
-         field: 'metaSeries',
+         field: 'listPrice',
          flex: 0.3,
-         headerName: 'MetaSeries',
-      },
-      {
-         field: 'family',
-         flex: 0.6,
-         headerName: 'Family',
-      },
-
-      {
-         field: 'truckType',
-         flex: 0.6,
-         headerName: 'Truck Type',
+         headerName: 'List Price',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumber(params?.row.listPrice * 1000)}</span>;
+         },
       },
       {
          field: 'description',
-         flex: 1,
+         ...centerHeaderColumn,
+         flex: 1.4,
          headerName: 'Description',
       },
    ];
@@ -133,6 +180,23 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    const handleClose = () => {
       onClose();
       resetData();
+   };
+
+   // reset when CLOSE dialog
+   const resetData = () => {
+      setModelCode(null);
+      setBrand(null);
+      setTruckType(null);
+      setPlant(null);
+      setMetaseries(null);
+      setSegment(null);
+      setFamily(null);
+      setClazz(null);
+      setDescription(null);
+      setImage(null);
+      setPageNo(1);
+      setPerPage(50);
+      setTotalItems(null);
    };
 
    return (
@@ -145,243 +209,244 @@ const ProductDetailDialog: React.FC<any> = (props) => {
          PaperProps={{ sx: { borderRadius: '10px' } }}
       >
          <Grid container sx={{ padding: '40px' }}>
-            <Grid spacing={1} container xs={10}>
-               <Grid item xs={3}>
-                  <TextField
-                     id="outlined-read-only-input"
-                     label="Model Code"
-                     value={modelCode}
-                     defaultValue=" "
-                     InputProps={{
-                        readOnly: true,
-                        style: {
-                           height: '30px',
-                           fontSize: 15,
-                        },
-                     }}
-                     InputLabelProps={{
-                        style: {
-                           fontSize: 13,
-                        },
-                     }}
-                     margin="dense"
-                  />
+            <Grid container>
+               <Grid spacing={1} container xs={10}>
+                  <Grid item xs={3}>
+                     <TextField
+                        id="outlined-read-only-input"
+                        label="Model Code"
+                        value={modelCode}
+                        defaultValue=" "
+                        InputProps={{
+                           readOnly: true,
+                           style: {
+                              height: '30px',
+                              fontSize: 15,
+                           },
+                        }}
+                        InputLabelProps={{
+                           style: {
+                              fontSize: 13,
+                           },
+                        }}
+                        margin="dense"
+                     />
+                  </Grid>
+                  <Grid item xs={3}>
+                     <TextField
+                        id="outlined-read-only-input"
+                        label="Brand"
+                        value={brand}
+                        defaultValue=" "
+                        InputProps={{
+                           readOnly: true,
+                           style: {
+                              height: '30px',
+                              fontSize: 15,
+                           },
+                        }}
+                        InputLabelProps={{
+                           style: {
+                              fontSize: 13,
+                           },
+                        }}
+                        margin="dense"
+                     />
+                  </Grid>
+                  <Grid item xs={3}>
+                     <TextField
+                        id="outlined-read-only-input"
+                        label="Truck Type"
+                        value={truckType}
+                        defaultValue=" "
+                        InputProps={{
+                           readOnly: true,
+                           style: {
+                              height: '30px',
+                              fontSize: 15,
+                           },
+                        }}
+                        InputLabelProps={{
+                           style: {
+                              fontSize: 13,
+                           },
+                        }}
+                        margin="dense"
+                     />
+                  </Grid>
+                  <Grid item xs={3}>
+                     <TextField
+                        id="outlined-read-only-input"
+                        label="Plant"
+                        value={plant}
+                        defaultValue=" "
+                        InputProps={{
+                           readOnly: true,
+                           style: {
+                              height: '30px',
+                              fontSize: 15,
+                           },
+                        }}
+                        InputLabelProps={{
+                           style: {
+                              fontSize: 13,
+                           },
+                        }}
+                        margin="dense"
+                     />
+                  </Grid>
+                  <Grid item xs={2}>
+                     <TextField
+                        id="outlined-read-only-input"
+                        label="MetaSeries"
+                        value={metaSeries}
+                        defaultValue=" "
+                        InputProps={{
+                           readOnly: true,
+                           style: {
+                              height: '30px',
+                              fontSize: 15,
+                           },
+                        }}
+                        InputLabelProps={{
+                           style: {
+                              fontSize: 13,
+                           },
+                        }}
+                        margin="dense"
+                     />
+                  </Grid>
+                  <Grid item xs={5}>
+                     <TextField
+                        id="outlined-read-only-input"
+                        label="Segment"
+                        value={segment}
+                        defaultValue=" "
+                        InputProps={{
+                           readOnly: true,
+                           style: {
+                              height: '30px',
+                              fontSize: 15,
+                           },
+                        }}
+                        InputLabelProps={{
+                           style: {
+                              fontSize: 13,
+                           },
+                        }}
+                        margin="dense"
+                     />
+                  </Grid>
+                  <Grid item xs={3}>
+                     <TextField
+                        id="outlined-read-only-input"
+                        label="Family"
+                        value={family}
+                        defaultValue=" "
+                        InputProps={{
+                           readOnly: true,
+                           style: {
+                              height: '30px',
+                              fontSize: 15,
+                           },
+                        }}
+                        InputLabelProps={{
+                           style: {
+                              fontSize: 13,
+                           },
+                        }}
+                        margin="dense"
+                     />
+                  </Grid>
+                  <Grid item xs={2}>
+                     <TextField
+                        id="outlined-read-only-input"
+                        label="Class"
+                        value={clazz}
+                        defaultValue=" "
+                        InputProps={{
+                           readOnly: true,
+                           style: {
+                              height: '30px',
+                              fontSize: 15,
+                           },
+                        }}
+                        InputLabelProps={{
+                           style: {
+                              fontSize: 13,
+                           },
+                        }}
+                        margin="dense"
+                     />
+                  </Grid>
+                  <Grid item xs={12}>
+                     <TextField
+                        id="outlined-read-only-input"
+                        label="Description"
+                        value={description}
+                        defaultValue=" "
+                        InputProps={{
+                           readOnly: true,
+                           style: {
+                              height: '30px',
+                              fontSize: 15,
+                           },
+                        }}
+                        InputLabelProps={{
+                           style: {
+                              fontSize: 13,
+                           },
+                        }}
+                        margin="dense"
+                        multiline
+                     />
+                  </Grid>
                </Grid>
-               <Grid item xs={3}>
-                  <TextField
-                     id="outlined-read-only-input"
-                     label="Brand"
-                     value={brand}
-                     defaultValue=" "
-                     InputProps={{
-                        readOnly: true,
-                        style: {
-                           height: '30px',
-                           fontSize: 15,
-                        },
-                     }}
-                     InputLabelProps={{
-                        style: {
-                           fontSize: 13,
-                        },
-                     }}
-                     margin="dense"
-                  />
-               </Grid>
-               <Grid item xs={3}>
-                  <TextField
-                     id="outlined-read-only-input"
-                     label="Truck Type"
-                     value={truckType}
-                     defaultValue=" "
-                     InputProps={{
-                        readOnly: true,
-                        style: {
-                           height: '30px',
-                           fontSize: 15,
-                        },
-                     }}
-                     InputLabelProps={{
-                        style: {
-                           fontSize: 13,
-                        },
-                     }}
-                     margin="dense"
-                  />
-               </Grid>
-               <Grid item xs={3}>
-                  <TextField
-                     id="outlined-read-only-input"
-                     label="Plant"
-                     value={plant}
-                     defaultValue=" "
-                     InputProps={{
-                        readOnly: true,
-                        style: {
-                           height: '30px',
-                           fontSize: 15,
-                        },
-                     }}
-                     InputLabelProps={{
-                        style: {
-                           fontSize: 13,
-                        },
-                     }}
-                     margin="dense"
-                  />
-               </Grid>
-               <Grid item xs={2}>
-                  <TextField
-                     id="outlined-read-only-input"
-                     label="MetaSeries"
-                     value={metaSeries}
-                     defaultValue=" "
-                     InputProps={{
-                        readOnly: true,
-                        style: {
-                           height: '30px',
-                           fontSize: 15,
-                        },
-                     }}
-                     InputLabelProps={{
-                        style: {
-                           fontSize: 13,
-                        },
-                     }}
-                     margin="dense"
-                  />
-               </Grid>
-               <Grid item xs={5}>
-                  <TextField
-                     id="outlined-read-only-input"
-                     label="Segment"
-                     value={segment}
-                     defaultValue=" "
-                     InputProps={{
-                        readOnly: true,
-                        style: {
-                           height: '30px',
-                           fontSize: 15,
-                        },
-                     }}
-                     InputLabelProps={{
-                        style: {
-                           fontSize: 13,
-                        },
-                     }}
-                     margin="dense"
-                  />
-               </Grid>
-               <Grid item xs={3}>
-                  <TextField
-                     id="outlined-read-only-input"
-                     label="Family"
-                     value={family}
-                     defaultValue=" "
-                     InputProps={{
-                        readOnly: true,
-                        style: {
-                           height: '30px',
-                           fontSize: 15,
-                        },
-                     }}
-                     InputLabelProps={{
-                        style: {
-                           fontSize: 13,
-                        },
-                     }}
-                     margin="dense"
-                  />
-               </Grid>
-               <Grid item xs={2}>
-                  <TextField
-                     id="outlined-read-only-input"
-                     label="Class"
-                     value={clazz}
-                     defaultValue=" "
-                     InputProps={{
-                        readOnly: true,
-                        style: {
-                           height: '30px',
-                           fontSize: 15,
-                        },
-                     }}
-                     InputLabelProps={{
-                        style: {
-                           fontSize: 13,
-                        },
-                     }}
-                     margin="dense"
-                  />
-               </Grid>
-               <Grid item xs={12}>
-                  <TextField
-                     id="outlined-read-only-input"
-                     label="Description"
-                     value={description}
-                     defaultValue=" "
-                     InputProps={{
-                        readOnly: true,
-                        style: {
-                           height: '30px',
-                           fontSize: 15,
-                        },
-                     }}
-                     InputLabelProps={{
-                        style: {
-                           fontSize: 13,
-                        },
-                     }}
-                     margin="dense"
-                     multiline
+               <Grid container xs={2} style={{ paddingLeft: '15px', overflow: 'hidden' }}>
+                  <img
+                     src={getProductImagePath(image)}
+                     height={'100%'}
+                     width={'100%'}
+                     style={{ objectFit: 'cover', borderRadius: '5px' }}
                   />
                </Grid>
             </Grid>
-            <Grid container xs={2} style={{ paddingLeft: '15px', overflow: 'hidden' }}>
-               <img
-                  src={getProductImagePath(image)}
-                  height={'100%'}
-                  width={'100%'}
-                  style={{ objectFit: 'cover', borderRadius: '5px' }}
-               />
+            <Grid xs={12}>
+               <Paper elevation={1}>
+                  <Grid container xs={12}>
+                     <DataTable
+                        hideFooter
+                        disableColumnMenu
+                        sx={{
+                           '& .MuiDataGrid-columnHeaderTitle': {
+                              whiteSpace: 'break-spaces',
+                              lineHeight: 1.2,
+                           },
+                        }}
+                        tableHeight={`calc(100vh - ${heightTable}px)`}
+                        columnHeaderHeight={60}
+                        rowHeight={50}
+                        slots={{
+                           toolbar: GridToolbar,
+                        }}
+                        rows={listPart}
+                        rowBuffer={35}
+                        rowThreshold={25}
+                        columns={columns}
+                        getRowId={(params) => params.id}
+                     />
+                  </Grid>
+
+                  <DataTablePagination
+                     page={pageNo}
+                     perPage={perPage}
+                     totalItems={totalItems}
+                     onChangePage={handleChangePage}
+                     onChangePerPage={handleChangePerPage}
+                  />
+               </Paper>
             </Grid>
          </Grid>
-         {/*  filter by Order */}
-
-         {/* show data Parts */}
-         <Paper elevation={1} sx={{ marginTop: 2 }}>
-            <Grid container>
-               <DataTable
-                  hideFooter
-                  disableColumnMenu
-                  sx={{
-                     '& .MuiDataGrid-columnHeaderTitle': {
-                        whiteSpace: 'break-spaces',
-                        lineHeight: 1.2,
-                     },
-                  }}
-                  tableHeight={`calc(100vh - ${heightTable}px)`}
-                  columnHeaderHeight={60}
-                  rowHeight={30}
-                  slots={{
-                     toolbar: GridToolbar,
-                  }}
-                  rows={listPart}
-                  rowBuffer={35}
-                  rowThreshold={25}
-                  columns={columns}
-                  getRowId={(params) => params.modelCode}
-               />
-            </Grid>
-
-            <DataTablePagination
-               page={tableState.pageNo}
-               perPage={tableState.perPage}
-               totalItems={tableState.totalItems}
-               onChangePage={handleChangePage}
-               onChangePerPage={handleChangePerPage}
-            />
-         </Paper>
       </Dialog>
    );
 };
