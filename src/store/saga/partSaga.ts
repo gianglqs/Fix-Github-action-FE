@@ -14,17 +14,17 @@ function* fetchPart() {
       });
       const initDataFilter = yield* call(partApi.getInitDataFilter);
 
-      const { data } = yield* call(partApi.getParts, defaultValueFilterPart, {
+      const { data } = yield* call(partApi.getPartsForProductDetail, defaultValueFilterPart, {
          pageNo: tableState.pageNo,
          perPage: tableState.perPage,
       });
 
-      const dataShipment = JSON.parse(String(data)).listPart;
+      const dataParts = JSON.parse(String(data)).listPart;
       const dataTotalRow = JSON.parse(String(data)).total;
       const dataExchangeRate = JSON.parse(String(data)).listExchangeRate;
 
       yield put(partStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
-      yield put(partStore.actions.setPartList(dataShipment));
+      yield put(partStore.actions.setPartList(dataParts));
       yield put(partStore.actions.setTotalRow(dataTotalRow));
       yield put(partStore.actions.setExchangeRateList(dataExchangeRate));
 

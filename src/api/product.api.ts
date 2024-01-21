@@ -28,6 +28,10 @@ class ProductApi extends HttpService<any> {
    getImage = (imageName: any) => {
       return this.get<any>(`loadImage/product/${imageName}`);
    };
+
+   getProductDetailFilter = (modelCode) => {
+      return this.get<any>('filters/productDetail', { modelCode });
+   };
 }
 
 const bookingApi = new ProductApi('product');

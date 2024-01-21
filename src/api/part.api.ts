@@ -4,17 +4,16 @@ import { ResponseType } from 'axios';
 
 class PartApi extends HttpService<any> {
    getInitDataFilter = () => {
-      return this.get<any>(`filters/part`);
+      return this.get<any>(`filters/productDetail`);
    };
 
-   getParts = <T = any>(
+   getPartsForProductDetail = <T = any>(
       data = {} as Record<string, any>,
       params = {} as Record<string, any>,
-      context: GetServerSidePropsContext = null as any,
-      responseType = 'default' as ResponseType
+      context: GetServerSidePropsContext = null as any
    ) => {
       this.saveToken(context);
-      return this.instance.post<T>(`part/getParts`, data, { params, responseType });
+      return this.instance.post<T>(`part/getPartForTableProductDetail`, data, { params });
    };
 }
 
