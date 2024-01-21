@@ -1,4 +1,3 @@
-import productApi from '@/api/product.api';
 import { getProductImagePath } from '@/utils/imagePath';
 import { useEffect, useState } from 'react';
 
