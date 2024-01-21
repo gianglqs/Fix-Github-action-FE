@@ -34,6 +34,7 @@ import { iconColumn } from '@/utils/columnProperties';
 import { DialogUpdateProduct } from '@/components/Dialog/Module/ProductManangerDialog/UpdateDialog';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
 import { selectDataRowById } from '@/utils/selectRowById';
+import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -255,6 +256,27 @@ export default function Product() {
             open: true,
             data: data[0],
          });
+   };
+
+   // ===== show Image ======/
+   const [imageDialogState, setImageDialogState] = useState({
+      open: false,
+      imageUrl: null,
+   });
+
+   const handleOpenImageDialog = (imageUrl) => {
+      imageUrl &&
+         setImageDialogState({
+            open: true,
+            imageUrl: imageUrl,
+         });
+   };
+
+   const handleCloseImageDialog = () => {
+      setImageDialogState({
+         open: false,
+         imageUrl: null,
+      });
    };
 
    return (
@@ -479,7 +501,12 @@ export default function Product() {
             </Paper>
          </AppLayout>
          <DialogUpdateProduct {...updateProductState} onClose={handleCloseUpdateProductDialog} />
-         <ProductDetailDialog {...productDetailState} onClose={handleCloseProductDetail} />
+         <ProductDetailDialog
+            {...productDetailState}
+            handleOpenImageDialog={handleOpenImageDialog}
+            onClose={handleCloseProductDetail}
+         />
+         <ShowImageDialog {...imageDialogState} onClose={handleCloseImageDialog} />
       </>
    );
 }

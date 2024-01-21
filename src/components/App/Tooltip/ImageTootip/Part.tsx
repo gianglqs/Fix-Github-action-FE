@@ -4,15 +4,17 @@ import { PartImage } from '../../Image/PartImage';
 import { useEffect, useState } from 'react';
 
 export default function PartImageTooltip(props) {
-   const [imageName, setImageName] = useState();
+   const { imageName, onClick } = props;
+   const [image, setImage] = useState();
    useEffect(() => {
-      setImageName(props?.imageName);
+      setImage(imageName);
    }, [props]);
    return (
       <Tooltip
-         title={<PartImage imageName={imageName} height={40} width={40} />}
+         title={<PartImage imageName={image} height={70} width={70} onClick={onClick} />}
          placement="top-start"
          arrow
+         onClick={onClick}
       >
          <ImageIcon />
       </Tooltip>

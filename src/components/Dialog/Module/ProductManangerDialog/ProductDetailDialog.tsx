@@ -21,7 +21,7 @@ import { DataTable, DataTablePagination } from '@/components/DataTable';
 import { GridToolbar } from '@mui/x-data-grid-pro';
 import { useSelector } from 'react-redux';
 import { defaultValueFilterPart } from '@/utils/defaultValues';
-import { getProductImagePath } from '@/utils/imagePath';
+import { getPartImagePath, getProductImagePath } from '@/utils/imagePath';
 import partApi from '@/api/part.api';
 import { formatNumber } from '@/utils/formatCell';
 import {
@@ -34,7 +34,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import PartImageTooltip from '@/components/App/Tooltip/ImageTootip/Part';
 
 const ProductDetailDialog: React.FC<any> = (props) => {
-   const { open, onClose, data } = props;
+   const { open, onClose, data, handleOpenImageDialog } = props;
 
    // ======== info product detail ========
    const [modelCode, setModelCode] = useState();
@@ -47,6 +47,9 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    const [clazz, setClazz] = useState();
    const [description, setDescription] = useState();
    const [image, setImage] = useState();
+
+   // get imageUrl
+   const imageUrl = getProductImagePath(image);
 
    useEffect(() => {
       if (data) {
@@ -144,7 +147,12 @@ const ProductDetailDialog: React.FC<any> = (props) => {
          ...centerHeaderColumn,
          ...iconColumn,
          renderCell(params) {
-            return <PartImageTooltip />;
+            return (
+               <PartImageTooltip
+                  imageName={params.row.image}
+                  onClick={() => handleOpenImageDialog(getPartImagePath(params.row.image))}
+               />
+            );
          },
       },
       {
@@ -400,10 +408,11 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                </Grid>
                <Grid container xs={2} style={{ paddingLeft: '15px', overflow: 'hidden' }}>
                   <img
-                     src={getProductImagePath(image)}
+                     src={imageUrl}
                      height={'100%'}
                      width={'100%'}
                      style={{ objectFit: 'cover', borderRadius: '5px' }}
+                     onClick={() => handleOpenImageDialog(imageUrl)}
                   />
                </Grid>
             </Grid>
