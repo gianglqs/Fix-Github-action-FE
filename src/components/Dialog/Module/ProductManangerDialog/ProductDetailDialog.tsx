@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux';
 import { AppDialog } from '../AppDialog/AppDialog';
 import { useEffect, useState } from 'react';
 import {
+   Button,
    Dialog,
    Grid,
    Paper,
@@ -12,7 +13,7 @@ import {
    useTheme,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { AppTextField } from '@/components/App';
+import { AppAutocomplete, AppTextField } from '@/components/App';
 import { commonStore, partStore, productStore } from '@/store/reducers';
 import ChooseImage from '@/components/App/chooseImage';
 import productApi from '@/api/product.api';
@@ -32,6 +33,7 @@ import {
 } from '@/utils/columnProperties';
 import ImageIcon from '@mui/icons-material/Image';
 import PartImageTooltip from '@/components/App/Tooltip/ImageTootip/Part';
+import { produce } from 'immer';
 
 const ProductDetailDialog: React.FC<any> = (props) => {
    const { open, onClose, data, handleOpenImageDialog } = props;
@@ -68,13 +70,13 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    // ======== for list Part =========
 
-   let heightTable = 298;
+   let heightTable = 338;
    const dispatch = useDispatch();
 
    const tableState = useSelector(commonStore.selectTableState);
 
    const [listPart, setListPart] = useState([]);
-   const [initDataFilter, setInitDataFilter] = useState([]);
+   const [initDataFilter, setInitDataFilter] = useState({} as any);
    const [dataFilterForGetParts, setDataFilterForGetParts] = useState({
       modelCode: null,
       orderNumbers: [],
@@ -94,7 +96,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
          productApi
             .getProductDetailFilter(modelCode)
             .then((response) => {
-               setInitDataFilter(response.data.orderNos);
+               setInitDataFilter(JSON.parse(String(response.data)));
             })
             .catch((error) => {
                console.log(error);
@@ -118,6 +120,14 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    useEffect(() => {
       getDataPartByFilter();
    }, [dataFilterForGetParts]);
+
+   const handleChangeDataFilter = (option, field) => {
+      setDataFilterForGetParts((prev) =>
+         produce(prev, (draft) => {
+            draft[field] = option.map(({ value }) => value);
+         })
+      );
+   };
 
    // load Parts when click Filter
    const handleClickFilter = () => {
@@ -213,7 +223,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
          PaperProps={{ sx: { borderRadius: '10px' } }}
       >
          <Grid container sx={{ padding: '40px' }}>
-            <Grid container>
+            <Grid container sx={{ marginBottom: '7px' }}>
                <Grid spacing={1} container xs={10}>
                   <Grid item xs={3}>
                      <TextField
@@ -414,6 +424,32 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      style={{ objectFit: 'cover', borderRadius: '5px' }}
                      onClick={() => handleOpenImageDialog(imageUrl)}
                   />
+               </Grid>
+            </Grid>
+            <Grid container spacing={2} sx={{ marginBottom: '7px' }}>
+               <Grid item xs={4} sx={{ zIndex: 10, height: 25 }}>
+                  <AppAutocomplete
+                     options={initDataFilter.orderNos}
+                     label="OrderNo"
+                     sx={{ height: 25, zIndex: 10 }}
+                     onChange={(e, option) => handleChangeDataFilter(option, 'orderNumbers')}
+                     limitTags={1}
+                     disableListWrap
+                     primaryKeyOption="value"
+                     multiple
+                     disableCloseOnSelect
+                     renderOption={(prop, option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value}`}
+                  />
+               </Grid>
+               <Grid item xs={2}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClickFilter}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Filter
+                  </Button>
                </Grid>
             </Grid>
             <Grid xs={12}>
