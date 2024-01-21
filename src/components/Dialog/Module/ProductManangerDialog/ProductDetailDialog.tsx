@@ -31,6 +31,7 @@ import {
    iconColumn,
 } from '@/utils/columnProperties';
 import ImageIcon from '@mui/icons-material/Image';
+import PartImageTooltip from '@/components/App/Tooltip/ImageTootip/Part';
 
 const ProductDetailDialog: React.FC<any> = (props) => {
    const { open, onClose, data } = props;
@@ -143,11 +144,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
          ...centerHeaderColumn,
          ...iconColumn,
          renderCell(params) {
-            return (
-               <Tooltip title="Add" placement="top-start" arrow>
-                  <ImageIcon />
-               </Tooltip>
-            );
+            return <PartImageTooltip />;
          },
       },
       {
