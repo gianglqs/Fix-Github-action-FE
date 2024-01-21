@@ -30,7 +30,6 @@ import {
    formatNumbericColumn,
    iconColumn,
 } from '@/utils/columnProperties';
-import { PartCellImage } from '@/components/App/Image/Cell/PartCell';
 import ImageIcon from '@mui/icons-material/Image';
 
 const ProductDetailDialog: React.FC<any> = (props) => {
