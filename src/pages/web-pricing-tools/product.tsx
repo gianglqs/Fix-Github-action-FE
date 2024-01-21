@@ -250,7 +250,6 @@ export default function Product() {
 
    const handleOpenProductDetailDialog = (row) => {
       const data = selectDataRowById(listProduct, 'modelCode', row.id);
-      console.log(' data product ', data);
       data &&
          setProductDetailState({
             open: true,
