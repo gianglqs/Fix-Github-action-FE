@@ -32,6 +32,10 @@ class ProductApi extends HttpService<any> {
    getProductDetailFilter = (modelCode) => {
       return this.get<any>('filters/productDetail', { modelCode });
    };
+
+   getProductDetail = (modelCode) => {
+      return this.get<any>('product/getProductDetail', { modelCode });
+   };
 }
 
 const bookingApi = new ProductApi('product');
