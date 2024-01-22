@@ -722,30 +722,6 @@ export default function Booking() {
                      columns={columns}
                      getRowId={(params) => params.orderNo}
                   />
-                  {/* {loading ? (
-                     <div
-                        style={{
-                           top: 0,
-                           left: 0,
-                           right: 0,
-                           bottom: 0,
-                           backgroundColor: 'rgba(0,0,0, 0.3)',
-                           position: 'absolute',
-                           display: 'flex',
-                           justifyContent: 'center',
-                           alignItems: 'center',
-                           zIndex: 1001,
-                        }}
-                     >
-                        <CircularProgress
-                           color="info"
-                           size={60}
-                           sx={{
-                              position: 'relative',
-                           }}
-                        />
-                     </div>
-                  ) : null} */}
                </Grid>
                <DataGridPro
                   sx={rowColor}
