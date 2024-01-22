@@ -1,27 +1,11 @@
 import { useDispatch } from 'react-redux';
-import { AppDialog } from '../AppDialog/AppDialog';
 import { useEffect, useState } from 'react';
-import {
-   Button,
-   Dialog,
-   Grid,
-   Paper,
-   TextField,
-   Tooltip,
-   Typography,
-   useMediaQuery,
-   useTheme,
-} from '@mui/material';
-import { useForm } from 'react-hook-form';
-import { AppAutocomplete, AppTextField } from '@/components/App';
-import { commonStore, partStore, productStore } from '@/store/reducers';
-import ChooseImage from '@/components/App/chooseImage';
+import { Button, Dialog, Grid, Paper, TextField } from '@mui/material';
+import { AppAutocomplete } from '@/components/App';
+import { commonStore, productStore } from '@/store/reducers';
 import productApi from '@/api/product.api';
-import Image from 'next/image';
 import { DataTable, DataTablePagination } from '@/components/DataTable';
 import { GridToolbar } from '@mui/x-data-grid-pro';
-import { useSelector } from 'react-redux';
-import { defaultValueFilterPart } from '@/utils/defaultValues';
 import { getPartImagePath, getProductImagePath } from '@/utils/imagePath';
 import partApi from '@/api/part.api';
 import { formatNumber } from '@/utils/formatCell';
@@ -31,7 +15,6 @@ import {
    formatNumbericColumn,
    iconColumn,
 } from '@/utils/columnProperties';
-import ImageIcon from '@mui/icons-material/Image';
 import PartImageTooltip from '@/components/App/Tooltip/ImageTootip/Part';
 import { produce } from 'immer';
 
@@ -40,40 +23,34 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    // ======== info product detail ========
    const [modelCode, setModelCode] = useState();
-   const [brand, setBrand] = useState();
-   const [truckType, setTruckType] = useState();
-   const [plant, setPlant] = useState();
-   const [metaSeries, setMetaseries] = useState();
-   const [segment, setSegment] = useState();
-   const [family, setFamily] = useState();
-   const [clazz, setClazz] = useState();
-   const [description, setDescription] = useState();
-   const [image, setImage] = useState();
+   const [productDetail, setProductDetail] = useState(null);
 
-   // get imageUrl
-   const imageUrl = getProductImagePath(image);
+   // get defaultImage
+   const defaultProductImage = getProductImagePath(null);
+   const defaultPartImage = getPartImagePath(null);
 
    useEffect(() => {
-      if (data) {
-         setModelCode(data.modelCode);
-         setBrand(data.brand);
-         setTruckType(data.truckType);
-         setPlant(data.plant);
-         setMetaseries(data.metaSeries);
-         setSegment(data.segment);
-         setFamily(data.family);
-         setClazz(data.clazz);
-         setDescription(data.description);
-         setImage(data.image);
-      }
+      setModelCode(data?.modelCode);
    }, [data]);
+
+   //get ProductDetail
+   useEffect(() => {
+      if (modelCode) {
+         productApi
+            .getProductDetail(modelCode)
+            .then((response) => {
+               setProductDetail(JSON.parse(String(response.data)));
+            })
+            .catch((error) => {
+               console.log(error);
+            });
+      }
+   }, [modelCode]);
 
    // ======== for list Part =========
 
    let heightTable = 338;
    const dispatch = useDispatch();
-
-   const tableState = useSelector(commonStore.selectTableState);
 
    const [listPart, setListPart] = useState([]);
    const [initDataFilter, setInitDataFilter] = useState({} as any);
@@ -82,15 +59,17 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       orderNumbers: [],
    });
    const [pageNo, setPageNo] = useState(1);
-   const [perPage, setPerPage] = useState(50);
+   const [perPage, setPerPage] = useState(20);
    const [totalItems, setTotalItems] = useState();
 
-   // set data filter when open parts
+   // set modelCode in data filter part
    useEffect(() => {
-      modelCode && setDataFilterForGetParts((prev) => ({ ...prev, modelCode: modelCode }));
+      if (modelCode) {
+         setDataFilterForGetParts((prev) => ({ ...prev, modelCode: modelCode }));
+      }
    }, [modelCode]);
 
-   // for OrderNo filter
+   // get orderNo filter
    useEffect(() => {
       if (modelCode) {
          productApi
@@ -104,12 +83,13 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       }
    }, [modelCode]);
 
-   // get ListPart
+   // get ListPart and totalItems
    const getDataPartByFilter = () => {
       partApi
          .getPartsForProductDetail(dataFilterForGetParts, { pageNo, perPage })
          .then((response) => {
             setListPart(response.data.listPart);
+            setTotalItems(response.data.totalItems);
          })
          .catch((error) => {
             console.log(error);
@@ -120,6 +100,11 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    useEffect(() => {
       getDataPartByFilter();
    }, [dataFilterForGetParts]);
+
+   // Load Parts when change pageNo and perPage
+   useEffect(() => {
+      getDataPartByFilter();
+   }, [pageNo, perPage]);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilterForGetParts((prev) =>
@@ -135,13 +120,11 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    };
 
    const handleChangePage = (pageNo: number) => {
-      dispatch(commonStore.actions.setTableState({ pageNo }));
-      dispatch(productStore.sagaGetList());
+      setPageNo(pageNo);
    };
 
    const handleChangePerPage = (perPage: number) => {
-      dispatch(commonStore.actions.setTableState({ perPage }));
-      handleChangePage(1);
+      setPerPage(perPage);
    };
 
    const columns = [
@@ -198,20 +181,11 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    // reset when CLOSE dialog
    const resetData = () => {
-      setModelCode(null);
-      setBrand(null);
-      setTruckType(null);
-      setPlant(null);
-      setMetaseries(null);
-      setSegment(null);
-      setFamily(null);
-      setClazz(null);
-      setDescription(null);
-      setImage(null);
       setPageNo(1);
-      setPerPage(50);
+      setPerPage(20);
       setTotalItems(null);
    };
+   1;
 
    return (
       <Dialog
@@ -229,7 +203,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      <TextField
                         id="outlined-read-only-input"
                         label="Model Code"
-                        value={modelCode}
+                        value={productDetail?.modelCode}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
@@ -250,7 +224,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      <TextField
                         id="outlined-read-only-input"
                         label="Brand"
-                        value={brand}
+                        value={productDetail?.brand}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
@@ -271,7 +245,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      <TextField
                         id="outlined-read-only-input"
                         label="Truck Type"
-                        value={truckType}
+                        value={productDetail?.truckType}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
@@ -292,7 +266,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      <TextField
                         id="outlined-read-only-input"
                         label="Plant"
-                        value={plant}
+                        value={productDetail?.plant}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
@@ -313,7 +287,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      <TextField
                         id="outlined-read-only-input"
                         label="MetaSeries"
-                        value={metaSeries}
+                        value={productDetail?.metaSeries}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
@@ -334,7 +308,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      <TextField
                         id="outlined-read-only-input"
                         label="Segment"
-                        value={segment}
+                        value={productDetail?.segment}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
@@ -355,7 +329,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      <TextField
                         id="outlined-read-only-input"
                         label="Family"
-                        value={family}
+                        value={productDetail?.family}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
@@ -376,7 +350,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      <TextField
                         id="outlined-read-only-input"
                         label="Class"
-                        value={clazz}
+                        value={productDetail?.clazz}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
@@ -397,7 +371,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      <TextField
                         id="outlined-read-only-input"
                         label="Description"
-                        value={description}
+                        value={productDetail?.description}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
@@ -418,11 +392,21 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                </Grid>
                <Grid container xs={2} style={{ paddingLeft: '15px', overflow: 'hidden' }}>
                   <img
-                     src={imageUrl}
+                     src={
+                        productDetail?.image
+                           ? `data:image/png;base64,${productDetail.image}`
+                           : defaultProductImage
+                     }
                      height={'100%'}
                      width={'100%'}
                      style={{ objectFit: 'cover', borderRadius: '5px' }}
-                     onClick={() => handleOpenImageDialog(imageUrl)}
+                     onClick={() =>
+                        handleOpenImageDialog(
+                           productDetail?.image
+                              ? `data:image/png;base64,${productDetail.image}`
+                              : defaultProductImage
+                        )
+                     }
                   />
                </Grid>
             </Grid>
@@ -474,6 +458,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                         rowBuffer={35}
                         rowThreshold={25}
                         columns={columns}
+                        checkboxSelection
                         getRowId={(params) => params.id}
                      />
                   </Grid>
