@@ -8,6 +8,7 @@ import { shipmentStore, commonStore } from '@/store/reducers';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import {
+   Backdrop,
    Button,
    CircularProgress,
    FormControlLabel,
@@ -774,7 +775,7 @@ export default function Shipment() {
                      columns={columns}
                      getRowId={(params) => params.orderNo}
                   />
-                  {loading ? (
+                  {/* {loading ? (
                      <div
                         style={{
                            top: 0,
@@ -797,7 +798,7 @@ export default function Shipment() {
                            }}
                         />
                      </div>
-                  ) : null}
+                  ) : null} */}
                </Grid>
                <DataGridPro
                   sx={rowColor}
@@ -823,6 +824,12 @@ export default function Shipment() {
                />
             </Paper>
          </AppLayout>
+         <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={loading}
+         >
+            <CircularProgress color="inherit" />
+         </Backdrop>
       </>
    );
 }
