@@ -279,6 +279,11 @@ export default function Product() {
       });
    };
 
+   // handle prevent open ProductDetail Dialog when click button edit
+   const handleOnCellClick = (params, event) => {
+      if (params.field === '') event.stopPropagation();
+   };
+
    return (
       <>
          <AppLayout entity="product">
@@ -488,6 +493,7 @@ export default function Product() {
                      columns={columns}
                      getRowId={(params) => params.modelCode}
                      onRowClick={handleOpenProductDetailDialog}
+                     onCellClick={handleOnCellClick}
                   />
                </Grid>
 
