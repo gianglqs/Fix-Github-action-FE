@@ -2,7 +2,6 @@ import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { Button, Dialog, Grid, Paper, TextField } from '@mui/material';
 import { AppAutocomplete } from '@/components/App';
-import { commonStore, productStore } from '@/store/reducers';
 import productApi from '@/api/product.api';
 import { DataTable, DataTablePagination } from '@/components/DataTable';
 import { GridToolbar } from '@mui/x-data-grid-pro';
@@ -84,9 +83,9 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    }, [modelCode]);
 
    // get ListPart and totalItems
-   const getDataPartByFilter = () => {
+   const getDataPartByFilter = (filter) => {
       partApi
-         .getPartsForProductDetail(dataFilterForGetParts, { pageNo, perPage })
+         .getPartsForProductDetail(filter, { pageNo, perPage })
          .then((response) => {
             setListPart(response.data.listPart);
             setTotalItems(response.data.totalItems);
@@ -98,12 +97,12 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    //load Parts when open Dialog (when setup dataFilterForGetParts is successfully)
    useEffect(() => {
-      getDataPartByFilter();
-   }, [dataFilterForGetParts]);
+      getDataPartByFilter({ modelCode: modelCode });
+   }, [modelCode]);
 
    // Load Parts when change pageNo and perPage
    useEffect(() => {
-      getDataPartByFilter();
+      getDataPartByFilter(dataFilterForGetParts);
    }, [pageNo, perPage]);
 
    const handleChangeDataFilter = (option, field) => {
@@ -116,7 +115,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    // load Parts when click Filter
    const handleClickFilter = () => {
-      getDataPartByFilter();
+      getDataPartByFilter(dataFilterForGetParts);
    };
 
    const handleChangePage = (pageNo: number) => {
