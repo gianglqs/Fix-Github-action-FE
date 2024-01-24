@@ -2,14 +2,12 @@ export const defaultPartImage = require('@/public/images/defaultPartImage.png');
 export const defaultProductImage = require('@/public/images/defaultProductImage.png');
 
 export const getProductImagePath = (imageName) => {
-   if (checkNoneEmptyString(imageName))
-      return process.env.NEXT_PUBLIC_BACKEND_URL + 'loadImage/product/' + imageName;
+   if (checkNoneEmptyString(imageName)) return process.env.NEXT_PUBLIC_SERVER + imageName;
    return defaultProductImage;
 };
 
 export const getPartImagePath = (imageName) => {
-   if (checkNoneEmptyString(imageName))
-      return process.env.NEXT_PUBLIC_BACKEND_URL + 'loadImage/part/' + imageName;
+   if (checkNoneEmptyString(imageName)) return process.env.NEXT_PUBLIC_SERVER + imageName;
    return defaultPartImage;
 };
 

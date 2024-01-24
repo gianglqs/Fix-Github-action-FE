@@ -24,10 +24,6 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    const [modelCode, setModelCode] = useState();
    const [productDetail, setProductDetail] = useState(null);
 
-   // get defaultImage
-   const defaultProductImage = getProductImagePath(null);
-   const defaultPartImage = getPartImagePath(null);
-
    useEffect(() => {
       setModelCode(data?.modelCode);
    }, [data]);
@@ -391,20 +387,12 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                </Grid>
                <Grid container xs={2} style={{ paddingLeft: '15px', overflow: 'hidden' }}>
                   <img
-                     src={
-                        productDetail?.image
-                           ? `data:image/png;base64,${productDetail.image}`
-                           : defaultProductImage
-                     }
+                     src={getProductImagePath(productDetail?.image)}
                      height={'100%'}
                      width={'100%'}
                      style={{ objectFit: 'cover', borderRadius: '5px' }}
                      onClick={() =>
-                        handleOpenImageDialog(
-                           productDetail?.image
-                              ? `data:image/png;base64,${productDetail.image}`
-                              : defaultProductImage
-                        )
+                        handleOpenImageDialog(getProductImagePath(productDetail?.image))
                      }
                   />
                </Grid>
