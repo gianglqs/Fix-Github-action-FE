@@ -95,7 +95,8 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
                   name="description"
                   id="outlined-required"
                   label="Description"
-                  defaultValue={newValue.description}
+                  defaultValue=" "
+                  value={newValue.description}
                   onChange={(e) =>
                      setNewValue((prev) => ({ ...prev, description: e.target.value }))
                   }
