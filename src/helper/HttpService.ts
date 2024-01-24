@@ -176,6 +176,15 @@ class HttpService<GetList = any> {
       this.saveToken(context);
       return this.instance.put<T>(endpoint, data);
    };
+
+   updateFile = <T = any>(
+      endpoint: string,
+      data = {} as Record<string, any>,
+      context: GetServerSidePropsContext = null as any
+   ) => {
+      this.setHeaderForApiTransferFile(context);
+      return this.instance.put<T>(endpoint, data);
+   };
 }
 
 export default HttpService;

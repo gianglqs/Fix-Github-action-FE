@@ -10,6 +10,7 @@ import trends from './trends.reducer';
 import adjustment from './adjustment.reducer';
 import competitorColor from './competitorColor.reducer';
 import product from './product.reducer';
+import part from './part.reducer';
 
 const rootReducers = combineReducers({
    [common.name]: common.reducer,
@@ -23,6 +24,7 @@ const rootReducers = combineReducers({
    [adjustment.name]: adjustment.reducer,
    [competitorColor.name]: competitorColor.reducer,
    [product.name]: product.reducer,
+   [part.name]: part.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;

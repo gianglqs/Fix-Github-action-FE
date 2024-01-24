@@ -12,6 +12,7 @@ import {
    AppAutocomplete,
    AppLayout,
    AppTextField,
+   DataTable,
    DataTablePagination,
    EditIcon,
 } from '@/components';
@@ -20,7 +21,7 @@ import _ from 'lodash';
 import { produce } from 'immer';
 
 import { defaultValueFilterProduct } from '@/utils/defaultValues';
-import { DataGridPro, GridCellParams, GridToolbar } from '@mui/x-data-grid-pro';
+import { GridToolbar } from '@mui/x-data-grid-pro';
 
 import ClearIcon from '@mui/icons-material/Clear';
 import React from 'react';
@@ -30,6 +31,10 @@ import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 
 import { GetServerSidePropsContext } from 'next';
 import { iconColumn } from '@/utils/columnProperties';
+import { DialogUpdateProduct } from '@/components/Dialog/Module/ProductManangerDialog/UpdateDialog';
+import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
+import { selectDataRowById } from '@/utils/selectRowById';
+import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -127,34 +132,35 @@ export default function Product() {
          headerName: 'Truck Type',
       },
       {
-         field: 'image',
-         flex: 0.4,
-         headerName: 'Image',
-         renderCell(params) {
-            return <span>{params.row.model}</span>;
-         },
-      },
-      {
          field: 'description',
          flex: 1,
          headerName: 'Description',
       },
       {
          ...iconColumn,
-         field: 'id',
          headerName: 'Edit',
          flex: 0.2,
          renderCell(params) {
-            return <EditIcon /*onClick={() => handleOpenUpdateColorDialog(params.row.id)}*/ />;
+            return (
+               <EditIcon
+                  onClick={() =>
+                     handleOpenUpdateColorDialog(
+                        params.row.modelCode,
+                        params.row.image,
+                        params.row.description
+                     )
+                  }
+               />
+            );
          },
       },
    ];
 
-   let heightTable = 263;
+   let heightTable = 198;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
    if (userRole === 'ADMIN') {
-      heightTable = 298;
+      heightTable = 233;
    }
    useEffect(() => {
       setUserRoleState(userRole);
@@ -200,6 +206,82 @@ export default function Product() {
    const handleRemove = (fileName) => {
       const updateUploaded = uploadedFile.filter((file) => file.name != fileName);
       setUploadedFile(updateUploaded);
+   };
+
+   const [updateProductState, setUpdateProductState] = useState({
+      open: false,
+      preValue: {} as any,
+   });
+
+   const handleOpenUpdateColorDialog = async (modelCode: string, imageUrl: string, des: string) => {
+      try {
+         // Open form
+         setUpdateProductState({
+            open: true,
+            preValue: {
+               modelCode: modelCode,
+               image: imageUrl,
+               description: des,
+            },
+         });
+      } catch (error) {
+         // dispatch(commonStore.actions.setErrorMessage(error))
+      }
+   };
+
+   const handleCloseUpdateProductDialog = () => {
+      setUpdateProductState({
+         open: false,
+         preValue: {},
+      });
+   };
+
+   // ===== show Product detail =======
+   const [productDetailState, setProductDetailState] = useState({
+      open: false,
+      data: null,
+   });
+
+   const handleCloseProductDetail = () => {
+      setProductDetailState({
+         open: false,
+         data: null,
+      });
+   };
+
+   const handleOpenProductDetailDialog = (row) => {
+      const data = selectDataRowById(listProduct, 'modelCode', row.id);
+      data &&
+         setProductDetailState({
+            open: true,
+            data: data[0],
+         });
+   };
+
+   // ===== show Image ======/
+   const [imageDialogState, setImageDialogState] = useState({
+      open: false,
+      imageUrl: null,
+   });
+
+   const handleOpenImageDialog = (imageUrl) => {
+      imageUrl &&
+         setImageDialogState({
+            open: true,
+            imageUrl: imageUrl,
+         });
+   };
+
+   const handleCloseImageDialog = () => {
+      setImageDialogState({
+         open: false,
+         imageUrl: null,
+      });
+   };
+
+   // handle prevent open ProductDetail Dialog when click button edit
+   const handleOnCellClick = (params, event) => {
+      if (params.field === '') event.stopPropagation();
    };
 
    return (
@@ -389,8 +471,8 @@ export default function Product() {
             </When>
 
             <Paper elevation={1} sx={{ marginTop: 2 }}>
-               <Grid container sx={{ height: `calc(100vh - ${heightTable}px)` }}>
-                  <DataGridPro
+               <Grid container>
+                  <DataTable
                      hideFooter
                      disableColumnMenu
                      sx={{
@@ -399,6 +481,7 @@ export default function Product() {
                            lineHeight: 1.2,
                         },
                      }}
+                     tableHeight={`calc(100vh - ${heightTable}px)`}
                      columnHeaderHeight={60}
                      rowHeight={30}
                      slots={{
@@ -409,31 +492,9 @@ export default function Product() {
                      rowThreshold={25}
                      columns={columns}
                      getRowId={(params) => params.modelCode}
+                     onRowClick={handleOpenProductDetailDialog}
+                     onCellClick={handleOnCellClick}
                   />
-                  {loading ? (
-                     <div
-                        style={{
-                           top: 0,
-                           left: 0,
-                           right: 0,
-                           bottom: 0,
-                           backgroundColor: 'rgba(0,0,0, 0.3)',
-                           position: 'absolute',
-                           display: 'flex',
-                           justifyContent: 'center',
-                           alignItems: 'center',
-                           zIndex: 1001,
-                        }}
-                     >
-                        <CircularProgress
-                           color="info"
-                           size={60}
-                           sx={{
-                              position: 'relative',
-                           }}
-                        />
-                     </div>
-                  ) : null}
                </Grid>
 
                <DataTablePagination
@@ -445,6 +506,13 @@ export default function Product() {
                />
             </Paper>
          </AppLayout>
+         <DialogUpdateProduct {...updateProductState} onClose={handleCloseUpdateProductDialog} />
+         <ProductDetailDialog
+            {...productDetailState}
+            handleOpenImageDialog={handleOpenImageDialog}
+            onClose={handleCloseProductDetail}
+         />
+         <ShowImageDialog {...imageDialogState} onClose={handleCloseImageDialog} />
       </>
    );
 }

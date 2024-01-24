@@ -55,3 +55,8 @@ export const defaultValueFilterProduct = {
    family: [],
    truckType: [],
 } as any;
+
+export const defaultValueFilterPart = {
+   modelCode: '',
+   orderNumbers: [],
+} as any;
