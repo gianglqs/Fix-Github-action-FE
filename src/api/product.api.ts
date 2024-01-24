@@ -19,6 +19,23 @@ class ProductApi extends HttpService<any> {
       this.saveToken(context);
       return this.instance.post<T>(`product/getData`, data, { params, responseType });
    };
+
+   updateProduct = (data: any) => {
+      return this.updateFile<any>(`product/updateProduct`, data);
+   };
+
+   // hashName of image are saved in DB
+   getImage = (imageName: any) => {
+      return this.get<any>(`loadImage/product/${imageName}`);
+   };
+
+   getProductDetailFilter = (modelCode) => {
+      return this.get<any>('filters/productDetail', { modelCode });
+   };
+
+   getProductDetail = (modelCode) => {
+      return this.get<any>('product/getProductDetail', { modelCode });
+   };
 }
 
 const bookingApi = new ProductApi('product');
