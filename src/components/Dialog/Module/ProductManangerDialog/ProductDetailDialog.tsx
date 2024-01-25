@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { Button, Dialog, Grid, Paper, TextField } from '@mui/material';
-import { AppAutocomplete } from '@/components/App';
+import { AppAutocomplete, AppTextField } from '@/components/App';
 import productApi from '@/api/product.api';
 import { DataTable, DataTablePagination } from '@/components/DataTable';
 import { GridToolbar } from '@mui/x-data-grid-pro';
@@ -44,7 +44,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    // ======== for list Part =========
 
-   let heightTable = 338;
+   let heightTable = 415;
 
    const [listPart, setListPart] = useState([]);
    const [initDataFilter, setInitDataFilter] = useState({} as any);
@@ -110,6 +110,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    // load Parts when click Filter
    const handleClickFilter = () => {
+      setPageNo(1);
       getDataPartByFilter(dataFilterForGetParts);
    };
 
@@ -363,15 +364,15 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      />
                   </Grid>
                   <Grid item xs={12}>
-                     <TextField
+                     <AppTextField
                         id="outlined-read-only-input"
                         label="Description"
                         value={productDetail?.description}
                         defaultValue=" "
+                        rows={3}
                         InputProps={{
                            readOnly: true,
                            style: {
-                              height: '30px',
                               fontSize: 15,
                            },
                         }}
