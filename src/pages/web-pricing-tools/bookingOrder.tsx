@@ -369,8 +369,8 @@ export default function Booking() {
    let heightTable = 263;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
-   if (userRole === 'ADMIN') {
-      heightTable = 298;
+   if (userRoleState === 'ADMIN') {
+      heightTable = 309;
    }
    useEffect(() => {
       setUserRoleState(userRole);
