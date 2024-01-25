@@ -412,12 +412,12 @@ export default function Shipment() {
    ];
 
    let cookies = parseCookies();
-   let heightTable = 263;
+   let heightComponentExcludingTable = 293;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
 
-   if (userRole === 'ADMIN') {
-      heightTable = 298;
+   if (userRoleState === 'ADMIN') {
+      heightComponentExcludingTable = 329;
    }
    useEffect(() => {
       setUserRoleState(userRole);
@@ -754,7 +754,7 @@ export default function Shipment() {
             )}
 
             <Paper elevation={1} sx={{ marginTop: 2 }}>
-               <Grid container sx={{ height: `calc(100vh - ${heightTable}px)` }}>
+               <Grid container sx={{ height: `calc(100vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter
                      disableColumnMenu

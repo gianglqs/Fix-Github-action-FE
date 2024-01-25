@@ -156,11 +156,11 @@ export default function Product() {
       },
    ];
 
-   let heightTable = 198;
+   let heightComponentExcludingTable = 218;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
-   if (userRole === 'ADMIN') {
-      heightTable = 233;
+   if (userRoleState === 'ADMIN') {
+      heightComponentExcludingTable = 253;
    }
    useEffect(() => {
       setUserRoleState(userRole);
@@ -481,7 +481,7 @@ export default function Product() {
                            lineHeight: 1.2,
                         },
                      }}
-                     tableHeight={`calc(100vh - ${heightTable}px)`}
+                     tableHeight={`calc(100vh - ${heightComponentExcludingTable}px)`}
                      columnHeaderHeight={60}
                      rowHeight={30}
                      slots={{
