@@ -45,7 +45,6 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    // ======== for list Part =========
 
    let heightTable = 338;
-   const dispatch = useDispatch();
 
    const [listPart, setListPart] = useState([]);
    const [initDataFilter, setInitDataFilter] = useState({} as any);
