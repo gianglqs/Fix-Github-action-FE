@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 export const formatNumber = (num: any) => {
    if (typeof num === 'number' && num != Infinity && num != -Infinity && !isNaN(num)) {
       num /= 1000;
@@ -22,6 +24,9 @@ export const formatNumberPercentage = (num: any) => {
    }
 };
 
-export const formatDate = (calendar: String) => {
-   if (typeof calendar === 'string') return calendar.substring(0, 10);
+export const formatDate = (calendar) => {
+   if (calendar) {
+      var date = new Date(calendar);
+      return format(date, 'dd-MM-yyyy');
+   }
 };
