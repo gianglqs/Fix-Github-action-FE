@@ -89,6 +89,16 @@ export default function Product() {
 
    const tableState = useSelector(commonStore.selectTableState);
 
+   let heightComponentExcludingTable = 218;
+   const { userRole } = useContext(UserInfoContext);
+   const [userRoleState, setUserRoleState] = useState('');
+   if (userRoleState === 'ADMIN') {
+      heightComponentExcludingTable = 253;
+   }
+   useEffect(() => {
+      setUserRoleState(userRole);
+   });
+
    const columns = [
       {
          field: 'modelCode',
@@ -137,7 +147,8 @@ export default function Product() {
          flex: 1,
          headerName: 'Description',
       },
-      {
+
+      userRoleState === 'ADMIN' && {
          ...iconColumn,
          headerName: 'Edit',
          flex: 0.2,
@@ -156,16 +167,6 @@ export default function Product() {
          },
       },
    ];
-
-   let heightComponentExcludingTable = 218;
-   const { userRole } = useContext(UserInfoContext);
-   const [userRoleState, setUserRoleState] = useState('');
-   if (userRoleState === 'ADMIN') {
-      heightComponentExcludingTable = 253;
-   }
-   useEffect(() => {
-      setUserRoleState(userRole);
-   });
 
    const handleUploadFile = async (files) => {
       let formData = new FormData();
