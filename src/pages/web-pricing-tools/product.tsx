@@ -156,11 +156,11 @@ export default function Product() {
       },
    ];
 
-   let heightTable = 198;
+   let heightTable = 218;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
-   if (userRole === 'ADMIN') {
-      heightTable = 233;
+   if (userRoleState === 'ADMIN') {
+      heightTable = 253;
    }
    useEffect(() => {
       setUserRoleState(userRole);

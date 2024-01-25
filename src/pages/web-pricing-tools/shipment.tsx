@@ -412,12 +412,12 @@ export default function Shipment() {
    ];
 
    let cookies = parseCookies();
-   let heightTable = 263;
+   let heightTable = 293;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
 
    if (userRoleState === 'ADMIN') {
-      heightTable = 309;
+      heightTable = 329;
    }
    useEffect(() => {
       setUserRoleState(userRole);
