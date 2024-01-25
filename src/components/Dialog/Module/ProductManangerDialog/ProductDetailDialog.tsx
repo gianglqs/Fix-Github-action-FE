@@ -178,6 +178,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       setPageNo(1);
       setPerPage(20);
       setTotalItems(null);
+      setProductDetail(null);
    };
    1;
 
