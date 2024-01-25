@@ -758,7 +758,7 @@ export default function Adjustment() {
             </Grid>
 
             <Paper elevation={1} sx={{ marginTop: 2 }}>
-               <Grid container sx={{ height: 'calc(100vh - 263px)' }}>
+               <Grid container sx={{ height: 'calc(100vh - 283px)' }}>
                   <DataGridPro
                      sx={{
                         '& .MuiDataGrid-cell': {

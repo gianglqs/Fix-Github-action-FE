@@ -366,11 +366,11 @@ export default function Booking() {
       },
    ];
 
-   let heightTable = 263;
+   let heightComponentExcludingTable = 293;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
    if (userRoleState === 'ADMIN') {
-      heightTable = 309;
+      heightComponentExcludingTable = 330;
    }
    useEffect(() => {
       setUserRoleState(userRole);
@@ -710,7 +710,7 @@ export default function Booking() {
             </When>
 
             <Paper elevation={1} sx={{ marginTop: 2 }}>
-               <Grid container sx={{ height: `calc(100vh - ${heightTable}px)` }}>
+               <Grid container sx={{ height: `calc(100vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter
                      disableColumnMenu
