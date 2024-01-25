@@ -391,7 +391,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      src={getProductImagePath(productDetail?.image)}
                      height={'100%'}
                      width={'100%'}
-                     style={{ objectFit: 'cover', borderRadius: '5px' }}
+                     style={{ objectFit: 'cover', borderRadius: '5px', maxHeight: '180px' }}
                      onClick={() =>
                         handleOpenImageDialog(getProductImagePath(productDetail?.image))
                      }
