@@ -447,7 +447,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                         rowThreshold={25}
                         columns={columns}
                         checkboxSelection
-                        getRowId={(params) => params.partNumber}
+                        getRowId={(params) => params.id}
                      />
                   </Grid>
 
