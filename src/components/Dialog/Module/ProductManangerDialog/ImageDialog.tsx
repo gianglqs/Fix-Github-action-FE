@@ -8,8 +8,8 @@ export default function ShowImageDialog(props) {
       setImage(imageUrl);
    }, [imageUrl]);
    return (
-      <Dialog fullWidth={true} maxWidth="lg" open={open} onClose={onClose}>
-         <img src={image} />
+      <Dialog maxWidth="lg" open={open} onClose={onClose}>
+         <img src={image} style={{ objectFit: 'contain' }} width={'100%'} height={'100%'} />
       </Dialog>
    );
 }
