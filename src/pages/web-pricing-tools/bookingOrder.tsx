@@ -43,6 +43,8 @@ import bookingApi from '@/api/booking.api';
 
 import { GetServerSidePropsContext } from 'next';
 import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
+import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
+import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -437,6 +439,55 @@ export default function Booking() {
       });
    }, [listBookingOrder, listTotalRow, currency]);
 
+   // ===== show Product detail =======
+   const [productDetailState, setProductDetailState] = useState({
+      open: false,
+      model: null,
+      orderNo: null,
+   });
+
+   const handleCloseProductDetail = () => {
+      setProductDetailState({
+         open: false,
+         model: null,
+         orderNo: null,
+      });
+   };
+
+   // ===== show Image ======/
+   const [imageDialogState, setImageDialogState] = useState({
+      open: false,
+      imageUrl: null,
+   });
+
+   const handleOpenImageDialog = (imageUrl) => {
+      imageUrl &&
+         setImageDialogState({
+            open: true,
+            imageUrl: imageUrl,
+         });
+   };
+
+   const handleCloseImageDialog = () => {
+      setImageDialogState({
+         open: false,
+         imageUrl: null,
+      });
+   };
+
+   // handle prevent open ProductDetail Dialog when click button edit
+   const handleOnCellClick = (params, event) => {
+      console.log(params.row.productdimension?.modelCode);
+      console.log(params.id);
+      if (params.field === 'model') {
+         event.stopPropagation();
+         setProductDetailState({
+            open: true,
+            model: params.row.productDimension?.modelCode,
+            orderNo: params.id,
+         });
+      }
+   };
    return (
       <>
          <AppLayout entity="booking">
@@ -730,6 +781,7 @@ export default function Booking() {
                      rowThreshold={25}
                      columns={columns}
                      getRowId={(params) => params.orderNo}
+                     onCellClick={handleOnCellClick}
                   />
                </Grid>
                <DataGridPro
@@ -757,6 +809,12 @@ export default function Booking() {
                />
             </Paper>
          </AppLayout>
+         <ProductDetailDialog
+            {...productDetailState}
+            handleOpenImageDialog={handleOpenImageDialog}
+            onClose={handleCloseProductDetail}
+         />
+         <ShowImageDialog {...imageDialogState} onClose={handleCloseImageDialog} />
          <Backdrop
             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={loading}

@@ -18,15 +18,15 @@ import PartImageTooltip from '@/components/App/Tooltip/ImageTootip/Part';
 import { produce } from 'immer';
 
 const ProductDetailDialog: React.FC<any> = (props) => {
-   const { open, onClose, data, handleOpenImageDialog } = props;
+   const { open, onClose, model, handleOpenImageDialog } = props;
 
    // ======== info product detail ========
    const [modelCode, setModelCode] = useState();
    const [productDetail, setProductDetail] = useState(null);
 
    useEffect(() => {
-      setModelCode(data?.modelCode);
-   }, [data]);
+      setModelCode(model);
+   }, [model]);
 
    //get ProductDetail
    useEffect(() => {
