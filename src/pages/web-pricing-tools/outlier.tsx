@@ -101,7 +101,7 @@ export default function Outlier() {
          flex: 0.5,
          headerName: 'Region',
          renderCell(params) {
-            return <span>{params.row.region.region}</span>;
+            return <span>{params.row.region.regionName}</span>;
          },
       },
       {
@@ -133,7 +133,7 @@ export default function Outlier() {
          flex: 0.6,
          headerName: 'Models',
          renderCell(params) {
-            return <span>{params.row.productDimension.model}</span>;
+            return <span>{params.row.productDimension.modelCode}</span>;
          },
       },
       {
