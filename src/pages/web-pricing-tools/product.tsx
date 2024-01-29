@@ -241,13 +241,13 @@ export default function Product() {
    // ===== show Product detail =======
    const [productDetailState, setProductDetailState] = useState({
       open: false,
-      data: null,
+      model: null,
    });
 
    const handleCloseProductDetail = () => {
       setProductDetailState({
          open: false,
-         data: null,
+         model: null,
       });
    };
 
@@ -256,7 +256,7 @@ export default function Product() {
       data &&
          setProductDetailState({
             open: true,
-            data: data[0],
+            model: data[0].modelCode,
          });
    };
 
