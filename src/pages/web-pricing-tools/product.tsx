@@ -35,6 +35,7 @@ import { DialogUpdateProduct } from '@/components/Dialog/Module/ProductManangerD
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
 import { selectDataRowById } from '@/utils/selectRowById';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
+import productApi from '@/api/product.api';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -88,6 +89,16 @@ export default function Product() {
 
    const tableState = useSelector(commonStore.selectTableState);
 
+   let heightComponentExcludingTable = 218;
+   const { userRole } = useContext(UserInfoContext);
+   const [userRoleState, setUserRoleState] = useState('');
+   if (userRoleState === 'ADMIN') {
+      heightComponentExcludingTable = 253;
+   }
+   useEffect(() => {
+      setUserRoleState(userRole);
+   });
+
    const columns = [
       {
          field: 'modelCode',
@@ -136,7 +147,8 @@ export default function Product() {
          flex: 1,
          headerName: 'Description',
       },
-      {
+
+      userRoleState === 'ADMIN' && {
          ...iconColumn,
          headerName: 'Edit',
          flex: 0.2,
@@ -156,35 +168,25 @@ export default function Product() {
       },
    ];
 
-   let heightTable = 198;
-   const { userRole } = useContext(UserInfoContext);
-   const [userRoleState, setUserRoleState] = useState('');
-   if (userRole === 'ADMIN') {
-      heightTable = 233;
-   }
-   useEffect(() => {
-      setUserRoleState(userRole);
-   });
+   const handleUploadFile = async (files) => {
+      let formData = new FormData();
+      files.map((file) => {
+         formData.append('file', file);
+      });
 
-   // const handleUploadFile = async (files) => {
-   //    let formData = new FormData();
-   //    files.map((file) => {
-   //       formData.append('files', file);
-   //    });
-
-   //    bookingApi
-   //       .importDataBooking(formData)
-   //       .then((response) => {
-   //          setLoading(false);
-   //          handleWhenImportSuccessfully(response);
-   //       })
-   //       .catch((error) => {
-   //          // stop spiner
-   //          setLoading(false);
-   //          //show message
-   //          dispatch(commonStore.actions.setErrorMessage(error.message));
-   //       });
-   // };
+      productApi
+         .importDataProduct(formData)
+         .then((response) => {
+            setLoading(false);
+            handleWhenImportSuccessfully(response);
+         })
+         .catch((error) => {
+            // stop spiner
+            setLoading(false);
+            //show message
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   };
 
    const handleWhenImportSuccessfully = (res) => {
       //show message
@@ -193,15 +195,15 @@ export default function Product() {
       dispatch(productStore.sagaGetList());
    };
 
-   // const handleImport = () => {
-   //    if (uploadedFile.length > 0) {
-   //       // resert message
-   //       setLoading(true);
-   //       handleUploadFile(uploadedFile);
-   //    } else {
-   //       dispatch(commonStore.actions.setErrorMessage('No file choosed'));
-   //    }
-   // };
+   const handleImport = () => {
+      if (uploadedFile.length > 0) {
+         // resert message
+         setLoading(true);
+         handleUploadFile(uploadedFile);
+      } else {
+         dispatch(commonStore.actions.setErrorMessage('No file choosed'));
+      }
+   };
 
    const handleRemove = (fileName) => {
       const updateUploaded = uploadedFile.filter((file) => file.name != fileName);
@@ -420,13 +422,13 @@ export default function Product() {
                      <UploadFileDropZone
                         uploadedFile={uploadedFile}
                         setUploadedFile={appendFileIntoList}
-                        //  handleUploadFile={handleUploadFile}
+                        handleUploadFile={handleUploadFile}
                      />
                   </Grid>
                   <Grid item xs={1}>
                      <Button
                         variant="contained"
-                        // onClick={handleImport}
+                        onClick={handleImport}
                         sx={{ width: '100%', height: 24 }}
                      >
                         Import
@@ -481,7 +483,7 @@ export default function Product() {
                            lineHeight: 1.2,
                         },
                      }}
-                     tableHeight={`calc(100vh - ${heightTable}px)`}
+                     tableHeight={`calc(100vh - ${heightComponentExcludingTable}px)`}
                      columnHeaderHeight={60}
                      rowHeight={30}
                      slots={{

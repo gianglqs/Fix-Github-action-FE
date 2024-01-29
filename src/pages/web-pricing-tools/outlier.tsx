@@ -585,7 +585,7 @@ export default function Outlier() {
             </Grid>
 
             <Paper elevation={1} sx={{ marginTop: 2 }}>
-               <Grid container sx={{ height: 'calc(60vh - 211px)' }}>
+               <Grid container sx={{ height: 'calc(60vh - 231px)' }}>
                   <DataGridPro
                      sx={{
                         '& .MuiDataGrid-columnHeaderTitle': {

@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { Button, Dialog, Grid, Paper, TextField } from '@mui/material';
-import { AppAutocomplete } from '@/components/App';
+import { AppAutocomplete, AppTextField } from '@/components/App';
 import productApi from '@/api/product.api';
 import { DataTable, DataTablePagination } from '@/components/DataTable';
 import { GridToolbar } from '@mui/x-data-grid-pro';
@@ -44,8 +44,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    // ======== for list Part =========
 
-   let heightTable = 338;
-   const dispatch = useDispatch();
+   let heightTable = 415;
 
    const [listPart, setListPart] = useState([]);
    const [initDataFilter, setInitDataFilter] = useState({} as any);
@@ -111,6 +110,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    // load Parts when click Filter
    const handleClickFilter = () => {
+      setPageNo(1);
       getDataPartByFilter(dataFilterForGetParts);
    };
 
@@ -171,7 +171,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    const handleClose = () => {
       onClose();
-      resetData();
+      setTimeout(resetData, 1000);
    };
 
    // reset when CLOSE dialog
@@ -179,6 +179,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       setPageNo(1);
       setPerPage(20);
       setTotalItems(null);
+      setProductDetail(null);
    };
    1;
 
@@ -363,15 +364,15 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      />
                   </Grid>
                   <Grid item xs={12}>
-                     <TextField
+                     <AppTextField
                         id="outlined-read-only-input"
                         label="Description"
                         value={productDetail?.description}
                         defaultValue=" "
+                        rows={3}
                         InputProps={{
                            readOnly: true,
                            style: {
-                              height: '30px',
                               fontSize: 15,
                            },
                         }}
@@ -390,7 +391,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      src={getProductImagePath(productDetail?.image)}
                      height={'100%'}
                      width={'100%'}
-                     style={{ objectFit: 'cover', borderRadius: '5px' }}
+                     style={{ objectFit: 'contain', borderRadius: '5px', maxHeight: '180px' }}
                      onClick={() =>
                         handleOpenImageDialog(getProductImagePath(productDetail?.image))
                      }
