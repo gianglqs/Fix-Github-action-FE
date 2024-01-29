@@ -207,6 +207,8 @@ export default function Indicators() {
          });
    };
 
+   const currentYear = new Date().getFullYear();
+
    const columns = [
       {
          field: 'competitorName',
@@ -241,7 +243,7 @@ export default function Indicators() {
       {
          field: 'actual',
          flex: 0.5,
-         headerName: '2022 Actual',
+         headerName: `${currentYear - 1} Actual`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{params.row.actual}</span>;
@@ -250,7 +252,7 @@ export default function Indicators() {
       {
          field: 'aopf',
          flex: 0.5,
-         headerName: '2023 AOPF',
+         headerName: `${currentYear} AOPF`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{params.row.aopf}</span>;
@@ -259,7 +261,7 @@ export default function Indicators() {
       {
          field: 'lrff',
          flex: 0.5,
-         headerName: '2024 LRFF',
+         headerName: `${currentYear + 1} LRFF`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{params.row.lrff}</span>;
@@ -548,14 +550,7 @@ export default function Indicators() {
       },
    };
 
-   const labels = [2022, 2023, 2024];
-
-   const currentDate = new Date();
-
-   let year = currentDate.getFullYear();
-
-   //create array Year use to Label, vd: 2022,2023,2024,2025,...
-   const arrayYear = Array.from({ length: 3 }, (_, i) => i + year - 1);
+   const labels = [currentYear - 1, currentYear, currentYear + 1];
 
    const arrayColor = ['#17a9a3', '#3f0e03', '#147384', '#0048bd', '#005821', '#ec9455', '#ffafa6'];
 
