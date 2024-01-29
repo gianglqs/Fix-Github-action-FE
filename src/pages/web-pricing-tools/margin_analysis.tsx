@@ -22,7 +22,6 @@ import { useDispatch } from 'react-redux';
 import { commonStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
 import { parseCookies, setCookie } from 'nookies';
-import axios from 'axios';
 
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
@@ -35,6 +34,7 @@ export default function MarginAnalysis() {
    let cookies = parseCookies();
    let userRoleCookies = cookies['role'];
    const [userRole, setUserRole] = useState('');
+   const currentYear = new Date().getFullYear();
 
    useEffect(() => {
       setUserRole(userRoleCookies);
@@ -838,7 +838,7 @@ export default function MarginAnalysis() {
                                        variant="body1"
                                        component="span"
                                     >
-                                       AOP 2023
+                                       AOP {currentYear}
                                     </Typography>
                                     <Typography
                                        sx={{ fontWeight: 'bold' }}
