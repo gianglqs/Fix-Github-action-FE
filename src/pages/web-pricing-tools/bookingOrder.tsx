@@ -130,7 +130,7 @@ export default function Booking() {
          flex: 0.5,
          headerName: 'Region',
          renderCell(params) {
-            return <span>{params.row.region?.region}</span>;
+            return <span>{params.row.region?.regionName}</span>;
          },
       },
       {

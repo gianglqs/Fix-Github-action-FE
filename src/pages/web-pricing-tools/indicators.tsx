@@ -218,6 +218,9 @@ export default function Indicators() {
          field: 'region',
          flex: 0.5,
          headerName: 'Region',
+         renderCell(params) {
+            return <span>{params.row.country.region.regionName}</span>;
+         },
       },
       {
          field: 'plant',
@@ -559,7 +562,7 @@ export default function Indicators() {
    const modifyDataLineChartRegion = {
       labels,
       datasets: dataForLineChartRegion.map((e, index) => ({
-         label: e.region,
+         label: e.country.region.regionName,
          data: [e.actual, e.aopf, e.lrff],
          borderColor: arrayColor[index],
          backgroundColor: arrayColor[index],

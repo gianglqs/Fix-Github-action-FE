@@ -126,7 +126,7 @@ export default function Shipment() {
          flex: 0.3,
          headerName: 'Region',
          renderCell(params) {
-            return <span>{params.row.region?.region}</span>;
+            return <span>{params.row.region?.regionName}</span>;
          },
       },
       {
