@@ -16,17 +16,23 @@ import {
 } from '@/utils/columnProperties';
 import PartImageTooltip from '@/components/App/Tooltip/ImageTootip/Part';
 import { produce } from 'immer';
+import { When } from 'react-if';
 
 const ProductDetailDialog: React.FC<any> = (props) => {
-   const { open, onClose, model, handleOpenImageDialog } = props;
+   const { open, onClose, model, orderNo, handleOpenImageDialog } = props;
 
    // ======== info product detail ========
    const [modelCode, setModelCode] = useState();
    const [productDetail, setProductDetail] = useState(null);
+   const [orderNumber, setOrderNumber] = useState();
 
    useEffect(() => {
       setModelCode(model);
    }, [model]);
+
+   useEffect(() => {
+      setOrderNumber(orderNo);
+   }, [orderNo]);
 
    //get ProductDetail
    useEffect(() => {
@@ -92,8 +98,8 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    //load Parts when open Dialog (when setup dataFilterForGetParts is successfully)
    useEffect(() => {
-      getDataPartByFilter({ modelCode: modelCode });
-   }, [modelCode]);
+      modelCode && getDataPartByFilter({ modelCode: modelCode, orderNumbers: [orderNumber] });
+   }, [modelCode, orderNumber]);
 
    // Load Parts when change pageNo and perPage
    useEffect(() => {
@@ -398,32 +404,34 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   />
                </Grid>
             </Grid>
-            <Grid container spacing={2} sx={{ marginBottom: '7px' }}>
-               <Grid item xs={4} sx={{ zIndex: 10, height: 25 }}>
-                  <AppAutocomplete
-                     options={initDataFilter.orderNos}
-                     label="OrderNo"
-                     sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'orderNumbers')}
-                     limitTags={1}
-                     disableListWrap
-                     primaryKeyOption="value"
-                     multiple
-                     disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
-                     getOptionLabel={(option) => `${option.value}`}
-                  />
+            <When condition={orderNumber === null}>
+               <Grid container spacing={2} sx={{ marginBottom: '7px' }}>
+                  <Grid item xs={4} sx={{ zIndex: 10, height: 25 }}>
+                     <AppAutocomplete
+                        options={initDataFilter.orderNos}
+                        label="OrderNo"
+                        sx={{ height: 25, zIndex: 10 }}
+                        onChange={(e, option) => handleChangeDataFilter(option, 'orderNumbers')}
+                        limitTags={1}
+                        disableListWrap
+                        primaryKeyOption="value"
+                        multiple
+                        disableCloseOnSelect
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+                  <Grid item xs={2}>
+                     <Button
+                        variant="contained"
+                        onClick={handleClickFilter}
+                        sx={{ width: '100%', height: 24 }}
+                     >
+                        Filter
+                     </Button>
+                  </Grid>
                </Grid>
-               <Grid item xs={2}>
-                  <Button
-                     variant="contained"
-                     onClick={handleClickFilter}
-                     sx={{ width: '100%', height: 24 }}
-                  >
-                     Filter
-                  </Button>
-               </Grid>
-            </Grid>
+            </When>
             <Grid xs={12}>
                <Paper elevation={1}>
                   <Grid container xs={12}>
