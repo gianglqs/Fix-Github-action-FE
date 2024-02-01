@@ -1,7 +1,7 @@
 import { AppAutocomplete, AppLayout } from '@/components';
 import { Button, Grid } from '@mui/material';
 import { produce } from 'immer';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
 
 import {
@@ -30,11 +30,12 @@ ChartJS.register(
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import { CurrencyReport } from '@/components/CurrencyReport';
-import reportsApi from '@/api/reports.api';
+import currencyApi from '@/api/currency.api';
 import { useDispatch } from 'react-redux';
 import { commonStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
 import { parseCookies } from 'nookies';
+import { CURRENCY } from '@/utils/constant';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -51,7 +52,12 @@ export default function Trends() {
    });
 
    const [currencyFilter, setCurrencyFilter] = useState([]);
-   const [dataFilter, setDataFilter] = useState({ currentCurrency: '', comparisonCurrencies: [] });
+
+   const [currentCurrency, setCurrentCurrency] = useState({ value: '', error: false });
+   const [comparisonCurrencies, setComparisonCurrencies] = useState({
+      value: [],
+      error: false,
+   });
    const months = [
       '',
       'Jan',
@@ -72,7 +78,7 @@ export default function Trends() {
    const [uploadedFile, setUploadedFile] = useState();
 
    useEffect(() => {
-      reportsApi
+      currencyApi
          .getCurrencyFilter()
          .then((response) => {
             setCurrencyFilter(JSON.parse(String(response.data)).currencyFilter);
@@ -83,22 +89,23 @@ export default function Trends() {
    }, []);
 
    const handleChangeDataFilter = (option, field) => {
-      setDataFilter((prev) =>
-         produce(prev, (draft) => {
-            if (_.includes(['currentCurrency'], field)) {
-               draft[field] = option.value;
-            } else {
-               draft[field] = option.map(({ value }) => value);
-            }
-         })
-      );
+      if (_.includes(['currentCurrency'], field)) {
+         setCurrentCurrency({ value: option.value, error: false });
+      } else {
+         setComparisonCurrencies((prev) =>
+            produce(prev, (draft) => {
+               draft.value = option.map(({ value }) => value);
+               draft.error = false;
+            })
+         );
+      }
    };
 
    const handleUploadExchangeRate = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
 
-      reportsApi
+      currencyApi
          .uploadExchangeRate(formData)
          .then(() => {
             dispatch(commonStore.actions.setSuccessMessage('Upload Exchange Rate successfully'));
@@ -108,36 +115,40 @@ export default function Trends() {
          });
    };
 
-   const randomNum = () => Math.floor(Math.random() * (235 - 52 + 1) + 52);
-
    const handleCompareCurrency = async () => {
       try {
+         if (currentCurrency.value == '') {
+            setCurrentCurrency({ value: '', error: true });
+            return;
+         }
+         if (comparisonCurrencies.value.length == 0) {
+            setComparisonCurrencies({ value: [], error: true });
+            return;
+         }
          const request = {
-            currentCurrency: dataFilter.currentCurrency,
-            comparisonCurrencies: dataFilter.comparisonCurrencies,
+            currentCurrency: currentCurrency.value,
+            comparisonCurrencies: comparisonCurrencies.value,
          };
 
-         reportsApi
+         currencyApi
             .compareCurrency(request)
             .then((response) => {
                const data = JSON.parse(String(response.data)).compareCurrency;
 
                // Setting Labels for chart
-               const labels = data[dataFilter.comparisonCurrencies[0]].exchangeRateList
+               const labels = data[comparisonCurrencies.value[0]].exchangeRateList
                   .map((item) => {
                      return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
                   })
                   .reverse();
 
                let datasets = [];
-               dataFilter.comparisonCurrencies.forEach((item) => {
-                  const randomColor = `rgb(${randomNum()}, ${randomNum()}, ${randomNum()})`;
-
+               comparisonCurrencies.value.forEach((item) => {
                   datasets.push({
                      label: item,
                      data: data[item].exchangeRateList.reverse().map((obj) => obj.rate),
-                     borderColor: randomColor,
-                     backgroundColor: randomColor,
+                     borderColor: CURRENCY[item],
+                     backgroundColor: CURRENCY[item],
                      pointStyle: 'circle',
                      pointRadius: 5,
                      pointHoverRadius: 10,
@@ -146,8 +157,8 @@ export default function Trends() {
                });
 
                const newChartData = {
-                  title: `${dataFilter.currentCurrency} to${_.map(
-                     dataFilter.comparisonCurrencies,
+                  title: `${currentCurrency.value} to${_.map(
+                     comparisonCurrencies.value,
                      (item) => ` ${item}`
                   )}`,
                   data: {
@@ -165,13 +176,27 @@ export default function Trends() {
             .catch((error) => {
                dispatch(commonStore.actions.setErrorMessage(error.message));
             });
+         isCompareClicked.current = !isCompareClicked.current;
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error.message));
       }
    };
 
+   const isCompareClicked = useRef(true);
+
+   useEffect(() => {
+      scrollToLast();
+   }, [isCompareClicked.current]);
+
    const closeAReportItem = (index) => {
       setChartData((prev) => prev.filter((item, i) => i != index));
+   };
+
+   const ref = useRef(null);
+
+   const scrollToLast = () => {
+      const lastChildElement = ref?.current?.lastElementChild;
+      lastChildElement?.scrollIntoView({ behavior: 'smooth' });
    };
 
    return (
@@ -183,12 +208,13 @@ export default function Trends() {
                      options={currencyFilter}
                      label="Current Currency"
                      onChange={(e, option) => handleChangeDataFilter(option, 'currentCurrency')}
-                     limitTags={2}
                      disableListWrap
                      primaryKeyOption="value"
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
                      required
+                     error={currentCurrency.error}
+                     helperText="This field is required"
                   />
                   <Grid sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 1 }}>
                      <Button
@@ -227,13 +253,18 @@ export default function Trends() {
                      disableCloseOnSelect
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
+                     required
+                     error={comparisonCurrencies.error}
+                     helperText="This field requires at least one item"
                   />
                </Grid>
 
                <CurrencyReport
                   chartData={chartData}
-                  currentCurrency={dataFilter.currentCurrency}
+                  currentCurrency={currentCurrency.value}
                   closeAReportItem={closeAReportItem}
+                  scrollToLast={scrollToLast}
+                  itemRef={ref}
                />
             </Grid>
          </AppLayout>
