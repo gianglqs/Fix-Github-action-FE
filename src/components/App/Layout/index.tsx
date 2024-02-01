@@ -65,7 +65,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       trends: 'Trends',
       outlier: 'Outliers',
       product: 'Products',
-      reports: 'Reports',
+      currency: 'Currency',
    };
 
    const renderMenu = () => {
