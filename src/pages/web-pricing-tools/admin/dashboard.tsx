@@ -47,6 +47,7 @@ interface AppBarProps extends MuiAppBarProps {
 }
 
 import { GetServerSidePropsContext } from 'next';
+import { formatDate } from '@/utils/formatCell';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageAdmin(context);
@@ -279,6 +280,9 @@ export default function Dashboard() {
          headerName: 'Last Login',
          headerAlign: 'center',
          align: 'center',
+         renderCell(params) {
+            return <span>{formatDate(params?.row?.lastLogin)}</span>;
+         },
       },
       {
          ...iconColumn,
