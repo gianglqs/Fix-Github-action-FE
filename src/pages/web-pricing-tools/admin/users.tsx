@@ -18,7 +18,7 @@ import { AccountCircle, ReplayOutlined as ReloadIcon } from '@mui/icons-material
 import { Button, Popover } from '@mui/material';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { commonStore, dashboardStore } from '@/store/reducers';
+import { commonStore, userStore } from '@/store/reducers';
 import { createAction } from '@reduxjs/toolkit';
 import { useRouter } from 'next/router';
 
@@ -99,13 +99,13 @@ const Drawer = styled(MuiDrawer, {
 
 export default function Dashboard() {
    const [open, setOpen] = useState(true);
-   createAction(`dashboard/GET_LIST`);
-   const entityApp = 'dashboard';
+   createAction(`user/GET_LIST`);
+   const entityApp = 'user';
    const getListAction = useMemo(() => createAction(`${entityApp}/GET_LIST`), [entityApp]);
    const resetStateAction = useMemo(() => createAction(`${entityApp}/RESET_STATE`), [entityApp]);
    const router = useRouter();
    const dispatch = useDispatch();
-   const listUser = useSelector(dashboardStore.selectUserList);
+   const listUser = useSelector(userStore.selectUserList);
    const tableState = useSelector(commonStore.selectTableState);
    const cookies = parseCookies();
    const [userName, setUserName] = useState('');
@@ -116,7 +116,7 @@ export default function Dashboard() {
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
-      dispatch(dashboardStore.sagaGetList());
+      dispatch(userStore.sagaGetList());
    };
 
    const handleChangePerPage = (perPage: number) => {
@@ -200,7 +200,7 @@ export default function Dashboard() {
 
    const handleSearch = async (event, searchQuery) => {
       const { data } = await dashboardApi.getUser({ search: searchQuery });
-      dispatch(dashboardStore.actions.setUserList(JSON.parse(data)?.userList));
+      dispatch(userStore.actions.setUserList(JSON.parse(data)?.userList));
    };
 
    const handleOpenUpdateUserDialog = async (userId) => {

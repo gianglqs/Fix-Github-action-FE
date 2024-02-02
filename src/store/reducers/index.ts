@@ -1,4 +1,4 @@
-export * as dashboardStore from './dashboard.reducer';
+export * as userStore from './user.reducer';
 export * as commonStore from './common.reducer';
 export * as bookingStore from './booking.reducer';
 export * as marginAnalysisStore from './analysis.reducer';
