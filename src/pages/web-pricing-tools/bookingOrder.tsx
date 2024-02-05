@@ -446,6 +446,7 @@ export default function Booking() {
    const [productDetailState, setProductDetailState] = useState({
       open: false,
       model: null,
+      _metaSeries: null,
       orderNo: null,
    });
 
@@ -453,6 +454,7 @@ export default function Booking() {
       setProductDetailState({
          open: false,
          model: null,
+         _metaSeries: null,
          orderNo: null,
       });
    };
@@ -487,6 +489,7 @@ export default function Booking() {
          setProductDetailState({
             open: true,
             model: params.row.product?.modelCode,
+            _metaSeries: params.row?.series.substring(1, 5),
             orderNo: params.id,
          });
       }

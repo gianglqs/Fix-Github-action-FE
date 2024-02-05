@@ -106,6 +106,11 @@ export default function Product() {
          headerName: 'Model Code',
       },
       {
+         field: 'metaSeries',
+         flex: 0.3,
+         headerName: 'MetaSeries',
+      },
+      {
          field: 'brand',
          flex: 0.3,
          headerName: 'Brand',
@@ -126,11 +131,6 @@ export default function Product() {
          headerName: 'Segment',
       },
 
-      {
-         field: 'metaSeries',
-         flex: 0.3,
-         headerName: 'MetaSeries',
-      },
       {
          field: 'family',
          flex: 0.6,
@@ -242,21 +242,25 @@ export default function Product() {
    const [productDetailState, setProductDetailState] = useState({
       open: false,
       model: null,
+      _metaSeries: null,
    });
 
    const handleCloseProductDetail = () => {
       setProductDetailState({
          open: false,
          model: null,
+         _metaSeries: null,
       });
    };
 
    const handleOpenProductDetailDialog = (row) => {
       const data = selectDataRowById(listProduct, 'modelCode', row.id);
+      console.log(data);
       data &&
          setProductDetailState({
             open: true,
             model: data[0].modelCode,
+            _metaSeries: data[0].metaSeries,
          });
    };
 

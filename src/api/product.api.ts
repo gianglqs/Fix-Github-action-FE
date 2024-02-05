@@ -29,12 +29,12 @@ class ProductApi extends HttpService<any> {
       return this.get<any>(`loadImage/product/${imageName}`);
    };
 
-   getProductDetailFilter = (modelCode) => {
-      return this.get<any>('filters/productDetail', { modelCode });
+   getProductDetailFilter = (modelCode, metaSeries) => {
+      return this.get<any>('filters/productDetail', { modelCode, metaSeries });
    };
 
-   getProductDetail = (modelCode) => {
-      return this.get<any>('product/getProductDetail', { modelCode });
+   getProductDetail = (modelCode, metaSeries) => {
+      return this.get<any>('product/getProductDetail', { modelCode, metaSeries });
    };
 }
 

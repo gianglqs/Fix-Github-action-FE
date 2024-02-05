@@ -416,7 +416,6 @@ export default function Shipment() {
       },
    ];
 
-   let cookies = parseCookies();
    let heightComponentExcludingTable = 293;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
@@ -492,6 +491,7 @@ export default function Shipment() {
    const [productDetailState, setProductDetailState] = useState({
       open: false,
       model: null,
+      _metaSeries: null,
       orderNo: null,
    });
 
@@ -499,6 +499,7 @@ export default function Shipment() {
       setProductDetailState({
          open: false,
          model: null,
+         _metaSeries: null,
          orderNo: null,
       });
    };
@@ -533,6 +534,7 @@ export default function Shipment() {
          setProductDetailState({
             open: true,
             model: params.row.product?.modelCode,
+            _metaSeries: params.row?.series.substring(1, 5),
             orderNo: params.id,
          });
       }
