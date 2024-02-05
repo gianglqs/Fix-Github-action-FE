@@ -19,10 +19,11 @@ import { produce } from 'immer';
 import { When } from 'react-if';
 
 const ProductDetailDialog: React.FC<any> = (props) => {
-   const { open, onClose, model, orderNo, handleOpenImageDialog } = props;
+   const { open, onClose, model, _metaSeries, orderNo, handleOpenImageDialog } = props;
 
    // ======== info product detail ========
    const [modelCode, setModelCode] = useState();
+   const [metaSeries, setMetaSeries] = useState();
    const [productDetail, setProductDetail] = useState(null);
    const [orderNumber, setOrderNumber] = useState();
 
@@ -31,14 +32,18 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    }, [model]);
 
    useEffect(() => {
+      setMetaSeries(_metaSeries);
+   }, [_metaSeries]);
+
+   useEffect(() => {
       setOrderNumber(orderNo);
    }, [orderNo]);
 
    //get ProductDetail
    useEffect(() => {
-      if (modelCode) {
+      if (modelCode && metaSeries) {
          productApi
-            .getProductDetail(modelCode)
+            .getProductDetail(modelCode, metaSeries)
             .then((response) => {
                setProductDetail(JSON.parse(String(response.data)));
             })
@@ -46,7 +51,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                console.log(error);
             });
       }
-   }, [modelCode]);
+   }, [modelCode, metaSeries]);
 
    // ======== for list Part =========
 
@@ -56,6 +61,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    const [initDataFilter, setInitDataFilter] = useState({} as any);
    const [dataFilterForGetParts, setDataFilterForGetParts] = useState({
       modelCode: null,
+      metaSeriez: null,
       orderNumbers: [],
    });
    const [pageNo, setPageNo] = useState(1);
@@ -64,16 +70,20 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    // set modelCode in data filter part
    useEffect(() => {
-      if (modelCode) {
-         setDataFilterForGetParts((prev) => ({ ...prev, modelCode: modelCode }));
+      if (modelCode && metaSeries) {
+         setDataFilterForGetParts((prev) => ({
+            ...prev,
+            modelCode: modelCode,
+            metaSeriez: metaSeries,
+         }));
       }
-   }, [modelCode]);
+   }, [modelCode, metaSeries]);
 
    // get orderNo filter
    useEffect(() => {
-      if (modelCode) {
+      if (modelCode && metaSeries && !orderNo) {
          productApi
-            .getProductDetailFilter(modelCode)
+            .getProductDetailFilter(modelCode, metaSeries)
             .then((response) => {
                setInitDataFilter(JSON.parse(String(response.data)));
             })
@@ -81,7 +91,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                console.log(error);
             });
       }
-   }, [modelCode]);
+   }, [modelCode, metaSeries]);
 
    // get ListPart and totalItems
    const getDataPartByFilter = (filter) => {
@@ -98,8 +108,19 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    //load Parts when open Dialog (when setup dataFilterForGetParts is successfully)
    useEffect(() => {
-      modelCode && getDataPartByFilter({ modelCode: modelCode, orderNumbers: [orderNumber] });
-   }, [modelCode, orderNumber]);
+      if (modelCode && metaSeries) {
+         orderNumber
+            ? getDataPartByFilter({
+                 modelCode: modelCode,
+                 metaSeriez: metaSeries,
+                 orderNumbers: [orderNumber],
+              })
+            : getDataPartByFilter({
+                 modelCode: modelCode,
+                 metaSeriez: metaSeries,
+              });
+      }
+   }, [modelCode, metaSeries, orderNumber]);
 
    // Load Parts when change pageNo and perPage
    useEffect(() => {
@@ -404,7 +425,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   />
                </Grid>
             </Grid>
-            <When condition={orderNumber === null}>
+            <When condition={orderNumber === null || orderNumber === undefined}>
                <Grid container spacing={2} sx={{ marginBottom: '7px' }}>
                   <Grid item xs={4} sx={{ zIndex: 10, height: 25 }}>
                      <AppAutocomplete

@@ -13,12 +13,12 @@ export const convertCurrencyOfDataBookingOrder = (
 
          updatedElement.dealerNet = Number(element.dealerNet) * Number(rate);
 
-         updatedElement.dealerNetAfterSurCharge =
-            Number(element.dealerNetAfterSurCharge) * Number(rate);
+         updatedElement.dealerNetAfterSurcharge =
+            Number(element.dealerNetAfterSurcharge) * Number(rate);
 
          updatedElement.totalCost = Number(element.totalCost) * Number(rate);
 
-         updatedElement.marginAfterSurCharge = Number(element.marginAfterSurCharge) * Number(rate);
+         updatedElement.marginAfterSurcharge = Number(element.marginAfterSurcharge) * Number(rate);
 
          updatedElement.netRevenue &&
             (updatedElement.netRevenue = Number(element.netRevenue) * Number(rate));
