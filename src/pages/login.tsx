@@ -92,7 +92,7 @@ export default function LoginPage() {
             setCookie(null, 'role', role, { maxAge: 604800, path: '/' });
             setCookie(null, 'name', name, { maxAge: 604800, path: '/' });
 
-            router.push('/web-pricing-tools/admin/dashboard');
+            router.push('/web-pricing-tools/admin/users');
          })
          .catch(() => {
             dispatch(commonStore.actions.setErrorMessage('Error on signing in'));

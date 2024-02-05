@@ -1,5 +1,5 @@
 import { fork } from 'redux-saga/effects';
-import dashboardSaga from './dashboardSaga';
+import userSaga from './userSaga';
 import bookingSaga from './bookingSaga';
 import marginAnalysisSaga from './analysisSaga';
 import indicatorSaga from './indicatorSaga';
@@ -12,7 +12,7 @@ import productSaga from './productSaga';
 import partSaga from './partSaga';
 
 function* rootSaga() {
-   yield fork(dashboardSaga);
+   yield fork(userSaga);
    yield fork(bookingSaga);
    yield fork(marginAnalysisSaga);
    yield fork(indicatorSaga);

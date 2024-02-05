@@ -41,7 +41,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
 
-export default function Trends() {
+export default function Currencies() {
    const dispatch = useDispatch();
    let cookies = parseCookies();
    let userRoleCookies = cookies['role'];
@@ -157,10 +157,9 @@ export default function Trends() {
                });
 
                const newChartData = {
-                  title: `${currentCurrency.value} to${_.map(
-                     comparisonCurrencies.value,
-                     (item) => ` ${item}`
-                  )}`,
+                  title: `${
+                     currentCurrency.value == 'CNY' ? 'RMB' : currentCurrency.value
+                  } to${_.map(comparisonCurrencies.value, (item) => ` ${item}`)}`,
                   data: {
                      labels: labels,
                      datasets: datasets,
@@ -261,7 +260,7 @@ export default function Trends() {
 
                <CurrencyReport
                   chartData={chartData}
-                  currentCurrency={currentCurrency.value}
+                  currentCurrency={currentCurrency.value == 'CNY' ? 'RMB' : currentCurrency.value}
                   closeAReportItem={closeAReportItem}
                   scrollToLast={scrollToLast}
                   itemRef={ref}

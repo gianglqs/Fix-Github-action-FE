@@ -2,7 +2,7 @@ import { createSlice, PayloadAction, createSelector, createAction } from '@redux
 
 import type { RootReducerType } from './rootReducer';
 
-export const name = 'dashboard';
+export const name = 'user';
 export const resetState = createAction(`${name}/RESET_STATE`);
 
 export const initialState = {
@@ -10,7 +10,7 @@ export const initialState = {
    totalRow: [] as any[],
 };
 
-const dashboardSlice = createSlice({
+const userSlice = createSlice({
    name,
    initialState,
    reducers: {
@@ -34,6 +34,6 @@ export const selectState = (state: RootReducerType) => state[name];
 export const selectUserList = createSelector(selectState, (state) => state.userList);
 export const selectTotalRow = createSelector(selectState, (state) => state.totalRow);
 
-export const { actions } = dashboardSlice;
+export const { actions } = userSlice;
 
-export default dashboardSlice;
+export default userSlice;
