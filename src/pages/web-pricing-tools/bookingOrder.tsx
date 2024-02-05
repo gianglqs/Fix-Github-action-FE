@@ -130,7 +130,7 @@ export default function Booking() {
          flex: 0.5,
          headerName: 'Region',
          renderCell(params) {
-            return <span>{params.row.region?.region}</span>;
+            return <span>{params.row.region?.regionName}</span>;
          },
       },
       {
@@ -142,13 +142,16 @@ export default function Booking() {
          field: 'dealerName',
          flex: 1.2,
          headerName: 'Dealer Name',
+         renderCell(params) {
+            return <span>{params.row.dealer?.name}</span>;
+         },
       },
       {
          field: 'Plant',
          flex: 0.6,
          headerName: 'Plant',
          renderCell(params) {
-            return <span>{params.row.productDimension?.plant}</span>;
+            return <span>{params.row.product?.plant}</span>;
          },
       },
       {
@@ -156,7 +159,7 @@ export default function Booking() {
          flex: 0.6,
          headerName: 'Class',
          renderCell(params) {
-            return <span>{params.row.productDimension?.clazz}</span>;
+            return <span>{params.row.product?.clazz}</span>;
          },
       },
       {
@@ -172,7 +175,7 @@ export default function Booking() {
          flex: 0.6,
          headerName: 'Models',
          renderCell(params) {
-            return <span>{params.row.productDimension.modelCode}</span>;
+            return <span>{params.row.product.modelCode}</span>;
          },
       },
       {
@@ -192,12 +195,12 @@ export default function Booking() {
          },
       },
       {
-         field: 'dealerNetAfterSurCharge',
+         field: 'dealerNetAfterSurcharge',
          flex: 0.8,
          headerName: `DN After Surcharge ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNetAfterSurCharge)}</span>;
+            return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
          },
       },
       {
@@ -210,23 +213,23 @@ export default function Booking() {
          },
       },
       {
-         field: 'marginAfterSurCharge',
+         field: 'marginAfterSurcharge',
          flex: 0.7,
          headerName: `Margin $ After Surcharge ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params?.row.marginAfterSurCharge)}</span>;
+            return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
          },
       },
       {
-         field: 'marginPercentageAfterSurCharge',
+         field: 'marginPercentageAfterSurcharge',
          flex: 0.6,
          headerName: 'Margin % After Surcharge',
          ...formatNumbericColumn,
          renderCell(params) {
             return (
                <span>
-                  {formatNumberPercentage(params?.row.marginPercentageAfterSurCharge * 100)}
+                  {formatNumberPercentage(params?.row.marginPercentageAfterSurcharge * 100)}
                </span>
             );
          },
@@ -237,7 +240,7 @@ export default function Booking() {
          headerName: 'AOP Margin %',
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumberPercentage(params?.row.aopmarginPercentage * 100)}</span>;
+            return <span>{formatNumberPercentage(params?.row.aopmargin.marginSTD * 100)}</span>;
          },
       },
    ];
@@ -279,7 +282,7 @@ export default function Booking() {
          flex: 0.6,
          headerName: 'Plant',
          renderCell(params) {
-            return <span>{params.row.productDimension?.plant}</span>;
+            return <span>{params.row.product?.plant}</span>;
          },
       },
       {
@@ -287,7 +290,7 @@ export default function Booking() {
          flex: 0.6,
          headerName: 'Class',
          renderCell(params) {
-            return <span>{params.row.productDimension?.clazz}</span>;
+            return <span>{params.row.product?.clazz}</span>;
          },
       },
       {
@@ -323,12 +326,12 @@ export default function Booking() {
          },
       },
       {
-         field: 'dealerNetAfterSurCharge',
+         field: 'dealerNetAfterSurcharge',
          flex: 0.8,
          headerName: "DN After Surcharge ('000 USD)",
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNetAfterSurCharge)}</span>;
+            return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
          },
       },
       {
@@ -341,23 +344,23 @@ export default function Booking() {
          },
       },
       {
-         field: 'marginAfterSurCharge',
+         field: 'marginAfterSurcharge',
          flex: 0.7,
          headerName: 'Margin $ After Surcharge',
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params?.row.marginAfterSurCharge)}</span>;
+            return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
          },
       },
       {
-         field: 'marginPercentageAfterSurCharges',
+         field: 'marginPercentageAfterSurcharges',
          flex: 0.6,
          headerName: 'Margin % After Surcharge',
          ...formatNumbericColumn,
          renderCell(params) {
             return (
                <span>
-                  {formatNumberPercentage(params?.row.marginPercentageAfterSurCharge * 100)}
+                  {formatNumberPercentage(params?.row.marginPercentageAfterSurcharge * 100)}
                </span>
             );
          },
@@ -477,13 +480,13 @@ export default function Booking() {
 
    // handle prevent open ProductDetail Dialog when click button edit
    const handleOnCellClick = (params, event) => {
-      console.log(params.row.productdimension?.modelCode);
+      console.log(params.row.product?.modelCode);
       console.log(params.id);
       if (params.field === 'model') {
          event.stopPropagation();
          setProductDetailState({
             open: true,
-            model: params.row.productDimension?.modelCode,
+            model: params.row.product?.modelCode,
             orderNo: params.id,
          });
       }
