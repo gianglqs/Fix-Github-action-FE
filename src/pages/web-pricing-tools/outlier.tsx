@@ -109,7 +109,7 @@ export default function Outlier() {
          flex: 0.6,
          headerName: 'Plant',
          renderCell(params) {
-            return <span>{params.row.productDimension?.plant}</span>;
+            return <span>{params.row.product?.plant}</span>;
          },
       },
       {
@@ -117,7 +117,7 @@ export default function Outlier() {
          flex: 0.6,
          headerName: 'Class',
          renderCell(params) {
-            return <span>{params.row.productDimension?.clazz}</span>;
+            return <span>{params.row.product?.clazz}</span>;
          },
       },
       {
@@ -133,7 +133,7 @@ export default function Outlier() {
          flex: 0.6,
          headerName: 'Models',
          renderCell(params) {
-            return <span>{params.row.productDimension.modelCode}</span>;
+            return <span>{params.row.product.modelCode}</span>;
          },
       },
       {
@@ -166,7 +166,7 @@ export default function Outlier() {
          headerName: "DN After Surcharge ('000 USD)",
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNetAfterSurCharge)}</span>;
+            return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
          },
       },
       {
@@ -175,7 +175,7 @@ export default function Outlier() {
          headerName: "Margin $ After Surcharge ('000 USD)",
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params?.row.marginAfterSurCharge)}</span>;
+            return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
          },
       },
 
@@ -187,7 +187,7 @@ export default function Outlier() {
          renderCell(params) {
             return (
                <span>
-                  {formatNumberPercentage(params?.row.marginPercentageAfterSurCharge * 100)}
+                  {formatNumberPercentage(params?.row.marginPercentageAfterSurcharge * 100)}
                </span>
             );
          },
@@ -253,7 +253,7 @@ export default function Outlier() {
          headerName: 'DN After Surcharge',
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNetAfterSurCharge)}</span>;
+            return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
          },
       },
       {
@@ -262,7 +262,7 @@ export default function Outlier() {
          headerName: 'Margin $ After Surcharge',
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params?.row.marginAfterSurCharge)}</span>;
+            return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
          },
       },
 
@@ -274,7 +274,7 @@ export default function Outlier() {
          renderCell(params) {
             return (
                <span>
-                  {formatNumberPercentage(params?.row.marginPercentageAfterSurCharge * 100)}
+                  {formatNumberPercentage(params?.row.marginPercentageAfterSurcharge * 100)}
                </span>
             );
          },
