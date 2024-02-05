@@ -125,7 +125,7 @@ export default function Outlier() {
          flex: 0.4,
          headerName: 'Series',
          renderCell(params) {
-            return <span>{params.row.series}</span>;
+            return <span>{params.row.metaSeries}</span>;
          },
       },
       {
