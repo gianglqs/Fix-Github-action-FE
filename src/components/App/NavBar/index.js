@@ -13,7 +13,7 @@ const NavBar = () => {
    const navOptions = {
       bookingOrder: 'Dashboard',
       competitors: 'Competitors',
-      dashboard: 'Users',
+      users: 'Users',
    };
 
    const renderOptions = () => {

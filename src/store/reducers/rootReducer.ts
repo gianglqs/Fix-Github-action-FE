@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import dashboard from './dashboard.reducer';
+import user from './user.reducer';
 import common from './common.reducer';
 import booking from './booking.reducer';
 import marginAnalysis from './analysis.reducer';
@@ -14,7 +14,7 @@ import part from './part.reducer';
 
 const rootReducers = combineReducers({
    [common.name]: common.reducer,
-   [dashboard.name]: dashboard.reducer,
+   [user.name]: user.reducer,
    [booking.name]: booking.reducer,
    [marginAnalysis.name]: marginAnalysis.reducer,
    [indicator.name]: indicator.reducer,
