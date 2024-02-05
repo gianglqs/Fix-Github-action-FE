@@ -175,7 +175,7 @@ export default function Booking() {
          flex: 0.6,
          headerName: 'Models',
          renderCell(params) {
-            return <span>{params.row.product.modelCode}</span>;
+            return <span style={{ cursor: 'pointer' }}>{params.row.product.modelCode}</span>;
          },
       },
       {

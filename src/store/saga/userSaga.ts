@@ -1,5 +1,5 @@
 import { takeEvery, put } from 'redux-saga/effects';
-import { commonStore, dashboardStore } from '../reducers';
+import { commonStore, userStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import dashboardApi from '@/api/dashboard.api';
 
@@ -14,8 +14,8 @@ function* fetchUserList() {
          perPage: tableState.perPage,
          pageNo: tableState.pageNo,
       });
-      yield put(dashboardStore.actions.setUserList(JSON.parse(data)?.userList));
-      yield put(dashboardStore.actions.setTotalRow(JSON.parse(data)?.totalItems));
+      yield put(userStore.actions.setUserList(JSON.parse(data)?.userList));
+      yield put(userStore.actions.setTotalRow(JSON.parse(data)?.totalItems));
 
       yield put(
          commonStore.actions.setTableState({
@@ -25,8 +25,8 @@ function* fetchUserList() {
    } catch (error) {}
 }
 
-function* dashboardSaga() {
-   yield takeEvery(dashboardStore.sagaGetList, fetchUserList);
+function* userSaga() {
+   yield takeEvery(userStore.sagaGetList, fetchUserList);
 }
 
-export default dashboardSaga;
+export default userSaga;

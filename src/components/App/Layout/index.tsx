@@ -65,7 +65,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       trends: 'Trends',
       outlier: 'Outliers',
       product: 'Products',
-      report: 'Reports',
+      currencies: 'Currencies',
    };
 
    const renderMenu = () => {
@@ -100,7 +100,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
    const handleAdminPage = () => {
       try {
          popupState.close();
-         router.push('/web-pricing-tools/admin/dashboard');
+         router.push('/web-pricing-tools/admin/users');
       } catch (err) {
          console.log(err);
       }
