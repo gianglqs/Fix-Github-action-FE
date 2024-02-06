@@ -1,7 +1,8 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 
-function LineChart({ chartName, chartData, scales }) {
+const LineChart: React.FC<any> = (props) => {
+   const { chartData, scales, chartName, tooltip } = props;
    return (
       <Line
          data={chartData}
@@ -16,12 +17,10 @@ function LineChart({ chartName, chartData, scales }) {
                legend: {
                   display: true,
                },
-               tooltip: {
-                  enabled: true,
-               },
+               tooltip,
             },
          }}
       />
    );
-}
+};
 export default LineChart;

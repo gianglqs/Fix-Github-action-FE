@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { commonStore } from '@/store/reducers';
 
 const CurrencyReport: React.FC<any> = (props) => {
-   const { chartData, currentCurrency, closeAReportItem, itemRef } = props;
+   const { chartData, closeAReportItem, itemRef } = props;
 
    const handleCloseItem = (item) => {
       closeAReportItem(item.target.id);
@@ -37,8 +37,26 @@ const CurrencyReport: React.FC<any> = (props) => {
 
    const reportContent = () => {
       const otherOptions = _.keysIn(chartData);
-      console.log(chartData);
+
       const content = _.map(otherOptions, (index) => {
+         const currentCurrency = chartData[index].title.substring(0, 3);
+         const tooltip = {
+            interaction: {
+               intersect: true,
+               mode: 'nearest',
+            },
+            callbacks: {
+               label: (context) => {
+                  let label = context.dataset.label || '';
+                  if (label) {
+                     label += ': ';
+                  }
+                  label += `${Number(context.parsed.y.toFixed(6))}`;
+
+                  return label;
+               },
+            },
+         };
          let chartItemScales = {
             y1: {
                title: {
@@ -52,7 +70,11 @@ const CurrencyReport: React.FC<any> = (props) => {
                display: false,
             },
             y: {
-               beginAtZero: true,
+               ticks: {
+                  callback: function (value) {
+                     return Number(value.toFixed(6));
+                  },
+               },
             },
             x: {
                title: {
@@ -110,7 +132,7 @@ const CurrencyReport: React.FC<any> = (props) => {
                   <Grid
                      item
                      sx={{
-                        width: '70vh',
+                        width: '80vh',
                         height: '40vh',
                         margin: 'auto',
                      }}
@@ -119,6 +141,7 @@ const CurrencyReport: React.FC<any> = (props) => {
                         chartData={chartData[index].data}
                         chartName={chartData[index].title}
                         scales={chartItemScales}
+                        tooltip={tooltip}
                      />
                   </Grid>
                   <Grid

@@ -260,7 +260,6 @@ export default function Currencies() {
 
                <CurrencyReport
                   chartData={chartData}
-                  currentCurrency={currentCurrency.value == 'CNY' ? 'RMB' : currentCurrency.value}
                   closeAReportItem={closeAReportItem}
                   scrollToLast={scrollToLast}
                   itemRef={ref}
