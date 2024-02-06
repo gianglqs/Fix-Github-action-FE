@@ -65,7 +65,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       trends: 'Trends',
       outlier: 'Outliers',
       product: 'Products',
-      currencies: 'Currencies',
+      exchangeRates: 'Exchange Rates',
    };
 
    const renderMenu = () => {
@@ -124,7 +124,6 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
          detail: {},
       });
    };
-   console.log(userRoleCookies);
    return (
       <>
          <Head>
@@ -134,7 +133,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
          <AppBar className={classes.header__container} position="static">
             <a
                href={`/web-pricing-tools/${
-                  userRoleCookies === 'ADMIN' ? `admin/dashboard` : `bookingOrder`
+                  userRoleCookies === 'ADMIN' ? `admin/users` : `bookingOrder`
                }`}
                style={{ width: 35, height: 35 }}
             >

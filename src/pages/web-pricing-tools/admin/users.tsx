@@ -398,7 +398,7 @@ export default function Dashboard() {
                      px: [1],
                   }}
                >
-                  <a href="/web-pricing-tools/admin/dashboard" style={{ width: 185, height: 60 }}>
+                  <a href="/web-pricing-tools/admin/users" style={{ width: 185, height: 60 }}>
                      <Image src={logo} width={185} height={60} alt="Hyster-Yale" />
                   </a>
                   <IconButton onClick={toggleDrawer}>

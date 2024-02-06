@@ -2,7 +2,7 @@ import HttpService from '@/helper/HttpService';
 import { GetServerSidePropsContext } from 'next';
 import { ResponseType } from 'axios';
 
-class CurrencyApi extends HttpService<any> {
+class ExchangeRatesApi extends HttpService<any> {
    getCurrencyFilter = () => {
       return this.get<any>(`filters/currency`);
    };
@@ -22,6 +22,6 @@ class CurrencyApi extends HttpService<any> {
    };
 }
 
-const currencyApi = new CurrencyApi('currency');
+const exchangeRatesApi = new ExchangeRatesApi('exchangeRates');
 
-export default currencyApi;
+export default exchangeRatesApi;
