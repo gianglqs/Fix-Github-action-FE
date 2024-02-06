@@ -15,7 +15,7 @@ const CurrencyReport: React.FC<any> = (props) => {
 
    const dispatch = useDispatch();
 
-   const handleDownloadImage = async (item) => {
+   const handleCopyToClipboard = async (item) => {
       const element = document.getElementById('chart-' + item.target.id),
          canvas = await html2canvas(element),
          data = canvas.toDataURL('image/png');
@@ -115,7 +115,7 @@ const CurrencyReport: React.FC<any> = (props) => {
                   id={index}
                   variant="contained"
                   sx={{ width: 30, height: 20, margin: 1 }}
-                  onClick={(item) => handleDownloadImage(item)}
+                  onClick={(item) => handleCopyToClipboard(item)}
                >
                   Copy
                </Button>
