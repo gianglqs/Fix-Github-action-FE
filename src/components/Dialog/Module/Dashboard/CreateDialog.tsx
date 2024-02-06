@@ -5,7 +5,7 @@ import { AppDialog } from '../AppDialog/AppDialog';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch } from 'react-redux';
-import { commonStore, dashboardStore } from '@/store/reducers';
+import { commonStore, userStore } from '@/store/reducers';
 import dashboardApi from '@/api/dashboard.api';
 import { CreateUserFormValues } from '@/types/user';
 
@@ -41,7 +41,7 @@ const DialogCreateUser: React.FC<any> = (props) => {
          setLoading(true);
          await dashboardApi.createUser(transformData);
          const { data } = await dashboardApi.getUser({ search: '' });
-         dispatch(dashboardStore.actions.setUserList(JSON.parse(data)?.userList));
+         dispatch(userStore.actions.setUserList(JSON.parse(data)?.userList));
          dispatch(commonStore.actions.setSuccessMessage('Create User Successfully'));
          onClose();
       } catch (error) {

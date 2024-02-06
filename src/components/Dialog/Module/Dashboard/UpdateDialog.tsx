@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import dashboardApi from '@/api/dashboard.api';
 
 import { useDispatch } from 'react-redux';
-import { commonStore, dashboardStore } from '@/store/reducers';
+import { commonStore, userStore } from '@/store/reducers';
 
 const DialogUpdateUser: React.FC<any> = (props) => {
    const { open, onClose, detail } = props;
@@ -44,7 +44,7 @@ const DialogUpdateUser: React.FC<any> = (props) => {
          const { data } = await dashboardApi.updateUser(detail?.id, transformData);
 
          const userList = await dashboardApi.getUser({ search: '' });
-         dispatch(dashboardStore.actions.setUserList(JSON.parse(userList?.data)?.userList));
+         dispatch(userStore.actions.setUserList(JSON.parse(userList?.data)?.userList));
          dispatch(commonStore.actions.setSuccessMessage(data));
          onClose();
       } catch (error) {
