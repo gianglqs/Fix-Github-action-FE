@@ -18,7 +18,7 @@ const CurrencyReport: React.FC<any> = (props) => {
    const handleDownloadImage = async (item) => {
       const element = document.getElementById('chart-' + item.target.id),
          canvas = await html2canvas(element),
-         data = canvas.toDataURL('image/jpg');
+         data = canvas.toDataURL('image/png');
 
       const img = await fetch(data);
       const imgBlob = await img.blob();
@@ -31,6 +31,7 @@ const CurrencyReport: React.FC<any> = (props) => {
          ]);
          dispatch(commonStore.actions.setSuccessMessage('Copied to Clipboard'));
       } catch (error) {
+         console.log(error);
          dispatch(commonStore.actions.setErrorMessage('Error on copying content'));
       }
    };

@@ -1,5 +1,5 @@
 import { AppAutocomplete, AppLayout } from '@/components';
-import { Button, Grid } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import { produce } from 'immer';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
@@ -30,7 +30,7 @@ ChartJS.register(
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import { CurrencyReport } from '@/components/CurrencyReport';
-import currencyApi from '@/api/currency.api';
+import exchangeRatesApi from '@/api/exchangeRates.api';
 import { useDispatch } from 'react-redux';
 import { commonStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
@@ -41,7 +41,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
 
-export default function Currencies() {
+export default function ExchangeRate() {
    const dispatch = useDispatch();
    let cookies = parseCookies();
    let userRoleCookies = cookies['role'];
@@ -78,7 +78,7 @@ export default function Currencies() {
    const [uploadedFile, setUploadedFile] = useState();
 
    useEffect(() => {
-      currencyApi
+      exchangeRatesApi
          .getCurrencyFilter()
          .then((response) => {
             setCurrencyFilter(JSON.parse(String(response.data)).currencyFilter);
@@ -105,7 +105,7 @@ export default function Currencies() {
       let formData = new FormData();
       formData.append('file', file);
 
-      currencyApi
+      exchangeRatesApi
          .uploadExchangeRate(formData)
          .then(() => {
             dispatch(commonStore.actions.setSuccessMessage('Upload Exchange Rate successfully'));
@@ -130,7 +130,7 @@ export default function Currencies() {
             comparisonCurrencies: comparisonCurrencies.value,
          };
 
-         currencyApi
+         exchangeRatesApi
             .compareCurrency(request)
             .then((response) => {
                const data = JSON.parse(String(response.data)).compareCurrency;
@@ -205,7 +205,6 @@ export default function Currencies() {
                <Grid item xs={2} sx={{ zIndex: 10, height: 70, marginLeft: 1 }}>
                   <AppAutocomplete
                      options={currencyFilter}
-                     label="Current Currency"
                      onChange={(e, option) => handleChangeDataFilter(option, 'currentCurrency')}
                      disableListWrap
                      primaryKeyOption="value"
@@ -237,10 +236,19 @@ export default function Currencies() {
                      )}
                   </Grid>
                </Grid>
+               <Grid
+                  item
+                  sx={{
+                     zIndex: 10,
+                     height: 25,
+                     fontSize: 15,
+                  }}
+               >
+                  To
+               </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
                      options={currencyFilter}
-                     label="Comparison Currencies"
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) =>
                         handleChangeDataFilter(option, 'comparisonCurrencies')
