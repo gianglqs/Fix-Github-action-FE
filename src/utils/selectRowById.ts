@@ -1,3 +1,3 @@
-export const selectDataRowById = (listData: any[], fieldIdName: string, id: string) => {
-   return listData.filter((row) => row[fieldIdName] === id);
+export const selectProductRowById = (listData: any[], id: string) => {
+   return listData.filter((row) => row.id === id);
 };
