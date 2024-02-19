@@ -33,7 +33,7 @@ import { GetServerSidePropsContext } from 'next';
 import { iconColumn } from '@/utils/columnProperties';
 import { DialogUpdateProduct } from '@/components/Dialog/Module/ProductManangerDialog/UpdateDialog';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
-import { selectDataRowById } from '@/utils/selectRowById';
+import { selectProductRowById } from '@/utils/selectRowById';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import productApi from '@/api/product.api';
 
@@ -170,9 +170,12 @@ export default function Product() {
 
    const handleUploadFile = async (files) => {
       let formData = new FormData();
+
       files.map((file) => {
-         formData.append('file', file);
+         formData.append('files', file);
       });
+
+      console.log(formData);
 
       productApi
          .importDataProduct(formData)
@@ -254,7 +257,7 @@ export default function Product() {
    };
 
    const handleOpenProductDetailDialog = (row) => {
-      const data = selectDataRowById(listProduct, 'modelCode', row.id);
+      const data = selectProductRowById(listProduct, row.id);
       console.log(data);
       data &&
          setProductDetailState({
@@ -497,7 +500,7 @@ export default function Product() {
                      rowBuffer={35}
                      rowThreshold={25}
                      columns={columns}
-                     getRowId={(params) => params.modelCode}
+                     getRowId={(params) => params.id}
                      onRowClick={handleOpenProductDetailDialog}
                      onCellClick={handleOnCellClick}
                   />
