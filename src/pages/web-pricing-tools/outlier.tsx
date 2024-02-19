@@ -3,20 +3,12 @@ import { useEffect, useState } from 'react';
 import { formatNumbericColumn } from '@/utils/columnProperties';
 import { useDispatch, useSelector } from 'react-redux';
 import { outlierStore, commonStore } from '@/store/reducers';
-import { DataGrid } from '@mui/x-data-grid';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
 
-import {
-   AppAutocomplete,
-   AppDateField,
-   AppLayout,
-   AppTextField,
-   DataTable,
-   DataTablePagination,
-} from '@/components';
+import { AppAutocomplete, AppDateField, AppLayout, DataTablePagination } from '@/components';
 
 import _ from 'lodash';
 import { produce } from 'immer';
@@ -48,12 +40,11 @@ ChartJS.register(
    Title,
    ChartAnnotation
 );
-import axios from 'axios';
-import { parseCookies } from 'nookies';
 import { rowColor } from '@/theme/colorRow';
 
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
+import { REGION } from '@/utils/constant';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -405,8 +396,6 @@ export default function Outlier() {
             data: { chartOutliersData },
          } = await outlierApi.getOutliersForChart(dataFilter);
 
-         const randomNum = () => Math.floor(Math.random() * (235 - 52 + 1) + 52);
-
          chartOutliersData = chartOutliersData.filter((item) => item[0]?.region != null);
 
          const datasets = chartOutliersData.map((item) => {
@@ -422,7 +411,7 @@ export default function Outlier() {
                return {
                   label: item[0]?.region,
                   data: regionData.map((item) => item),
-                  backgroundColor: `rgb(${randomNum()}, ${randomNum()}, ${randomNum()})`,
+                  backgroundColor: REGION[item[0]?.region],
                };
             }
          });
