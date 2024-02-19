@@ -64,9 +64,13 @@ export const checkTokenBeforeLoadPageLogin = async (context: GetServerSidePropsC
          },
       });
       return {
-         props: {},
+         redirect: {
+            destination: '/web-pricing-tools/admin/users',
+            permanent: false,
+         },
       };
    } catch (error) {
+      console.log(error);
       if (error.response?.status == 401)
          return refreshTokenForFunctionGetServerSidePropsLogin(error, context);
 
