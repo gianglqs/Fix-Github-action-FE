@@ -1,4 +1,4 @@
-import LoginPage from './login';
+import { PATH_LOGIN } from '@/Path/frontend';
 import { checkTokenBeforeLoadPageLogin } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
@@ -11,7 +11,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 function IndexPage() {
    const router = useRouter();
    useEffect(() => {
-      router.push('/login');
+      router.push(PATH_LOGIN);
    });
 }
 

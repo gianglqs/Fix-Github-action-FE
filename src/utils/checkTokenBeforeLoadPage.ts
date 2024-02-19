@@ -6,12 +6,14 @@ import {
 
 import { parseCookies } from 'nookies';
 import { GetServerSidePropsContext } from 'next';
+import { PATH_ADMIN_USER, PATH_BOOKING, PATH_LOGIN } from '@/Path/frontend';
+import { CHECK_TOKEN_ADMIN_URL, CHECK_TOKEN_URL } from '@/Path/backend';
 
 export const checkTokenBeforeLoadPage = async (context: GetServerSidePropsContext) => {
    try {
       const cookies = parseCookies(context);
       const accessToken = cookies['token'];
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkToken`, null, {
+      await axios.post(CHECK_TOKEN_URL, null, {
          headers: {
             Authorization: 'Bearer ' + accessToken,
          },
@@ -31,7 +33,7 @@ export const checkTokenBeforeLoadPageAdmin = async (context: GetServerSidePropsC
       const cookies = parseCookies(context);
       const accessToken = cookies['token'];
 
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkTokenOfAdmin`, null, {
+      await axios.post(CHECK_TOKEN_ADMIN_URL, null, {
          headers: {
             Authorization: 'Bearer ' + accessToken,
          },
@@ -42,8 +44,8 @@ export const checkTokenBeforeLoadPageAdmin = async (context: GetServerSidePropsC
    } catch (error) {
       if (error.response?.status == 401) return refreshTokenForFunctionGetServerSideProps(context);
 
-      var des = '/login';
-      if (error.response?.status == 403) des = '/web-pricing-tools/bookingOrder';
+      var des = PATH_LOGIN;
+      if (error.response?.status == 403) des = PATH_BOOKING;
       return {
          redirect: {
             destination: des,
@@ -58,14 +60,14 @@ export const checkTokenBeforeLoadPageLogin = async (context: GetServerSidePropsC
       const cookies = parseCookies(context);
       const accessToken = cookies['token'];
 
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/checkTokenOfAdmin`, null, {
+      await axios.post(CHECK_TOKEN_ADMIN_URL, null, {
          headers: {
             Authorization: 'Bearer ' + accessToken,
          },
       });
       return {
          redirect: {
-            destination: '/web-pricing-tools/admin/users',
+            destination: PATH_ADMIN_USER,
             permanent: false,
          },
       };
@@ -74,8 +76,8 @@ export const checkTokenBeforeLoadPageLogin = async (context: GetServerSidePropsC
       if (error.response?.status == 401)
          return refreshTokenForFunctionGetServerSidePropsLogin(error, context);
 
-      var des = '/login';
-      if (error.response?.status == 403) des = '/web-pricing-tools/bookingOrder';
+      var des = PATH_LOGIN;
+      if (error.response?.status == 403) des = PATH_BOOKING;
       return {
          redirect: {
             destination: des,

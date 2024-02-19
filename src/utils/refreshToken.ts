@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { parseCookies, setCookie } from 'nookies';
 import { GetServerSidePropsContext } from 'next';
+import { PATH_ADMIN_USER, PATH_BOOKING } from '@/Path/frontend';
 
 export const refreshTokenForFunctionGetServerSideProps = async (
    context: GetServerSidePropsContext
@@ -54,7 +55,7 @@ export const refreshTokenForFunctionGetServerSidePropsLogin = async (
       await axios(newRequest);
       return {
          redirect: {
-            destination: '/web-pricing-tools/admin/dashboard',
+            destination: PATH_ADMIN_USER,
             permanent: false,
          },
       };
@@ -63,7 +64,7 @@ export const refreshTokenForFunctionGetServerSidePropsLogin = async (
          //role: USER
          return {
             redirect: {
-               destination: '/web-pricing-tools/bookingOrder',
+               destination: PATH_BOOKING,
                permanent: false,
             },
          };
