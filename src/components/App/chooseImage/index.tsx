@@ -3,11 +3,13 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { getProductImagePath } from '@/utils/imagePath';
+import { ProductImage } from '../Image/ProductImage';
 
 export default function ChooseImage(props) {
    const { image, setImage } = props;
    const [isHovered, setIsHovered] = useState(false);
    const [imageUrl, setImageUrl] = useState(image);
+   const [isChoosingFile, setIsChoosingFile] = useState(false);
 
    const handleChooseImage = () => {};
 
@@ -18,6 +20,7 @@ export default function ChooseImage(props) {
       reader.onload = () => {
          setImageUrl(reader.result);
          setImage(file);
+         setIsChoosingFile(true);
       };
 
       reader.readAsDataURL(file);
@@ -31,7 +34,7 @@ export default function ChooseImage(props) {
    });
 
    useEffect(() => {
-      setImageUrl(getProductImagePath(image));
+      setImageUrl(image);
    }, [image]);
 
    return (
@@ -54,13 +57,10 @@ export default function ChooseImage(props) {
                alignItems: 'center',
             }}
          >
-            <img
-               style={{
-                  height: '100%',
-                  width: '100%',
-                  objectFit: 'cover',
-               }}
-               src={imageUrl}
+            <ProductImage
+               imageUrl={imageUrl}
+               style={{ objectFit: 'cover', height: '100%', width: '100%' }}
+               isImageChoose={isChoosingFile}
             />
             <IconButton
                aria-label="Upload Image"
