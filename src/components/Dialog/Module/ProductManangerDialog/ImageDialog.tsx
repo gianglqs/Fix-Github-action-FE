@@ -1,3 +1,4 @@
+import { ProductImage } from '@/components/App/Image/ProductImage';
 import { Dialog } from '@mui/material';
 import { useEffect, useState } from 'react';
 
@@ -9,7 +10,7 @@ export default function ShowImageDialog(props) {
    }, [imageUrl]);
    return (
       <Dialog maxWidth="lg" open={open} onClose={onClose}>
-         <img src={image} style={{ objectFit: 'contain' }} width={'100%'} height={'100%'} />
+         <ProductImage imageUrl={image} style={{ objectFit: 'contain' }} />
       </Dialog>
    );
 }

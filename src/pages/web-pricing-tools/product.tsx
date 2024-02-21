@@ -106,9 +106,9 @@ export default function Product() {
          headerName: 'Model Code',
       },
       {
-         field: 'metaSeries',
+         field: 'series',
          flex: 0.3,
-         headerName: 'MetaSeries',
+         headerName: 'series',
       },
       {
          field: 'brand',
@@ -245,14 +245,14 @@ export default function Product() {
    const [productDetailState, setProductDetailState] = useState({
       open: false,
       model: null,
-      _metaSeries: null,
+      _series: null,
    });
 
    const handleCloseProductDetail = () => {
       setProductDetailState({
          open: false,
          model: null,
-         _metaSeries: null,
+         _series: null,
       });
    };
 
@@ -263,7 +263,7 @@ export default function Product() {
          setProductDetailState({
             open: true,
             model: data[0].modelCode,
-            _metaSeries: data[0].metaSeries,
+            _series: data[0].series,
          });
    };
 
@@ -274,11 +274,10 @@ export default function Product() {
    });
 
    const handleOpenImageDialog = (imageUrl) => {
-      imageUrl &&
-         setImageDialogState({
-            open: true,
-            imageUrl: imageUrl,
-         });
+      setImageDialogState({
+         open: true,
+         imageUrl: imageUrl,
+      });
    };
 
    const handleCloseImageDialog = () => {

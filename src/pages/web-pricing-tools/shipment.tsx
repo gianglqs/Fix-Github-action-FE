@@ -491,7 +491,7 @@ export default function Shipment() {
    const [productDetailState, setProductDetailState] = useState({
       open: false,
       model: null,
-      _metaSeries: null,
+      _series: null,
       orderNo: null,
    });
 
@@ -499,7 +499,7 @@ export default function Shipment() {
       setProductDetailState({
          open: false,
          model: null,
-         _metaSeries: null,
+         _series: null,
          orderNo: null,
       });
    };
@@ -511,11 +511,10 @@ export default function Shipment() {
    });
 
    const handleOpenImageDialog = (imageUrl) => {
-      imageUrl &&
-         setImageDialogState({
-            open: true,
-            imageUrl: imageUrl,
-         });
+      setImageDialogState({
+         open: true,
+         imageUrl: imageUrl,
+      });
    };
 
    const handleCloseImageDialog = () => {
@@ -527,14 +526,12 @@ export default function Shipment() {
 
    // handle prevent open ProductDetail Dialog when click button edit
    const handleOnCellClick = (params, event) => {
-      console.log(params.row.product?.modelCode);
-      console.log(params.id);
       if (params.field === 'model') {
          event.stopPropagation();
          setProductDetailState({
             open: true,
             model: params.row.product?.modelCode,
-            _metaSeries: params.row?.series.substring(1, 5),
+            _series: params.row?.series,
             orderNo: params.id,
          });
       }
