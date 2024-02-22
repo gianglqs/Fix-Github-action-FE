@@ -17,13 +17,14 @@ import {
 import PartImageTooltip from '@/components/App/Tooltip/ImageTootip/Part';
 import { produce } from 'immer';
 import { When } from 'react-if';
+import { ProductImage } from '@/components/App/Image/ProductImage';
 
 const ProductDetailDialog: React.FC<any> = (props) => {
-   const { open, onClose, model, _metaSeries, orderNo, handleOpenImageDialog } = props;
+   const { open, onClose, model, _series, orderNo, handleOpenImageDialog } = props;
 
    // ======== info product detail ========
    const [modelCode, setModelCode] = useState();
-   const [metaSeries, setMetaSeries] = useState();
+   const [series, setSeries] = useState();
    const [productDetail, setProductDetail] = useState(null);
    const [orderNumber, setOrderNumber] = useState();
 
@@ -32,8 +33,8 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    }, [model]);
 
    useEffect(() => {
-      setMetaSeries(_metaSeries);
-   }, [_metaSeries]);
+      setSeries(_series);
+   }, [_series]);
 
    useEffect(() => {
       setOrderNumber(orderNo);
@@ -41,9 +42,9 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    //get ProductDetail
    useEffect(() => {
-      if (modelCode && metaSeries) {
+      if (modelCode && series) {
          productApi
-            .getProductDetail(modelCode, metaSeries)
+            .getProductDetail(modelCode, series)
             .then((response) => {
                setProductDetail(JSON.parse(String(response.data)));
             })
@@ -51,7 +52,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                console.log(error);
             });
       }
-   }, [modelCode, metaSeries]);
+   }, [modelCode, series]);
 
    // ======== for list Part =========
 
@@ -70,20 +71,20 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    // set modelCode in data filter part
    useEffect(() => {
-      if (modelCode && metaSeries) {
+      if (modelCode && series) {
          setDataFilterForGetParts((prev) => ({
             ...prev,
             modelCode: modelCode,
-            metaSeriez: metaSeries,
+            metaSeriez: series,
          }));
       }
-   }, [modelCode, metaSeries]);
+   }, [modelCode, series]);
 
    // get orderNo filter
    useEffect(() => {
-      if (modelCode && metaSeries && !orderNo) {
+      if (modelCode && series && !orderNo) {
          productApi
-            .getProductDetailFilter(modelCode, metaSeries)
+            .getProductDetailFilter(modelCode, series)
             .then((response) => {
                setInitDataFilter(JSON.parse(String(response.data)));
             })
@@ -91,7 +92,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                console.log(error);
             });
       }
-   }, [modelCode, metaSeries]);
+   }, [modelCode, series]);
 
    // get ListPart and totalItems
    const getDataPartByFilter = (filter) => {
@@ -108,19 +109,19 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    //load Parts when open Dialog (when setup dataFilterForGetParts is successfully)
    useEffect(() => {
-      if (modelCode && metaSeries) {
+      if (modelCode && series) {
          orderNumber
             ? getDataPartByFilter({
                  modelCode: modelCode,
-                 metaSeriez: metaSeries,
+                 metaSeriez: series,
                  orderNumbers: [orderNumber],
               })
             : getDataPartByFilter({
                  modelCode: modelCode,
-                 metaSeriez: metaSeries,
+                 metaSeriez: series,
               });
       }
-   }, [modelCode, metaSeries, orderNumber]);
+   }, [modelCode, series, orderNumber]);
 
    // Load Parts when change pageNo and perPage
    useEffect(() => {
@@ -208,7 +209,6 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       setTotalItems(null);
       setProductDetail(null);
    };
-   1;
 
    return (
       <Dialog
@@ -309,8 +309,8 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   <Grid item xs={2}>
                      <TextField
                         id="outlined-read-only-input"
-                        label="MetaSeries"
-                        value={productDetail?.metaSeries}
+                        label="Series"
+                        value={productDetail?.series}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
@@ -414,14 +414,16 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   </Grid>
                </Grid>
                <Grid container xs={2} style={{ paddingLeft: '15px', overflow: 'hidden' }}>
-                  <img
-                     src={getProductImagePath(productDetail?.image)}
-                     height={'100%'}
-                     width={'100%'}
-                     style={{ objectFit: 'contain', borderRadius: '5px', maxHeight: '180px' }}
-                     onClick={() =>
-                        handleOpenImageDialog(getProductImagePath(productDetail?.image))
-                     }
+                  <ProductImage
+                     imageUrl={productDetail?.image}
+                     style={{
+                        objectFit: 'contain',
+                        borderRadius: '5px',
+                        maxHeight: '180px',
+                        height: '100%',
+                        width: '100%',
+                     }}
+                     onClick={() => handleOpenImageDialog(productDetail?.image)}
                   />
                </Grid>
             </Grid>

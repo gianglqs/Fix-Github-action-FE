@@ -33,7 +33,7 @@ import { GetServerSidePropsContext } from 'next';
 import { iconColumn } from '@/utils/columnProperties';
 import { DialogUpdateProduct } from '@/components/Dialog/Module/ProductManangerDialog/UpdateDialog';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
-import { selectDataRowById } from '@/utils/selectRowById';
+import { selectProductRowById } from '@/utils/selectRowById';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import productApi from '@/api/product.api';
 
@@ -106,9 +106,9 @@ export default function Product() {
          headerName: 'Model Code',
       },
       {
-         field: 'metaSeries',
+         field: 'series',
          flex: 0.3,
-         headerName: 'MetaSeries',
+         headerName: 'series',
       },
       {
          field: 'brand',
@@ -170,9 +170,12 @@ export default function Product() {
 
    const handleUploadFile = async (files) => {
       let formData = new FormData();
+
       files.map((file) => {
-         formData.append('file', file);
+         formData.append('files', file);
       });
+
+      console.log(formData);
 
       productApi
          .importDataProduct(formData)
@@ -242,25 +245,25 @@ export default function Product() {
    const [productDetailState, setProductDetailState] = useState({
       open: false,
       model: null,
-      _metaSeries: null,
+      _series: null,
    });
 
    const handleCloseProductDetail = () => {
       setProductDetailState({
          open: false,
          model: null,
-         _metaSeries: null,
+         _series: null,
       });
    };
 
    const handleOpenProductDetailDialog = (row) => {
-      const data = selectDataRowById(listProduct, 'modelCode', row.id);
+      const data = selectProductRowById(listProduct, row.id);
       console.log(data);
       data &&
          setProductDetailState({
             open: true,
             model: data[0].modelCode,
-            _metaSeries: data[0].metaSeries,
+            _series: data[0].series,
          });
    };
 
@@ -271,11 +274,10 @@ export default function Product() {
    });
 
    const handleOpenImageDialog = (imageUrl) => {
-      imageUrl &&
-         setImageDialogState({
-            open: true,
-            imageUrl: imageUrl,
-         });
+      setImageDialogState({
+         open: true,
+         imageUrl: imageUrl,
+      });
    };
 
    const handleCloseImageDialog = () => {
@@ -497,7 +499,7 @@ export default function Product() {
                      rowBuffer={35}
                      rowThreshold={25}
                      columns={columns}
-                     getRowId={(params) => params.modelCode}
+                     getRowId={(params) => params.id}
                      onRowClick={handleOpenProductDetailDialog}
                      onCellClick={handleOnCellClick}
                   />

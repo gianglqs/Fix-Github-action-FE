@@ -51,3 +51,13 @@ export const CURRENCY = {
    LKR: '#e2987d',
    VND: '#d77526',
 };
+
+export const REGION = {
+   Asia: '#50a88b',
+   Pacific: '#481184',
+   China: '#7ca600',
+   India: '#a55e96',
+   Australia: '#000000',
+   ISC: '#2c3e50',
+   'Pacific excl AUS': '#d77526',
+};
