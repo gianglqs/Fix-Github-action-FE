@@ -85,6 +85,14 @@ export default function Adjustment() {
       );
    };
 
+   useEffect(() => {
+      handleFilterAdjustment();
+   }, [dataFilter]);
+
+   useEffect(() => {
+      handleCalculator();
+   }, [dataCalculator]);
+
    const handleCalculator = () => {
       dispatch(adjustmentStore.actions.setDefaultValueCalculator(dataCalculator));
       changeColorColumnWhenAdjChange();

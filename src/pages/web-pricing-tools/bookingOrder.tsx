@@ -94,6 +94,10 @@ export default function Booking() {
       );
    };
 
+   useEffect(() => {
+      handleFilterOrderBooking();
+   }, [dataFilter]);
+
    const handleFilterOrderBooking = () => {
       dispatch(bookingStore.actions.setDefaultValueFilterBooking(dataFilter));
       handleChangePage(1);

@@ -65,6 +65,10 @@ export default function Trends() {
       );
    };
 
+   useEffect(() => {
+      handleFilterTrends();
+   }, [dataFilter]);
+
    const handleFilterTrends = async () => {
       dispatch(trendsStore.actions.setDefaultValueFilterTrends(dataFilter));
       dispatch(trendsStore.sagaGetList());
