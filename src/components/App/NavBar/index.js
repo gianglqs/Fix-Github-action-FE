@@ -11,7 +11,7 @@ const NavBar = () => {
    const router = useRouter();
 
    const navOptions = {
-      bookingOrder: 'Dashboard',
+      'financial-bookings': 'Dashboard',
       competitors: 'Competitors',
       users: 'Users',
    };
@@ -21,7 +21,9 @@ const NavBar = () => {
 
       const navBar = _.map(otherOptions, (name) => (
          <Link
-            href={`/web-pricing-tools/${name != 'bookingOrder' ? `admin/${name}` : `${name}`}`}
+            href={`/web-pricing-tools/${
+               name != 'financial-bookings' ? `admin/${name}` : `${name}`
+            }`}
             sx={{
                textDecoration: 'none',
             }}
@@ -35,7 +37,9 @@ const NavBar = () => {
                   fontWeight="fontWeightMedium"
                   color={
                      router.pathname ===
-                     `/web-pricing-tools/${name != 'bookingOrder' ? `admin/${name}` : `${name}`}`
+                     `/web-pricing-tools/${
+                        name != 'financial-bookings' ? `admin/${name}` : `${name}`
+                     }`
                         ? '#e7a800'
                         : '#a5a5a5'
                   }
