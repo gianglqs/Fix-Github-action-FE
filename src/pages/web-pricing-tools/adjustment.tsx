@@ -30,6 +30,7 @@ import CellColor, {
 import { makeStyles } from '@mui/styles';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
+import AppBackDrop from '@/components/App/BackDrop';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -59,6 +60,8 @@ export default function Adjustment() {
    const [fxAdjColor, setFxAdjColor] = useState(null);
    const [dnAdjColor, setDnAdjColor] = useState(null);
    const [totalColor, setTotalColor] = useState(null);
+
+   const [loadingTable, setLoadingTable] = useState(false);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -93,13 +96,19 @@ export default function Adjustment() {
       handleCalculator();
    }, [dataCalculator]);
 
+   useEffect(() => {
+      setLoadingTable(false);
+   }, [listAdjustment]);
+
    const handleCalculator = () => {
+      setLoadingTable(true);
       dispatch(adjustmentStore.actions.setDefaultValueCalculator(dataCalculator));
       changeColorColumnWhenAdjChange();
       handleChangePage(currentPage);
    };
 
    const handleFilterAdjustment = () => {
+      setLoadingTable(true);
       dispatch(adjustmentStore.actions.setDefaultValueFilterAdjustment(dataFilter));
 
       handleChangePage(1);
@@ -765,7 +774,7 @@ export default function Adjustment() {
                </Grid>
             </Grid>
 
-            <Paper elevation={1} sx={{ marginTop: 2 }}>
+            <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: 'calc(100vh - 283px)' }}>
                   <DataGridPro
                      sx={{
@@ -817,6 +826,7 @@ export default function Adjustment() {
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
                />
+               <AppBackDrop open={loadingTable} hightHeaderTable={'102px'} />
             </Paper>
          </AppLayout>
       </>

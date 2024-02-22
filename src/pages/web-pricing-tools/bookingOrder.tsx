@@ -45,6 +45,7 @@ import { GetServerSidePropsContext } from 'next';
 import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
+import AppBackDrop from '@/components/App/BackDrop';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -64,6 +65,8 @@ export default function Booking() {
    const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
 
    const [loading, setLoading] = useState(false);
+
+   const [loadingTable, setLoadingTable] = useState(false);
 
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
 
@@ -99,9 +102,14 @@ export default function Booking() {
    }, [dataFilter]);
 
    const handleFilterOrderBooking = () => {
+      setLoadingTable(true);
       dispatch(bookingStore.actions.setDefaultValueFilterBooking(dataFilter));
       handleChangePage(1);
    };
+
+   useEffect(() => {
+      setLoadingTable(false);
+   }, [listOrder]);
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
@@ -769,7 +777,7 @@ export default function Booking() {
                </Grid>
             </When>
 
-            <Paper elevation={1} sx={{ marginTop: 2 }}>
+            <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(100vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter
@@ -816,6 +824,7 @@ export default function Booking() {
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
                />
+               <AppBackDrop open={loadingTable} hightHeaderTable={'93px'} />
             </Paper>
          </AppLayout>
          <ProductDetailDialog

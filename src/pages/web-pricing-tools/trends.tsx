@@ -36,6 +36,7 @@ ChartJS.register(
 
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
+import AppBackDrop from '@/components/App/BackDrop';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -53,6 +54,8 @@ export default function Trends() {
    const dataForMarginVsCost = useSelector(trendsStore.selectDataForMarginVsCost);
    const dataForMarginVsDN = useSelector(trendsStore.selectDataForMarginVsDN);
 
+   const [loadingCharts, setLoadingCharts] = useState(false);
+
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
          produce(prev, (draft) => {
@@ -69,7 +72,12 @@ export default function Trends() {
       handleFilterTrends();
    }, [dataFilter]);
 
+   useEffect(() => {
+      setLoadingCharts(false);
+   }, [dataForMarginVsCost, dataForMarginVsDN]);
+
    const handleFilterTrends = async () => {
+      setLoadingCharts(true);
       dispatch(trendsStore.actions.setDefaultValueFilterTrends(dataFilter));
       dispatch(trendsStore.sagaGetList());
    };
@@ -415,7 +423,7 @@ export default function Trends() {
                   </Button>
                </Grid>
 
-               <Grid container sx={{ justifyContent: 'left' }}>
+               <Grid container sx={{ justifyContent: 'left', position: 'relative' }}>
                   <Grid
                      item
                      sx={{
@@ -446,6 +454,7 @@ export default function Trends() {
                         scales={chartScales}
                      />
                   </Grid>
+                  <AppBackDrop open={loadingCharts} hightHeaderTable={'5px'} bottom={'1px'} />
                </Grid>
             </Grid>
          </AppLayout>
