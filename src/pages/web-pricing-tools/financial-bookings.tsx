@@ -5,6 +5,7 @@ import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/format
 import { useDispatch, useSelector } from 'react-redux';
 import { bookingStore, commonStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
+import moment from 'moment-timezone';
 
 import { rowColor } from '@/theme/colorRow';
 
@@ -18,6 +19,7 @@ import {
    ListItem,
    Radio,
    RadioGroup,
+   Typography,
 } from '@mui/material';
 
 import {
@@ -60,6 +62,8 @@ export default function Booking() {
    const listTotalRow = useSelector(bookingStore.selectTotalRow);
    const initDataFilter = useSelector(bookingStore.selectInitDataFilter);
    const listExchangeRate = useSelector(bookingStore.selectExchangeRateList);
+   const serverTimeZone = useSelector(bookingStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(bookingStore.selectLatestUpdatedTime);
 
    const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
 
@@ -72,6 +76,8 @@ export default function Booking() {
    const [totalRow, setTotalRow] = useState(listTotalRow);
 
    const [currency, setCurrency] = useState('USD');
+
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
    const appendFileIntoList = (file) => {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
@@ -440,7 +446,8 @@ export default function Booking() {
       setTotalRow((prev) => {
          return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
       });
-   }, [listBookingOrder, listTotalRow, currency]);
+      convertServerTimeToClientTimeZone();
+   }, [listBookingOrder, listTotalRow, currency, serverTimeZone, serverLatestUpdatedTime]);
 
    // ===== show Product detail =======
    const [productDetailState, setProductDetailState] = useState({
@@ -493,6 +500,19 @@ export default function Booking() {
          });
       }
    };
+
+   // show latest updated time
+   const convertServerTimeToClientTimeZone = () => {
+      if (serverLatestUpdatedTime && serverTimeZone) {
+         const clientTimeZone = moment.tz.guess();
+         const convertedTime = moment
+            .tz(serverLatestUpdatedTime, serverTimeZone)
+            .tz(clientTimeZone);
+         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         console.log('Converted Time:', convertedTime.format());
+      }
+   };
+
    return (
       <>
          <AppLayout entity="booking">
@@ -761,6 +781,11 @@ export default function Booking() {
                               </Button>
                            </ListItem>
                         ))}
+                  </Grid>
+                  <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={6}>
+                     <Typography sx={{ marginRight: '20px' }}>
+                        Latest updated at {clientLatestUpdatedTime}
+                     </Typography>
                   </Grid>
                </Grid>
             </When>
