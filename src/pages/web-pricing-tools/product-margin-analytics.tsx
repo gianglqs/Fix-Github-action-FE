@@ -69,6 +69,10 @@ export default function Outlier() {
       );
    };
 
+   useEffect(() => {
+      handleFilterOrderBooking();
+   }, [dataFilter]);
+
    const handleFilterOrderBooking = () => {
       dispatch(outlierStore.actions.setDefaultValueFilterOutlier(dataFilter));
       handleChangePage(1);

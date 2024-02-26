@@ -90,6 +90,10 @@ export default function Shipment() {
       );
    };
 
+   useEffect(() => {
+      handleFilterOrderShipment();
+   }, [dataFilter]);
+
    const handleFilterOrderShipment = () => {
       dispatch(shipmentStore.actions.setDefaultValueFilterOrder(dataFilter));
       handleChangePage(1);

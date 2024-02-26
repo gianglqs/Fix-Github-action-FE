@@ -91,6 +91,10 @@ export default function Indicators() {
 
    const [regionError, setRegionError] = useState({ error: false });
 
+   useEffect(() => {
+      handleFilterCompetitiveLandscape();
+   }, [swotDataFilter]);
+
    const handleFilterCompetitiveLandscape = async () => {
       try {
          if (swotDataFilter.regions == null) {
@@ -141,6 +145,11 @@ export default function Indicators() {
          })
       );
    };
+
+   useEffect(() => {
+      handleFilterIndicator();
+   }, [dataFilter]);
+
    useEffect(() => {
       console.log(swotDataFilter);
       if (swotDataFilter.regions != null) setRegionError({ error: false });

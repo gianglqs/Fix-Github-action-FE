@@ -72,6 +72,10 @@ export default function Product() {
       );
    };
 
+   useEffect(() => {
+      handleFilterProduct();
+   }, [dataFilter]);
+
    const handleFilterProduct = () => {
       dispatch(productStore.actions.setDefaultValueFilterProduct(dataFilter));
       handleChangePage(1);
