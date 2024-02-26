@@ -57,15 +57,15 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
    }, [router.pathname]);
 
    const menuObj = {
-      bookingOrder: 'Financial Bookings',
-      shipment: 'Financial Shipments',
-      margin_analysis: 'Margin Analysis',
-      indicators: 'Indicators',
-      adjustment: 'Adjustment of Cost Indicators',
-      trends: 'Trends',
-      outlier: 'Outliers',
-      product: 'Products',
-      exchangeRates: 'Exchange Rates',
+      'financial-bookings': 'Financial Bookings',
+      'financial-shipments': 'Financial Shipments',
+      'quotation-margin': 'Quotation Margin %',
+      'competitor-bmark': 'Competitor B/Mark',
+      'simulation-modelling': 'Simulation Modelling',
+      'competitor-bubbles': 'Competitor Bubbles',
+      'product-margin-analytics': 'Product Margin Analytics',
+      products: 'Products',
+      'exchange-rates': 'Exchange Rates',
    };
 
    const renderMenu = () => {
@@ -133,7 +133,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
          <AppBar className={classes.header__container} position="static">
             <a
                href={`/web-pricing-tools/${
-                  userRoleCookies === 'ADMIN' ? `admin/users` : `bookingOrder`
+                  userRoleCookies === 'ADMIN' ? `admin/users` : `financial-bookings`
                }`}
                style={{ width: 35, height: 35 }}
             >

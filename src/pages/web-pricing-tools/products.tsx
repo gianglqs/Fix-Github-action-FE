@@ -120,7 +120,7 @@ export default function Product() {
       {
          field: 'series',
          flex: 0.3,
-         headerName: 'series',
+         headerName: 'Series',
       },
       {
          field: 'brand',
