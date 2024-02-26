@@ -12,6 +12,8 @@ export const initialState = {
    initDataFilter: {} as any,
    defaultValueFilterBooking: defaultValueFilterOrder as any,
    exchangeRateList: [] as any[],
+   serverTimeZone: '' as any,
+   latestUpdatedTime: '' as any,
 };
 
 const bookingSlice = createSlice({
@@ -29,6 +31,12 @@ const bookingSlice = createSlice({
       },
       setInitDataFilter(state, { payload }: PayloadAction<any[]>) {
          state.initDataFilter = payload;
+      },
+      setServerTimeZone(state, { payload }: PayloadAction<any[]>) {
+         state.serverTimeZone = payload;
+      },
+      setLatestUpdatedTime(state, { payload }: PayloadAction<any[]>) {
+         state.latestUpdatedTime = payload;
       },
       setDefaultValueFilterBooking(state, { payload }: PayloadAction<Partial<any>>) {
          state.defaultValueFilterBooking = {
@@ -58,6 +66,12 @@ export const selectExchangeRateList = createSelector(
 export const selectDefaultValueFilterBooking = createSelector(
    selectState,
    (state) => state.defaultValueFilterBooking
+);
+
+export const selectServerTimeZone = createSelector(selectState, (state) => state.serverTimeZone);
+export const selectLatestUpdatedTime = createSelector(
+   selectState,
+   (state) => state.latestUpdatedTime
 );
 
 export const { actions } = bookingSlice;
