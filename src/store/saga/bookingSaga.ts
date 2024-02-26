@@ -2,18 +2,20 @@ import { takeEvery, put } from 'redux-saga/effects';
 import { bookingStore, commonStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import bookingApi from '@/api/booking.api';
+import { parseCookies } from 'nookies';
+import { json } from 'node:stream/consumers';
 
 function* fetchBooking() {
    try {
+      const cookies = parseCookies();
+      const dataFilter = JSON.parse(String(cookies['bookingFilter']));
+
+      console.log(dataFilter);
       const { tableState } = yield* all({
          tableState: select(commonStore.selectTableState),
       });
 
-      const { defaultValueFilterBooking } = yield* all({
-         defaultValueFilterBooking: select(bookingStore.selectDefaultValueFilterBooking),
-      });
-
-      const { data } = yield* call(bookingApi.getListData, defaultValueFilterBooking, {
+      const { data } = yield* call(bookingApi.getListData, dataFilter, {
          pageNo: tableState.pageNo,
          perPage: tableState.perPage,
       });
@@ -26,6 +28,7 @@ function* fetchBooking() {
       const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
       const dataLatestUpdatedTime = JSON.parse(String(data)).latestUpdatedTime;
 
+      yield put(bookingStore.actions.setDataFilter(dataFilter));
       yield put(bookingStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
       yield put(bookingStore.actions.setBookingList(dataBooking));
       yield put(bookingStore.actions.setTotalRow(dataTotalRow));

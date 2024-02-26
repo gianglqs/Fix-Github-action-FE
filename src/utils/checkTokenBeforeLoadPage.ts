@@ -23,7 +23,6 @@ export const checkTokenBeforeLoadPage = async (context: GetServerSidePropsContex
          props: {},
       };
    } catch (error) {
-      console.log('check token loi');
       return refreshTokenForFunctionGetServerSideProps(context);
    }
 };
@@ -72,7 +71,6 @@ export const checkTokenBeforeLoadPageLogin = async (context: GetServerSidePropsC
          },
       };
    } catch (error) {
-      console.log(error);
       if (error.response?.status == 401)
          return refreshTokenForFunctionGetServerSidePropsLogin(error, context);
 

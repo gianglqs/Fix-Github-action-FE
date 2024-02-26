@@ -14,6 +14,7 @@ export const initialState = {
    exchangeRateList: [] as any[],
    serverTimeZone: '' as any,
    latestUpdatedTime: '' as any,
+   dataFilter: {} as any,
 };
 
 const bookingSlice = createSlice({
@@ -44,6 +45,9 @@ const bookingSlice = createSlice({
             ...payload,
          };
       },
+      setDataFilter(state, { payload }: PayloadAction<any[]>) {
+         state.dataFilter = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -57,6 +61,7 @@ export const sagaGetList = createAction(`${name}/GET_LIST`);
 export const selectState = (state: RootReducerType) => state[name];
 export const selectBookingList = createSelector(selectState, (state) => state.bookingOrdersList);
 export const selectTotalRow = createSelector(selectState, (state) => state.totalRow);
+export const selectDataFilter = createSelector(selectState, (state) => state.dataFilter);
 export const selectInitDataFilter = createSelector(selectState, (state) => state.initDataFilter);
 export const selectExchangeRateList = createSelector(
    selectState,
