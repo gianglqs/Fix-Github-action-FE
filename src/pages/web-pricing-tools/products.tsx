@@ -36,6 +36,7 @@ import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerD
 import { selectProductRowById } from '@/utils/selectRowById';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import productApi from '@/api/product.api';
+import AppBackDrop from '@/components/App/BackDrop';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -53,6 +54,8 @@ export default function Product() {
    const [dataFilter, setDataFilter] = useState(defaultValueFilterProduct);
 
    const [loading, setLoading] = useState(false);
+
+   const [loadingTable, setLoadingTable] = useState(false);
 
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
 
@@ -72,7 +75,16 @@ export default function Product() {
       );
    };
 
+   useEffect(() => {
+      handleFilterProduct();
+   }, [dataFilter]);
+
+   useEffect(() => {
+      setLoadingTable(false);
+   }, [listProduct]);
+
    const handleFilterProduct = () => {
+      setLoadingTable(true);
       dispatch(productStore.actions.setDefaultValueFilterProduct(dataFilter));
       handleChangePage(1);
    };
@@ -478,7 +490,7 @@ export default function Product() {
                </Grid>
             </When>
 
-            <Paper elevation={1} sx={{ marginTop: 2 }}>
+            <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container>
                   <DataTable
                      hideFooter
@@ -512,6 +524,7 @@ export default function Product() {
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
                />
+               <AppBackDrop open={loadingTable} hightHeaderTable={'74px'} bottom={'43px'} />
             </Paper>
          </AppLayout>
          <DialogUpdateProduct {...updateProductState} onClose={handleCloseUpdateProductDialog} />
