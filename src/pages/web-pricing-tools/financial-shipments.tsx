@@ -249,7 +249,10 @@ export default function Shipment() {
          renderCell(params) {
             return (
                <span>
-                  {formatNumberPercentage(params?.row.bookingMarginPercentageAfterSurcharge * 100)}
+                  {params?.row.bookingMarginPercentageAfterSurcharge &&
+                     formatNumberPercentage(
+                        params?.row.bookingMarginPercentageAfterSurcharge * 100
+                     )}
                </span>
             );
          },
@@ -404,7 +407,10 @@ export default function Shipment() {
          renderCell(params) {
             return (
                <span>
-                  {formatNumberPercentage(params?.row.bookingMarginPercentageAfterSurcharge * 100)}
+                  {params?.row.bookingMarginPercentageAfterSurcharge &&
+                     formatNumberPercentage(
+                        params?.row.bookingMarginPercentageAfterSurcharge * 100
+                     )}
                </span>
             );
          },
