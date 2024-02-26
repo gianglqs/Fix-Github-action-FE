@@ -89,7 +89,7 @@ export default function Indicators() {
       series: [],
    });
 
-   const [regionError, setRegionError] = useState({ error: true });
+   const [regionError, setRegionError] = useState({ error: false });
 
    useEffect(() => {
       handleFilterCompetitiveLandscape();

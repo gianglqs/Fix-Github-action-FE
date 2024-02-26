@@ -124,7 +124,7 @@ const CurrencyReport: React.FC<any> = (props) => {
                   id={`chart-${index}`}
                   style={{
                      width: '80%',
-                     height: '40vh',
+                     height: 'fit-content',
                      display: 'flex',
                      alignItems: 'center',
                      justifyContent: 'space-between',
