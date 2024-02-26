@@ -45,6 +45,7 @@ import { rowColor } from '@/theme/colorRow';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import { REGION } from '@/utils/constant';
+import AppBackDrop from '@/components/App/BackDrop';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -56,6 +57,7 @@ export default function Outlier() {
    const initDataFilter = useSelector(outlierStore.selectInitDataFilter);
    const listTotalRow = useSelector(outlierStore.selectTotalRow);
    const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
+   const [loading, setLoading] = useState(false);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -73,7 +75,12 @@ export default function Outlier() {
       handleFilterOrderBooking();
    }, [dataFilter]);
 
+   useEffect(() => {
+      setLoading(false);
+   }, [listOutlier]);
+
    const handleFilterOrderBooking = () => {
+      setLoading(true);
       dispatch(outlierStore.actions.setDefaultValueFilterOutlier(dataFilter));
       handleChangePage(1);
    };
@@ -568,63 +575,69 @@ export default function Outlier() {
                   </Button>
                </Grid>
             </Grid>
-
             <Grid
                sx={{
-                  height: '38vh',
+                  position: 'relative',
                }}
             >
-               <Scatter options={options} data={chartOutliersData} />
-            </Grid>
+               <Grid
+                  sx={{
+                     height: '38vh',
+                  }}
+               >
+                  <Scatter options={options} data={chartOutliersData} />
+               </Grid>
 
-            <Paper elevation={1} sx={{ marginTop: 2 }}>
-               <Grid container sx={{ height: 'calc(60vh - 231px)' }}>
+               <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
+                  <Grid container sx={{ height: 'calc(60vh - 231px)' }}>
+                     <DataGridPro
+                        sx={{
+                           '& .MuiDataGrid-columnHeaderTitle': {
+                              textOverflow: 'clip',
+                              whiteSpace: 'break-spaces',
+                              lineHeight: 1.2,
+                           },
+                        }}
+                        columnHeaderHeight={50}
+                        hideFooter
+                        disableColumnMenu
+                        // tableHeight={740}
+                        rowHeight={35}
+                        rows={listOutlier}
+                        slots={{
+                           toolbar: GridToolbar,
+                        }}
+                        rowBuffer={35}
+                        rowThreshold={25}
+                        columns={columns}
+                        getRowId={(params) => params.orderNo}
+                     />
+                  </Grid>
                   <DataGridPro
-                     sx={{
-                        '& .MuiDataGrid-columnHeaderTitle': {
-                           textOverflow: 'clip',
-                           whiteSpace: 'break-spaces',
-                           lineHeight: 1.2,
-                        },
+                     sx={rowColor}
+                     getCellClassName={(params: GridCellParams<any, any, number>) => {
+                        return 'total';
                      }}
-                     columnHeaderHeight={50}
                      hideFooter
+                     columnHeaderHeight={0}
                      disableColumnMenu
-                     // tableHeight={740}
-                     rowHeight={35}
-                     rows={listOutlier}
-                     slots={{
-                        toolbar: GridToolbar,
-                     }}
+                     rowHeight={30}
+                     rows={listTotalRow}
                      rowBuffer={35}
                      rowThreshold={25}
-                     columns={columns}
-                     getRowId={(params) => params.orderNo}
+                     columns={totalColumns}
+                     getRowId={(params) => params.dealerNet}
                   />
-               </Grid>
-               <DataGridPro
-                  sx={rowColor}
-                  getCellClassName={(params: GridCellParams<any, any, number>) => {
-                     return 'total';
-                  }}
-                  hideFooter
-                  columnHeaderHeight={0}
-                  disableColumnMenu
-                  rowHeight={30}
-                  rows={listTotalRow}
-                  rowBuffer={35}
-                  rowThreshold={25}
-                  columns={totalColumns}
-                  getRowId={(params) => params.dealerNet}
-               />
-               <DataTablePagination
-                  page={tableState.pageNo}
-                  perPage={tableState.perPage}
-                  totalItems={tableState.totalItems}
-                  onChangePage={handleChangePage}
-                  onChangePerPage={handleChangePerPage}
-               />
-            </Paper>
+                  <DataTablePagination
+                     page={tableState.pageNo}
+                     perPage={tableState.perPage}
+                     totalItems={tableState.totalItems}
+                     onChangePage={handleChangePage}
+                     onChangePerPage={handleChangePerPage}
+                  />
+               </Paper>
+               <AppBackDrop open={loading} hightHeaderTable={'35px'} bottom={'43px'} />
+            </Grid>
          </AppLayout>
       </>
    );

@@ -43,6 +43,7 @@ import shipmentApi from '@/api/shipment.api';
 import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
+import AppBackDrop from '@/components/App/BackDrop';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -72,6 +73,7 @@ export default function Shipment() {
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
    // use importing to control spiner
    const [loading, setLoading] = useState(false);
+   const [loadingTable, setLoadingTable] = useState(false);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -95,9 +97,14 @@ export default function Shipment() {
    }, [dataFilter]);
 
    const handleFilterOrderShipment = () => {
+      setLoadingTable(true);
       dispatch(shipmentStore.actions.setDefaultValueFilterOrder(dataFilter));
       handleChangePage(1);
    };
+
+   useEffect(() => {
+      setLoadingTable(false);
+   }, [listShipment]);
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
@@ -817,7 +824,7 @@ export default function Shipment() {
                </Grid>
             )}
 
-            <Paper elevation={1} sx={{ marginTop: 2 }}>
+            <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(100vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter
@@ -863,6 +870,7 @@ export default function Shipment() {
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
                />
+               <AppBackDrop open={loadingTable} hightHeaderTable={'93px'} />
             </Paper>
          </AppLayout>
          <ProductDetailDialog
