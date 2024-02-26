@@ -93,6 +93,12 @@ export default function Shipment() {
    };
 
    useEffect(() => {
+      if (initDataFilter != dataFilter) {
+         setCookie(null, 'shipmentFilter', JSON.stringify(dataFilter), {
+            maxAge: 604800,
+            path: '/',
+         });
+      }
       handleFilterOrderShipment();
    }, [dataFilter]);
 
