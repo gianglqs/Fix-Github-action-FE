@@ -37,6 +37,7 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
 
    const handleSubmitForm = updateProduct.handleSubmit(async () => {
       updateForm.append('modelCode', preValue?.modelCode);
+      updateForm.append('series', preValue?.series);
 
       // if have change image
       imageFile && updateForm.append('image', imageFile);
