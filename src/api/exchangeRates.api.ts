@@ -1,20 +1,12 @@
 import HttpService from '@/helper/HttpService';
-import { GetServerSidePropsContext } from 'next';
-import { ResponseType } from 'axios';
 
 class ExchangeRatesApi extends HttpService<any> {
    getCurrencyFilter = () => {
       return this.get<any>(`filters/currency`);
    };
 
-   compareCurrency = <T = any>(
-      data = {} as Record<string, any>,
-      params = {} as Record<string, any>,
-      context: GetServerSidePropsContext = null as any,
-      responseType = 'default' as ResponseType
-   ) => {
-      this.saveToken(context);
-      return this.instance.post<T>(`reports/compareCurrency`, data, { params, responseType });
+   compareCurrency = (data: any) => {
+      return this.post<any>(`reports/compareCurrency`, data);
    };
 
    uploadExchangeRate = (data: any) => {

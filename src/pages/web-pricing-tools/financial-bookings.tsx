@@ -5,6 +5,7 @@ import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/format
 import { useDispatch, useSelector } from 'react-redux';
 import { bookingStore, commonStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
+import moment from 'moment-timezone';
 
 import { rowColor } from '@/theme/colorRow';
 
@@ -18,6 +19,7 @@ import {
    ListItem,
    Radio,
    RadioGroup,
+   Typography,
 } from '@mui/material';
 
 import {
@@ -45,6 +47,7 @@ import { GetServerSidePropsContext } from 'next';
 import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
+import AppBackDrop from '@/components/App/BackDrop';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -60,10 +63,14 @@ export default function Booking() {
    const listTotalRow = useSelector(bookingStore.selectTotalRow);
    const initDataFilter = useSelector(bookingStore.selectInitDataFilter);
    const listExchangeRate = useSelector(bookingStore.selectExchangeRateList);
+   const serverTimeZone = useSelector(bookingStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(bookingStore.selectLatestUpdatedTime);
 
    const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
 
    const [loading, setLoading] = useState(false);
+
+   const [loadingTable, setLoadingTable] = useState(false);
 
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
 
@@ -72,6 +79,8 @@ export default function Booking() {
    const [totalRow, setTotalRow] = useState(listTotalRow);
 
    const [currency, setCurrency] = useState('USD');
+
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
    const appendFileIntoList = (file) => {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
@@ -94,10 +103,19 @@ export default function Booking() {
       );
    };
 
+   useEffect(() => {
+      handleFilterOrderBooking();
+   }, [dataFilter]);
+
    const handleFilterOrderBooking = () => {
+      setLoadingTable(true);
       dispatch(bookingStore.actions.setDefaultValueFilterBooking(dataFilter));
       handleChangePage(1);
    };
+
+   useEffect(() => {
+      setLoadingTable(false);
+   }, [listOrder]);
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
@@ -440,7 +458,8 @@ export default function Booking() {
       setTotalRow((prev) => {
          return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
       });
-   }, [listBookingOrder, listTotalRow, currency]);
+      convertServerTimeToClientTimeZone();
+   }, [listBookingOrder, listTotalRow, currency, serverTimeZone, serverLatestUpdatedTime]);
 
    // ===== show Product detail =======
    const [productDetailState, setProductDetailState] = useState({
@@ -493,6 +512,19 @@ export default function Booking() {
          });
       }
    };
+
+   // show latest updated time
+   const convertServerTimeToClientTimeZone = () => {
+      if (serverLatestUpdatedTime && serverTimeZone) {
+         const clientTimeZone = moment.tz.guess();
+         const convertedTime = moment
+            .tz(serverLatestUpdatedTime, serverTimeZone)
+            .tz(clientTimeZone);
+         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         console.log('Converted Time:', convertedTime.format());
+      }
+   };
+
    return (
       <>
          <AppLayout entity="booking">
@@ -762,10 +794,15 @@ export default function Booking() {
                            </ListItem>
                         ))}
                   </Grid>
+                  <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={6}>
+                     <Typography sx={{ marginRight: '20px' }}>
+                        Latest updated at {clientLatestUpdatedTime}
+                     </Typography>
+                  </Grid>
                </Grid>
             </When>
 
-            <Paper elevation={1} sx={{ marginTop: 2 }}>
+            <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(100vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter
@@ -812,6 +849,7 @@ export default function Booking() {
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
                />
+               <AppBackDrop open={loadingTable} hightHeaderTable={'93px'} />
             </Paper>
          </AppLayout>
          <ProductDetailDialog

@@ -5,6 +5,7 @@ import React, { useRef } from 'react';
 import html2canvas from 'html2canvas';
 import { useDispatch } from 'react-redux';
 import { commonStore } from '@/store/reducers';
+import { formatDate } from '@/utils/formatCell';
 
 const CurrencyReport: React.FC<any> = (props) => {
    const { chartData, closeAReportItem, itemRef } = props;
@@ -14,27 +15,6 @@ const CurrencyReport: React.FC<any> = (props) => {
    };
 
    const dispatch = useDispatch();
-
-   const handleCopyToClipboard = async (item) => {
-      const element = document.getElementById('chart-' + item.target.id),
-         canvas = await html2canvas(element),
-         data = canvas.toDataURL('image/png');
-
-      const img = await fetch(data);
-      const imgBlob = await img.blob();
-
-      try {
-         await navigator.clipboard.write([
-            new ClipboardItem({
-               [imgBlob.type]: imgBlob,
-            }),
-         ]);
-         dispatch(commonStore.actions.setSuccessMessage('Copied to Clipboard'));
-      } catch (error) {
-         console.log(error);
-         dispatch(commonStore.actions.setErrorMessage('Error on copying content'));
-      }
-   };
 
    const reportContent = () => {
       const otherOptions = _.keysIn(chartData);
@@ -111,20 +91,11 @@ const CurrencyReport: React.FC<any> = (props) => {
                   Close
                </Button>
 
-               <Button
-                  id={index}
-                  variant="contained"
-                  sx={{ width: 30, height: 20, margin: 1 }}
-                  onClick={(item) => handleCopyToClipboard(item)}
-               >
-                  Copy
-               </Button>
-
                <div
                   id={`chart-${index}`}
                   style={{
-                     width: '80%',
-                     height: '40vh',
+                     width: '90%',
+                     height: 'fit-content',
                      display: 'flex',
                      alignItems: 'center',
                      justifyContent: 'space-between',
@@ -143,6 +114,7 @@ const CurrencyReport: React.FC<any> = (props) => {
                         chartName={chartData[index].title}
                         scales={chartItemScales}
                         tooltip={tooltip}
+                        subtitle={`Latest Value: ${formatDate(chartData[index].lastUpdated)}`}
                      />
                   </Grid>
                   <Grid

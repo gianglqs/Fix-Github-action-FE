@@ -43,6 +43,7 @@ import shipmentApi from '@/api/shipment.api';
 import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
+import AppBackDrop from '@/components/App/BackDrop';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -72,6 +73,7 @@ export default function Shipment() {
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
    // use importing to control spiner
    const [loading, setLoading] = useState(false);
+   const [loadingTable, setLoadingTable] = useState(false);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -90,10 +92,19 @@ export default function Shipment() {
       );
    };
 
+   useEffect(() => {
+      handleFilterOrderShipment();
+   }, [dataFilter]);
+
    const handleFilterOrderShipment = () => {
+      setLoadingTable(true);
       dispatch(shipmentStore.actions.setDefaultValueFilterOrder(dataFilter));
       handleChangePage(1);
    };
+
+   useEffect(() => {
+      setLoadingTable(false);
+   }, [listShipment]);
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
@@ -203,7 +214,7 @@ export default function Shipment() {
       {
          field: 'totalCost',
          flex: 0.8,
-         headerName: `Total Cost ('000 ${currency})`,
+         headerName: `Standard Cost ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.totalCost)}</span>;
@@ -249,7 +260,10 @@ export default function Shipment() {
          renderCell(params) {
             return (
                <span>
-                  {formatNumberPercentage(params?.row.bookingMarginPercentageAfterSurcharge * 100)}
+                  {params?.row.bookingMarginPercentageAfterSurcharge &&
+                     formatNumberPercentage(
+                        params?.row.bookingMarginPercentageAfterSurcharge * 100
+                     )}
                </span>
             );
          },
@@ -404,7 +418,10 @@ export default function Shipment() {
          renderCell(params) {
             return (
                <span>
-                  {formatNumberPercentage(params?.row.bookingMarginPercentageAfterSurcharge * 100)}
+                  {params?.row.bookingMarginPercentageAfterSurcharge &&
+                     formatNumberPercentage(
+                        params?.row.bookingMarginPercentageAfterSurcharge * 100
+                     )}
                </span>
             );
          },
@@ -807,7 +824,7 @@ export default function Shipment() {
                </Grid>
             )}
 
-            <Paper elevation={1} sx={{ marginTop: 2 }}>
+            <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(100vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter
@@ -853,6 +870,7 @@ export default function Shipment() {
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
                />
+               <AppBackDrop open={loadingTable} hightHeaderTable={'93px'} />
             </Paper>
          </AppLayout>
          <ProductDetailDialog

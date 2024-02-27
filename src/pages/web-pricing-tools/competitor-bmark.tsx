@@ -47,6 +47,7 @@ import { useDropzone } from 'react-dropzone';
 
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
+import AppBackDrop from '@/components/App/BackDrop';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -63,6 +64,9 @@ export default function Indicators() {
       setUserRole(userRoleCookies);
    });
    const [loading, setLoading] = useState(false);
+
+   const [loadingTable, setLoadingTable] = useState(false);
+   const [loadingSwot, setLoadingSwot] = useState(false);
 
    const tableState = useSelector(commonStore.selectTableState);
 
@@ -89,9 +93,22 @@ export default function Indicators() {
       series: [],
    });
 
-   const [regionError, setRegionError] = useState({ error: true });
+   const [regionError, setRegionError] = useState({ error: false });
+
+   useEffect(() => {
+      handleFilterCompetitiveLandscape();
+   }, [swotDataFilter]);
+
+   useEffect(() => {
+      setLoadingTable(false);
+   }, [getDataForTable]);
+
+   useEffect(() => {
+      setLoadingSwot(false);
+   }, [competitiveLandscapeData]);
 
    const handleFilterCompetitiveLandscape = async () => {
+      setLoadingSwot(true);
       try {
          if (swotDataFilter.regions == null) {
             setRegionError({ error: true });
@@ -141,6 +158,11 @@ export default function Indicators() {
          })
       );
    };
+
+   useEffect(() => {
+      handleFilterIndicator();
+   }, [dataFilter]);
+
    useEffect(() => {
       console.log(swotDataFilter);
       if (swotDataFilter.regions != null) setRegionError({ error: false });
@@ -169,6 +191,7 @@ export default function Indicators() {
    };
 
    const handleFilterIndicator = () => {
+      setLoadingTable(true);
       dispatch(indicatorStore.actions.setDefaultValueFilterIndicator(dataFilter));
       handleChangePage(1);
    };
@@ -767,7 +790,7 @@ export default function Indicators() {
                   </>
                )}
             </Grid>
-            <Paper elevation={1} sx={{ marginTop: 2 }}>
+            <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: 'calc(67vh - 275px)', minHeight: '200px' }}>
                   <DataGridPro
                      sx={{
@@ -813,6 +836,7 @@ export default function Indicators() {
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
                />
+               <AppBackDrop open={loadingTable} hightHeaderTable={'102px'} />
             </Paper>
 
             <Grid
@@ -836,6 +860,12 @@ export default function Indicators() {
                      chartName={'Forecast Volume by Year & Region'}
                      scales={chartScales}
                   />
+                  <AppBackDrop
+                     open={loadingTable}
+                     hightHeaderTable={'40px'}
+                     bottom={'25px'}
+                     left={'30px'}
+                  />
                </Grid>
 
                <Grid
@@ -851,6 +881,12 @@ export default function Indicators() {
                      chartData={modifyDataLineChartPlant}
                      chartName={'Forecast Volume by Year & Plant'}
                      scales={chartScales}
+                  />
+                  <AppBackDrop
+                     open={loadingTable}
+                     hightHeaderTable={'40px'}
+                     bottom={'25px'}
+                     left={'30px'}
                   />
                </Grid>
             </Grid>
@@ -956,6 +992,7 @@ export default function Indicators() {
                   }}
                >
                   <Bubble options={options} data={competitiveLandscapeData} />
+                  <AppBackDrop open={loadingSwot} hightHeaderTable={'35px'} bottom={'0px'} />
                </Grid>
             </Grid>
          </AppLayout>
