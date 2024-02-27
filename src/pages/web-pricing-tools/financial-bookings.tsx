@@ -86,9 +86,9 @@ export default function Booking() {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
    };
 
-   console.log('cache dataFIlter', cacheDataFilter);
-
    const [dataFilter, setDataFilter] = useState(initDataFilter);
+   const [cacheFilter, setCacheFilter] = useState(cacheDataFilter);
+   console.log('cache dataFIlter', cacheDataFilter);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -469,6 +469,10 @@ export default function Booking() {
       });
       convertServerTimeToClientTimeZone();
    }, [listBookingOrder, listTotalRow, currency, serverTimeZone, serverLatestUpdatedTime]);
+
+   useEffect(() => {
+      setCacheFilter(cacheDataFilter);
+   }, [cacheDataFilter]);
 
    // ===== show Product detail =======
    const [productDetailState, setProductDetailState] = useState({
