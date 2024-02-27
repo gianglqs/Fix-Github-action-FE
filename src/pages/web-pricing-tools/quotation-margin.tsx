@@ -81,6 +81,11 @@ export default function MarginAnalysis() {
 
    const handleCalculateMargin = async () => {
       try {
+         if (series.value == 'None') {
+            setSeries({ value: 'None', error: true });
+            return;
+         }
+
          const transformData = {
             marginData: {
                modelCode: modelCodeValue.value == 'None' ? '' : modelCodeValue.value,
@@ -264,20 +269,17 @@ export default function MarginAnalysis() {
    ];
 
    const [marginFilter, setMarginFilter] = useState({
-      type: [],
-      modelCode: [],
-      series: [],
-      orderNumber: [],
+      type: [{ value: 'None' }],
+      modelCode: [{ value: 'None' }],
+      series: [{ value: 'None' }],
+      orderNumber: [{ value: 'None' }],
    });
 
    useEffect(() => {
-      console.log(marginFilter);
       setTypeValue({ value: marginFilter.type[0]?.value, error: false });
       setModelCodeValue({ value: marginFilter.modelCode[0]?.value });
       setSeries({ value: marginFilter.series[0]?.value, error: false });
       setOrderNumberValue({ value: marginFilter.orderNumber[0]?.value });
-
-      console.log(typeValue, modelCodeValue, series, orderNumberValue);
    }, [marginFilter]);
 
    const regionOptions = [
@@ -336,7 +338,7 @@ export default function MarginAnalysis() {
                   <AppAutocomplete
                      options={marginFilter.type}
                      label="#"
-                     value={typeValue.value}
+                     value={typeValue}
                      onChange={(e, option) => handleTypeValue(option.value)}
                      disableListWrap
                      primaryKeyOption="value"
@@ -348,7 +350,7 @@ export default function MarginAnalysis() {
                   <AppAutocomplete
                      options={marginFilter.modelCode}
                      label="Model Code"
-                     value={modelCodeValue.value}
+                     value={modelCodeValue}
                      onChange={(e, option) => handleChangeModelCodeValue(option.value)}
                      disableListWrap
                      primaryKeyOption="value"
@@ -360,19 +362,22 @@ export default function MarginAnalysis() {
                   <AppAutocomplete
                      options={marginFilter.series}
                      label="Series"
-                     value={series.value}
+                     value={series}
                      onChange={(e, option) => handleSeriesValue(option.value)}
                      disableListWrap
                      primaryKeyOption="value"
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
+                     required
+                     error={series.error}
+                     helperText={'Please choose a Series to continue'}
                   />
                </Grid>
                <Grid item sx={{ width: '10%', minWidth: 140 }} xs={1}>
                   <AppAutocomplete
                      options={marginFilter.orderNumber}
                      label="Order Number"
-                     value={orderNumberValue.value}
+                     value={orderNumberValue}
                      onChange={(e, option) => handleOrderNumber(option.value)}
                      disableListWrap
                      primaryKeyOption="value"
