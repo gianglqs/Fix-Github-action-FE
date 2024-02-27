@@ -49,6 +49,7 @@ import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import AppBackDrop from '@/components/App/BackDrop';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -88,8 +89,6 @@ export default function Booking() {
 
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
 
-   const [cacheFilter, setCacheFilter] = useState(cacheDataFilter);
-
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
          produce(prev, (draft) => {
@@ -107,19 +106,19 @@ export default function Booking() {
       );
    };
 
-   const isEmptyObject = (obj: Record<string, unknown>): boolean => {
-      return Object.keys(obj).length === 0;
-   };
+   useEffect(() => {
+      setDataFilter(cacheDataFilter);
+   }, [cacheDataFilter]);
 
    useEffect(() => {
-      if (!isEmptyObject(dataFilter)) {
+      if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
          console.log('hehe, ', dataFilter);
          setCookie(null, 'bookingFilter', JSON.stringify(dataFilter), {
             maxAge: 604800,
             path: '/',
          });
+         handleFilterOrderBooking();
       }
-      handleFilterOrderBooking();
    }, [dataFilter]);
 
    const handleFilterOrderBooking = () => {
@@ -475,10 +474,6 @@ export default function Booking() {
       convertServerTimeToClientTimeZone();
    }, [listBookingOrder, listTotalRow, currency, serverTimeZone, serverLatestUpdatedTime]);
 
-   useEffect(() => {
-      cacheDataFilter && setCacheFilter(cacheDataFilter);
-   }, [cacheDataFilter]);
-
    // ===== show Product detail =======
    const [productDetailState, setProductDetailState] = useState({
       open: false,
@@ -559,6 +554,7 @@ export default function Booking() {
                         name="orderNo"
                         label="Order #"
                         placeholder="Search order by ID"
+                        focused
                      />
                   </Grid>
                </Grid>
@@ -690,9 +686,11 @@ export default function Booking() {
                <Grid item xs={2}>
                   <AppAutocomplete
                      value={
-                        dataFilter.aopMarginPercentageGroup && {
-                           value: `${dataFilter.aopMarginPercentageGroup}`,
-                        }
+                        dataFilter.aopMarginPercentageGroup !== undefined
+                           ? {
+                                value: `${dataFilter.aopMarginPercentageGroup}`,
+                             }
+                           : { value: '' }
                      }
                      options={initDataFilter.AOPMarginPercentageGroup}
                      label="AOP Margin %"
@@ -712,9 +710,11 @@ export default function Booking() {
                   <Grid item xs={6} sx={{ paddingRight: 0.5 }}>
                      <AppAutocomplete
                         value={
-                           dataFilter.marginPercentage && {
-                              value: `${dataFilter.marginPercentage}`,
-                           }
+                           dataFilter.marginPercentage !== undefined
+                              ? {
+                                   value: `${dataFilter.marginPercentage}`,
+                                }
+                              : { value: '' }
                         }
                         options={initDataFilter.marginPercentageGroup}
                         label="Margin %"

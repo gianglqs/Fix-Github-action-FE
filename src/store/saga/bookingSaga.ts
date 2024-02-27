@@ -7,9 +7,19 @@ import { json } from 'node:stream/consumers';
 
 function* fetchBooking() {
    try {
-      const cookies = parseCookies();
-      const dataFilter = JSON.parse(String(cookies['bookingFilter']));
+      const { defaultValueFilterOrder } = yield* all({
+         defaultValueFilterOrder: select(bookingStore.selectDefaultValueFilterBooking),
+      });
 
+      const cookies = parseCookies();
+      const jsonDataFilter = cookies['bookingFilter'];
+      let dataFilter;
+      if (jsonDataFilter) {
+         dataFilter = JSON.parse(String(jsonDataFilter));
+         yield put(bookingStore.actions.setDataFilter(dataFilter));
+      } else {
+         dataFilter = defaultValueFilterOrder;
+      }
       const { tableState } = yield* all({
          tableState: select(commonStore.selectTableState),
       });
