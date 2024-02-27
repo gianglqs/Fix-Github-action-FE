@@ -1,5 +1,5 @@
 import { AppAutocomplete, AppLayout } from '@/components';
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, Grid, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { produce } from 'immer';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
@@ -76,6 +76,7 @@ export default function ExchangeRate() {
 
    const [chartData, setChartData] = useState([]);
    const [uploadedFile, setUploadedFile] = useState();
+   const [exchangeRateSource, setExchangeRateSource] = useState('Database');
 
    useEffect(() => {
       exchangeRatesApi
@@ -128,12 +129,14 @@ export default function ExchangeRate() {
          const request = {
             currentCurrency: currentCurrency.value,
             comparisonCurrencies: comparisonCurrencies.value,
+            fromRealTime: exchangeRateSource == 'Database' ? false : true,
          };
 
          exchangeRatesApi
             .compareCurrency(request)
             .then((response) => {
-               const data = JSON.parse(String(response.data)).compareCurrency;
+               console.log(response);
+               const data = response.data.compareCurrency;
 
                // Setting Labels for chart
                const labels = data[comparisonCurrencies.value[0]].exchangeRateList
@@ -169,6 +172,7 @@ export default function ExchangeRate() {
                      weakening: data.weakening,
                      strengthening: data.strengthening,
                   },
+                  lastUpdated: data.lastUpdated,
                };
                setChartData((prev) => [...prev, newChartData]);
             })
@@ -198,11 +202,15 @@ export default function ExchangeRate() {
       lastChildElement?.scrollIntoView({ behavior: 'smooth' });
    };
 
+   const handleChangeRadioButton = (event) => {
+      setExchangeRateSource(event.target.value);
+   };
+
    return (
       <>
          <AppLayout entity="reports">
             <Grid container spacing={1}>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 70, marginLeft: 1 }}>
+               <Grid item xs={2} sx={{ zIndex: 10, height: 70, marginLeft: 1, marginTop: 1 }}>
                   <AppAutocomplete
                      options={currencyFilter}
                      onChange={(e, option) => handleChangeDataFilter(option, 'currentCurrency')}
@@ -242,11 +250,12 @@ export default function ExchangeRate() {
                      zIndex: 10,
                      height: 25,
                      fontSize: 15,
+                     marginTop: 1,
                   }}
                >
                   To
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25, marginTop: 1 }}>
                   <AppAutocomplete
                      options={currencyFilter}
                      sx={{ height: 25, zIndex: 10 }}
@@ -264,6 +273,28 @@ export default function ExchangeRate() {
                      error={comparisonCurrencies.error}
                      helperText="This field requires at least one item"
                   />
+               </Grid>
+               <Grid item xs={2} sx={{ height: 50 }}>
+                  <RadioGroup
+                     row
+                     value={exchangeRateSource}
+                     onChange={handleChangeRadioButton}
+                     aria-labelledby="demo-row-radio-buttons-group-label"
+                     name="row-radio-buttons-group"
+                     sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginLeft: 1,
+                        marginTop: 0.25,
+                     }}
+                  >
+                     <FormControlLabel value="Database" control={<Radio />} label="From Database" />
+                     <FormControlLabel
+                        value="Real-time"
+                        control={<Radio />}
+                        label="From Real-time"
+                     />
+                  </RadioGroup>
                </Grid>
 
                <CurrencyReport
