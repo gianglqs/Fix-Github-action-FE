@@ -10,7 +10,6 @@ function* fetchBooking() {
       const cookies = parseCookies();
       const dataFilter = JSON.parse(String(cookies['bookingFilter']));
 
-      console.log(dataFilter);
       const { tableState } = yield* all({
          tableState: select(commonStore.selectTableState),
       });

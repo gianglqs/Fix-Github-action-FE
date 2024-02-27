@@ -86,9 +86,9 @@ export default function Booking() {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
    };
 
-   const [dataFilter, setDataFilter] = useState(initDataFilter);
+   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
+
    const [cacheFilter, setCacheFilter] = useState(cacheDataFilter);
-   console.log('cache dataFIlter', cacheDataFilter);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -107,8 +107,13 @@ export default function Booking() {
       );
    };
 
+   const isEmptyObject = (obj: Record<string, unknown>): boolean => {
+      return Object.keys(obj).length === 0;
+   };
+
    useEffect(() => {
-      if (initDataFilter != dataFilter) {
+      if (!isEmptyObject(dataFilter)) {
+         console.log('hehe, ', dataFilter);
          setCookie(null, 'bookingFilter', JSON.stringify(dataFilter), {
             maxAge: 604800,
             path: '/',
@@ -471,7 +476,7 @@ export default function Booking() {
    }, [listBookingOrder, listTotalRow, currency, serverTimeZone, serverLatestUpdatedTime]);
 
    useEffect(() => {
-      setCacheFilter(cacheDataFilter);
+      cacheDataFilter && setCacheFilter(cacheDataFilter);
    }, [cacheDataFilter]);
 
    // ===== show Product detail =======
@@ -549,6 +554,7 @@ export default function Booking() {
                <Grid item xs={4}>
                   <Grid item xs={12}>
                      <AppTextField
+                        value={dataFilter.orderNo}
                         onChange={(e) => handleChangeDataFilter(e.target.value, 'orderNo')}
                         name="orderNo"
                         label="Order #"
