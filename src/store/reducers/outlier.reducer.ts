@@ -11,6 +11,7 @@ export const initialState = {
    totalRow: [] as any[],
    initDataFilter: {} as any,
    defaultValueFilterOutlier: defaultValueFilterOrder as any,
+   dataFilter: {} as any,
 };
 
 const outlierSlice = createSlice({
@@ -32,6 +33,9 @@ const outlierSlice = createSlice({
             ...payload,
          };
       },
+      setDataFilter(state, { payload }: PayloadAction<any[]>) {
+         state.dataFilter = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -50,6 +54,7 @@ export const selectDefaultValueFilterOutlier = createSelector(
    selectState,
    (state) => state.defaultValueFilterOutlier
 );
+export const selectDataFilter = createSelector(selectState, (state) => state.dataFilter);
 
 export const { actions } = outlierSlice;
 

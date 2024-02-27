@@ -2,6 +2,7 @@ import { takeEvery, put } from 'redux-saga/effects';
 import { outlierStore, commonStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import outlierApi from '@/api/outlier.api';
+import { parseCookies } from 'nookies';
 
 function* fetchOutlier() {
    try {
@@ -12,10 +13,20 @@ function* fetchOutlier() {
       const { defaultValueFilterOutlier } = yield* all({
          defaultValueFilterOutlier: select(outlierStore.selectDefaultValueFilterOutlier),
       });
-      const initDataFilter = yield* call(outlierApi.getInitDataFilter);
-      console.log(initDataFilter);
 
-      const { data } = yield* call(outlierApi.getOutlier, defaultValueFilterOutlier, {
+      const cookies = parseCookies();
+      const jsonDataFilter = cookies['outlierFilter'];
+      let dataFilter;
+      if (jsonDataFilter) {
+         dataFilter = JSON.parse(String(jsonDataFilter));
+         yield put(outlierStore.actions.setDataFilter(dataFilter));
+      } else {
+         dataFilter = defaultValueFilterOutlier;
+      }
+
+      const initDataFilter = yield* call(outlierApi.getInitDataFilter);
+
+      const { data } = yield* call(outlierApi.getOutlier, dataFilter, {
          pageNo: tableState.pageNo,
          perPage: tableState.perPage,
       });
