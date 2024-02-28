@@ -170,6 +170,7 @@ export default function Product() {
                   onClick={() =>
                      handleOpenUpdateColorDialog(
                         params.row.modelCode,
+                        params.row.series,
                         params.row.image,
                         params.row.description
                      )
@@ -230,13 +231,19 @@ export default function Product() {
       preValue: {} as any,
    });
 
-   const handleOpenUpdateColorDialog = async (modelCode: string, imageUrl: string, des: string) => {
+   const handleOpenUpdateColorDialog = async (
+      modelCode: string,
+      series: string,
+      imageUrl: string,
+      des: string
+   ) => {
       try {
          // Open form
          setUpdateProductState({
             open: true,
             preValue: {
                modelCode: modelCode,
+               series: series,
                image: imageUrl,
                description: des,
             },
