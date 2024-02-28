@@ -90,24 +90,39 @@ export default function Indicators() {
    const cachDataFilterBubbleChart = useSelector(indicatorStore.selectDataFilterBubbleChart);
    const [swotDataFilter, setSwotDataFilter] = useState(cachDataFilterBubbleChart);
 
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
+   const [hasSetSwotFilter, setHasSetSwotFilter] = useState(false);
+
    useEffect(() => {
-      setDataFilter(cacheDataFilter);
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
    }, [cacheDataFilter]);
 
    const [regionError, setRegionError] = useState({ error: false });
 
    useEffect(() => {
-      setSwotDataFilter(cachDataFilterBubbleChart);
+      if (!hasSetSwotFilter && cacheDataFilter) {
+         setSwotDataFilter(cachDataFilterBubbleChart);
+         setHasSetSwotFilter(true);
+      }
    }, [cachDataFilterBubbleChart]);
 
    useEffect(() => {
-      if (!isEmptyObject(swotDataFilter) && swotDataFilter != cachDataFilterBubbleChart) {
-         setCookie(null, 'indicatorBubbleChartFilter', JSON.stringify(swotDataFilter), {
-            maxAge: 604800,
-            path: '/',
-         });
-         handleFilterCompetitiveLandscape();
-      }
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(swotDataFilter) && swotDataFilter != cachDataFilterBubbleChart) {
+            setCookie(null, 'indicatorBubbleChartFilter', JSON.stringify(swotDataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterCompetitiveLandscape();
+         }
+      }, 700);
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [swotDataFilter]);
 
    useEffect(() => {
@@ -171,13 +186,18 @@ export default function Indicators() {
    };
 
    useEffect(() => {
-      if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
-         setCookie(null, 'indicatorTableFilter', JSON.stringify(dataFilter), {
-            maxAge: 604800,
-            path: '/',
-         });
-         handleFilterIndicator();
-      }
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            setCookie(null, 'indicatorTableFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterIndicator();
+         }
+      }, 500);
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    useEffect(() => {

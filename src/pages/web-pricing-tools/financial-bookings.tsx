@@ -88,6 +88,7 @@ export default function Booking() {
    };
 
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -107,18 +108,28 @@ export default function Booking() {
    };
 
    useEffect(() => {
-      setDataFilter(cacheDataFilter);
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
    }, [cacheDataFilter]);
 
    useEffect(() => {
-      if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
-         console.log('hehe, ', dataFilter);
-         setCookie(null, 'bookingFilter', JSON.stringify(dataFilter), {
-            maxAge: 604800,
-            path: '/',
-         });
-         handleFilterOrderBooking();
-      }
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter !== cacheDataFilter) {
+            console.log('hehe, ', dataFilter);
+            setCookie(null, 'bookingFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterOrderBooking();
+         }
+      }, 700);
+
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    const handleFilterOrderBooking = () => {

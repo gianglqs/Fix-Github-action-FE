@@ -61,6 +61,7 @@ export default function Product() {
    const [loadingTable, setLoadingTable] = useState(false);
 
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
 
    const appendFileIntoList = (file) => {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
@@ -79,17 +80,28 @@ export default function Product() {
    };
 
    useEffect(() => {
-      setDataFilter(cacheDataFilter);
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
    }, [cacheDataFilter]);
 
    useEffect(() => {
-      if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
-         setCookie(null, 'productFilter', JSON.stringify(dataFilter), {
-            maxAge: 604800,
-            path: '/',
-         });
-         handleFilterProduct();
-      }
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            console.log('hehe, ', dataFilter);
+
+            setCookie(null, 'productFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterProduct();
+         }
+      }, 700);
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    useEffect(() => {

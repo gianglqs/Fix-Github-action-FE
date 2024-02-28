@@ -61,6 +61,7 @@ export default function Outlier() {
    const cacheDataFilter = useSelector(outlierStore.selectDataFilter);
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
    const [loading, setLoading] = useState(false);
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -75,17 +76,27 @@ export default function Outlier() {
    };
 
    useEffect(() => {
-      setDataFilter(cacheDataFilter);
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
    }, [cacheDataFilter]);
 
    useEffect(() => {
-      if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
-         setCookie(null, 'outlierFilter', JSON.stringify(dataFilter), {
-            maxAge: 604800,
-            path: '/',
-         });
-         handleFilterOrderBooking();
-      }
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            setCookie(null, 'outlierFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterOrderBooking();
+         }
+      }, 700);
+
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    useEffect(() => {

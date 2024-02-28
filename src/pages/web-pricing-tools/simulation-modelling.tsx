@@ -66,16 +66,8 @@ export default function Adjustment() {
    const [totalColor, setTotalColor] = useState(null);
 
    const [loadingTable, setLoadingTable] = useState(false);
-
-   const debounce = (func, delay) => {
-      let timer;
-      return (...args) => {
-         clearTimeout(timer);
-         timer = setTimeout(() => {
-            func(...args);
-         }, delay);
-      };
-   };
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
+   const [hasSetDataCalculator, setHasSetDataCalculator] = useState(false);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -98,31 +90,51 @@ export default function Adjustment() {
    };
 
    useEffect(() => {
-      if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
-         setCookie(null, 'adjustmentFilter', JSON.stringify(dataFilter), {
-            maxAge: 604800,
-            path: '/',
-         });
-         handleFilterAdjustment();
-      }
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            setCookie(null, 'adjustmentFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterAdjustment();
+         }
+      }, 700);
+
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    useEffect(() => {
-      setDataFilter(cacheDataFilter);
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
    }, [cacheDataFilter]);
 
    useEffect(() => {
-      setDataCalculator(cacheDataCalculator);
+      if (!hasSetDataCalculator && cacheDataCalculator) {
+         setDataCalculator(cacheDataCalculator);
+
+         setHasSetDataCalculator(true);
+      }
    }, [cacheDataCalculator]);
 
    useEffect(() => {
-      if (!isEmptyObject(dataCalculator) && dataCalculator != cacheDataCalculator) {
-         setCookie(null, 'adjustmentCalculator', JSON.stringify(dataCalculator), {
-            maxAge: 604800,
-            path: '/',
-         });
-         handleCalculator();
-      }
+      const debouncedHandleWhenChangeDataCalculator = _.debounce(() => {
+         if (!isEmptyObject(dataCalculator) && dataCalculator != cacheDataCalculator) {
+            setCookie(null, 'adjustmentCalculator', JSON.stringify(dataCalculator), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleCalculator();
+         }
+      }, 700);
+
+      debouncedHandleWhenChangeDataCalculator();
+
+      return () => debouncedHandleWhenChangeDataCalculator.cancel();
    }, [dataCalculator]);
 
    useEffect(() => {
