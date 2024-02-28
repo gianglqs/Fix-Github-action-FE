@@ -51,7 +51,7 @@ export default function ExchangeRate() {
       setUserRole(userRoleCookies);
    });
 
-   const [currencyFilter, setCurrencyFilter] = useState([]);
+   const [currencyFilter, setCurrencyFilter] = useState([{ value: '' }]);
 
    const [currentCurrency, setCurrentCurrency] = useState({ value: '', error: false });
    const [comparisonCurrencies, setComparisonCurrencies] = useState({
@@ -206,6 +206,16 @@ export default function ExchangeRate() {
       setExchangeRateSource(event.target.value);
    };
 
+   const handleClearAllFilters = () => {
+      setExchangeRateSource('Database');
+      setCurrentCurrency({ value: '', error: false });
+      setComparisonCurrencies({ value: [], error: false });
+   };
+
+   const handleClearAllReports = () => {
+      setChartData([]);
+   };
+
    return (
       <>
          <AppLayout entity="reports">
@@ -221,6 +231,7 @@ export default function ExchangeRate() {
                      required
                      error={currentCurrency.error}
                      helperText="This field is required"
+                     value={currentCurrency.value}
                   />
                   <Grid sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 1 }}>
                      <Button
@@ -272,9 +283,29 @@ export default function ExchangeRate() {
                      required
                      error={comparisonCurrencies.error}
                      helperText="This field requires at least one item"
+                     value={comparisonCurrencies.value.map((value) => {
+                        return { value };
+                     })}
                   />
+                  <Grid sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 1 }}>
+                     <Button
+                        variant="contained"
+                        sx={{ width: '45%', height: 24, minWidth: 100 }}
+                        onClick={handleClearAllFilters}
+                     >
+                        Clear Filters
+                     </Button>
+
+                     <Button
+                        variant="contained"
+                        sx={{ width: '45%', height: 24, minWidth: 100 }}
+                        onClick={handleClearAllReports}
+                     >
+                        Clear Reports
+                     </Button>
+                  </Grid>
                </Grid>
-               <Grid item xs={2} sx={{ height: 50 }}>
+               <Grid item xs={2.5} sx={{ height: 50 }}>
                   <RadioGroup
                      row
                      value={exchangeRateSource}
@@ -292,7 +323,7 @@ export default function ExchangeRate() {
                      <FormControlLabel
                         value="Real-time"
                         control={<Radio />}
-                        label="From Real-time"
+                        label="From exchangerate-api.com"
                      />
                   </RadioGroup>
                </Grid>
