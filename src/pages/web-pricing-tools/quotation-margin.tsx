@@ -170,7 +170,8 @@ export default function MarginAnalysis() {
          })
          .catch((error) => {
             setLoading(false);
-            dispatch(commonStore.actions.setErrorMessage(error.response.data.message));
+            console.log(error);
+            dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
    const handleImportMacroFile = async (file) => {
@@ -186,7 +187,7 @@ export default function MarginAnalysis() {
          })
          .catch((error) => {
             setLoading(false);
-            dispatch(commonStore.actions.setErrorMessage(error.response.data.message));
+            dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
 
@@ -202,7 +203,7 @@ export default function MarginAnalysis() {
          })
          .catch((error) => {
             setLoading(false);
-            dispatch(commonStore.actions.setErrorMessage(error.response.data.message));
+            dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
 
@@ -859,7 +860,7 @@ export default function MarginAnalysis() {
                                        variant="body1"
                                        component="span"
                                     >
-                                       Target Margin % ={'>'}
+                                       Target Margin %
                                     </Typography>
                                     <Typography
                                        sx={{ fontWeight: 'bold' }}
