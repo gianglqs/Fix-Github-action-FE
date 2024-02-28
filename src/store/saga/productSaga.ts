@@ -2,6 +2,7 @@ import { takeEvery, put } from 'redux-saga/effects';
 import { productStore, commonStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import productApi from '@/api/product.api';
+import { parseCookies } from 'nookies';
 
 function* fetchProduct() {
    try {
@@ -13,7 +14,17 @@ function* fetchProduct() {
          defaultValueFilterProduct: select(productStore.selectDefaultValueFilterProduct),
       });
 
-      const { data } = yield* call(productApi.getListProduct, defaultValueFilterProduct, {
+      const cookies = parseCookies();
+      const jsonDataFilter = cookies['productFilter'];
+      let dataFilter;
+      if (jsonDataFilter) {
+         dataFilter = JSON.parse(String(jsonDataFilter));
+         yield put(productStore.actions.setDataFilter(dataFilter));
+      } else {
+         dataFilter = defaultValueFilterProduct;
+      }
+
+      const { data } = yield* call(productApi.getListProduct, dataFilter, {
          pageNo: tableState.pageNo,
          perPage: tableState.perPage,
       });

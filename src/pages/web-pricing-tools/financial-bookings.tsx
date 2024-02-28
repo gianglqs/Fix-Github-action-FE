@@ -8,6 +8,7 @@ import { useDropzone } from 'react-dropzone';
 import moment from 'moment-timezone';
 
 import { rowColor } from '@/theme/colorRow';
+import { parseCookies, setCookie } from 'nookies';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -48,6 +49,7 @@ import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import AppBackDrop from '@/components/App/BackDrop';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -62,11 +64,10 @@ export default function Booking() {
    const listBookingOrder = useSelector(bookingStore.selectBookingList);
    const listTotalRow = useSelector(bookingStore.selectTotalRow);
    const initDataFilter = useSelector(bookingStore.selectInitDataFilter);
+   const cacheDataFilter = useSelector(bookingStore.selectDataFilter);
    const listExchangeRate = useSelector(bookingStore.selectExchangeRateList);
    const serverTimeZone = useSelector(bookingStore.selectServerTimeZone);
    const serverLatestUpdatedTime = useSelector(bookingStore.selectLatestUpdatedTime);
-
-   const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
 
    const [loading, setLoading] = useState(false);
 
@@ -86,6 +87,9 @@ export default function Booking() {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
    };
 
+   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
+
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
          produce(prev, (draft) => {
@@ -104,7 +108,28 @@ export default function Booking() {
    };
 
    useEffect(() => {
-      handleFilterOrderBooking();
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
+   }, [cacheDataFilter]);
+
+   useEffect(() => {
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter !== cacheDataFilter) {
+            console.log('hehe, ', dataFilter);
+            setCookie(null, 'bookingFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterOrderBooking();
+         }
+      }, 700);
+
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    const handleFilterOrderBooking = () => {
@@ -395,9 +420,6 @@ export default function Booking() {
    if (userRoleState === 'ADMIN') {
       heightComponentExcludingTable = 330;
    }
-   useEffect(() => {
-      setUserRoleState(userRole);
-   });
 
    const handleUploadFile = async (files) => {
       let formData = new FormData();
@@ -448,6 +470,8 @@ export default function Booking() {
    };
 
    useEffect(() => {
+      setUserRoleState(userRole);
+
       setListOrder(listBookingOrder);
       setTotalRow(listTotalRow);
 
@@ -491,6 +515,8 @@ export default function Booking() {
       });
    };
 
+   // console.log(dataFilter.AOPMarginPercentageGroup);
+
    const handleCloseImageDialog = () => {
       setImageDialogState({
          open: false,
@@ -500,8 +526,8 @@ export default function Booking() {
 
    // handle prevent open ProductDetail Dialog when click button edit
    const handleOnCellClick = (params, event) => {
-      console.log(params.row.product?.modelCode);
-      console.log(params.id);
+      // console.log(params.row.product?.modelCode);
+      // console.log(params.id);
       if (params.field === 'model') {
          event.stopPropagation();
          setProductDetailState({
@@ -521,9 +547,11 @@ export default function Booking() {
             .tz(serverLatestUpdatedTime, serverTimeZone)
             .tz(clientTimeZone);
          setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
-         console.log('Converted Time:', convertedTime.format());
+         // console.log('Converted Time:', convertedTime.format());
       }
    };
+
+   // console.log(dataFilter.marginPercentage && { value: dataFilter.marginPercentage });
 
    return (
       <>
@@ -532,15 +560,20 @@ export default function Booking() {
                <Grid item xs={4}>
                   <Grid item xs={12}>
                      <AppTextField
+                        value={dataFilter.orderNo}
                         onChange={(e) => handleChangeDataFilter(e.target.value, 'orderNo')}
                         name="orderNo"
                         label="Order #"
                         placeholder="Search order by ID"
+                        focused
                      />
                   </Grid>
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.regions, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.regions}
                      label="Region"
                      onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
@@ -555,6 +588,9 @@ export default function Booking() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.plants, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.plants}
                      label="Plant"
                      sx={{ height: 25, zIndex: 10 }}
@@ -570,6 +606,9 @@ export default function Booking() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.metaSeries, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.metaSeries}
                      label="MetaSeries"
                      sx={{ height: 25, zIndex: 10 }}
@@ -585,6 +624,9 @@ export default function Booking() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.dealers, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.dealers}
                      label="Dealer"
                      sx={{ height: 25, zIndex: 10 }}
@@ -600,6 +642,9 @@ export default function Booking() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.classes, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.classes}
                      label="Class"
                      sx={{ height: 25, zIndex: 10 }}
@@ -615,6 +660,9 @@ export default function Booking() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.models, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.models}
                      label="Model"
                      sx={{ height: 25, zIndex: 10 }}
@@ -630,6 +678,9 @@ export default function Booking() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.segments, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.segments}
                      label="Segment"
                      sx={{ height: 25, zIndex: 10 }}
@@ -645,6 +696,13 @@ export default function Booking() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={
+                        dataFilter.aopMarginPercentageGroup !== undefined
+                           ? {
+                                value: `${dataFilter.aopMarginPercentageGroup}`,
+                             }
+                           : { value: '' }
+                     }
                      options={initDataFilter.AOPMarginPercentageGroup}
                      label="AOP Margin %"
                      primaryKeyOption="value"
@@ -662,6 +720,13 @@ export default function Booking() {
                <Grid item xs={4}>
                   <Grid item xs={6} sx={{ paddingRight: 0.5 }}>
                      <AppAutocomplete
+                        value={
+                           dataFilter.marginPercentage !== undefined
+                              ? {
+                                   value: `${dataFilter.marginPercentage}`,
+                                }
+                              : { value: '' }
+                        }
                         options={initDataFilter.marginPercentageGroup}
                         label="Margin %"
                         onChange={(e, option) =>

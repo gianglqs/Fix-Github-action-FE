@@ -2,19 +2,29 @@ import { takeEvery, put } from 'redux-saga/effects';
 import { shipmentStore, commonStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import shipmentApi from '@/api/shipment.api';
+import { parseCookies } from 'nookies';
 
 function* fetchShipment() {
    try {
+      const initDataFilter = yield* call(shipmentApi.getInitDataFilter);
+      const { defaultValueFilterOrder } = yield* all({
+         defaultValueFilterOrder: select(shipmentStore.selectDefaultValueFilterOrder),
+      });
+
+      const cookies = parseCookies();
+      const jsonDataFilter = cookies['shipmentFilter'];
+      let dataFilter;
+      if (jsonDataFilter) {
+         dataFilter = JSON.parse(String(jsonDataFilter));
+         yield put(shipmentStore.actions.setDataFilter(dataFilter));
+      } else {
+         dataFilter = defaultValueFilterOrder;
+      }
       const { tableState } = yield* all({
          tableState: select(commonStore.selectTableState),
       });
 
-      const { defaultValueFilterOrder } = yield* all({
-         defaultValueFilterOrder: select(shipmentStore.selectDefaultValueFilterOrder),
-      });
-      const initDataFilter = yield* call(shipmentApi.getInitDataFilter);
-
-      const { data } = yield* call(shipmentApi.getShipments, defaultValueFilterOrder, {
+      const { data } = yield* call(shipmentApi.getShipments, dataFilter, {
          pageNo: tableState.pageNo,
          perPage: tableState.perPage,
       });

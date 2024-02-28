@@ -10,6 +10,7 @@ export const initialState = {
    productList: [] as any[],
    initDataFilter: {} as any,
    defaultValueFilterProduct: defaultValueFilterProduct as any,
+   dataFilter: {} as any,
 };
 
 const productSlice = createSlice({
@@ -28,6 +29,9 @@ const productSlice = createSlice({
             ...payload,
          };
       },
+      setDataFilter(state, { payload }: PayloadAction<any[]>) {
+         state.dataFilter = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -41,6 +45,7 @@ export const sagaGetList = createAction(`${name}/GET_LIST`);
 export const selectState = (state: RootReducerType) => state[name];
 export const selectProductList = createSelector(selectState, (state) => state.productList);
 export const selectInitDataFilter = createSelector(selectState, (state) => state.initDataFilter);
+export const selectDataFilter = createSelector(selectState, (state) => state.dataFilter);
 
 export const selectDefaultValueFilterProduct = createSelector(
    selectState,

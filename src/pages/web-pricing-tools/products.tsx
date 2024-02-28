@@ -37,6 +37,8 @@ import { selectProductRowById } from '@/utils/selectRowById';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import productApi from '@/api/product.api';
 import AppBackDrop from '@/components/App/BackDrop';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { setCookie } from 'nookies';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -50,14 +52,16 @@ export default function Product() {
    const dispatch = useDispatch();
    const listProduct = useSelector(productStore.selectProductList);
    const initDataFilter = useSelector(productStore.selectInitDataFilter);
+   const cacheDataFilter = useSelector(productStore.selectDataFilter);
 
-   const [dataFilter, setDataFilter] = useState(defaultValueFilterProduct);
+   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
 
    const [loading, setLoading] = useState(false);
 
    const [loadingTable, setLoadingTable] = useState(false);
 
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
 
    const appendFileIntoList = (file) => {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
@@ -76,7 +80,28 @@ export default function Product() {
    };
 
    useEffect(() => {
-      handleFilterProduct();
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
+   }, [cacheDataFilter]);
+
+   useEffect(() => {
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            console.log('hehe, ', dataFilter);
+
+            setCookie(null, 'productFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterProduct();
+         }
+      }, 700);
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    useEffect(() => {
@@ -322,11 +347,16 @@ export default function Product() {
                         name="orderNo"
                         label="Model Code"
                         placeholder="Search Product by Model"
+                        value={dataFilter.modelCode}
+                        focused
                      />
                   </Grid>
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.classes, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.classes}
                      label="Class"
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
@@ -341,6 +371,9 @@ export default function Product() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.plants, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.plants}
                      label="Plant"
                      sx={{ height: 25, zIndex: 10 }}
@@ -356,6 +389,9 @@ export default function Product() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.metaSeries, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.metaSeries}
                      label="MetaSeries"
                      sx={{ height: 25, zIndex: 10 }}
@@ -371,6 +407,9 @@ export default function Product() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.family, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.family}
                      label="Family"
                      sx={{ height: 25, zIndex: 10 }}
@@ -386,6 +425,9 @@ export default function Product() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.segments, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.segments}
                      label="Segment"
                      sx={{ height: 25, zIndex: 10 }}
@@ -401,6 +443,9 @@ export default function Product() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.brands, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.brands}
                      label="Brand"
                      sx={{ height: 25, zIndex: 10 }}
@@ -416,6 +461,9 @@ export default function Product() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.truckType, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.truckType}
                      label="Truck Type"
                      sx={{ height: 25, zIndex: 10 }}

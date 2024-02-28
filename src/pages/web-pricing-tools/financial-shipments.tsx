@@ -44,6 +44,7 @@ import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import AppBackDrop from '@/components/App/BackDrop';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -60,7 +61,9 @@ export default function Shipment() {
    const initDataFilter = useSelector(shipmentStore.selectInitDataFilter);
    const listTotalRow = useSelector(shipmentStore.selectTotalRow);
 
-   const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
+   const cacheDataFilter = useSelector(shipmentStore.selectDataFilter);
+
+   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
 
    const [listOrder, setListOrder] = useState(listShipment);
 
@@ -74,6 +77,7 @@ export default function Shipment() {
    // use importing to control spiner
    const [loading, setLoading] = useState(false);
    const [loadingTable, setLoadingTable] = useState(false);
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -93,7 +97,27 @@ export default function Shipment() {
    };
 
    useEffect(() => {
-      handleFilterOrderShipment();
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
+   }, [cacheDataFilter]);
+
+   useEffect(() => {
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            console.log('hehe, ', dataFilter);
+            setCookie(null, 'shipmentFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterOrderShipment();
+         }
+      }, 500);
+
+      debouncedHandleWhenChangeDataFilter();
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    const handleFilterOrderShipment = () => {
@@ -561,15 +585,20 @@ export default function Shipment() {
                <Grid item xs={4}>
                   <Grid item xs={12}>
                      <AppTextField
+                        value={dataFilter.orderNo}
                         onChange={(e) => handleChangeDataFilter(e.target.value, 'orderNo')}
                         name="orderNo"
                         label="Order #"
                         placeholder="Search order by ID"
+                        focused
                      />
                   </Grid>
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.regions, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.regions}
                      label="Region"
                      onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
@@ -584,6 +613,9 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.plants, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.plants}
                      label="Plant"
                      sx={{ height: 25, zIndex: 10 }}
@@ -599,6 +631,9 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.metaSeries, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.metaSeries}
                      label="MetaSeries"
                      sx={{ height: 25, zIndex: 10 }}
@@ -614,6 +649,9 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.dealers, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.dealers}
                      label="Dealer"
                      sx={{ height: 25, zIndex: 10 }}
@@ -630,6 +668,9 @@ export default function Shipment() {
 
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.classes, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.classes}
                      label="Class"
                      sx={{ height: 25, zIndex: 10 }}
@@ -645,6 +686,9 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.models, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.models}
                      label="Model"
                      sx={{ height: 25, zIndex: 10 }}
@@ -660,6 +704,9 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.segments, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.segments}
                      label="Segment"
                      sx={{ height: 25, zIndex: 10 }}
@@ -675,6 +722,13 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={
+                        dataFilter.marginPercentage !== undefined
+                           ? {
+                                value: `${dataFilter.marginPercentage}`,
+                             }
+                           : { value: '' }
+                     }
                      options={initDataFilter.marginPercentageGroup}
                      label="Margin %"
                      onChange={(e, option) =>
@@ -692,6 +746,13 @@ export default function Shipment() {
                <Grid item xs={4} sx={{ paddingRight: 0.5 }}>
                   <Grid item xs={6}>
                      <AppAutocomplete
+                        value={
+                           dataFilter.aopMarginPercentageGroup !== undefined
+                              ? {
+                                   value: `${dataFilter.aopMarginPercentageGroup}`,
+                                }
+                              : { value: '' }
+                        }
                         options={initDataFilter.AOPMarginPercentageGroup}
                         label="AOP Margin %"
                         primaryKeyOption="value"

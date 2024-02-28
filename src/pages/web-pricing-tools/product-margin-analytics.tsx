@@ -46,6 +46,8 @@ import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import { REGION } from '@/utils/constant';
 import AppBackDrop from '@/components/App/BackDrop';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { setCookie } from 'nookies';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -56,13 +58,15 @@ export default function Outlier() {
    const listOutlier = useSelector(outlierStore.selectOutlierList);
    const initDataFilter = useSelector(outlierStore.selectInitDataFilter);
    const listTotalRow = useSelector(outlierStore.selectTotalRow);
-   const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
+   const cacheDataFilter = useSelector(outlierStore.selectDataFilter);
+   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
    const [loading, setLoading] = useState(false);
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
          produce(prev, (draft) => {
-            if (_.includes(['fromDate', 'toDate', 'MarginPercetage'], field)) {
+            if (_.includes(['fromDate', 'toDate', 'marginPercentage'], field)) {
                draft[field] = option;
             } else {
                draft[field] = option.map(({ value }) => value);
@@ -72,7 +76,27 @@ export default function Outlier() {
    };
 
    useEffect(() => {
-      handleFilterOrderBooking();
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
+   }, [cacheDataFilter]);
+
+   useEffect(() => {
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            setCookie(null, 'outlierFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterOrderBooking();
+         }
+      }, 700);
+
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    useEffect(() => {
@@ -440,6 +464,9 @@ export default function Outlier() {
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.regions, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.regions}
                      label="Region"
                      onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
@@ -454,6 +481,9 @@ export default function Outlier() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.plants, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.plants}
                      label="Plant"
                      sx={{ height: 25, zIndex: 10 }}
@@ -469,6 +499,9 @@ export default function Outlier() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.metaSeries, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.metaSeries}
                      label="MetaSeries"
                      sx={{ height: 25, zIndex: 10 }}
@@ -484,6 +517,9 @@ export default function Outlier() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.dealers, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.dealers}
                      label="Dealer"
                      sx={{ height: 25, zIndex: 10 }}
@@ -500,6 +536,9 @@ export default function Outlier() {
 
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.classes, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.classes}
                      label="Class"
                      sx={{ height: 25, zIndex: 10 }}
@@ -515,6 +554,9 @@ export default function Outlier() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.models, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.models}
                      label="Model"
                      sx={{ height: 25, zIndex: 10 }}
@@ -531,12 +573,19 @@ export default function Outlier() {
 
                <Grid item xs={2}>
                   <AppAutocomplete
-                     options={initDataFilter.MarginPercetage}
+                     value={
+                        dataFilter.marginPercentage !== undefined
+                           ? {
+                                value: `${dataFilter.marginPercentage}`,
+                             }
+                           : { value: '' }
+                     }
+                     options={initDataFilter.marginPercentageGroup}
                      label="Margin %"
                      onChange={(e, option) =>
                         handleChangeDataFilter(
                            _.isNil(option) ? '' : option?.value,
-                           'MarginPercetage'
+                           'marginPercentage'
                         )
                      }
                      disableClearable={false}
