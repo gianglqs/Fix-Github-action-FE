@@ -799,7 +799,7 @@ export default function Adjustment() {
                      onClick={handleClearAllFilters}
                      sx={{ width: '100%', height: 24 }}
                   >
-                     Clear
+                     Clear Filters
                   </Button>
                </Grid>
             </Grid>
