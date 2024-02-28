@@ -3,10 +3,11 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { productStore, commonStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
+import moment from 'moment-timezone';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Button, CircularProgress, ListItem } from '@mui/material';
+import { Button, CircularProgress, ListItem, Typography } from '@mui/material';
 
 import {
    AppAutocomplete,
@@ -334,6 +335,27 @@ export default function Product() {
       setDataFilter(defaultValueFilterProduct);
    };
 
+   const serverTimeZone = useSelector(productStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(productStore.selectLatestUpdatedTime);
+
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
+
+   // show latest updated time
+   const convertServerTimeToClientTimeZone = () => {
+      if (serverLatestUpdatedTime && serverTimeZone) {
+         const clientTimeZone = moment.tz.guess();
+         const convertedTime = moment
+            .tz(serverLatestUpdatedTime, serverTimeZone)
+            .tz(clientTimeZone);
+         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         console.log('Converted Time:', convertedTime.format());
+      }
+   };
+
+   useEffect(() => {
+      convertServerTimeToClientTimeZone();
+   }, [serverLatestUpdatedTime, serverTimeZone]);
+
    return (
       <>
          <AppLayout entity="product">
@@ -548,6 +570,11 @@ export default function Product() {
                               </Button>
                            </ListItem>
                         ))}
+                  </Grid>
+                  <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
+                     <Typography sx={{ marginRight: '20px' }}>
+                        Latest updated at {clientLatestUpdatedTime}
+                     </Typography>
                   </Grid>
                </Grid>
             </When>
