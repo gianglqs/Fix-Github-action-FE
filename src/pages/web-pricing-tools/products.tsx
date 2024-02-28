@@ -329,6 +329,11 @@ export default function Product() {
       if (params.field === '') event.stopPropagation();
    };
 
+   // handle button to clear all filters
+   const handleClearAllFilters = () => {
+      setDataFilter(defaultValueFilterProduct);
+   };
+
    return (
       <>
          <AppLayout entity="product">
@@ -471,13 +476,22 @@ export default function Product() {
                   />
                </Grid>
 
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <Button
                      variant="contained"
                      onClick={handleFilterProduct}
                      sx={{ width: '100%', height: 24 }}
                   >
                      Filter
+                  </Button>
+               </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilters}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear
                   </Button>
                </Grid>
             </Grid>

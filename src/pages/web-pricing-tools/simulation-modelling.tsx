@@ -601,6 +601,14 @@ export default function Adjustment() {
       else if (n === 0) setTotalColor('');
    }, [costAdjColor, freightAdjColor, fxAdjColor, dnAdjColor]);
 
+   // handle button to clear all filters
+   const handleClearAllFilters = () => {
+      setDataFilter(defaultValueFilterOrder);
+   };
+
+   const handleClearAllCalculators = () => {
+      setDataCalculator(defaultValueCaculatorForAjustmentCost);
+   };
    return (
       <>
          <AppLayout entity="adjustment">
@@ -776,17 +784,26 @@ export default function Adjustment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={6}>
-                  <Grid item xs={4}>
-                     <Button
-                        variant="contained"
-                        onClick={handleFilterAdjustment}
-                        sx={{ width: '100%', height: 24 }}
-                     >
-                        Filter
-                     </Button>
-                  </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleFilterAdjustment}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Filter
+                  </Button>
                </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilters}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear
+                  </Button>
+               </Grid>
+            </Grid>
+            <Grid container spacing={1} marginTop={0.5}>
                <Grid item xs={2}>
                   <Grid item xs={12}>
                      <AppTextField
@@ -850,6 +867,15 @@ export default function Adjustment() {
                      sx={{ width: '100%', height: 24 }}
                   >
                      Calculate
+                  </Button>
+               </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllCalculators}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear Calculators
                   </Button>
                </Grid>
             </Grid>

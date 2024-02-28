@@ -42,7 +42,7 @@ ChartJS.register(
    Title,
    ChartAnnotation
 );
-import { parseCookies, setCookie } from 'nookies';
+import { destroyCookie, parseCookies, setCookie } from 'nookies';
 import { useDropzone } from 'react-dropzone';
 
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
@@ -53,6 +53,14 @@ import { isEmptyObject } from '@/utils/checkEmptyObject';
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
+
+const defaultDataFilterBubbleChart = {
+   regions: null,
+   countries: [],
+   classes: [],
+   categories: [],
+   series: [],
+};
 
 export default function Indicators() {
    const dispatch = useDispatch();
@@ -86,6 +94,7 @@ export default function Indicators() {
 
    const [competitiveLandscapeData, setCompetitiveLandscapeData] = useState({
       datasets: [],
+      clearFilter: false,
    });
    const cachDataFilterBubbleChart = useSelector(indicatorStore.selectDataFilterBubbleChart);
    const [swotDataFilter, setSwotDataFilter] = useState(cachDataFilterBubbleChart);
@@ -134,7 +143,7 @@ export default function Indicators() {
    }, [competitiveLandscapeData]);
 
    const handleFilterCompetitiveLandscape = async () => {
-      setLoadingSwot(true);
+      if (!competitiveLandscapeData.clearFilter) setLoadingSwot(true);
       try {
          if (swotDataFilter.regions == null) {
             setRegionError({ error: true });
@@ -167,6 +176,7 @@ export default function Indicators() {
 
          setCompetitiveLandscapeData({
             datasets: datasets,
+            clearFilter: false,
          });
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error.message));
@@ -650,6 +660,19 @@ export default function Indicators() {
       },
    };
 
+   // handle button to clear all filters
+   const handleClearAllFilterTable = () => {
+      setDataFilter(defaultValueFilterIndicator);
+   };
+
+   const handleClearAllFilterBubbleChart = () => {
+      setSwotDataFilter(defaultDataFilterBubbleChart);
+      setCompetitiveLandscapeData({
+         datasets: [],
+         clearFilter: true,
+      });
+   };
+
    return (
       <>
          {loading ? (
@@ -831,13 +854,22 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <Button
                      variant="contained"
                      onClick={handleFilterIndicator}
                      sx={{ width: '100%', height: 24 }}
                   >
                      Filter
+                  </Button>
+               </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilterTable}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear
                   </Button>
                </Grid>
                {userRole === 'ADMIN' && (
@@ -1067,6 +1099,15 @@ export default function Indicators() {
                         sx={{ width: '100%', height: 24 }}
                      >
                         Filter
+                     </Button>
+                  </Grid>
+                  <Grid item xs={1.5}>
+                     <Button
+                        variant="contained"
+                        onClick={handleClearAllFilterBubbleChart}
+                        sx={{ width: '100%', height: 24 }}
+                     >
+                        Clear
                      </Button>
                   </Grid>
                </Grid>

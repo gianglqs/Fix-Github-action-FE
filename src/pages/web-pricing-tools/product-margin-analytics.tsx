@@ -458,6 +458,11 @@ export default function Outlier() {
       }
    };
 
+   // handle button to clear all filters
+   const handleClearAllFilters = () => {
+      setDataFilter(defaultValueFilterOrder);
+   };
+
    return (
       <>
          <AppLayout entity="outlier">
@@ -614,13 +619,22 @@ export default function Outlier() {
                      value={dataFilter?.toDate}
                   />
                </Grid>
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <Button
                      variant="contained"
                      onClick={handleFilterOrderBooking}
                      sx={{ width: '100%', height: 24 }}
                   >
                      Filter
+                  </Button>
+               </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilters}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear
                   </Button>
                </Grid>
             </Grid>

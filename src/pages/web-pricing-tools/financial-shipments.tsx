@@ -18,7 +18,7 @@ import {
    Typography,
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
-import { parseCookies, setCookie } from 'nookies';
+import { destroyCookie, parseCookies, setCookie } from 'nookies';
 import ClearIcon from '@mui/icons-material/Clear';
 
 import {
@@ -578,6 +578,11 @@ export default function Shipment() {
       }
    };
 
+   // handle button to clear all filters
+   const handleClearAllFilters = () => {
+      setDataFilter(defaultValueFilterOrder);
+   };
+
    return (
       <>
          <AppLayout entity="shipment">
@@ -788,7 +793,7 @@ export default function Shipment() {
                      value={dataFilter?.toDate}
                   />
                </Grid>
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <Button
                      variant="contained"
                      onClick={handleFilterOrderShipment}
@@ -797,6 +802,16 @@ export default function Shipment() {
                      Filter
                   </Button>
                </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilters}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear
+                  </Button>
+               </Grid>
+
                <Grid item>
                   <RadioGroup
                      row
