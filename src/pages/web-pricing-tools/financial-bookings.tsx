@@ -8,7 +8,7 @@ import { useDropzone } from 'react-dropzone';
 import moment from 'moment-timezone';
 
 import { rowColor } from '@/theme/colorRow';
-import { parseCookies, setCookie } from 'nookies';
+import { destroyCookie, parseCookies, setCookie } from 'nookies';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -551,7 +551,10 @@ export default function Booking() {
       }
    };
 
-   // console.log(dataFilter.marginPercentage && { value: dataFilter.marginPercentage });
+   // handle button to clear all filters
+   const handleClearAllFilters = () => {
+      setDataFilter(defaultValueFilterOrder);
+   };
 
    return (
       <>
@@ -762,13 +765,22 @@ export default function Booking() {
                      value={dataFilter?.toDate}
                   />
                </Grid>
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <Button
                      variant="contained"
                      onClick={handleFilterOrderBooking}
                      sx={{ width: '100%', height: 24 }}
                   >
                      Filter
+                  </Button>
+               </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilters}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear
                   </Button>
                </Grid>
 

@@ -16,6 +16,8 @@ export const initialState = {
    initDataForCompetitiveLandscape: [] as any[],
    dataFilter: {} as any,
    dataFilterBubbleChart: {} as any,
+   serverTimeZone: '' as any,
+   latestUpdatedTime: '' as any,
 };
 
 const indicatorSlice = createSlice({
@@ -51,6 +53,12 @@ const indicatorSlice = createSlice({
       },
       setDataFilterBubbleChart(state, { payload }: PayloadAction<any[]>) {
          state.dataFilterBubbleChart = payload;
+      },
+      setServerTimeZone(state, { payload }: PayloadAction<any[]>) {
+         state.serverTimeZone = payload;
+      },
+      setLatestUpdatedTime(state, { payload }: PayloadAction<any[]>) {
+         state.latestUpdatedTime = payload;
       },
    },
    extraReducers: {
@@ -92,5 +100,11 @@ export const selectDefaultValueFilterIndicator = createSelector(
 );
 
 export const { actions } = indicatorSlice;
+
+export const selectServerTimeZone = createSelector(selectState, (state) => state.serverTimeZone);
+export const selectLatestUpdatedTime = createSelector(
+   selectState,
+   (state) => state.latestUpdatedTime
+);
 
 export default indicatorSlice;

@@ -4,6 +4,7 @@ import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
 import { shipmentStore, commonStore } from '@/store/reducers';
+import moment from 'moment-timezone';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -18,7 +19,7 @@ import {
    Typography,
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
-import { parseCookies, setCookie } from 'nookies';
+import { destroyCookie, parseCookies, setCookie } from 'nookies';
 import ClearIcon from '@mui/icons-material/Clear';
 
 import {
@@ -69,7 +70,11 @@ export default function Shipment() {
 
    const [totalRow, setTotalRow] = useState(listTotalRow);
 
+   const serverTimeZone = useSelector(shipmentStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(shipmentStore.selectLatestUpdatedTime);
+
    const [currency, setCurrency] = useState('USD');
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
    const listExchangeRate = useSelector(shipmentStore.selectExchangeRateList);
 
    //  const [uploadedFile, setUploadedFile] = useState({ name: '' });
@@ -526,6 +531,7 @@ export default function Shipment() {
       setTotalRow((prev) => {
          return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
       });
+      convertServerTimeToClientTimeZone();
    }, [listShipment, listTotalRow, currency]);
 
    // ===== show Product detail =======
@@ -576,6 +582,23 @@ export default function Shipment() {
             orderNo: params.id,
          });
       }
+   };
+
+   // show latest updated time
+   const convertServerTimeToClientTimeZone = () => {
+      if (serverLatestUpdatedTime && serverTimeZone) {
+         const clientTimeZone = moment.tz.guess();
+         const convertedTime = moment
+            .tz(serverLatestUpdatedTime, serverTimeZone)
+            .tz(clientTimeZone);
+         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         // console.log('Converted Time:', convertedTime.format());
+      }
+   };
+
+   // handle button to clear all filters
+   const handleClearAllFilters = () => {
+      setDataFilter(defaultValueFilterOrder);
    };
 
    return (
@@ -788,7 +811,7 @@ export default function Shipment() {
                      value={dataFilter?.toDate}
                   />
                </Grid>
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <Button
                      variant="contained"
                      onClick={handleFilterOrderShipment}
@@ -797,6 +820,16 @@ export default function Shipment() {
                      Filter
                   </Button>
                </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilters}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear
+                  </Button>
+               </Grid>
+
                <Grid item>
                   <RadioGroup
                      row
@@ -881,6 +914,11 @@ export default function Shipment() {
                               </Button>
                            </ListItem>
                         ))}
+                  </Grid>
+                  <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={6}>
+                     <Typography sx={{ marginRight: '20px' }}>
+                        Latest updated at {clientLatestUpdatedTime}
+                     </Typography>
                   </Grid>
                </Grid>
             )}

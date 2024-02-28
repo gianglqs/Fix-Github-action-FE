@@ -32,6 +32,8 @@ function* fetchProduct() {
       const initDataFilter = yield* call(productApi.getInitDataFilter);
 
       const dataProduct = JSON.parse(String(data)).listData;
+      const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
+      const dataLatestUpdatedTime = JSON.parse(String(data)).latestUpdatedTime;
 
       yield put(productStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
       yield put(productStore.actions.setProductList(dataProduct));
@@ -41,6 +43,8 @@ function* fetchProduct() {
             totalItems: JSON.parse(String(data)).totalItems,
          })
       );
+      yield put(productStore.actions.setServerTimeZone(dataServerTimeZone));
+      yield put(productStore.actions.setLatestUpdatedTime(dataLatestUpdatedTime));
    } catch (error) {}
 }
 

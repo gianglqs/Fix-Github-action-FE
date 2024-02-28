@@ -12,6 +12,8 @@ export const initialState = {
    initDataFilter: {} as any,
    defaultValueFilterOutlier: defaultValueFilterOrder as any,
    dataFilter: {} as any,
+   serverTimeZone: '' as any,
+   latestUpdatedTime: '' as any,
 };
 
 const outlierSlice = createSlice({
@@ -36,6 +38,12 @@ const outlierSlice = createSlice({
       setDataFilter(state, { payload }: PayloadAction<any[]>) {
          state.dataFilter = payload;
       },
+      setServerTimeZone(state, { payload }: PayloadAction<any[]>) {
+         state.serverTimeZone = payload;
+      },
+      setLatestUpdatedTime(state, { payload }: PayloadAction<any[]>) {
+         state.latestUpdatedTime = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -55,7 +63,11 @@ export const selectDefaultValueFilterOutlier = createSelector(
    (state) => state.defaultValueFilterOutlier
 );
 export const selectDataFilter = createSelector(selectState, (state) => state.dataFilter);
-
+export const selectServerTimeZone = createSelector(selectState, (state) => state.serverTimeZone);
+export const selectLatestUpdatedTime = createSelector(
+   selectState,
+   (state) => state.latestUpdatedTime
+);
 export const { actions } = outlierSlice;
 
 export default outlierSlice;

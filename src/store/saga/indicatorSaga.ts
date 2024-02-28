@@ -72,6 +72,12 @@ function* fetchIndicator() {
             totalItems: JSON.parse(String(dataListIndicator.data)).totalItems,
          })
       );
+
+      const dataServerTimeZone = JSON.parse(String(dataListIndicator.data)).serverTimeZone;
+      const dataLatestUpdatedTime = JSON.parse(String(dataListIndicator.data)).latestUpdatedTime;
+
+      yield put(indicatorStore.actions.setServerTimeZone(dataServerTimeZone));
+      yield put(indicatorStore.actions.setLatestUpdatedTime(dataLatestUpdatedTime));
    } catch (error) {}
 }
 

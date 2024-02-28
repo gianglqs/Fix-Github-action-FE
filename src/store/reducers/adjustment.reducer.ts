@@ -17,6 +17,8 @@ export const initialState = {
    defaultValueCalculator: defaultValueCaculatorForAjustmentCost as any,
    dataFilter: {} as any,
    dataAdjustment: {} as any,
+   serverTimeZone: '' as any,
+   latestUpdatedTime: '' as any,
 };
 
 const adjustmentSlice = createSlice({
@@ -50,6 +52,12 @@ const adjustmentSlice = createSlice({
       setDataAdjustment(state, { payload }: PayloadAction<any[]>) {
          state.dataAdjustment = payload;
       },
+      setServerTimeZone(state, { payload }: PayloadAction<any[]>) {
+         state.serverTimeZone = payload;
+      },
+      setLatestUpdatedTime(state, { payload }: PayloadAction<any[]>) {
+         state.latestUpdatedTime = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -75,6 +83,11 @@ export const selectDefaultValueCalculator = createSelector(
 );
 export const selectDataFilter = createSelector(selectState, (state) => state.dataFilter);
 export const selectDataAdjustment = createSelector(selectState, (state) => state.dataAdjustment);
+export const selectServerTimeZone = createSelector(selectState, (state) => state.serverTimeZone);
+export const selectLatestUpdatedTime = createSelector(
+   selectState,
+   (state) => state.latestUpdatedTime
+);
 
 export const { actions } = adjustmentSlice;
 

@@ -50,6 +50,8 @@ function* fetchAdjustment() {
 
       const dataAdjustment = JSON.parse(String(data)).listAdjustment;
       const dataTotalRow = JSON.parse(String(data)).total;
+      const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
+      const dataLatestUpdatedTime = JSON.parse(String(data)).latestUpdatedTime;
 
       yield put(adjustmentStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
       yield put(adjustmentStore.actions.setAdjustmentList(dataAdjustment));
@@ -59,6 +61,8 @@ function* fetchAdjustment() {
             totalItems: JSON.parse(String(data)).totalItems,
          })
       );
+      yield put(adjustmentStore.actions.setServerTimeZone(dataServerTimeZone));
+      yield put(adjustmentStore.actions.setLatestUpdatedTime(dataLatestUpdatedTime));
    } catch (error) {}
 }
 

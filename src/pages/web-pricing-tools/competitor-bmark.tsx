@@ -4,7 +4,7 @@ import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
 import { indicatorStore, commonStore } from '@/store/reducers';
-import { Button, CircularProgress } from '@mui/material';
+import { Button, CircularProgress, Typography } from '@mui/material';
 
 import { rowColor } from '@/theme/colorRow';
 import { AppLayout, DataTablePagination, AppAutocomplete } from '@/components';
@@ -12,6 +12,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
 import LineChart from '@/components/chart/Line';
+import moment from 'moment-timezone';
 
 import {
    Chart as ChartJS,
@@ -42,7 +43,7 @@ ChartJS.register(
    Title,
    ChartAnnotation
 );
-import { parseCookies, setCookie } from 'nookies';
+import { destroyCookie, parseCookies, setCookie } from 'nookies';
 import { useDropzone } from 'react-dropzone';
 
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
@@ -53,6 +54,14 @@ import { isEmptyObject } from '@/utils/checkEmptyObject';
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
+
+const defaultDataFilterBubbleChart = {
+   regions: null,
+   countries: [],
+   classes: [],
+   categories: [],
+   series: [],
+};
 
 export default function Indicators() {
    const dispatch = useDispatch();
@@ -79,6 +88,8 @@ export default function Indicators() {
    const listTotalRow = useSelector(indicatorStore.selectTotalRow);
 
    const getDataForTable = useSelector(indicatorStore.selectIndicatorList);
+   const serverTimeZone = useSelector(indicatorStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(indicatorStore.selectLatestUpdatedTime);
 
    // Select data line Chart Region in store
    const dataForLineChartRegion = useSelector(indicatorStore.selectDataForLineChartRegion);
@@ -86,6 +97,7 @@ export default function Indicators() {
 
    const [competitiveLandscapeData, setCompetitiveLandscapeData] = useState({
       datasets: [],
+      clearFilter: false,
    });
    const cachDataFilterBubbleChart = useSelector(indicatorStore.selectDataFilterBubbleChart);
    const [swotDataFilter, setSwotDataFilter] = useState(cachDataFilterBubbleChart);
@@ -134,7 +146,7 @@ export default function Indicators() {
    }, [competitiveLandscapeData]);
 
    const handleFilterCompetitiveLandscape = async () => {
-      setLoadingSwot(true);
+      if (!competitiveLandscapeData.clearFilter) setLoadingSwot(true);
       try {
          if (swotDataFilter.regions == null) {
             setRegionError({ error: true });
@@ -167,6 +179,7 @@ export default function Indicators() {
 
          setCompetitiveLandscapeData({
             datasets: datasets,
+            clearFilter: false,
          });
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error.message));
@@ -650,6 +663,36 @@ export default function Indicators() {
       },
    };
 
+   // handle button to clear all filters
+   const handleClearAllFilterTable = () => {
+      setDataFilter(defaultValueFilterIndicator);
+   };
+
+   const handleClearAllFilterBubbleChart = () => {
+      setSwotDataFilter(defaultDataFilterBubbleChart);
+      setCompetitiveLandscapeData({
+         datasets: [],
+         clearFilter: true,
+      });
+   };
+
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
+
+   useEffect(() => {
+      convertServerTimeToClientTimeZone();
+   }, [serverTimeZone, serverLatestUpdatedTime]);
+
+   // show latest updated time
+   const convertServerTimeToClientTimeZone = () => {
+      if (serverLatestUpdatedTime && serverTimeZone) {
+         const clientTimeZone = moment.tz.guess();
+         const convertedTime = moment
+            .tz(serverLatestUpdatedTime, serverTimeZone)
+            .tz(clientTimeZone);
+         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         // console.log('Converted Time:', convertedTime.format());
+      }
+   };
    return (
       <>
          {loading ? (
@@ -785,7 +828,7 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <AppAutocomplete
                      value={
                         dataFilter.chineseBrand !== undefined
@@ -808,7 +851,7 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <AppAutocomplete
                      value={
                         dataFilter.marginPercentage !== undefined
@@ -831,13 +874,22 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <Button
                      variant="contained"
                      onClick={handleFilterIndicator}
                      sx={{ width: '100%', height: 24 }}
                   >
                      Filter
+                  </Button>
+               </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilterTable}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear
                   </Button>
                </Grid>
                {userRole === 'ADMIN' && (
@@ -858,7 +910,13 @@ export default function Indicators() {
                      </Grid>
                   </>
                )}
+               <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
+                  <Typography sx={{ marginRight: '20px' }}>
+                     Latest updated at {clientLatestUpdatedTime}
+                  </Typography>
+               </Grid>
             </Grid>
+
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: 'calc(67vh - 275px)', minHeight: '200px' }}>
                   <DataGridPro
@@ -883,6 +941,7 @@ export default function Indicators() {
                      getRowId={(params) => params.id}
                   />
                </Grid>
+
                <DataGridPro
                   sx={rowColor}
                   getCellClassName={(params: GridCellParams<any, any, number>) => {
@@ -1067,6 +1126,15 @@ export default function Indicators() {
                         sx={{ width: '100%', height: 24 }}
                      >
                         Filter
+                     </Button>
+                  </Grid>
+                  <Grid item xs={1.5}>
+                     <Button
+                        variant="contained"
+                        onClick={handleClearAllFilterBubbleChart}
+                        sx={{ width: '100%', height: 24 }}
+                     >
+                        Clear
                      </Button>
                   </Grid>
                </Grid>
