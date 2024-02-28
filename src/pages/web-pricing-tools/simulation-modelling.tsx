@@ -5,11 +5,12 @@ import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/format
 import { useDispatch, useSelector } from 'react-redux';
 import { adjustmentStore, commonStore } from '@/store/reducers';
 
+import moment from 'moment-timezone';
 import { rowColor } from '@/theme/colorRow';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 
 import { AppAutocomplete, AppLayout, AppTextField, DataTablePagination } from '@/components';
 
@@ -68,6 +69,10 @@ export default function Adjustment() {
    const [loadingTable, setLoadingTable] = useState(false);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
    const [hasSetDataCalculator, setHasSetDataCalculator] = useState(false);
+   const serverTimeZone = useSelector(adjustmentStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(adjustmentStore.selectLatestUpdatedTime);
+
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -609,6 +614,22 @@ export default function Adjustment() {
    const handleClearAllCalculators = () => {
       setDataCalculator(defaultValueCaculatorForAjustmentCost);
    };
+
+   // show latest updated time
+   const convertServerTimeToClientTimeZone = () => {
+      if (serverLatestUpdatedTime && serverTimeZone) {
+         const clientTimeZone = moment.tz.guess();
+         const convertedTime = moment
+            .tz(serverLatestUpdatedTime, serverTimeZone)
+            .tz(clientTimeZone);
+         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         // console.log('Converted Time:', convertedTime.format());
+      }
+   };
+
+   useEffect(() => {
+      convertServerTimeToClientTimeZone();
+   }, [serverLatestUpdatedTime, serverTimeZone]);
    return (
       <>
          <AppLayout entity="adjustment">
@@ -877,6 +898,11 @@ export default function Adjustment() {
                   >
                      Clear Calculators
                   </Button>
+               </Grid>
+               <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
+                  <Typography sx={{ marginRight: '20px' }}>
+                     Latest updated at {clientLatestUpdatedTime}
+                  </Typography>
                </Grid>
             </Grid>
 
