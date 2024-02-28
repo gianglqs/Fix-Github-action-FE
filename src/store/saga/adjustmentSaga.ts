@@ -2,6 +2,7 @@ import { takeEvery, put } from 'redux-saga/effects';
 import { adjustmentStore, commonStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import adjustmentApi from '@/api/adjustment.api';
+import { parseCookies } from 'nookies';
 
 function* fetchAdjustment() {
    try {
@@ -12,13 +13,33 @@ function* fetchAdjustment() {
       const { defaultValueFilterAdjustment } = yield* all({
          defaultValueFilterAdjustment: select(adjustmentStore.selectDefaultValueFilterAdjustment),
       });
+
+      const cookies = parseCookies();
+      const jsonDataFilter = cookies['adjustmentFilter'];
+      let dataFilter;
+      if (jsonDataFilter) {
+         dataFilter = JSON.parse(String(jsonDataFilter));
+         yield put(adjustmentStore.actions.setDataFilter(dataFilter));
+      } else {
+         dataFilter = defaultValueFilterAdjustment;
+      }
+
       const { defaultValueCalculator } = yield* all({
          defaultValueCalculator: select(adjustmentStore.selectDefaultValueCalculator),
       });
 
+      const jsonDataCalculator = cookies['adjustmentCalculator'];
+      let dataCalculator;
+      if (jsonDataCalculator) {
+         dataCalculator = JSON.parse(String(jsonDataCalculator));
+         yield put(adjustmentStore.actions.setDataAdjustment(dataCalculator));
+      } else {
+         dataCalculator = defaultValueCalculator;
+      }
+
       const { data } = yield* call(
          adjustmentApi.getAdjustment,
-         { dataFilter: defaultValueFilterAdjustment, dataCalculate: defaultValueCalculator },
+         { dataFilter: dataFilter, dataCalculate: dataCalculator },
          {
             pageNo: tableState.pageNo,
             perPage: tableState.perPage,
