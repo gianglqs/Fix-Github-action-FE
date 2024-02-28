@@ -4,7 +4,7 @@ import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
 import { indicatorStore, commonStore } from '@/store/reducers';
-import { Button, CircularProgress } from '@mui/material';
+import { Button, CircularProgress, Typography } from '@mui/material';
 
 import { rowColor } from '@/theme/colorRow';
 import { AppLayout, DataTablePagination, AppAutocomplete } from '@/components';
@@ -12,6 +12,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
 import LineChart from '@/components/chart/Line';
+import moment from 'moment-timezone';
 
 import {
    Chart as ChartJS,
@@ -87,6 +88,8 @@ export default function Indicators() {
    const listTotalRow = useSelector(indicatorStore.selectTotalRow);
 
    const getDataForTable = useSelector(indicatorStore.selectIndicatorList);
+   const serverTimeZone = useSelector(indicatorStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(indicatorStore.selectLatestUpdatedTime);
 
    // Select data line Chart Region in store
    const dataForLineChartRegion = useSelector(indicatorStore.selectDataForLineChartRegion);
@@ -673,6 +676,23 @@ export default function Indicators() {
       });
    };
 
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
+
+   useEffect(() => {
+      convertServerTimeToClientTimeZone();
+   }, [serverTimeZone, serverLatestUpdatedTime]);
+
+   // show latest updated time
+   const convertServerTimeToClientTimeZone = () => {
+      if (serverLatestUpdatedTime && serverTimeZone) {
+         const clientTimeZone = moment.tz.guess();
+         const convertedTime = moment
+            .tz(serverLatestUpdatedTime, serverTimeZone)
+            .tz(clientTimeZone);
+         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         // console.log('Converted Time:', convertedTime.format());
+      }
+   };
    return (
       <>
          {loading ? (
@@ -808,7 +828,7 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <AppAutocomplete
                      value={
                         dataFilter.chineseBrand !== undefined
@@ -831,7 +851,7 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <AppAutocomplete
                      value={
                         dataFilter.marginPercentage !== undefined
@@ -890,7 +910,13 @@ export default function Indicators() {
                      </Grid>
                   </>
                )}
+               <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
+                  <Typography sx={{ marginRight: '20px' }}>
+                     Latest updated at {clientLatestUpdatedTime}
+                  </Typography>
+               </Grid>
             </Grid>
+
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: 'calc(67vh - 275px)', minHeight: '200px' }}>
                   <DataGridPro
@@ -915,6 +941,7 @@ export default function Indicators() {
                      getRowId={(params) => params.id}
                   />
                </Grid>
+
                <DataGridPro
                   sx={rowColor}
                   getCellClassName={(params: GridCellParams<any, any, number>) => {
