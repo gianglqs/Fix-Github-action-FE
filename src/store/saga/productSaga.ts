@@ -2,6 +2,7 @@ import { takeEvery, put } from 'redux-saga/effects';
 import { productStore, commonStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import productApi from '@/api/product.api';
+import { parseCookies } from 'nookies';
 
 function* fetchProduct() {
    try {
@@ -13,7 +14,17 @@ function* fetchProduct() {
          defaultValueFilterProduct: select(productStore.selectDefaultValueFilterProduct),
       });
 
-      const { data } = yield* call(productApi.getListProduct, defaultValueFilterProduct, {
+      const cookies = parseCookies();
+      const jsonDataFilter = cookies['productFilter'];
+      let dataFilter;
+      if (jsonDataFilter) {
+         dataFilter = JSON.parse(String(jsonDataFilter));
+         yield put(productStore.actions.setDataFilter(dataFilter));
+      } else {
+         dataFilter = defaultValueFilterProduct;
+      }
+
+      const { data } = yield* call(productApi.getListProduct, dataFilter, {
          pageNo: tableState.pageNo,
          perPage: tableState.perPage,
       });
@@ -21,6 +32,8 @@ function* fetchProduct() {
       const initDataFilter = yield* call(productApi.getInitDataFilter);
 
       const dataProduct = JSON.parse(String(data)).listData;
+      const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
+      const dataLatestUpdatedTime = JSON.parse(String(data)).latestUpdatedTime;
 
       yield put(productStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
       yield put(productStore.actions.setProductList(dataProduct));
@@ -30,6 +43,8 @@ function* fetchProduct() {
             totalItems: JSON.parse(String(data)).totalItems,
          })
       );
+      yield put(productStore.actions.setServerTimeZone(dataServerTimeZone));
+      yield put(productStore.actions.setLatestUpdatedTime(dataLatestUpdatedTime));
    } catch (error) {}
 }
 

@@ -4,7 +4,7 @@ import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
 import { indicatorStore, commonStore } from '@/store/reducers';
-import { Button, CircularProgress } from '@mui/material';
+import { Button, CircularProgress, Typography } from '@mui/material';
 
 import { rowColor } from '@/theme/colorRow';
 import { AppLayout, DataTablePagination, AppAutocomplete } from '@/components';
@@ -12,6 +12,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
 import LineChart from '@/components/chart/Line';
+import moment from 'moment-timezone';
 
 import {
    Chart as ChartJS,
@@ -42,16 +43,25 @@ ChartJS.register(
    Title,
    ChartAnnotation
 );
-import { parseCookies } from 'nookies';
+import { destroyCookie, parseCookies, setCookie } from 'nookies';
 import { useDropzone } from 'react-dropzone';
 
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import AppBackDrop from '@/components/App/BackDrop';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
+
+const defaultDataFilterBubbleChart = {
+   regions: null,
+   countries: [],
+   classes: [],
+   categories: [],
+   series: [],
+};
 
 export default function Indicators() {
    const dispatch = useDispatch();
@@ -72,11 +82,14 @@ export default function Indicators() {
 
    // select data Filter in store
    const initDataFilter = useSelector(indicatorStore.selectInitDataFilter);
+   const cacheDataFilter = useSelector(indicatorStore.selectDataFilter);
 
-   const [dataFilter, setDataFilter] = useState(defaultValueFilterIndicator);
+   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
    const listTotalRow = useSelector(indicatorStore.selectTotalRow);
 
    const getDataForTable = useSelector(indicatorStore.selectIndicatorList);
+   const serverTimeZone = useSelector(indicatorStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(indicatorStore.selectLatestUpdatedTime);
 
    // Select data line Chart Region in store
    const dataForLineChartRegion = useSelector(indicatorStore.selectDataForLineChartRegion);
@@ -84,19 +97,44 @@ export default function Indicators() {
 
    const [competitiveLandscapeData, setCompetitiveLandscapeData] = useState({
       datasets: [],
+      clearFilter: false,
    });
-   const [swotDataFilter, setSwotDataFilter] = useState({
-      regions: null,
-      countries: [],
-      classes: [],
-      categories: [],
-      series: [],
-   });
+   const cachDataFilterBubbleChart = useSelector(indicatorStore.selectDataFilterBubbleChart);
+   const [swotDataFilter, setSwotDataFilter] = useState(cachDataFilterBubbleChart);
+
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
+   const [hasSetSwotFilter, setHasSetSwotFilter] = useState(false);
+
+   useEffect(() => {
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
+   }, [cacheDataFilter]);
 
    const [regionError, setRegionError] = useState({ error: false });
 
    useEffect(() => {
-      handleFilterCompetitiveLandscape();
+      if (!hasSetSwotFilter && cacheDataFilter) {
+         setSwotDataFilter(cachDataFilterBubbleChart);
+         setHasSetSwotFilter(true);
+      }
+   }, [cachDataFilterBubbleChart]);
+
+   useEffect(() => {
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(swotDataFilter) && swotDataFilter != cachDataFilterBubbleChart) {
+            setCookie(null, 'indicatorBubbleChartFilter', JSON.stringify(swotDataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterCompetitiveLandscape();
+         }
+      }, 700);
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [swotDataFilter]);
 
    useEffect(() => {
@@ -108,7 +146,7 @@ export default function Indicators() {
    }, [competitiveLandscapeData]);
 
    const handleFilterCompetitiveLandscape = async () => {
-      setLoadingSwot(true);
+      if (!competitiveLandscapeData.clearFilter) setLoadingSwot(true);
       try {
          if (swotDataFilter.regions == null) {
             setRegionError({ error: true });
@@ -141,6 +179,7 @@ export default function Indicators() {
 
          setCompetitiveLandscapeData({
             datasets: datasets,
+            clearFilter: false,
          });
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error.message));
@@ -160,7 +199,18 @@ export default function Indicators() {
    };
 
    useEffect(() => {
-      handleFilterIndicator();
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            setCookie(null, 'indicatorTableFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterIndicator();
+         }
+      }, 500);
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    useEffect(() => {
@@ -613,6 +663,36 @@ export default function Indicators() {
       },
    };
 
+   // handle button to clear all filters
+   const handleClearAllFilterTable = () => {
+      setDataFilter(defaultValueFilterIndicator);
+   };
+
+   const handleClearAllFilterBubbleChart = () => {
+      setSwotDataFilter(defaultDataFilterBubbleChart);
+      setCompetitiveLandscapeData({
+         datasets: [],
+         clearFilter: true,
+      });
+   };
+
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
+
+   useEffect(() => {
+      convertServerTimeToClientTimeZone();
+   }, [serverTimeZone, serverLatestUpdatedTime]);
+
+   // show latest updated time
+   const convertServerTimeToClientTimeZone = () => {
+      if (serverLatestUpdatedTime && serverTimeZone) {
+         const clientTimeZone = moment.tz.guess();
+         const convertedTime = moment
+            .tz(serverLatestUpdatedTime, serverTimeZone)
+            .tz(clientTimeZone);
+         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         // console.log('Converted Time:', convertedTime.format());
+      }
+   };
    return (
       <>
          {loading ? (
@@ -641,6 +721,9 @@ export default function Indicators() {
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.regions, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.regions}
                      label="Region"
                      onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
@@ -655,6 +738,9 @@ export default function Indicators() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.dealers, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.dealers}
                      label="Dealer"
                      sx={{ height: 25, zIndex: 10 }}
@@ -670,6 +756,9 @@ export default function Indicators() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.plants, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.plants}
                      label="Plant"
                      sx={{ height: 25, zIndex: 10 }}
@@ -685,6 +774,9 @@ export default function Indicators() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.metaSeries, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.metaSeries}
                      label="MetaSeries"
                      sx={{ height: 25, zIndex: 10 }}
@@ -701,6 +793,9 @@ export default function Indicators() {
 
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.classes, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.classes}
                      label="Class"
                      sx={{ height: 25, zIndex: 10 }}
@@ -716,6 +811,9 @@ export default function Indicators() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.models, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.models}
                      label="Model"
                      sx={{ height: 25, zIndex: 10 }}
@@ -730,8 +828,15 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <AppAutocomplete
+                     value={
+                        dataFilter.chineseBrand !== undefined
+                           ? {
+                                value: `${dataFilter.chineseBrand}`,
+                             }
+                           : { value: '' }
+                     }
                      options={initDataFilter.chineseBrands}
                      label="Chinese Brand"
                      onChange={
@@ -746,8 +851,15 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <AppAutocomplete
+                     value={
+                        dataFilter.marginPercentage !== undefined
+                           ? {
+                                value: `${dataFilter.marginPercentage}`,
+                             }
+                           : { value: '' }
+                     }
                      options={initDataFilter.marginPercentageGrouping}
                      label="Margin % Group"
                      primaryKeyOption="value"
@@ -762,13 +874,22 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <Button
                      variant="contained"
                      onClick={handleFilterIndicator}
                      sx={{ width: '100%', height: 24 }}
                   >
                      Filter
+                  </Button>
+               </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilterTable}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear
                   </Button>
                </Grid>
                {userRole === 'ADMIN' && (
@@ -789,7 +910,13 @@ export default function Indicators() {
                      </Grid>
                   </>
                )}
+               <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
+                  <Typography sx={{ marginRight: '20px' }}>
+                     Latest updated at {clientLatestUpdatedTime}
+                  </Typography>
+               </Grid>
             </Grid>
+
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: 'calc(67vh - 275px)', minHeight: '200px' }}>
                   <DataGridPro
@@ -814,6 +941,7 @@ export default function Indicators() {
                      getRowId={(params) => params.id}
                   />
                </Grid>
+
                <DataGridPro
                   sx={rowColor}
                   getCellClassName={(params: GridCellParams<any, any, number>) => {
@@ -900,6 +1028,13 @@ export default function Indicators() {
                <Grid container spacing={1} justifyContent="center" alignItems="center">
                   <Grid item xs={1.2} sx={{ zIndex: 15 }}>
                      <AppAutocomplete
+                        value={
+                           swotDataFilter.regions !== undefined
+                              ? {
+                                   value: `${swotDataFilter.regions}`,
+                                }
+                              : { value: '' }
+                        }
                         options={initDataFilter.regions}
                         label="Region"
                         onChange={(e, option) => handleChangeSwotFilter(option, 'regions')}
@@ -915,6 +1050,9 @@ export default function Indicators() {
                   </Grid>
                   <Grid item xs={1.2} sx={{ zIndex: 15 }}>
                      <AppAutocomplete
+                        value={_.map(swotDataFilter.countries, (item) => {
+                           return { value: item };
+                        })}
                         options={initDataFilter.countries}
                         label="Country"
                         onChange={(e, option) => handleChangeSwotFilter(option, 'countries')}
@@ -929,6 +1067,9 @@ export default function Indicators() {
                   </Grid>
                   <Grid item xs={1.3}>
                      <AppAutocomplete
+                        value={_.map(swotDataFilter.classes, (item) => {
+                           return { value: item };
+                        })}
                         options={initDataFilter.classes}
                         label="Competitor Class"
                         onChange={(e, option) => handleChangeSwotFilter(option, 'classes')}
@@ -944,6 +1085,9 @@ export default function Indicators() {
                   </Grid>
                   <Grid item xs={1.8} sx={{ zIndex: 10 }}>
                      <AppAutocomplete
+                        value={_.map(swotDataFilter.categories, (item) => {
+                           return { value: item };
+                        })}
                         options={initDataFilter.categories}
                         label="Category"
                         onChange={(e, option) => handleChangeSwotFilter(option, 'categories')}
@@ -959,6 +1103,9 @@ export default function Indicators() {
                   </Grid>
                   <Grid item xs={1.2} sx={{ zIndex: 15 }}>
                      <AppAutocomplete
+                        value={_.map(swotDataFilter.series, (item) => {
+                           return { value: item };
+                        })}
                         options={initDataFilter.series}
                         label="Series"
                         onChange={(e, option) => handleChangeSwotFilter(option, 'series')}
@@ -979,6 +1126,15 @@ export default function Indicators() {
                         sx={{ width: '100%', height: 24 }}
                      >
                         Filter
+                     </Button>
+                  </Grid>
+                  <Grid item xs={1.5}>
+                     <Button
+                        variant="contained"
+                        onClick={handleClearAllFilterBubbleChart}
+                        sx={{ width: '100%', height: 24 }}
+                     >
+                        Clear
                      </Button>
                   </Grid>
                </Grid>

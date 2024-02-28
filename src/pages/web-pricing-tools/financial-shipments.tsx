@@ -4,6 +4,7 @@ import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
 import { shipmentStore, commonStore } from '@/store/reducers';
+import moment from 'moment-timezone';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -18,7 +19,7 @@ import {
    Typography,
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
-import { parseCookies, setCookie } from 'nookies';
+import { destroyCookie, parseCookies, setCookie } from 'nookies';
 import ClearIcon from '@mui/icons-material/Clear';
 
 import {
@@ -44,6 +45,7 @@ import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import AppBackDrop from '@/components/App/BackDrop';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -60,13 +62,19 @@ export default function Shipment() {
    const initDataFilter = useSelector(shipmentStore.selectInitDataFilter);
    const listTotalRow = useSelector(shipmentStore.selectTotalRow);
 
-   const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
+   const cacheDataFilter = useSelector(shipmentStore.selectDataFilter);
+
+   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
 
    const [listOrder, setListOrder] = useState(listShipment);
 
    const [totalRow, setTotalRow] = useState(listTotalRow);
 
+   const serverTimeZone = useSelector(shipmentStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(shipmentStore.selectLatestUpdatedTime);
+
    const [currency, setCurrency] = useState('USD');
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
    const listExchangeRate = useSelector(shipmentStore.selectExchangeRateList);
 
    //  const [uploadedFile, setUploadedFile] = useState({ name: '' });
@@ -74,6 +82,7 @@ export default function Shipment() {
    // use importing to control spiner
    const [loading, setLoading] = useState(false);
    const [loadingTable, setLoadingTable] = useState(false);
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -93,7 +102,27 @@ export default function Shipment() {
    };
 
    useEffect(() => {
-      handleFilterOrderShipment();
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
+   }, [cacheDataFilter]);
+
+   useEffect(() => {
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            console.log('hehe, ', dataFilter);
+            setCookie(null, 'shipmentFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterOrderShipment();
+         }
+      }, 500);
+
+      debouncedHandleWhenChangeDataFilter();
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    const handleFilterOrderShipment = () => {
@@ -502,6 +531,7 @@ export default function Shipment() {
       setTotalRow((prev) => {
          return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
       });
+      convertServerTimeToClientTimeZone();
    }, [listShipment, listTotalRow, currency]);
 
    // ===== show Product detail =======
@@ -554,6 +584,23 @@ export default function Shipment() {
       }
    };
 
+   // show latest updated time
+   const convertServerTimeToClientTimeZone = () => {
+      if (serverLatestUpdatedTime && serverTimeZone) {
+         const clientTimeZone = moment.tz.guess();
+         const convertedTime = moment
+            .tz(serverLatestUpdatedTime, serverTimeZone)
+            .tz(clientTimeZone);
+         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         // console.log('Converted Time:', convertedTime.format());
+      }
+   };
+
+   // handle button to clear all filters
+   const handleClearAllFilters = () => {
+      setDataFilter(defaultValueFilterOrder);
+   };
+
    return (
       <>
          <AppLayout entity="shipment">
@@ -561,15 +608,20 @@ export default function Shipment() {
                <Grid item xs={4}>
                   <Grid item xs={12}>
                      <AppTextField
+                        value={dataFilter.orderNo}
                         onChange={(e) => handleChangeDataFilter(e.target.value, 'orderNo')}
                         name="orderNo"
                         label="Order #"
                         placeholder="Search order by ID"
+                        focused
                      />
                   </Grid>
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.regions, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.regions}
                      label="Region"
                      onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
@@ -584,6 +636,9 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.plants, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.plants}
                      label="Plant"
                      sx={{ height: 25, zIndex: 10 }}
@@ -599,6 +654,9 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.metaSeries, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.metaSeries}
                      label="MetaSeries"
                      sx={{ height: 25, zIndex: 10 }}
@@ -614,6 +672,9 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.dealers, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.dealers}
                      label="Dealer"
                      sx={{ height: 25, zIndex: 10 }}
@@ -630,6 +691,9 @@ export default function Shipment() {
 
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.classes, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.classes}
                      label="Class"
                      sx={{ height: 25, zIndex: 10 }}
@@ -645,6 +709,9 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.models, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.models}
                      label="Model"
                      sx={{ height: 25, zIndex: 10 }}
@@ -660,6 +727,9 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.segments, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.segments}
                      label="Segment"
                      sx={{ height: 25, zIndex: 10 }}
@@ -675,6 +745,13 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={
+                        dataFilter.marginPercentage !== undefined
+                           ? {
+                                value: `${dataFilter.marginPercentage}`,
+                             }
+                           : { value: '' }
+                     }
                      options={initDataFilter.marginPercentageGroup}
                      label="Margin %"
                      onChange={(e, option) =>
@@ -692,6 +769,13 @@ export default function Shipment() {
                <Grid item xs={4} sx={{ paddingRight: 0.5 }}>
                   <Grid item xs={6}>
                      <AppAutocomplete
+                        value={
+                           dataFilter.aopMarginPercentageGroup !== undefined
+                              ? {
+                                   value: `${dataFilter.aopMarginPercentageGroup}`,
+                                }
+                              : { value: '' }
+                        }
                         options={initDataFilter.AOPMarginPercentageGroup}
                         label="AOP Margin %"
                         primaryKeyOption="value"
@@ -727,7 +811,7 @@ export default function Shipment() {
                      value={dataFilter?.toDate}
                   />
                </Grid>
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <Button
                      variant="contained"
                      onClick={handleFilterOrderShipment}
@@ -736,6 +820,16 @@ export default function Shipment() {
                      Filter
                   </Button>
                </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilters}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear
+                  </Button>
+               </Grid>
+
                <Grid item>
                   <RadioGroup
                      row
@@ -820,6 +914,11 @@ export default function Shipment() {
                               </Button>
                            </ListItem>
                         ))}
+                  </Grid>
+                  <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={6}>
+                     <Typography sx={{ marginRight: '20px' }}>
+                        Latest updated at {clientLatestUpdatedTime}
+                     </Typography>
                   </Grid>
                </Grid>
             )}

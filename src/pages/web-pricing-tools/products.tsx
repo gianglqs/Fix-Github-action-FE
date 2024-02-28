@@ -3,10 +3,11 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { productStore, commonStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
+import moment from 'moment-timezone';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Button, CircularProgress, ListItem } from '@mui/material';
+import { Button, CircularProgress, ListItem, Typography } from '@mui/material';
 
 import {
    AppAutocomplete,
@@ -37,6 +38,8 @@ import { selectProductRowById } from '@/utils/selectRowById';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import productApi from '@/api/product.api';
 import AppBackDrop from '@/components/App/BackDrop';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { setCookie } from 'nookies';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -50,14 +53,16 @@ export default function Product() {
    const dispatch = useDispatch();
    const listProduct = useSelector(productStore.selectProductList);
    const initDataFilter = useSelector(productStore.selectInitDataFilter);
+   const cacheDataFilter = useSelector(productStore.selectDataFilter);
 
-   const [dataFilter, setDataFilter] = useState(defaultValueFilterProduct);
+   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
 
    const [loading, setLoading] = useState(false);
 
    const [loadingTable, setLoadingTable] = useState(false);
 
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
 
    const appendFileIntoList = (file) => {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
@@ -76,7 +81,28 @@ export default function Product() {
    };
 
    useEffect(() => {
-      handleFilterProduct();
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
+   }, [cacheDataFilter]);
+
+   useEffect(() => {
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            console.log('hehe, ', dataFilter);
+
+            setCookie(null, 'productFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterProduct();
+         }
+      }, 700);
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    useEffect(() => {
@@ -170,6 +196,7 @@ export default function Product() {
                   onClick={() =>
                      handleOpenUpdateColorDialog(
                         params.row.modelCode,
+                        params.row.series,
                         params.row.image,
                         params.row.description
                      )
@@ -230,13 +257,19 @@ export default function Product() {
       preValue: {} as any,
    });
 
-   const handleOpenUpdateColorDialog = async (modelCode: string, imageUrl: string, des: string) => {
+   const handleOpenUpdateColorDialog = async (
+      modelCode: string,
+      series: string,
+      imageUrl: string,
+      des: string
+   ) => {
       try {
          // Open form
          setUpdateProductState({
             open: true,
             preValue: {
                modelCode: modelCode,
+               series: series,
                image: imageUrl,
                description: des,
             },
@@ -304,6 +337,32 @@ export default function Product() {
       if (params.field === '') event.stopPropagation();
    };
 
+   // handle button to clear all filters
+   const handleClearAllFilters = () => {
+      setDataFilter(defaultValueFilterProduct);
+   };
+
+   const serverTimeZone = useSelector(productStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(productStore.selectLatestUpdatedTime);
+
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
+
+   // show latest updated time
+   const convertServerTimeToClientTimeZone = () => {
+      if (serverLatestUpdatedTime && serverTimeZone) {
+         const clientTimeZone = moment.tz.guess();
+         const convertedTime = moment
+            .tz(serverLatestUpdatedTime, serverTimeZone)
+            .tz(clientTimeZone);
+         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         console.log('Converted Time:', convertedTime.format());
+      }
+   };
+
+   useEffect(() => {
+      convertServerTimeToClientTimeZone();
+   }, [serverLatestUpdatedTime, serverTimeZone]);
+
    return (
       <>
          <AppLayout entity="product">
@@ -315,11 +374,16 @@ export default function Product() {
                         name="orderNo"
                         label="Model Code"
                         placeholder="Search Product by Model"
+                        value={dataFilter.modelCode}
+                        focused
                      />
                   </Grid>
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.classes, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.classes}
                      label="Class"
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
@@ -334,6 +398,9 @@ export default function Product() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.plants, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.plants}
                      label="Plant"
                      sx={{ height: 25, zIndex: 10 }}
@@ -349,6 +416,9 @@ export default function Product() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.metaSeries, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.metaSeries}
                      label="MetaSeries"
                      sx={{ height: 25, zIndex: 10 }}
@@ -364,6 +434,9 @@ export default function Product() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.family, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.family}
                      label="Family"
                      sx={{ height: 25, zIndex: 10 }}
@@ -379,6 +452,9 @@ export default function Product() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.segments, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.segments}
                      label="Segment"
                      sx={{ height: 25, zIndex: 10 }}
@@ -394,6 +470,9 @@ export default function Product() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.brands, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.brands}
                      label="Brand"
                      sx={{ height: 25, zIndex: 10 }}
@@ -409,6 +488,9 @@ export default function Product() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.truckType, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.truckType}
                      label="Truck Type"
                      sx={{ height: 25, zIndex: 10 }}
@@ -423,13 +505,22 @@ export default function Product() {
                   />
                </Grid>
 
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <Button
                      variant="contained"
                      onClick={handleFilterProduct}
                      sx={{ width: '100%', height: 24 }}
                   >
                      Filter
+                  </Button>
+               </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilters}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear
                   </Button>
                </Grid>
             </Grid>
@@ -486,6 +577,11 @@ export default function Product() {
                               </Button>
                            </ListItem>
                         ))}
+                  </Grid>
+                  <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
+                     <Typography sx={{ marginRight: '20px' }}>
+                        Latest updated at {clientLatestUpdatedTime}
+                     </Typography>
                   </Grid>
                </Grid>
             </When>

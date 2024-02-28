@@ -14,6 +14,10 @@ export const initialState = {
    initDataForLineChartPlant: [] as any[],
    initDataForLineChartRegion: [] as any[],
    initDataForCompetitiveLandscape: [] as any[],
+   dataFilter: {} as any,
+   dataFilterBubbleChart: {} as any,
+   serverTimeZone: '' as any,
+   latestUpdatedTime: '' as any,
 };
 
 const indicatorSlice = createSlice({
@@ -44,6 +48,18 @@ const indicatorSlice = createSlice({
       setInitDataForCompetitiveLandscape(state, { payload }: PayloadAction<any[]>) {
          state.initDataForCompetitiveLandscape = payload;
       },
+      setDataFilter(state, { payload }: PayloadAction<any[]>) {
+         state.dataFilter = payload;
+      },
+      setDataFilterBubbleChart(state, { payload }: PayloadAction<any[]>) {
+         state.dataFilterBubbleChart = payload;
+      },
+      setServerTimeZone(state, { payload }: PayloadAction<any[]>) {
+         state.serverTimeZone = payload;
+      },
+      setLatestUpdatedTime(state, { payload }: PayloadAction<any[]>) {
+         state.latestUpdatedTime = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -61,6 +77,12 @@ export const selectDataForLineChartRegion = createSelector(
    selectState,
    (state) => state.initDataForLineChartRegion
 );
+export const selectDataFilter = createSelector(selectState, (state) => state.dataFilter);
+export const selectDataFilterBubbleChart = createSelector(
+   selectState,
+   (state) => state.dataFilterBubbleChart
+);
+
 export const selectDataForLineChartPLant = createSelector(
    selectState,
    (state) => state.initDataForLineChartPlant
@@ -78,5 +100,11 @@ export const selectDefaultValueFilterIndicator = createSelector(
 );
 
 export const { actions } = indicatorSlice;
+
+export const selectServerTimeZone = createSelector(selectState, (state) => state.serverTimeZone);
+export const selectLatestUpdatedTime = createSelector(
+   selectState,
+   (state) => state.latestUpdatedTime
+);
 
 export default indicatorSlice;

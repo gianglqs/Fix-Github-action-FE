@@ -6,7 +6,7 @@ import { outlierStore, commonStore } from '@/store/reducers';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 
 import { AppAutocomplete, AppDateField, AppLayout, DataTablePagination } from '@/components';
 
@@ -41,11 +41,14 @@ ChartJS.register(
    ChartAnnotation
 );
 import { rowColor } from '@/theme/colorRow';
+import moment from 'moment-timezone';
 
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import { REGION } from '@/utils/constant';
 import AppBackDrop from '@/components/App/BackDrop';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { setCookie } from 'nookies';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -56,13 +59,19 @@ export default function Outlier() {
    const listOutlier = useSelector(outlierStore.selectOutlierList);
    const initDataFilter = useSelector(outlierStore.selectInitDataFilter);
    const listTotalRow = useSelector(outlierStore.selectTotalRow);
-   const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
+   const cacheDataFilter = useSelector(outlierStore.selectDataFilter);
+   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
    const [loading, setLoading] = useState(false);
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
+   const serverTimeZone = useSelector(outlierStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(outlierStore.selectLatestUpdatedTime);
+
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
          produce(prev, (draft) => {
-            if (_.includes(['fromDate', 'toDate', 'MarginPercetage'], field)) {
+            if (_.includes(['fromDate', 'toDate', 'marginPercentage'], field)) {
                draft[field] = option;
             } else {
                draft[field] = option.map(({ value }) => value);
@@ -72,7 +81,27 @@ export default function Outlier() {
    };
 
    useEffect(() => {
-      handleFilterOrderBooking();
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
+   }, [cacheDataFilter]);
+
+   useEffect(() => {
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            setCookie(null, 'outlierFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterOrderBooking();
+         }
+      }, 700);
+
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    useEffect(() => {
@@ -434,12 +463,36 @@ export default function Outlier() {
       }
    };
 
+   // handle button to clear all filters
+   const handleClearAllFilters = () => {
+      setDataFilter(defaultValueFilterOrder);
+   };
+
+   // show latest updated time
+   const convertServerTimeToClientTimeZone = () => {
+      if (serverLatestUpdatedTime && serverTimeZone) {
+         const clientTimeZone = moment.tz.guess();
+         const convertedTime = moment
+            .tz(serverLatestUpdatedTime, serverTimeZone)
+            .tz(clientTimeZone);
+         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         console.log('Converted Time:', convertedTime.format());
+      }
+   };
+
+   useEffect(() => {
+      convertServerTimeToClientTimeZone();
+   }, [serverLatestUpdatedTime, serverTimeZone]);
+
    return (
       <>
          <AppLayout entity="outlier">
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.regions, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.regions}
                      label="Region"
                      onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
@@ -454,6 +507,9 @@ export default function Outlier() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.plants, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.plants}
                      label="Plant"
                      sx={{ height: 25, zIndex: 10 }}
@@ -469,6 +525,9 @@ export default function Outlier() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.metaSeries, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.metaSeries}
                      label="MetaSeries"
                      sx={{ height: 25, zIndex: 10 }}
@@ -484,6 +543,9 @@ export default function Outlier() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.dealers, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.dealers}
                      label="Dealer"
                      sx={{ height: 25, zIndex: 10 }}
@@ -500,6 +562,9 @@ export default function Outlier() {
 
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.classes, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.classes}
                      label="Class"
                      sx={{ height: 25, zIndex: 10 }}
@@ -515,6 +580,9 @@ export default function Outlier() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.models, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.models}
                      label="Model"
                      sx={{ height: 25, zIndex: 10 }}
@@ -531,12 +599,19 @@ export default function Outlier() {
 
                <Grid item xs={2}>
                   <AppAutocomplete
-                     options={initDataFilter.MarginPercetage}
+                     value={
+                        dataFilter.marginPercentage !== undefined
+                           ? {
+                                value: `${dataFilter.marginPercentage}`,
+                             }
+                           : { value: '' }
+                     }
+                     options={initDataFilter.marginPercentageGroup}
                      label="Margin %"
                      onChange={(e, option) =>
                         handleChangeDataFilter(
                            _.isNil(option) ? '' : option?.value,
-                           'MarginPercetage'
+                           'marginPercentage'
                         )
                      }
                      disableClearable={false}
@@ -565,7 +640,7 @@ export default function Outlier() {
                      value={dataFilter?.toDate}
                   />
                </Grid>
-               <Grid item xs={2}>
+               <Grid item xs={1.5}>
                   <Button
                      variant="contained"
                      onClick={handleFilterOrderBooking}
@@ -573,6 +648,20 @@ export default function Outlier() {
                   >
                      Filter
                   </Button>
+               </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilters}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear
+                  </Button>
+               </Grid>
+               <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
+                  <Typography sx={{ marginRight: '20px' }}>
+                     Latest updated at {clientLatestUpdatedTime}
+                  </Typography>
                </Grid>
             </Grid>
             <Grid

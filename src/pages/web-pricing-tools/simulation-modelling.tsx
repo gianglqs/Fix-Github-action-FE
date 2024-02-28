@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
 import { adjustmentStore, commonStore } from '@/store/reducers';
 
+import moment from 'moment-timezone';
 import { rowColor } from '@/theme/colorRow';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 
 import { AppAutocomplete, AppLayout, AppTextField, DataTablePagination } from '@/components';
 
@@ -31,6 +32,8 @@ import { makeStyles } from '@mui/styles';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import AppBackDrop from '@/components/App/BackDrop';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { setCookie } from 'nookies';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -51,8 +54,10 @@ export default function Adjustment() {
    const initDataFilter = useSelector(adjustmentStore.selectInitDataFilter);
    const listTotalRow = useSelector(adjustmentStore.selectTotalRow);
 
-   const [dataFilter, setDataFilter] = useState(defaultValueFilterOrder);
-   const [dataCalculator, setDataCalculator] = useState(defaultValueCaculatorForAjustmentCost);
+   const cacheDataFilter = useSelector(adjustmentStore.selectDataFilter);
+   const cacheDataCalculator = useSelector(adjustmentStore.selectDataAdjustment);
+   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
+   const [dataCalculator, setDataCalculator] = useState(cacheDataCalculator);
    const currentPage = useSelector(commonStore.selectTableState).pageNo;
 
    const [costAdjColor, setCostAdjColor] = useState(null);
@@ -62,16 +67,17 @@ export default function Adjustment() {
    const [totalColor, setTotalColor] = useState(null);
 
    const [loadingTable, setLoadingTable] = useState(false);
+   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
+   const [hasSetDataCalculator, setHasSetDataCalculator] = useState(false);
+   const serverTimeZone = useSelector(adjustmentStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(adjustmentStore.selectLatestUpdatedTime);
+
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
          produce(prev, (draft) => {
-            if (
-               _.includes(
-                  ['orderNo', 'fromDate', 'toDate', 'marginPercentage', 'marginPercentageAfterAdj'],
-                  field
-               )
-            ) {
+            if (_.includes(['marginPercentage', 'marginPercentageAfterAdj'], field)) {
                draft[field] = option;
             } else {
                draft[field] = option.map(({ value }) => value);
@@ -89,11 +95,51 @@ export default function Adjustment() {
    };
 
    useEffect(() => {
-      handleFilterAdjustment();
+      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            setCookie(null, 'adjustmentFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterAdjustment();
+         }
+      }, 700);
+
+      debouncedHandleWhenChangeDataFilter();
+
+      return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
    useEffect(() => {
-      handleCalculator();
+      if (!hasSetDataFilter && cacheDataFilter) {
+         setDataFilter(cacheDataFilter);
+
+         setHasSetDataFilter(true);
+      }
+   }, [cacheDataFilter]);
+
+   useEffect(() => {
+      if (!hasSetDataCalculator && cacheDataCalculator) {
+         setDataCalculator(cacheDataCalculator);
+
+         setHasSetDataCalculator(true);
+      }
+   }, [cacheDataCalculator]);
+
+   useEffect(() => {
+      const debouncedHandleWhenChangeDataCalculator = _.debounce(() => {
+         if (!isEmptyObject(dataCalculator) && dataCalculator != cacheDataCalculator) {
+            setCookie(null, 'adjustmentCalculator', JSON.stringify(dataCalculator), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleCalculator();
+         }
+      }, 700);
+
+      debouncedHandleWhenChangeDataCalculator();
+
+      return () => debouncedHandleWhenChangeDataCalculator.cancel();
    }, [dataCalculator]);
 
    useEffect(() => {
@@ -110,7 +156,6 @@ export default function Adjustment() {
    const handleFilterAdjustment = () => {
       setLoadingTable(true);
       dispatch(adjustmentStore.actions.setDefaultValueFilterAdjustment(dataFilter));
-
       handleChangePage(1);
    };
 
@@ -559,17 +604,41 @@ export default function Adjustment() {
       //
       if (n > 1) setTotalColor('#BECFF6');
       else if (n === 0) setTotalColor('');
-      console.log(costAdjOld);
    }, [costAdjColor, freightAdjColor, fxAdjColor, dnAdjColor]);
 
-   const cellStyle = resetPaddingCell();
+   // handle button to clear all filters
+   const handleClearAllFilters = () => {
+      setDataFilter(defaultValueFilterOrder);
+   };
 
+   const handleClearAllCalculators = () => {
+      setDataCalculator(defaultValueCaculatorForAjustmentCost);
+   };
+
+   // show latest updated time
+   const convertServerTimeToClientTimeZone = () => {
+      if (serverLatestUpdatedTime && serverTimeZone) {
+         const clientTimeZone = moment.tz.guess();
+         const convertedTime = moment
+            .tz(serverLatestUpdatedTime, serverTimeZone)
+            .tz(clientTimeZone);
+         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         // console.log('Converted Time:', convertedTime.format());
+      }
+   };
+
+   useEffect(() => {
+      convertServerTimeToClientTimeZone();
+   }, [serverLatestUpdatedTime, serverTimeZone]);
    return (
       <>
          <AppLayout entity="adjustment">
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.regions, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.regions}
                      label="Region"
                      onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
@@ -584,6 +653,9 @@ export default function Adjustment() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.plants, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.plants}
                      label="Plant"
                      sx={{ height: 25, zIndex: 10 }}
@@ -599,6 +671,9 @@ export default function Adjustment() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.metaSeries, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.metaSeries}
                      label="MetaSeries"
                      sx={{ height: 25, zIndex: 10 }}
@@ -614,6 +689,9 @@ export default function Adjustment() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.dealers, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.dealers}
                      label="Dealer"
                      sx={{ height: 25, zIndex: 10 }}
@@ -629,6 +707,9 @@ export default function Adjustment() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.classes, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.classes}
                      label="Class"
                      sx={{ height: 25, zIndex: 10 }}
@@ -644,6 +725,9 @@ export default function Adjustment() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.models, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.models}
                      label="Model"
                      sx={{ height: 25, zIndex: 10 }}
@@ -659,6 +743,9 @@ export default function Adjustment() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
+                     value={_.map(dataFilter.segments, (item) => {
+                        return { value: item };
+                     })}
                      options={initDataFilter.segments}
                      label="Segment"
                      sx={{ height: 25, zIndex: 10 }}
@@ -674,6 +761,13 @@ export default function Adjustment() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={
+                        dataFilter.marginPercentage !== undefined
+                           ? {
+                                value: `${dataFilter.marginPercentage}`,
+                             }
+                           : { value: '' }
+                     }
                      options={initDataFilter.marginPercentageGroup}
                      label="Margin %"
                      onChange={(e, option) =>
@@ -690,6 +784,13 @@ export default function Adjustment() {
                </Grid>
                <Grid item xs={2}>
                   <AppAutocomplete
+                     value={
+                        dataFilter.marginPercentageAfterAdj !== undefined
+                           ? {
+                                value: `${dataFilter.marginPercentageAfterAdj}`,
+                             }
+                           : { value: '' }
+                     }
                      options={initDataFilter.marginPercentageGroup}
                      label="New Margin %"
                      onChange={(e, option) =>
@@ -704,20 +805,30 @@ export default function Adjustment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={6}>
-                  <Grid item xs={4}>
-                     <Button
-                        variant="contained"
-                        onClick={handleFilterAdjustment}
-                        sx={{ width: '100%', height: 24 }}
-                     >
-                        Filter
-                     </Button>
-                  </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleFilterAdjustment}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Filter
+                  </Button>
                </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllFilters}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear Filters
+                  </Button>
+               </Grid>
+            </Grid>
+            <Grid container spacing={1} marginTop={0.5}>
                <Grid item xs={2}>
                   <Grid item xs={12}>
                      <AppTextField
+                        value={dataCalculator.costAdjPercentage}
                         sx={{ backgroundColor: '#FFCC99' }}
                         onChange={(e) =>
                            handleChangeDataCalculator(e.target.value, 'costAdjPercentage')
@@ -725,34 +836,40 @@ export default function Adjustment() {
                         name="costAdjPercentage"
                         label="Cost Adj %"
                         placeholder="Cost Adj %"
+                        focused
                      />
                   </Grid>
                </Grid>
                <Grid item xs={2}>
                   <Grid item xs={12}>
                      <AppTextField
+                        value={dataCalculator.freightAdj}
                         sx={{ backgroundColor: '#f7c0a9' }}
                         onChange={(e) => handleChangeDataCalculator(e.target.value, 'freightAdj')}
                         name="freightAdj"
                         label="Freight Adj ('000 USD)"
                         placeholder="Freight Adj ('000 USD)"
+                        focused
                      />
                   </Grid>
                </Grid>{' '}
                <Grid item xs={2}>
                   <Grid item xs={12}>
                      <AppTextField
+                        value={dataCalculator.fxAdj}
                         sx={{ backgroundColor: '#e9d4c4' }}
                         onChange={(e) => handleChangeDataCalculator(e.target.value, 'fxAdj')}
                         name="fxAdj"
                         label="FX Adj ('000 USD)"
                         placeholder="FX Adj ('000 USD)"
+                        focused
                      />
                   </Grid>
                </Grid>{' '}
                <Grid item xs={2}>
                   <Grid item xs={12}>
                      <AppTextField
+                        value={dataCalculator.dnAdjPercentage}
                         sx={{ backgroundColor: '#f9d06d' }}
                         onChange={(e) =>
                            handleChangeDataCalculator(e.target.value, 'dnAdjPercentage')
@@ -760,6 +877,7 @@ export default function Adjustment() {
                         name="dnAdjPercentage"
                         label="DN Adj %"
                         placeholder="DN Adj %"
+                        focused
                      />
                   </Grid>
                </Grid>
@@ -771,6 +889,20 @@ export default function Adjustment() {
                   >
                      Calculate
                   </Button>
+               </Grid>
+               <Grid item xs={1.5}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearAllCalculators}
+                     sx={{ width: '100%', height: 24 }}
+                  >
+                     Clear Calculators
+                  </Button>
+               </Grid>
+               <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
+                  <Typography sx={{ marginRight: '20px' }}>
+                     Latest updated at {clientLatestUpdatedTime}
+                  </Typography>
                </Grid>
             </Grid>
 
