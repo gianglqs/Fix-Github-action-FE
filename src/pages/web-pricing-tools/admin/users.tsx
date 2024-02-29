@@ -32,7 +32,7 @@ import { DialogUpdateUser } from '@/components/Dialog/Module/Dashboard/UpdateDia
 import Image from 'next/image';
 import { bindPopover, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
 import { destroyCookie } from 'nookies';
-import { parseCookies } from 'nookies';
+import nookies, { parseCookies } from 'nookies';
 import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/ChangePasswordDialog';
 import { NavBar } from '@/components/App/NavBar';
 import { checkTokenBeforeLoadPageAdmin } from '@/utils/checkTokenBeforeLoadPage';
@@ -52,6 +52,14 @@ import { formatDate } from '@/utils/formatCell';
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageAdmin(context);
 }
+
+const removeAllCookies = () => {
+   const cookies = nookies.get();
+   console.log('cookies', cookies);
+   Object.keys(cookies).forEach((cookieName) => {
+      nookies.destroy(null, cookieName, { path: '/' });
+   });
+};
 
 const AppBar = styled(MuiAppBar, {
    shouldForwardProp: (prop) => prop !== 'open',
@@ -245,8 +253,7 @@ export default function Dashboard() {
       try {
          popupState.close();
 
-         destroyCookie(null, 'token', { path: '/' });
-         destroyCookie(null, 'refresh_token', { path: '/' });
+         removeAllCookies();
          router.push('/login');
       } catch (err) {
          console.log(err);

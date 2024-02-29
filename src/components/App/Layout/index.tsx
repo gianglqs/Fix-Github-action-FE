@@ -14,10 +14,19 @@ import { AppBar, Grid, Popover, Typography } from '@mui/material';
 import { usePopupState, bindPopover, bindTrigger } from 'material-ui-popup-state/hooks';
 import { AppLayoutProps } from './type';
 import AppFooter from '../Footer';
-import { destroyCookie, parseCookies } from 'nookies';
+import nookies, { destroyCookie, parseCookies } from 'nookies';
 import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/ChangePasswordDialog';
 import Image from 'next/image';
+import { NextPageContext } from 'next';
 const smallLogo = require('@/public/smallLogo.svg');
+
+const removeAllCookies = () => {
+   const cookies = nookies.get();
+   console.log('cookies', cookies);
+   Object.keys(cookies).forEach((cookieName) => {
+      nookies.destroy(null, cookieName, { path: '/' });
+   });
+};
 
 const AppLayout: React.FC<AppLayoutProps> = (props) => {
    const { children, entity, heightBody } = props;
@@ -89,8 +98,9 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
 
    const handleLogOut = () => {
       try {
-         destroyCookie(null, 'token', { path: '/' });
-         destroyCookie(null, 'refresh_token', { path: '/' });
+         // destroyCookie(null, 'token', { path: '/' });
+         // destroyCookie(null, 'refresh_token', { path: '/' });
+         removeAllCookies();
          router.push('/login');
       } catch (err) {
          console.log(err);
