@@ -828,7 +828,7 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid item xs={1.5}>
+               <Grid item xs={2}>
                   <AppAutocomplete
                      value={
                         dataFilter.chineseBrand !== undefined
@@ -851,7 +851,7 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid item xs={1.5}>
+               <Grid item xs={2}>
                   <AppAutocomplete
                      value={
                         dataFilter.marginPercentage !== undefined
@@ -874,7 +874,7 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleFilterIndicator}
@@ -883,7 +883,7 @@ export default function Indicators() {
                      Filter
                   </Button>
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleClearAllFilterTable}
