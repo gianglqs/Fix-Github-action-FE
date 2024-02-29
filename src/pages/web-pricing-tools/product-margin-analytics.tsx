@@ -376,8 +376,7 @@ export default function Outlier() {
                   borderWidth: 2,
                   label: {
                      display: true,
-                     content: (context) =>
-                        '25%: ' + (context.chart.scales.x.max * 0.25).toLocaleString() + '%',
+                     content: '25%',
                      backgroundColor: 'transparent',
                      position: 'end',
                      color: ['black'],
@@ -397,8 +396,7 @@ export default function Outlier() {
                   borderWidth: 2,
                   label: {
                      display: true,
-                     content: (context) =>
-                        '75%: ' + (context.chart.scales.x.max * 0.75).toLocaleString() + '%',
+                     content: '75%',
                      backgroundColor: 'transparent',
                      position: 'end',
                      color: ['black'],

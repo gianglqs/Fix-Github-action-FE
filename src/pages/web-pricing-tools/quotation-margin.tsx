@@ -55,11 +55,13 @@ export default function MarginAnalysis() {
    const [typeValue, setTypeValue] = useState({ value: 'None', error: false });
    const handleTypeValue = (option) => {
       setTypeValue({ value: option, error: false });
+      if (option != 'None') setOrderNumberValue({ value: 'None' });
    };
 
    const [orderNumberValue, setOrderNumberValue] = useState({ value: 'None' });
    const handleOrderNumber = (option) => {
       setOrderNumberValue({ value: option });
+      if (option != 'None') setTypeValue({ value: 'None', error: false });
    };
 
    const [series, setSeries] = useState({ value: '', error: false });
@@ -335,18 +337,6 @@ export default function MarginAnalysis() {
                      sx={{ width: '100%', height: 24 }}
                   />
                </Grid>
-               <Grid item sx={{ width: '10%', minWidth: 50 }} xs={0.5}>
-                  <AppAutocomplete
-                     options={marginFilter.type}
-                     label="#"
-                     value={typeValue}
-                     onChange={(e, option) => handleTypeValue(option.value)}
-                     disableListWrap
-                     primaryKeyOption="value"
-                     renderOption={(prop, option) => `${option.value}`}
-                     getOptionLabel={(option) => `${option.value}`}
-                  />
-               </Grid>
                <Grid item sx={{ width: '10%', minWidth: 140 }} xs={1}>
                   <AppAutocomplete
                      options={marginFilter.modelCode}
@@ -380,6 +370,19 @@ export default function MarginAnalysis() {
                      label="Order Number"
                      value={orderNumberValue}
                      onChange={(e, option) => handleOrderNumber(option.value)}
+                     disableListWrap
+                     primaryKeyOption="value"
+                     renderOption={(prop, option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value}`}
+                  />
+               </Grid>
+               <Grid item>OR</Grid>
+               <Grid item sx={{ width: '10%', minWidth: 50 }} xs={0.5}>
+                  <AppAutocomplete
+                     options={marginFilter.type}
+                     label="#"
+                     value={typeValue}
+                     onChange={(e, option) => handleTypeValue(option.value)}
                      disableListWrap
                      primaryKeyOption="value"
                      renderOption={(prop, option) => `${option.value}`}
@@ -427,7 +430,7 @@ export default function MarginAnalysis() {
                   </Button>
                </Grid>
 
-               <Grid item sx={{}}>
+               <Grid item>
                   <Typography fontSize={16}>File uploaded: {uploadedFile.name}</Typography>
                </Grid>
                <Grid item sx={{ width: '10%' }} />
@@ -493,6 +496,301 @@ export default function MarginAnalysis() {
                      </AccordionSummary>
                      <AccordionDetails>
                         <Grid container spacing={1}>
+                           <Grid item xs={4}>
+                              <Paper
+                                 elevation={3}
+                                 sx={{ padding: 2, height: 'fit-content', minWidth: 300 }}
+                              >
+                                 <div className="space-between-element">
+                                    <Typography
+                                       sx={{ fontWeight: 'bold', marginLeft: 1 }}
+                                       variant="body1"
+                                       component="span"
+                                    >
+                                       {`Total List Price (${valueCurrency})`}
+                                    </Typography>
+                                    <Typography
+                                       sx={{ fontWeight: 'bold', marginRight: 1 }}
+                                       variant="body1"
+                                       component="span"
+                                    >
+                                       {marginAnalysisSummary?.MarginAnalystSummaryAnnually.totalListPrice.toLocaleString()}
+                                    </Typography>
+                                 </div>
+                                 <div className="space-between-element">
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginLeft: 1 }}
+                                    >
+                                       Blended Discount %
+                                    </Typography>
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginRight: 1 }}
+                                    >
+                                       {_.isNil(
+                                          marginAnalysisSummary?.MarginAnalystSummaryAnnually
+                                             .blendedDiscountPercentage
+                                       )
+                                          ? ''
+                                          : `${(
+                                               marginAnalysisSummary?.MarginAnalystSummaryAnnually
+                                                  .blendedDiscountPercentage * 100
+                                            ).toFixed(2)}%`}
+                                    </Typography>
+                                 </div>
+                                 <div className="space-between-element">
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginLeft: 1 }}
+                                    >
+                                       {`DN (${valueCurrency})`}
+                                    </Typography>
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginRight: 1 }}
+                                    >
+                                       {marginAnalysisSummary?.MarginAnalystSummaryAnnually.dealerNet.toLocaleString()}
+                                    </Typography>
+                                 </div>
+                                 <div className="space-between-element">
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginLeft: 1 }}
+                                    >
+                                       Margin $
+                                    </Typography>
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginRight: 1 }}
+                                    >
+                                       {marginAnalysisSummary?.MarginAnalystSummaryAnnually.margin.toLocaleString()}
+                                    </Typography>
+                                 </div>
+                                 <div
+                                    className="space-between-element"
+                                    style={{
+                                       backgroundColor: '#e7a800',
+                                       border: '1px solid #e7a800',
+                                       borderRadius: 10,
+                                    }}
+                                 >
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ fontWeight: 'bold', marginLeft: 1 }}
+                                    >
+                                       Margin % @ AOP rate
+                                    </Typography>
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ fontWeight: 'bold', marginRight: 1 }}
+                                    >
+                                       {_.isNil(
+                                          marginAnalysisSummary?.MarginAnalystSummaryAnnually
+                                             .marginPercentAopRate
+                                       )
+                                          ? ''
+                                          : `${(
+                                               marginAnalysisSummary?.MarginAnalystSummaryAnnually
+                                                  .marginPercentAopRate * 100
+                                            ).toFixed(2)}%`}
+                                    </Typography>
+                                 </div>
+                              </Paper>
+                           </Grid>
+                           <Grid item xs={4}>
+                              <Paper
+                                 elevation={3}
+                                 sx={{ padding: 2, height: 'fit-content', minWidth: 300 }}
+                              >
+                                 <div className="space-between-element">
+                                    <Typography
+                                       sx={{ fontWeight: 'bold', marginLeft: 1 }}
+                                       variant="body1"
+                                       component="span"
+                                    >
+                                       {`Total List Price (${valueCurrency})`}
+                                    </Typography>
+                                    <Typography
+                                       sx={{ fontWeight: 'bold', marginRight: 1 }}
+                                       variant="body1"
+                                       component="span"
+                                    >
+                                       {marginAnalysisSummary?.MarginAnalystSummaryMonthly.totalListPrice.toLocaleString()}
+                                    </Typography>
+                                 </div>
+                                 <div className="space-between-element">
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginLeft: 1 }}
+                                    >
+                                       Blended Discount %
+                                    </Typography>
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginRight: 1 }}
+                                    >
+                                       {_.isNil(
+                                          marginAnalysisSummary?.MarginAnalystSummaryMonthly
+                                             .blendedDiscountPercentage
+                                       )
+                                          ? ''
+                                          : `${(
+                                               marginAnalysisSummary?.MarginAnalystSummaryMonthly
+                                                  .blendedDiscountPercentage * 100
+                                            ).toFixed(2)}%`}
+                                    </Typography>
+                                 </div>
+                                 <div className="space-between-element">
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginLeft: 1 }}
+                                    >
+                                       {`DN (${valueCurrency})`}
+                                    </Typography>
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginRight: 1 }}
+                                    >
+                                       {marginAnalysisSummary?.MarginAnalystSummaryMonthly.dealerNet.toLocaleString()}
+                                    </Typography>
+                                 </div>
+                                 <div className="space-between-element">
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginLeft: 1 }}
+                                    >
+                                       Margin $
+                                    </Typography>
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginRight: 1 }}
+                                    >
+                                       {marginAnalysisSummary?.MarginAnalystSummaryMonthly.margin.toLocaleString()}
+                                    </Typography>
+                                 </div>
+                                 <div
+                                    className="space-between-element"
+                                    style={{
+                                       backgroundColor: '#e7a800',
+                                       border: '1px solid #e7a800',
+                                       borderRadius: 10,
+                                    }}
+                                 >
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ fontWeight: 'bold', marginLeft: 1 }}
+                                    >
+                                       Margin % @ AOP rate
+                                    </Typography>
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ fontWeight: 'bold', marginRight: 1 }}
+                                    >
+                                       {_.isNil(
+                                          marginAnalysisSummary?.MarginAnalystSummaryMonthly
+                                             .marginPercentMonthlyRate
+                                       )
+                                          ? ''
+                                          : `${(
+                                               marginAnalysisSummary?.MarginAnalystSummaryMonthly
+                                                  .marginPercentMonthlyRate * 100
+                                            ).toFixed(2)}%`}
+                                    </Typography>
+                                 </div>
+                              </Paper>
+                           </Grid>
+                           <Grid item xs={4}>
+                              <Paper
+                                 elevation={3}
+                                 sx={{ padding: 2, height: 'fit-content', minWidth: 300 }}
+                              >
+                                 <div className="space-between-element">
+                                    <Typography
+                                       sx={{ fontWeight: 'bold', marginLeft: 1 }}
+                                       variant="body1"
+                                       component="span"
+                                    >
+                                       AOP {currentYear}
+                                    </Typography>
+                                 </div>
+                                 <div className="space-between-element">
+                                    <br />
+                                 </div>
+                                 <div className="space-between-element">
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginLeft: 1 }}
+                                    >
+                                       Region
+                                    </Typography>
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginRight: 1 }}
+                                    >
+                                       {regionValue.value}
+                                    </Typography>
+                                 </div>
+                                 <div className="space-between-element">
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginLeft: 1 }}
+                                    >
+                                       Series
+                                    </Typography>
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ marginRight: 1 }}
+                                    >
+                                       {series.value}
+                                    </Typography>
+                                 </div>
+                                 <div
+                                    className="space-between-element"
+                                    style={{
+                                       backgroundColor: '#e7a800',
+                                       border: '1px solid #e7a800',
+                                       borderRadius: 10,
+                                    }}
+                                 >
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ fontWeight: 'bold', marginLeft: 1 }}
+                                    >
+                                       Target Margin %
+                                    </Typography>
+                                    <Typography
+                                       variant="body1"
+                                       component="span"
+                                       sx={{ fontWeight: 'bold', marginRight: 1 }}
+                                    >
+                                       {targetMargin * 100}%
+                                    </Typography>
+                                 </div>
+                              </Paper>
+                           </Grid>
+
                            <Grid item xs={4}>
                               <Paper
                                  elevation={2}
@@ -833,187 +1131,7 @@ export default function MarginAnalysis() {
                                  </div>
                               </Paper>
                            </Grid>
-                           <Grid item xs={4}>
-                              <Paper
-                                 elevation={3}
-                                 sx={{ padding: 2, height: 'fit-content', minWidth: 300 }}
-                              >
-                                 <div className="space-between-element">
-                                    <Typography
-                                       sx={{ fontWeight: 'bold' }}
-                                       variant="body1"
-                                       component="span"
-                                    >
-                                       AOP {currentYear}
-                                    </Typography>
-                                    <Typography
-                                       sx={{ fontWeight: 'bold' }}
-                                       variant="body1"
-                                       component="span"
-                                    >
-                                       {regionValue.value}
-                                    </Typography>
-                                 </div>
-                                 <div className="space-between-element">
-                                    <Typography
-                                       sx={{ fontWeight: 'bold' }}
-                                       variant="body1"
-                                       component="span"
-                                    >
-                                       Target Margin %
-                                    </Typography>
-                                    <Typography
-                                       sx={{ fontWeight: 'bold' }}
-                                       variant="body1"
-                                       component="span"
-                                    >
-                                       {targetMargin * 100}%
-                                    </Typography>
-                                 </div>
-                              </Paper>
-                           </Grid>
-                           <Grid item xs={4}>
-                              <Paper
-                                 elevation={3}
-                                 sx={{ padding: 2, height: 'fit-content', minWidth: 300 }}
-                              >
-                                 <div className="space-between-element">
-                                    <Typography
-                                       sx={{ fontWeight: 'bold' }}
-                                       variant="body1"
-                                       component="span"
-                                    >
-                                       {`Total List Price (${valueCurrency})`}
-                                    </Typography>
-                                    <Typography
-                                       sx={{ fontWeight: 'bold' }}
-                                       variant="body1"
-                                       component="span"
-                                    >
-                                       {marginAnalysisSummary?.MarginAnalystSummaryAnnually.totalListPrice.toLocaleString()}
-                                    </Typography>
-                                 </div>
-                                 <div className="space-between-element">
-                                    <Typography variant="body1" component="span">
-                                       Blended Discount %
-                                    </Typography>
-                                    <Typography variant="body1" component="span">
-                                       {_.isNil(
-                                          marginAnalysisSummary?.MarginAnalystSummaryAnnually
-                                             .blendedDiscountPercentage
-                                       )
-                                          ? ''
-                                          : `${(
-                                               marginAnalysisSummary?.MarginAnalystSummaryAnnually
-                                                  .blendedDiscountPercentage * 100
-                                            ).toFixed(2)}%`}
-                                    </Typography>
-                                 </div>
-                                 <div className="space-between-element">
-                                    <Typography variant="body1" component="span">
-                                       {`DN (${valueCurrency})`}
-                                    </Typography>
-                                    <Typography variant="body1" component="span">
-                                       {marginAnalysisSummary?.MarginAnalystSummaryAnnually.dealerNet.toLocaleString()}
-                                    </Typography>
-                                 </div>
-                                 <div className="space-between-element">
-                                    <Typography variant="body1" component="span">
-                                       Margin $
-                                    </Typography>
-                                    <Typography variant="body1" component="span">
-                                       {marginAnalysisSummary?.MarginAnalystSummaryAnnually.margin.toLocaleString()}
-                                    </Typography>
-                                 </div>
-                                 <div className="space-between-element">
-                                    <Typography variant="body1" component="span">
-                                       Margin % @ AOP rate
-                                    </Typography>
-                                    <Typography variant="body1" component="span">
-                                       {_.isNil(
-                                          marginAnalysisSummary?.MarginAnalystSummaryAnnually
-                                             .marginPercentAopRate
-                                       )
-                                          ? ''
-                                          : `${(
-                                               marginAnalysisSummary?.MarginAnalystSummaryAnnually
-                                                  .marginPercentAopRate * 100
-                                            ).toFixed(2)}%`}
-                                    </Typography>
-                                 </div>
-                              </Paper>
-                           </Grid>
-                           <Grid item xs={4}>
-                              <Paper
-                                 elevation={3}
-                                 sx={{ padding: 2, height: 'fit-content', minWidth: 300 }}
-                              >
-                                 <div className="space-between-element">
-                                    <Typography
-                                       sx={{ fontWeight: 'bold' }}
-                                       variant="body1"
-                                       component="span"
-                                    >
-                                       {`Total List Price (${valueCurrency})`}
-                                    </Typography>
-                                    <Typography
-                                       sx={{ fontWeight: 'bold' }}
-                                       variant="body1"
-                                       component="span"
-                                    >
-                                       {marginAnalysisSummary?.MarginAnalystSummaryMonthly.totalListPrice.toLocaleString()}
-                                    </Typography>
-                                 </div>
-                                 <div className="space-between-element">
-                                    <Typography variant="body1" component="span">
-                                       Blended Discount %
-                                    </Typography>
-                                    <Typography variant="body1" component="span">
-                                       {_.isNil(
-                                          marginAnalysisSummary?.MarginAnalystSummaryMonthly
-                                             .blendedDiscountPercentage
-                                       )
-                                          ? ''
-                                          : `${(
-                                               marginAnalysisSummary?.MarginAnalystSummaryMonthly
-                                                  .blendedDiscountPercentage * 100
-                                            ).toFixed(2)}%`}
-                                    </Typography>
-                                 </div>
-                                 <div className="space-between-element">
-                                    <Typography variant="body1" component="span">
-                                       {`DN (${valueCurrency})`}
-                                    </Typography>
-                                    <Typography variant="body1" component="span">
-                                       {marginAnalysisSummary?.MarginAnalystSummaryMonthly.dealerNet.toLocaleString()}
-                                    </Typography>
-                                 </div>
-                                 <div className="space-between-element">
-                                    <Typography variant="body1" component="span">
-                                       Margin $
-                                    </Typography>
-                                    <Typography variant="body1" component="span">
-                                       {marginAnalysisSummary?.MarginAnalystSummaryMonthly.margin.toLocaleString()}
-                                    </Typography>
-                                 </div>
-                                 <div className="space-between-element">
-                                    <Typography variant="body1" component="span">
-                                       Margin % @ AOP rate
-                                    </Typography>
-                                    <Typography variant="body1" component="span">
-                                       {_.isNil(
-                                          marginAnalysisSummary?.MarginAnalystSummaryMonthly
-                                             .marginPercentMonthlyRate
-                                       )
-                                          ? ''
-                                          : `${(
-                                               marginAnalysisSummary?.MarginAnalystSummaryMonthly
-                                                  .marginPercentMonthlyRate * 100
-                                            ).toFixed(2)}%`}
-                                    </Typography>
-                                 </div>
-                              </Paper>
-                           </Grid>
+
                            <Grid item xs={4}></Grid>
                            <Grid item xs={4}>
                               <Paper
