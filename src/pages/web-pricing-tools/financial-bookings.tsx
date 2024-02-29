@@ -765,7 +765,7 @@ export default function Booking() {
                      value={dataFilter?.toDate}
                   />
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleFilterOrderBooking}
@@ -774,7 +774,7 @@ export default function Booking() {
                      Filter
                   </Button>
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleClearAllFilters}

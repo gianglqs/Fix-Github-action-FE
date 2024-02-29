@@ -805,7 +805,7 @@ export default function Adjustment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleFilterAdjustment}
@@ -814,11 +814,11 @@ export default function Adjustment() {
                      Filter
                   </Button>
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleClearAllFilters}
-                     sx={{ width: '100%', height: 24 }}
+                     sx={{ width: '100%', height: 24, minWidth: 100 }}
                   >
                      Clear Filters
                   </Button>
@@ -890,11 +890,11 @@ export default function Adjustment() {
                      Calculate
                   </Button>
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleClearAllCalculators}
-                     sx={{ width: '100%', height: 24 }}
+                     sx={{ width: '100%', height: 24, minWidth: 130 }}
                   >
                      Clear Calculators
                   </Button>
