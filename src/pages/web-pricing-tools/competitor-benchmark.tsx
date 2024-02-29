@@ -92,8 +92,8 @@ export default function Indicators() {
    const serverLatestUpdatedTime = useSelector(indicatorStore.selectLatestUpdatedTime);
 
    // Select data line Chart Region in store
-   const dataForLineChartRegion = useSelector(indicatorStore.selectDataForLineChartRegion);
-   const dataForLineChartPlant = useSelector(indicatorStore.selectDataForLineChartPLant);
+   // const dataForLineChartRegion = useSelector(indicatorStore.selectDataForLineChartRegion);
+   // const dataForLineChartPlant = useSelector(indicatorStore.selectDataForLineChartPLant);
 
    const [competitiveLandscapeData, setCompetitiveLandscapeData] = useState({
       datasets: [],
@@ -627,41 +627,41 @@ export default function Indicators() {
 
    const arrayColor = ['#17a9a3', '#3f0e03', '#147384', '#0048bd', '#005821', '#ec9455', '#ffafa6'];
 
-   const modifyDataLineChartRegion = {
-      labels,
-      datasets: dataForLineChartRegion.map((e, index) => ({
-         label: e.country.region.regionName,
-         data: [e.actual, e.aopf, e.lrff],
-         borderColor: arrayColor[index],
-         backgroundColor: arrayColor[index],
-      })),
-   };
+   // const modifyDataLineChartRegion = {
+   //    labels,
+   //    datasets: dataForLineChartRegion.map((e, index) => ({
+   //       label: e.country.region.regionName,
+   //       data: [e.actual, e.aopf, e.lrff],
+   //       borderColor: arrayColor[index],
+   //       backgroundColor: arrayColor[index],
+   //    })),
+   // };
 
-   const modifyDataLineChartPlant = {
-      labels,
-      datasets: dataForLineChartPlant.map((e, index) => ({
-         label: e.plant,
-         data: [e.actual, e.aopf, e.lrff],
-         borderColor: arrayColor[index],
-         backgroundColor: arrayColor[index],
-      })),
-   };
+   // const modifyDataLineChartPlant = {
+   //    labels,
+   //    datasets: dataForLineChartPlant.map((e, index) => ({
+   //       label: e.plant,
+   //       data: [e.actual, e.aopf, e.lrff],
+   //       borderColor: arrayColor[index],
+   //       backgroundColor: arrayColor[index],
+   //    })),
+   // };
 
-   const chartScales = {
-      y: {
-         beginAtZero: true,
-         title: {
-            text: 'Quantity',
-            display: true,
-         },
-      },
-      x: {
-         title: {
-            text: 'Year',
-            display: true,
-         },
-      },
-   };
+   // const chartScales = {
+   //    y: {
+   //       beginAtZero: true,
+   //       title: {
+   //          text: 'Quantity',
+   //          display: true,
+   //       },
+   //    },
+   //    x: {
+   //       title: {
+   //          text: 'Year',
+   //          display: true,
+   //       },
+   //    },
+   // };
 
    // handle button to clear all filters
    const handleClearAllFilterTable = () => {
@@ -967,7 +967,7 @@ export default function Indicators() {
                <AppBackDrop open={loadingTable} hightHeaderTable={'102px'} />
             </Paper>
 
-            <Grid
+            {/* <Grid
                container
                spacing={1}
                justifyContent="center"
@@ -1017,7 +1017,7 @@ export default function Indicators() {
                      left={'30px'}
                   />
                </Grid>
-            </Grid>
+            </Grid> */}
             <Grid
                container
                spacing={1}
