@@ -15,7 +15,13 @@ export const initialState = {
    initDataForLineChartRegion: [] as any[],
    initDataForCompetitiveLandscape: [] as any[],
    dataFilter: {} as any,
-   dataFilterBubbleChart: {} as any,
+   dataFilterBubbleChart: {
+      regions: '',
+      countries: [],
+      classes: [],
+      categories: [],
+      series: [],
+   } as any,
    serverTimeZone: '' as any,
    latestUpdatedTime: '' as any,
 };
