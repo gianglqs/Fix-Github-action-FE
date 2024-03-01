@@ -814,7 +814,7 @@ export default function Shipment() {
                      value={dataFilter?.toDate}
                   />
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleFilterOrderShipment}
@@ -823,7 +823,7 @@ export default function Shipment() {
                      Filter
                   </Button>
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleClearAllFilters}

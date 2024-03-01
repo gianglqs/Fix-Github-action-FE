@@ -505,7 +505,7 @@ export default function Product() {
                   />
                </Grid>
 
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleFilterProduct}
@@ -514,7 +514,7 @@ export default function Product() {
                      Filter
                   </Button>
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleClearAllFilters}
