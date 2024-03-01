@@ -226,6 +226,7 @@ export default function Shipment() {
          field: 'dealerNet',
          flex: 0.8,
          headerName: `DN ('000 ${currency})`,
+         cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNet)}</span>;
@@ -243,7 +244,8 @@ export default function Shipment() {
       {
          field: 'totalCost',
          flex: 0.8,
-         headerName: `Standard Cost ('000 ${currency})`,
+         headerName: `Total Actual Cost ('000 ${currency})`,
+         cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.totalCost)}</span>;
@@ -272,6 +274,7 @@ export default function Shipment() {
          field: 'marginPercentageAfterSurcharge',
          flex: 0.6,
          headerName: 'Margin % After Surcharge',
+         cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
             return (
@@ -923,7 +926,16 @@ export default function Shipment() {
                </Grid>
             )}
 
-            <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
+            <Paper
+               elevation={1}
+               sx={{
+                  marginTop: 2,
+                  position: 'relative',
+                  '& .highlight-cell': {
+                     backgroundColor: '#e7a800',
+                  },
+               }}
+            >
                <Grid container sx={{ height: `calc(100vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter
