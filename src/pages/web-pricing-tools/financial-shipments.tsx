@@ -250,15 +250,6 @@ export default function Shipment() {
          },
       },
       {
-         field: 'netRevenue',
-         flex: 0.8,
-         headerName: `Net Revenue ('000 ${currency})`,
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.netRevenue)}</span>;
-         },
-      },
-      {
          field: 'marginAfterSurcharge',
          flex: 0.8,
          headerName: `Margin $ After Surcharge ('000 ${currency})`,
@@ -405,15 +396,6 @@ export default function Shipment() {
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.totalCost)}</span>;
-         },
-      },
-      {
-         field: 'netRevenue',
-         flex: 0.8,
-         headerName: 'Net Revenue',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.netRevenue)}</span>;
          },
       },
       {
