@@ -638,7 +638,7 @@ export default function Outlier() {
                      value={dataFilter?.toDate}
                   />
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleFilterOrderBooking}
@@ -647,7 +647,7 @@ export default function Outlier() {
                      Filter
                   </Button>
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleClearAllFilters}

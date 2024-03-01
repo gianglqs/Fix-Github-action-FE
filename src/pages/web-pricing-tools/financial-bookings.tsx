@@ -232,6 +232,7 @@ export default function Booking() {
          field: 'dealerNet',
          flex: 0.8,
          headerName: `DN ('000 ${currency})`,
+         cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNet)}</span>;
@@ -241,6 +242,7 @@ export default function Booking() {
          field: 'dealerNetAfterSurcharge',
          flex: 0.8,
          headerName: `DN After Surcharge ('000 ${currency})`,
+         cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
@@ -250,6 +252,7 @@ export default function Booking() {
          field: 'totalCost',
          flex: 0.8,
          headerName: `Total Cost ('000 ${currency})`,
+         cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.totalCost)}</span>;
@@ -269,6 +272,7 @@ export default function Booking() {
          flex: 0.6,
          headerName: 'Margin % After Surcharge',
          ...formatNumbericColumn,
+         cellClassName: 'highlight-cell',
          renderCell(params) {
             return (
                <span>
@@ -765,7 +769,7 @@ export default function Booking() {
                      value={dataFilter?.toDate}
                   />
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleFilterOrderBooking}
@@ -774,7 +778,7 @@ export default function Booking() {
                      Filter
                   </Button>
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleClearAllFilters}
@@ -879,7 +883,16 @@ export default function Booking() {
                </Grid>
             </When>
 
-            <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
+            <Paper
+               elevation={1}
+               sx={{
+                  marginTop: 2,
+                  position: 'relative',
+                  '& .highlight-cell': {
+                     backgroundColor: '#e7a800',
+                  },
+               }}
+            >
                <Grid container sx={{ height: `calc(100vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter

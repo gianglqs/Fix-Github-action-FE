@@ -240,10 +240,11 @@ export default function MarginAnalysis() {
       },
       {
          field: 'listPrice',
-         flex: 0.8,
+         flex: 0.4,
          headerName: 'List Price',
          headerAlign: 'right',
          align: 'right',
+         cellClassName: 'highlight-cell',
       },
       {
          field: 'manufacturingCost',
@@ -254,10 +255,11 @@ export default function MarginAnalysis() {
       },
       {
          field: 'dealerNet',
-         flex: 0.8,
+         flex: 0.4,
          headerName: 'DN',
          headerAlign: 'right',
          align: 'right',
+         cellClassName: 'highlight-cell',
       },
       {
          field: 'isSPED',
@@ -471,7 +473,16 @@ export default function MarginAnalysis() {
                      >
                         <Typography></Typography>
                      </AccordionSummary>
-                     <AccordionDetails>
+                     <AccordionDetails
+                        sx={{
+                           '& .highlight-cell': {
+                              backgroundColor: '#e7a800',
+                              '&:hover': {
+                                 backgroundColor: '#c4c4c4',
+                              },
+                           },
+                        }}
+                     >
                         <DataTable
                            hideFooter
                            disableColumnMenu
