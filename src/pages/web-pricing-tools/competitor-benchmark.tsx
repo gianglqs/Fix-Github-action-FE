@@ -56,7 +56,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 const defaultDataFilterBubbleChart = {
-   regions: null,
+   regions: '',
    countries: [],
    classes: [],
    categories: [],
@@ -148,7 +148,7 @@ export default function Indicators() {
    const handleFilterCompetitiveLandscape = async () => {
       if (!competitiveLandscapeData.clearFilter) setLoadingSwot(true);
       try {
-         if (swotDataFilter.regions == null) {
+         if (swotDataFilter.regions == '') {
             setRegionError({ error: true });
             return;
          }
