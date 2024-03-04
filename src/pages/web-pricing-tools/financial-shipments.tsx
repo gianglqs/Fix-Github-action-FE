@@ -926,16 +926,7 @@ export default function Shipment() {
                </Grid>
             )}
 
-            <Paper
-               elevation={1}
-               sx={{
-                  marginTop: 2,
-                  position: 'relative',
-                  '& .highlight-cell': {
-                     backgroundColor: '#e7a800',
-                  },
-               }}
-            >
+            <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(100vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter
