@@ -198,6 +198,9 @@ const components: Components = {
                   outline: 'none',
                },
             },
+            '& .highlight-cell': {
+               backgroundColor: 'rgba(231, 168, 0, 0.8)',
+            },
             '& .MuiDataGrid-columnHeaderTitle': {
                fontWeight: 'bold',
             },

@@ -473,16 +473,7 @@ export default function MarginAnalysis() {
                      >
                         <Typography></Typography>
                      </AccordionSummary>
-                     <AccordionDetails
-                        sx={{
-                           '& .highlight-cell': {
-                              backgroundColor: '#e7a800',
-                              '&:hover': {
-                                 backgroundColor: '#c4c4c4',
-                              },
-                           },
-                        }}
-                     >
+                     <AccordionDetails>
                         <DataTable
                            hideFooter
                            disableColumnMenu

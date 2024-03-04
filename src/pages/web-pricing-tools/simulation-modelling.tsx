@@ -836,7 +836,6 @@ export default function Adjustment() {
                         name="costAdjPercentage"
                         label="Cost Adj %"
                         placeholder="Cost Adj %"
-                        focused
                      />
                   </Grid>
                </Grid>
@@ -849,7 +848,6 @@ export default function Adjustment() {
                         name="freightAdj"
                         label="Freight Adj ('000 USD)"
                         placeholder="Freight Adj ('000 USD)"
-                        focused
                      />
                   </Grid>
                </Grid>{' '}
@@ -862,7 +860,6 @@ export default function Adjustment() {
                         name="fxAdj"
                         label="FX Adj ('000 USD)"
                         placeholder="FX Adj ('000 USD)"
-                        focused
                      />
                   </Grid>
                </Grid>{' '}
@@ -877,7 +874,6 @@ export default function Adjustment() {
                         name="dnAdjPercentage"
                         label="DN Adj %"
                         placeholder="DN Adj %"
-                        focused
                      />
                   </Grid>
                </Grid>
