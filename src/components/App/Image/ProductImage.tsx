@@ -23,8 +23,5 @@ export function ProductImage(props) {
       }
    }, [imageUrl]);
 
-   console.log(imageUrl);
-   console.log(correctImageUrl);
-
    return <img src={correctImageUrl} style={style} onClick={onClick} />;
 }
