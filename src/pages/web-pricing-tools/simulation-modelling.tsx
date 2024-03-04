@@ -268,7 +268,12 @@ export default function Adjustment() {
          ...formatNumbericColumn,
          backgroundColor: fxAdjColor,
          renderCell(params) {
-            return <CellColor color={fxAdjColor} value={params?.row.manualAdjFX}></CellColor>;
+            return (
+               <CellPercentageColor
+                  color={fxAdjColor}
+                  value={params?.row.manualAdjFX * 100}
+               ></CellPercentageColor>
+            );
          },
       },
 
@@ -432,7 +437,7 @@ export default function Adjustment() {
          headerName: 'Adjusted FX',
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params?.row.manualAdjFX)}</span>;
+            return <span>{formatNumberPercentage(params?.row.manualAdjFX)}</span>;
          },
       },
 
@@ -860,8 +865,8 @@ export default function Adjustment() {
                         sx={{ backgroundColor: '#e9d4c4' }}
                         onChange={(e) => handleChangeDataCalculator(e.target.value, 'fxAdj')}
                         name="fxAdj"
-                        label="FX Adj ('000 USD)"
-                        placeholder="FX Adj ('000 USD)"
+                        label="FX Adj %"
+                        placeholder="FX Adj %"
                         focused
                      />
                   </Grid>
