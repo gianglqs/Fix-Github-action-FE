@@ -14,6 +14,7 @@ const NavBar = () => {
       'financial-bookings': 'Dashboard',
       competitors: 'Competitors',
       users: 'Users',
+      'historical-import': 'Historical Importing',
    };
 
    const renderOptions = () => {
