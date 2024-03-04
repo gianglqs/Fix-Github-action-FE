@@ -425,11 +425,9 @@ export default function Booking() {
       heightComponentExcludingTable = 330;
    }
 
-   const handleUploadFile = async (files) => {
+   const handleUploadFile = async (file) => {
       let formData = new FormData();
-      files.map((file) => {
-         formData.append('files', file);
-      });
+      formData.append('file', file);
 
       bookingApi
          .importDataBooking(formData)
@@ -456,7 +454,7 @@ export default function Booking() {
       if (uploadedFile.length > 0) {
          // resert message
          setLoading(true);
-         handleUploadFile(uploadedFile);
+         handleUploadFile(uploadedFile[0]);
       } else {
          dispatch(commonStore.actions.setErrorMessage('No file choosed'));
       }
@@ -967,7 +965,7 @@ function UploadFileDropZone(props) {
             reader.onabort = () => console.log('file reading was aborted');
             reader.onerror = () => console.log('file reading has failed');
             reader.onload = () => {
-               if (props.uploadedFile.length + acceptedFiles.length >= 3) {
+               if (props.uploadedFile.length + acceptedFiles.length > 1) {
                   dispatch(commonStore.actions.setErrorMessage('Too many files'));
                } else {
                   props.setUploadedFile(file);
@@ -983,7 +981,7 @@ function UploadFileDropZone(props) {
       noClick: true,
       onDrop,
       maxSize: 10485760, // < 10MB
-      maxFiles: 2,
+      maxFiles: 1,
       accept: {
          'excel/xlsx': ['.xlsx'],
       },
