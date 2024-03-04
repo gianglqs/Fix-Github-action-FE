@@ -10,3 +10,4 @@ export * as adjustmentStore from './adjustment.reducer';
 export * as competitorColorStore from './competitorColor.reducer';
 export * as productStore from './product.reducer';
 export * as partStore from './part.reducer';
+export * as historicalImportStore from './historicalImport.reducer';

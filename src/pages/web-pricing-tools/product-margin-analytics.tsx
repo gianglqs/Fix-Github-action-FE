@@ -40,7 +40,6 @@ ChartJS.register(
    Title,
    ChartAnnotation
 );
-import { rowColor } from '@/theme/colorRow';
 import moment from 'moment-timezone';
 
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
@@ -55,6 +54,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 export default function Outlier() {
+   const paperMinWidth = 300;
+
    const dispatch = useDispatch();
    const listOutlier = useSelector(outlierStore.selectOutlierList);
    const initDataFilter = useSelector(outlierStore.selectInitDataFilter);
@@ -204,93 +205,6 @@ export default function Outlier() {
          field: 'marginAfterSurCharge',
          flex: 0.7,
          headerName: "Margin $ After Surcharge ('000 USD)",
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
-         },
-      },
-
-      {
-         field: 'marginPercentageAfterSurCharge',
-         flex: 0.6,
-         headerName: 'Margin % After Surcharge',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return (
-               <span>
-                  {formatNumberPercentage(params?.row.marginPercentageAfterSurcharge * 100)}
-               </span>
-            );
-         },
-      },
-   ];
-
-   const totalColumns = [
-      {
-         field: 'region',
-         flex: 0.5,
-         headerName: 'Region',
-         renderCell(params) {
-            return <span>Total</span>;
-         },
-      },
-      {
-         field: 'Plant',
-         flex: 0.6,
-         headerName: 'Plant',
-      },
-      {
-         field: 'truckClass',
-         flex: 0.6,
-         headerName: 'Class',
-      },
-      {
-         field: 'series',
-         flex: 0.4,
-         headerName: 'Series',
-      },
-      {
-         field: 'model',
-         flex: 0.6,
-         headerName: 'Models',
-      },
-      {
-         field: 'quantity',
-         flex: 0.3,
-         headerName: 'Qty',
-         ...formatNumbericColumn,
-      },
-      {
-         field: 'totalCost',
-         flex: 0.8,
-         headerName: 'Total Cost',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.totalCost)}</span>;
-         },
-      },
-      {
-         field: 'dealerNet',
-         flex: 0.8,
-         headerName: 'DN',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNet)}</span>;
-         },
-      },
-      {
-         field: 'dealerNetAfterSurCharge',
-         flex: 0.8,
-         headerName: 'DN After Surcharge',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
-         },
-      },
-      {
-         field: 'marginAfterSurCharge',
-         flex: 0.7,
-         headerName: 'Margin $ After Surcharge',
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
@@ -485,6 +399,131 @@ export default function Outlier() {
    return (
       <>
          <AppLayout entity="outlier">
+            <Grid container spacing={1} sx={{ marginBottom: 2 }}>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: paperMinWidth,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Total Cost ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.dealerNet)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: paperMinWidth,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Dealer Net('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.dealerNetAfterSurcharge)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: paperMinWidth,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Dealer Net After Surcharge ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.totalCost)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: paperMinWidth,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Margin $ After Surcharge ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.marginAfterSurcharge)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: paperMinWidth,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Margin % After Surcharge
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumberPercentage(
+                              listTotalRow[0]?.marginPercentageAfterSurcharge * 100
+                           )}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+            </Grid>
+
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
@@ -638,7 +677,7 @@ export default function Outlier() {
                      value={dataFilter?.toDate}
                   />
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleFilterOrderBooking}
@@ -647,7 +686,7 @@ export default function Outlier() {
                      Filter
                   </Button>
                </Grid>
-               <Grid item xs={1.5}>
+               <Grid item xs={1}>
                   <Button
                      variant="contained"
                      onClick={handleClearAllFilters}
@@ -669,14 +708,14 @@ export default function Outlier() {
             >
                <Grid
                   sx={{
-                     height: '38vh',
+                     height: '35vh',
                   }}
                >
                   <Scatter options={options} data={chartOutliersData} />
                </Grid>
 
                <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
-                  <Grid container sx={{ height: 'calc(60vh - 231px)' }}>
+                  <Grid container sx={{ height: 'calc(58vh - 238px)' }}>
                      <DataGridPro
                         sx={{
                            '& .MuiDataGrid-columnHeaderTitle': {
@@ -700,21 +739,6 @@ export default function Outlier() {
                         getRowId={(params) => params.orderNo}
                      />
                   </Grid>
-                  <DataGridPro
-                     sx={rowColor}
-                     getCellClassName={(params: GridCellParams<any, any, number>) => {
-                        return 'total';
-                     }}
-                     hideFooter
-                     columnHeaderHeight={0}
-                     disableColumnMenu
-                     rowHeight={30}
-                     rows={listTotalRow}
-                     rowBuffer={35}
-                     rowThreshold={25}
-                     columns={totalColumns}
-                     getRowId={(params) => params.dealerNet}
-                  />
                   <DataTablePagination
                      page={tableState.pageNo}
                      perPage={tableState.perPage}

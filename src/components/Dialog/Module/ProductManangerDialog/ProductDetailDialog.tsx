@@ -73,12 +73,12 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    useEffect(() => {
       if (modelCode && series) {
          setDataFilterForGetParts((prev) => ({
-            ...prev,
+            orderNumbers: [orderNumber],
             modelCode: modelCode,
             metaSeriez: series,
          }));
       }
-   }, [modelCode, series]);
+   }, [modelCode, series, orderNumber]);
 
    // get orderNo filter
    useEffect(() => {
@@ -95,9 +95,9 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    }, [modelCode, series]);
 
    // get ListPart and totalItems
-   const getDataPartByFilter = (filter) => {
+   const getDataPartByFilter = () => {
       partApi
-         .getPartsForProductDetail(filter, { pageNo, perPage })
+         .getPartsForProductDetail(dataFilterForGetParts, { pageNo, perPage })
          .then((response) => {
             setListPart(response.data.listPart);
             setTotalItems(response.data.totalItems);
@@ -108,24 +108,16 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    };
 
    //load Parts when open Dialog (when setup dataFilterForGetParts is successfully)
+   console.log(dataFilterForGetParts);
    useEffect(() => {
       if (modelCode && series) {
-         orderNumber
-            ? getDataPartByFilter({
-                 modelCode: modelCode,
-                 metaSeriez: series,
-                 orderNumbers: [orderNumber],
-              })
-            : getDataPartByFilter({
-                 modelCode: modelCode,
-                 metaSeriez: series,
-              });
+         getDataPartByFilter();
       }
-   }, [modelCode, series, orderNumber]);
+   }, [dataFilterForGetParts]);
 
    // Load Parts when change pageNo and perPage
    useEffect(() => {
-      getDataPartByFilter(dataFilterForGetParts);
+      getDataPartByFilter();
    }, [pageNo, perPage]);
 
    const handleChangeDataFilter = (option, field) => {
@@ -139,7 +131,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    // load Parts when click Filter
    const handleClickFilter = () => {
       setPageNo(1);
-      getDataPartByFilter(dataFilterForGetParts);
+      getDataPartByFilter();
    };
 
    const handleChangePage = (pageNo: number) => {
@@ -147,6 +139,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    };
 
    const handleChangePerPage = (perPage: number) => {
+      setPageNo(1);
       setPerPage(perPage);
    };
 
@@ -199,7 +192,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    const handleClose = () => {
       onClose();
-      setTimeout(resetData, 1000);
+      setTimeout(resetData, 500);
    };
 
    // reset when CLOSE dialog
@@ -208,6 +201,8 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       setPerPage(20);
       setTotalItems(null);
       setProductDetail(null);
+      setOrderNumber(null);
+      setSeries(null);
    };
 
    return (
