@@ -268,7 +268,12 @@ export default function Adjustment() {
          ...formatNumbericColumn,
          backgroundColor: fxAdjColor,
          renderCell(params) {
-            return <CellColor color={fxAdjColor} value={params?.row.manualAdjFX}></CellColor>;
+            return (
+               <CellPercentageColor
+                  color={fxAdjColor}
+                  value={params?.row.manualAdjFX * 100}
+               ></CellPercentageColor>
+            );
          },
       },
 
@@ -347,6 +352,160 @@ export default function Adjustment() {
                   value={params?.row.newMarginPercentage * 100}
                ></CellPercentageColor>
             );
+         },
+      },
+   ];
+
+   const totalColumns = [
+      {
+         field: 'region',
+         flex: 0.5,
+         headerName: 'Region',
+         renderCell(params) {
+            return <span>Total</span>;
+         },
+      },
+
+      {
+         field: 'Plant',
+         flex: 0.6,
+         headerName: 'Plant',
+         renderCell(params) {
+            return <span></span>;
+         },
+      },
+      {
+         field: 'truckClass',
+         flex: 0.6,
+         headerName: 'Class',
+         renderCell(params) {
+            return <span>{params.row.clazz}</span>;
+         },
+      },
+      {
+         field: 'series',
+         flex: 0.4,
+         headerName: 'Series',
+         renderCell(params) {
+            return <span>{params.row.metaSeries}</span>;
+         },
+      },
+      {
+         field: 'model',
+         flex: 0.6,
+         headerName: 'Models',
+         renderCell(params) {
+            return <span>{params.row.model}</span>;
+         },
+      },
+      {
+         field: 'noOfOrder',
+         flex: 0.3,
+         headerName: 'No of Orders',
+         ...formatNumbericColumn,
+      },
+      {
+         field: 'additionalVolume',
+         flex: 0.5,
+         headerName: 'Additional Volume at BEP For Discount',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{params?.row.additionalVolume}</span>;
+         },
+      },
+      {
+         field: 'manualAdjCost',
+         flex: 0.8,
+         headerName: 'Adjusted Cost',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumber(params?.row.manualAdjCost)}</span>;
+         },
+      },
+      {
+         field: 'manualAdjFreight',
+         flex: 0.8,
+         headerName: 'Adjusted Freight',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumber(params?.row.manualAdjFreight)}</span>;
+         },
+      },
+      {
+         field: 'manualAdjFX',
+         flex: 0.7,
+         headerName: 'Adjusted FX',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumberPercentage(params?.row.manualAdjFX)}</span>;
+         },
+      },
+
+      {
+         field: 'totalManualAdjCost',
+         flex: 0.6,
+         headerName: 'Total Manual Adj Cost',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumber(params?.row.totalManualAdjCost)}</span>;
+         },
+      },
+
+      {
+         field: 'originalDN',
+         flex: 0.7,
+         headerName: 'Original DN',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumber(params?.row.originalDN)}</span>;
+         },
+      },
+      {
+         field: 'originalMargin',
+         flex: 0.7,
+         headerName: 'Original Margin $',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumber(params?.row.originalMargin)}</span>;
+         },
+      },
+      {
+         field: 'originalMarginPercentage',
+         flex: 0.7,
+         headerName: 'Original Margin %',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return (
+               <span>{formatNumberPercentage(params?.row.originalMarginPercentage * 100)}</span>
+            );
+         },
+      },
+
+      {
+         field: 'newDN',
+         flex: 0.6,
+         headerName: 'Adjusted Dealer Net',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumber(params?.row.newDN)}</span>;
+         },
+      },
+      {
+         field: 'newMargin',
+         flex: 0.6,
+         headerName: 'New margin $ (USD) After manual Adj',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumber(params?.row.newMargin)}</span>;
+         },
+      },
+      {
+         field: 'newMarginPercentage',
+         flex: 0.6,
+         headerName: 'New margin % After manual Adj',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumberPercentage(params?.row.newMarginPercentage * 100)}</span>;
          },
       },
    ];
@@ -995,8 +1154,9 @@ export default function Adjustment() {
                         sx={{ backgroundColor: '#e9d4c4' }}
                         onChange={(e) => handleChangeDataCalculator(e.target.value, 'fxAdj')}
                         name="fxAdj"
-                        label="FX Adj ('000 USD)"
-                        placeholder="FX Adj ('000 USD)"
+                        label="FX Adj %"
+                        placeholder="FX Adj %"
+                        focused
                      />
                   </Grid>
                </Grid>{' '}
