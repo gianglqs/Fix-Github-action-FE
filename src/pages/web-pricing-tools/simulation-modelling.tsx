@@ -351,160 +351,6 @@ export default function Adjustment() {
       },
    ];
 
-   const totalColumns = [
-      {
-         field: 'region',
-         flex: 0.5,
-         headerName: 'Region',
-         renderCell(params) {
-            return <span>Total</span>;
-         },
-      },
-
-      {
-         field: 'Plant',
-         flex: 0.6,
-         headerName: 'Plant',
-         renderCell(params) {
-            return <span></span>;
-         },
-      },
-      {
-         field: 'truckClass',
-         flex: 0.6,
-         headerName: 'Class',
-         renderCell(params) {
-            return <span>{params.row.clazz}</span>;
-         },
-      },
-      {
-         field: 'series',
-         flex: 0.4,
-         headerName: 'Series',
-         renderCell(params) {
-            return <span>{params.row.metaSeries}</span>;
-         },
-      },
-      {
-         field: 'model',
-         flex: 0.6,
-         headerName: 'Models',
-         renderCell(params) {
-            return <span>{params.row.model}</span>;
-         },
-      },
-      {
-         field: 'noOfOrder',
-         flex: 0.3,
-         headerName: 'No of Orders',
-         ...formatNumbericColumn,
-      },
-      {
-         field: 'additionalVolume',
-         flex: 0.5,
-         headerName: 'Additional Volume at BEP For Discount',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{params?.row.additionalVolume}</span>;
-         },
-      },
-      {
-         field: 'manualAdjCost',
-         flex: 0.8,
-         headerName: 'Adjusted Cost',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.manualAdjCost)}</span>;
-         },
-      },
-      {
-         field: 'manualAdjFreight',
-         flex: 0.8,
-         headerName: 'Adjusted Freight',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.manualAdjFreight)}</span>;
-         },
-      },
-      {
-         field: 'manualAdjFX',
-         flex: 0.7,
-         headerName: 'Adjusted FX',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.manualAdjFX)}</span>;
-         },
-      },
-
-      {
-         field: 'totalManualAdjCost',
-         flex: 0.6,
-         headerName: 'Total Manual Adj Cost',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.totalManualAdjCost)}</span>;
-         },
-      },
-
-      {
-         field: 'originalDN',
-         flex: 0.7,
-         headerName: 'Original DN',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.originalDN)}</span>;
-         },
-      },
-      {
-         field: 'originalMargin',
-         flex: 0.7,
-         headerName: 'Original Margin $',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.originalMargin)}</span>;
-         },
-      },
-      {
-         field: 'originalMarginPercentage',
-         flex: 0.7,
-         headerName: 'Original Margin %',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return (
-               <span>{formatNumberPercentage(params?.row.originalMarginPercentage * 100)}</span>
-            );
-         },
-      },
-
-      {
-         field: 'newDN',
-         flex: 0.6,
-         headerName: 'Adjusted Dealer Net',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.newDN)}</span>;
-         },
-      },
-      {
-         field: 'newMargin',
-         flex: 0.6,
-         headerName: 'New margin $ (USD) After manual Adj',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.newMargin)}</span>;
-         },
-      },
-      {
-         field: 'newMarginPercentage',
-         flex: 0.6,
-         headerName: 'New margin % After manual Adj',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumberPercentage(params?.row.newMarginPercentage * 100)}</span>;
-         },
-      },
-   ];
-
    // changes highlighted when I adjust a variant
 
    const [listColor, setListColor] = useState([]);
@@ -633,6 +479,297 @@ export default function Adjustment() {
    return (
       <>
          <AppLayout entity="adjustment">
+            <Grid container spacing={1} sx={{ marginBottom: 2 }}>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: 300,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Number of Orders
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {listTotalRow[0]?.noOfOrder}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: 300,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Additional Units
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {listTotalRow[0]?.additionalVolume}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: 300,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Original DN ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.originalDN)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: 300,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Original Margin $ ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.originalMargin)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: 300,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Original Margin %
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumberPercentage(listTotalRow[0]?.originalMarginPercentage * 100)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: 300,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Adjusted Cost ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.manualAdjCost)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: 300,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Adjusted Freight ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.manualAdjFreight)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: 300,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Adjusted FX ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.manualAdjFreight)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: 300,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Total Manual Adj Cost ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.totalManualAdjCost)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: 300,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Adjusted Dealer Net ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.newDN)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: 300,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           New Margin $ ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.newMargin)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        padding: 2,
+                        height: 'fit-content',
+                        minWidth: 300,
+                        backgroundColor: '#e7a800',
+                        border: '1px solid #e7a800',
+                        ':hover': {
+                           border: '1px solid black',
+                        },
+                     }}
+                  >
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           New Margin %
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumberPercentage(listTotalRow[0]?.newMarginPercentage * 100)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+            </Grid>
+
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
@@ -932,21 +1069,6 @@ export default function Adjustment() {
                      getRowId={(params) => params.id}
                   />
                </Grid>
-               <DataGridPro
-                  sx={rowColor}
-                  getCellClassName={(params: GridCellParams<any, any, number>) => {
-                     return 'total';
-                  }}
-                  hideFooter
-                  columnHeaderHeight={0}
-                  disableColumnMenu
-                  rowHeight={30}
-                  rows={listTotalRow}
-                  rowBuffer={35}
-                  rowThreshold={25}
-                  columns={totalColumns}
-                  getRowId={(params) => params.id}
-               />
                <DataTablePagination
                   page={tableState.pageNo}
                   perPage={tableState.perPage}
