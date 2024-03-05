@@ -453,7 +453,7 @@ export default function Booking() {
                   >
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Dealer Net ('000 USD)
+                           Dealer Net ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.dealerNet)}
@@ -477,7 +477,7 @@ export default function Booking() {
                   >
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Dealer Net After Surcharge ('000 USD)
+                           Dealer Net After Surcharge ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.dealerNetAfterSurcharge)}
@@ -501,7 +501,7 @@ export default function Booking() {
                   >
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Total Cost ('000 USD)
+                           Total Cost ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.totalCost)}
