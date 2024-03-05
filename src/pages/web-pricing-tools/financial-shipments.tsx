@@ -429,7 +429,7 @@ export default function Shipment() {
          const convertedTime = moment
             .tz(serverLatestUpdatedTime, serverTimeZone)
             .tz(clientTimeZone);
-         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
+         setClientLatestUpdatedTime(convertedTime.format('YYYY-MM-DD HH:mm'));
          // console.log('Converted Time:', convertedTime.format());
       }
    };
@@ -854,16 +854,11 @@ export default function Shipment() {
                            </ListItem>
                         ))}
                   </Grid>
-                  <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={6}>
-                     <Typography sx={{ marginRight: '20px' }}>
-                        Latest updated at {clientLatestUpdatedTime}
-                     </Typography>
-                  </Grid>
                </Grid>
             )}
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
-               <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
+               <Grid container sx={{ height: `calc(93vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter
                      disableColumnMenu
@@ -885,6 +880,11 @@ export default function Shipment() {
                      getRowId={(params) => params.orderNo}
                      onCellClick={handleOnCellClick}
                   />
+               </Grid>
+               <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
+                  <Typography sx={{ marginRight: 1, marginTop: 1 }}>
+                     Last updated at {clientLatestUpdatedTime}
+                  </Typography>
                </Grid>
                <DataTablePagination
                   page={tableState.pageNo}
