@@ -264,7 +264,7 @@ export default function Adjustment() {
       {
          field: 'manualAdjFX',
          flex: 0.7,
-         headerName: "Adjusted FX ('000 USD)",
+         headerName: 'Adjusted FX %',
          ...formatNumbericColumn,
          backgroundColor: fxAdjColor,
          renderCell(params) {
