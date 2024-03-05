@@ -49,6 +49,7 @@ import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { paperStyle } from '@/theme/paperStyle';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -597,19 +598,7 @@ export default function Indicators() {
          <AppLayout entity="indicator">
             <Grid container spacing={1} sx={{ marginBottom: 2 }}>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {currentYear - 1} Actual
@@ -621,19 +610,7 @@ export default function Indicators() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {currentYear} AOPF
@@ -645,19 +622,7 @@ export default function Indicators() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {currentYear + 1} LRFF
@@ -669,19 +634,7 @@ export default function Indicators() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Variance %
@@ -693,19 +646,7 @@ export default function Indicators() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Dealer Street Pricing ('000)
@@ -717,19 +658,7 @@ export default function Indicators() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Dealer Handling Cost ('000)
@@ -741,19 +670,7 @@ export default function Indicators() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Competitor Pricing ('000)
@@ -765,19 +682,7 @@ export default function Indicators() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Average Dealer Net ('000)
