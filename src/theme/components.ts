@@ -199,6 +199,9 @@ const components: Components = {
                },
             },
             '& .highlight-cell': {
+               backgroundColor: 'rgba(232, 192, 86, 0.6)',
+            },
+            '& .MuiDataGrid-row:nth-child(even) .highlight-cell': {
                backgroundColor: 'rgba(232, 192, 86, 0.8)',
             },
             '& .MuiDataGrid-columnHeaderTitle': {
