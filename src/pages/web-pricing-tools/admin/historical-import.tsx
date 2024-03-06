@@ -216,7 +216,7 @@ export default function HistoricalImport() {
          field: 'screen',
          flex: 0.3,
          headerAlign: 'center',
-         headerName: 'Screen',
+         headerName: 'Model',
       },
       {
          field: 'uploadedTime',
