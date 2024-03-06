@@ -60,3 +60,7 @@ export const defaultValueFilterPart = {
    modelCode: '',
    orderNumbers: [],
 } as any;
+
+export const defaultValueFilterAdmin = {
+   filter: '',
+};

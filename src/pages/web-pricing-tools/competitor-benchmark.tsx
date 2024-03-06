@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { indicatorStore, commonStore } from '@/store/reducers';
 import { Button, CircularProgress, Typography } from '@mui/material';
 
-import { rowColor } from '@/theme/colorRow';
 import { AppLayout, DataTablePagination, AppAutocomplete } from '@/components';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -50,6 +49,8 @@ import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
+import { paperStyle } from '@/theme/paperStyle';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -413,128 +414,6 @@ export default function Indicators() {
       },
    ];
 
-   const totalColumns = [
-      {
-         field: 'competitorName',
-         flex: 1.5,
-         headerName: 'Competitor Name',
-      },
-
-      {
-         field: 'region',
-         flex: 0.5,
-         headerName: 'Region',
-      },
-      {
-         field: 'plant',
-         flex: 0.8,
-         headerName: 'Plant',
-      },
-      {
-         field: 'clazz',
-         flex: 1,
-         headerName: 'Class',
-      },
-      {
-         field: 'series',
-         flex: 0.5,
-         headerName: 'Series',
-      },
-
-      {
-         field: 'actual',
-         flex: 0.5,
-         headerName: '2022 Actual',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{params.row.actual}</span>;
-         },
-      },
-      {
-         field: 'aopf',
-         flex: 0.5,
-         headerName: '2023 AOPF',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{params.row.aopf}</span>;
-         },
-      },
-      {
-         field: 'lrff',
-         flex: 0.5,
-         headerName: '2024 LRFF',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{params.row.lrff}</span>;
-         },
-      },
-      {
-         field: 'competitorLeadTime',
-         flex: 0.8,
-         headerName: 'Competitor Lead Time',
-         ...formatNumbericColumn,
-      },
-      {
-         field: 'dealerStreetPricing',
-         flex: 0.8,
-         headerName: 'Dealer Street Pricing(USD)',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params.row.dealerStreetPricing)}</span>;
-         },
-      },
-      {
-         field: 'dealerHandlingCost',
-         flex: 0.8,
-         headerName: 'Dealer Handling Cost',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params.row.dealerHandlingCost)}</span>;
-         },
-      },
-      {
-         field: 'competitorPricing',
-         flex: 1,
-         headerName: 'Competition Pricing (USD)',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params.row.competitorPricing)}</span>;
-         },
-      },
-      {
-         field: 'dealerPricingPremiumPercentages',
-         flex: 1,
-         headerName: 'Dealer Pricing Premium/Margin (USD)',
-         ...formatNumbericColumn,
-      },
-
-      {
-         field: 'dealerPremiumPercentages',
-         flex: 1,
-         headerName: 'Dealer Premium / Margin %',
-         ...formatNumbericColumn,
-      },
-      {
-         field: 'averageDN',
-         flex: 0.8,
-         headerName: 'Average Dealer Net',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params.row.averageDN)}</span>;
-         },
-      },
-
-      {
-         field: 'variancePercentage',
-         flex: 1,
-         headerName: 'Varian % (Competitor - (Dealer Street + Premium))',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumberPercentage(params.row.variancePercentage)}</span>;
-         },
-      },
-   ];
-
    const options = {
       scales: {
          y: {
@@ -679,18 +558,15 @@ export default function Indicators() {
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
    useEffect(() => {
-      convertServerTimeToClientTimeZone();
+      convertTimezone();
    }, [serverTimeZone, serverLatestUpdatedTime]);
 
    // show latest updated time
-   const convertServerTimeToClientTimeZone = () => {
+   const convertTimezone = () => {
       if (serverLatestUpdatedTime && serverTimeZone) {
-         const clientTimeZone = moment.tz.guess();
-         const convertedTime = moment
-            .tz(serverLatestUpdatedTime, serverTimeZone)
-            .tz(clientTimeZone);
-         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
-         // console.log('Converted Time:', convertedTime.format());
+         setClientLatestUpdatedTime(
+            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+         );
       }
    };
    return (
@@ -718,6 +594,105 @@ export default function Indicators() {
             </div>
          ) : null}
          <AppLayout entity="indicator">
+            <Grid container spacing={1} sx={{ marginBottom: 2 }}>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {currentYear - 1} Actual
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumber(listTotalRow[0]?.actual)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {currentYear} AOPF
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumber(listTotalRow[0]?.aopf)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {currentYear + 1} LRFF
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumber(listTotalRow[0]?.lrff)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Variance %
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumberPercentage(listTotalRow[0]?.variancePercentage * 100)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Dealer Street Pricing ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.dealerStreetPricing)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Dealer Handling Cost ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.dealerHandlingCost)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Competitor Pricing ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.competitorPricing)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Average Dealer Net ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.averageDN)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+            </Grid>
+
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
@@ -910,11 +885,6 @@ export default function Indicators() {
                      </Grid>
                   </>
                )}
-               <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
-                  <Typography sx={{ marginRight: '20px' }}>
-                     Latest updated at {clientLatestUpdatedTime}
-                  </Typography>
-               </Grid>
             </Grid>
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
@@ -942,21 +912,12 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <DataGridPro
-                  sx={rowColor}
-                  getCellClassName={(params: GridCellParams<any, any, number>) => {
-                     return 'total';
-                  }}
-                  hideFooter
-                  columnHeaderHeight={0}
-                  disableColumnMenu
-                  rowHeight={30}
-                  rows={listTotalRow}
-                  rowBuffer={35}
-                  rowThreshold={25}
-                  columns={totalColumns}
-                  getRowId={(params) => params.id}
-               />
+               <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
+                  <Typography sx={{ marginRight: 1, marginTop: 1 }}>
+                     Last updated at {clientLatestUpdatedTime}
+                  </Typography>
+               </Grid>
+
                <DataTablePagination
                   page={tableState.pageNo}
                   perPage={tableState.perPage}

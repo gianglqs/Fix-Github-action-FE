@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { adjustmentStore, commonStore } from '@/store/reducers';
 
 import moment from 'moment-timezone';
-import { rowColor } from '@/theme/colorRow';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -34,6 +33,7 @@ import { GetServerSidePropsContext } from 'next';
 import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { setCookie } from 'nookies';
+import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -264,11 +264,16 @@ export default function Adjustment() {
       {
          field: 'manualAdjFX',
          flex: 0.7,
-         headerName: "Adjusted FX ('000 USD)",
+         headerName: 'Adjusted FX %',
          ...formatNumbericColumn,
          backgroundColor: fxAdjColor,
          renderCell(params) {
-            return <CellColor color={fxAdjColor} value={params?.row.manualAdjFX}></CellColor>;
+            return (
+               <CellPercentageColor
+                  color={fxAdjColor}
+                  value={params?.row.manualAdjFX * 100}
+               ></CellPercentageColor>
+            );
          },
       },
 
@@ -432,7 +437,7 @@ export default function Adjustment() {
          headerName: 'Adjusted FX',
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params?.row.manualAdjFX)}</span>;
+            return <span>{formatNumberPercentage(params?.row.manualAdjFX)}</span>;
          },
       },
 
@@ -616,23 +621,167 @@ export default function Adjustment() {
    };
 
    // show latest updated time
-   const convertServerTimeToClientTimeZone = () => {
+   const convertTimezone = () => {
       if (serverLatestUpdatedTime && serverTimeZone) {
-         const clientTimeZone = moment.tz.guess();
-         const convertedTime = moment
-            .tz(serverLatestUpdatedTime, serverTimeZone)
-            .tz(clientTimeZone);
-         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
-         // console.log('Converted Time:', convertedTime.format());
+         setClientLatestUpdatedTime(
+            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+         );
       }
    };
 
    useEffect(() => {
-      convertServerTimeToClientTimeZone();
+      convertTimezone();
    }, [serverLatestUpdatedTime, serverTimeZone]);
    return (
       <>
          <AppLayout entity="adjustment">
+            <Grid container spacing={1} sx={{ marginBottom: 2 }}>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Number of Orders
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {listTotalRow[0]?.noOfOrder}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Additional Units
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {listTotalRow[0]?.additionalVolume}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Original DN ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.originalDN)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Original Margin $ ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.originalMargin)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Original Margin %
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumberPercentage(listTotalRow[0]?.originalMarginPercentage * 100)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Adjusted Cost ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.manualAdjCost)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Adjusted Freight ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.manualAdjFreight)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Adjusted FX ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.manualAdjFreight)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Total Manual Adj Cost ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.totalManualAdjCost)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Adjusted Dealer Net ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.newDN)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           New Margin $ ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.newMargin)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           New Margin %
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumberPercentage(listTotalRow[0]?.newMarginPercentage * 100)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+            </Grid>
+
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
@@ -860,8 +1009,8 @@ export default function Adjustment() {
                         sx={{ backgroundColor: '#e9d4c4' }}
                         onChange={(e) => handleChangeDataCalculator(e.target.value, 'fxAdj')}
                         name="fxAdj"
-                        label="FX Adj ('000 USD)"
-                        placeholder="FX Adj ('000 USD)"
+                        label="FX Adj %"
+                        placeholder="FX Adj %"
                         focused
                      />
                   </Grid>
@@ -899,11 +1048,6 @@ export default function Adjustment() {
                      Clear Calculators
                   </Button>
                </Grid>
-               <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
-                  <Typography sx={{ marginRight: '20px' }}>
-                     Latest updated at {clientLatestUpdatedTime}
-                  </Typography>
-               </Grid>
             </Grid>
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
@@ -936,21 +1080,13 @@ export default function Adjustment() {
                      getRowId={(params) => params.id}
                   />
                </Grid>
-               <DataGridPro
-                  sx={rowColor}
-                  getCellClassName={(params: GridCellParams<any, any, number>) => {
-                     return 'total';
-                  }}
-                  hideFooter
-                  columnHeaderHeight={0}
-                  disableColumnMenu
-                  rowHeight={30}
-                  rows={listTotalRow}
-                  rowBuffer={35}
-                  rowThreshold={25}
-                  columns={totalColumns}
-                  getRowId={(params) => params.id}
-               />
+
+               <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
+                  <Typography sx={{ marginRight: 1, marginTop: 1 }}>
+                     Last updated at {clientLatestUpdatedTime}
+                  </Typography>
+               </Grid>
+
                <DataTablePagination
                   page={tableState.pageNo}
                   perPage={tableState.perPage}

@@ -7,7 +7,6 @@ import { bookingStore, commonStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
 import moment from 'moment-timezone';
 
-import { rowColor } from '@/theme/colorRow';
 import { destroyCookie, parseCookies, setCookie } from 'nookies';
 
 import Grid from '@mui/material/Grid';
@@ -50,6 +49,8 @@ import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerD
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
+import { paperStyle } from '@/theme/paperStyle';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -292,132 +293,6 @@ export default function Booking() {
       },
    ];
 
-   const totalColumns = [
-      {
-         field: 'orderNo',
-         flex: 0.4,
-         headerName: 'Order #',
-      },
-      {
-         field: 'date',
-         flex: 0.5,
-         headerName: 'Create at',
-         renderCell(params) {
-            return <span>{formatDate(params?.row?.date)}</span>;
-         },
-      },
-      {
-         field: 'region',
-         flex: 0.5,
-         headerName: 'Region',
-         renderCell(params) {
-            return <span>{params.row.region?.region}</span>;
-         },
-      },
-      {
-         field: 'ctryCode',
-         flex: 0.3,
-         headerName: 'Country',
-      },
-      {
-         field: 'dealerName',
-         flex: 1.2,
-         headerName: 'Dealer Name',
-      },
-      {
-         field: 'Plant',
-         flex: 0.6,
-         headerName: 'Plant',
-         renderCell(params) {
-            return <span>{params.row.product?.plant}</span>;
-         },
-      },
-      {
-         field: 'truckClass',
-         flex: 0.6,
-         headerName: 'Class',
-         renderCell(params) {
-            return <span>{params.row.product?.clazz}</span>;
-         },
-      },
-      {
-         field: 'series',
-         flex: 0.4,
-         headerName: 'Series',
-         renderCell(params) {
-            return <span>{params.row.series}</span>;
-         },
-      },
-      {
-         field: 'model',
-         flex: 0.6,
-         headerName: 'Models',
-         renderCell(params) {
-            return <span>{params.row.model}</span>;
-         },
-      },
-      {
-         field: 'quantity',
-         flex: 0.3,
-         headerName: 'Qty',
-         ...formatNumbericColumn,
-      },
-
-      {
-         field: 'dealerNet',
-         flex: 0.8,
-         headerName: "DN ('000 USD)",
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNet)}</span>;
-         },
-      },
-      {
-         field: 'dealerNetAfterSurcharge',
-         flex: 0.8,
-         headerName: "DN After Surcharge ('000 USD)",
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
-         },
-      },
-      {
-         field: 'totalCost',
-         flex: 0.8,
-         headerName: 'Total Cost',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.totalCost)}</span>;
-         },
-      },
-      {
-         field: 'marginAfterSurcharge',
-         flex: 0.7,
-         headerName: 'Margin $ After Surcharge',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
-         },
-      },
-      {
-         field: 'marginPercentageAfterSurcharges',
-         flex: 0.6,
-         headerName: 'Margin % After Surcharge',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return (
-               <span>
-                  {formatNumberPercentage(params?.row.marginPercentageAfterSurcharge * 100)}
-               </span>
-            );
-         },
-      },
-      {
-         field: 'noShow',
-         flex: 0.6,
-      },
-   ];
-
    let heightComponentExcludingTable = 293;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
@@ -425,11 +300,9 @@ export default function Booking() {
       heightComponentExcludingTable = 330;
    }
 
-   const handleUploadFile = async (files) => {
+   const handleUploadFile = async (file) => {
       let formData = new FormData();
-      files.map((file) => {
-         formData.append('files', file);
-      });
+      formData.append('file', file);
 
       bookingApi
          .importDataBooking(formData)
@@ -456,7 +329,7 @@ export default function Booking() {
       if (uploadedFile.length > 0) {
          // resert message
          setLoading(true);
-         handleUploadFile(uploadedFile);
+         handleUploadFile(uploadedFile[0]);
       } else {
          dispatch(commonStore.actions.setErrorMessage('No file choosed'));
       }
@@ -486,7 +359,7 @@ export default function Booking() {
       setTotalRow((prev) => {
          return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
       });
-      convertServerTimeToClientTimeZone();
+      convertTimezone();
    }, [listBookingOrder, listTotalRow, currency, serverTimeZone, serverLatestUpdatedTime]);
 
    // ===== show Product detail =======
@@ -544,14 +417,11 @@ export default function Booking() {
    };
 
    // show latest updated time
-   const convertServerTimeToClientTimeZone = () => {
+   const convertTimezone = () => {
       if (serverLatestUpdatedTime && serverTimeZone) {
-         const clientTimeZone = moment.tz.guess();
-         const convertedTime = moment
-            .tz(serverLatestUpdatedTime, serverTimeZone)
-            .tz(clientTimeZone);
-         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
-         // console.log('Converted Time:', convertedTime.format());
+         setClientLatestUpdatedTime(
+            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+         );
       }
    };
 
@@ -563,6 +433,59 @@ export default function Booking() {
    return (
       <>
          <AppLayout entity="booking">
+            <Grid container spacing={1} sx={{ marginBottom: 2 }}>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Dealer Net ('000 {currency})
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumber(totalRow[0]?.dealerNet)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Dealer Net After Surcharge ('000 {currency})
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumber(totalRow[0]?.dealerNetAfterSurcharge)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Total Cost ('000 {currency})
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumber(totalRow[0]?.totalCost)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           Margin % After Surcharge
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {formatNumberPercentage(
+                              totalRow[0]?.marginPercentageAfterSurcharge * 100
+                           )}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+            </Grid>
+
             <Grid container spacing={1}>
                <Grid item xs={4}>
                   <Grid item xs={12}>
@@ -875,11 +798,6 @@ export default function Booking() {
                            </ListItem>
                         ))}
                   </Grid>
-                  <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={6}>
-                     <Typography sx={{ marginRight: '20px' }}>
-                        Latest updated at {clientLatestUpdatedTime}
-                     </Typography>
-                  </Grid>
                </Grid>
             </When>
 
@@ -893,7 +811,7 @@ export default function Booking() {
                   },
                }}
             >
-               <Grid container sx={{ height: `calc(100vh - ${heightComponentExcludingTable}px)` }}>
+               <Grid container sx={{ height: `calc(93vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter
                      disableColumnMenu
@@ -916,21 +834,11 @@ export default function Booking() {
                      onCellClick={handleOnCellClick}
                   />
                </Grid>
-               <DataGridPro
-                  sx={rowColor}
-                  getCellClassName={(params: GridCellParams<any, any, number>) => {
-                     return 'total';
-                  }}
-                  hideFooter
-                  columnHeaderHeight={0}
-                  disableColumnMenu
-                  rowHeight={30}
-                  rows={totalRow}
-                  rowBuffer={35}
-                  rowThreshold={25}
-                  columns={totalColumns}
-                  getRowId={(params) => params.orderNo}
-               />
+               <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
+                  <Typography sx={{ marginRight: 1, marginTop: 1 }}>
+                     Last updated at {clientLatestUpdatedTime}
+                  </Typography>
+               </Grid>
 
                <DataTablePagination
                   page={tableState.pageNo}
@@ -967,7 +875,7 @@ function UploadFileDropZone(props) {
             reader.onabort = () => console.log('file reading was aborted');
             reader.onerror = () => console.log('file reading has failed');
             reader.onload = () => {
-               if (props.uploadedFile.length + acceptedFiles.length >= 3) {
+               if (props.uploadedFile.length + acceptedFiles.length > 1) {
                   dispatch(commonStore.actions.setErrorMessage('Too many files'));
                } else {
                   props.setUploadedFile(file);
@@ -983,7 +891,7 @@ function UploadFileDropZone(props) {
       noClick: true,
       onDrop,
       maxSize: 10485760, // < 10MB
-      maxFiles: 2,
+      maxFiles: 1,
       accept: {
          'excel/xlsx': ['.xlsx'],
       },
