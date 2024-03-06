@@ -19,7 +19,7 @@ import {
    Typography,
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
-import { destroyCookie, parseCookies, setCookie } from 'nookies';
+import { setCookie } from 'nookies';
 import ClearIcon from '@mui/icons-material/Clear';
 
 import {
@@ -34,7 +34,7 @@ import _ from 'lodash';
 import { produce } from 'immer';
 
 import { defaultValueFilterOrder } from '@/utils/defaultValues';
-import { DataGridPro, GridCellParams, GridToolbar } from '@mui/x-data-grid-pro';
+import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
 import { UserInfoContext } from '@/provider/UserInfoContext';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
@@ -44,6 +44,7 @@ import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerD
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { paperStyle } from '@/theme/paperStyle';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -444,22 +445,10 @@ export default function Shipment() {
          <AppLayout entity="shipment">
             <Grid container spacing={1} sx={{ marginBottom: 2 }}>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Dealer Net ('000 USD)
+                           Dealer Net ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.dealerNet)}
@@ -468,22 +457,10 @@ export default function Shipment() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Dealer Net After Surcharge ('000 USD)
+                           Dealer Net After Surcharge ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.dealerNetAfterSurcharge)}
@@ -492,22 +469,10 @@ export default function Shipment() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Total Cost ('000 USD)
+                           Total Cost ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.totalCost)}
@@ -516,19 +481,7 @@ export default function Shipment() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Margin % After Surcharge
