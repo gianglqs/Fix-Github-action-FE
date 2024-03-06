@@ -49,6 +49,7 @@ import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { paperStyle } from '@/theme/paperStyle';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -557,18 +558,15 @@ export default function Indicators() {
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
    useEffect(() => {
-      convertServerTimeToClientTimeZone();
+      convertTimezone();
    }, [serverTimeZone, serverLatestUpdatedTime]);
 
    // show latest updated time
-   const convertServerTimeToClientTimeZone = () => {
+   const convertTimezone = () => {
       if (serverLatestUpdatedTime && serverTimeZone) {
-         const clientTimeZone = moment.tz.guess();
-         const convertedTime = moment
-            .tz(serverLatestUpdatedTime, serverTimeZone)
-            .tz(clientTimeZone);
-         setClientLatestUpdatedTime(convertedTime.format('YYYY-MM-DD HH:mm'));
-         // console.log('Converted Time:', convertedTime.format());
+         setClientLatestUpdatedTime(
+            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+         );
       }
    };
    return (

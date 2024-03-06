@@ -8,14 +8,17 @@ export const convertServerTimeToClientTimeZone = (
       let serverMoment;
 
       if (Array.isArray(serverLatestUpdatedTime)) {
-         serverMoment = moment(serverLatestUpdatedTime.slice(0, 6));
-         console.log(serverMoment);
+         serverMoment = moment
+            .tz(serverLatestUpdatedTime.slice(0, 6), serverTimeZone)
+            .subtract(1, 'months');
       } else {
-         serverMoment = moment(serverLatestUpdatedTime, 'YYYY-MM-DDTHH:mm:ss.SSSSSSSSS');
+         serverMoment = moment.tz(serverLatestUpdatedTime, serverTimeZone);
       }
-      const clientTimeZone = moment.tz.guess();
-      const convertedTime = serverMoment.tz(serverTimeZone).tz(clientTimeZone);
 
-      return convertedTime.format('HH:mm:ss YYYY-MM-DD');
+      const clientTimeZone = moment.tz.guess();
+
+      const convertedTime = serverMoment.clone().tz(clientTimeZone);
+
+      return convertedTime.format('YYYY-MM-DD HH:mm', convertedTime);
    }
 };

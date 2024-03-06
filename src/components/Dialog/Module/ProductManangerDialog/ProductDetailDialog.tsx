@@ -108,7 +108,6 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    };
 
    //load Parts when open Dialog (when setup dataFilterForGetParts is successfully)
-   console.log(dataFilterForGetParts);
    useEffect(() => {
       if (modelCode && series) {
          getDataPartByFilter();
