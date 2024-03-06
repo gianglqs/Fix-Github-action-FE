@@ -14,7 +14,7 @@ import Paper from '@mui/material/Paper';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { AccountCircle, ReplayOutlined as ReloadIcon } from '@mui/icons-material';
-import { Button, Popover, Tooltip } from '@mui/material';
+import { Button, Link, Popover, Tooltip } from '@mui/material';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { commonStore, historicalImportStore, userStore } from '@/store/reducers';
@@ -45,6 +45,7 @@ import { GetServerSidePropsContext } from 'next';
 import { formatDate } from '@/utils/formatCell';
 import { DataGridPro } from '@mui/x-data-grid-pro';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
+import { BASE_URL } from '@/Path/backend';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageAdmin(context);
@@ -198,6 +199,18 @@ export default function HistoricalImport() {
          flex: 0.8,
          headerAlign: 'center',
          headerName: 'File name',
+         renderCell(params) {
+            return (
+               <a
+                  onClick={() =>
+                     handleDownloadFileImported(params?.row?.fileName, params?.row?.path)
+                  }
+                  style={{ cursor: 'pointer' }}
+               >
+                  {params?.row?.fileName}
+               </a>
+            );
+         },
       },
       {
          field: 'screen',
@@ -244,9 +257,14 @@ export default function HistoricalImport() {
          renderCell(params) {
             return (
                <Tooltip title={!params.row.success && params.row.message} placement="top">
-                  <Button variant="outlined" color={`${params.row.success ? 'success' : 'error'}`}>
-                     {params.row.success ? 'success' : 'failure'}
-                  </Button>
+                  {!params.row.loading && (
+                     <Button
+                        variant="outlined"
+                        color={`${params.row.success ? 'success' : 'error'}`}
+                     >
+                        {params.row.success ? 'success' : 'failure'}
+                     </Button>
+                  )}
                </Tooltip>
             );
          },
@@ -255,6 +273,32 @@ export default function HistoricalImport() {
 
    const handleReload = () => {
       dispatch(historicalImportStore.sagaGetList());
+   };
+
+   const handleDownloadFileImported = (fileName: string, path: string) => {
+      const fileURL = BASE_URL + path;
+
+      fetch(fileURL, { method: 'GET' })
+         .then((response) => response.blob())
+         .then((blob) => {
+            // Create blob link to download
+            const url = window.URL.createObjectURL(new Blob([blob]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileName);
+
+            // Append to html link element page
+            document.body.appendChild(link);
+
+            // Start download
+            link.click();
+
+            // Clean up and remove the link
+            link.parentNode.removeChild(link);
+         })
+         .catch((e) => {
+            console.log(e);
+         });
    };
 
    return (
