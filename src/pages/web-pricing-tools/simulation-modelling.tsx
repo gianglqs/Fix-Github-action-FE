@@ -264,7 +264,7 @@ export default function Adjustment() {
       {
          field: 'manualAdjFX',
          flex: 0.7,
-         headerName: "Adjusted FX ('000 USD)",
+         headerName: 'Adjusted FX %',
          ...formatNumbericColumn,
          backgroundColor: fxAdjColor,
          renderCell(params) {
@@ -988,6 +988,7 @@ export default function Adjustment() {
                         name="costAdjPercentage"
                         label="Cost Adj %"
                         placeholder="Cost Adj %"
+                        focused
                      />
                   </Grid>
                </Grid>
@@ -1000,6 +1001,7 @@ export default function Adjustment() {
                         name="freightAdj"
                         label="Freight Adj ('000 USD)"
                         placeholder="Freight Adj ('000 USD)"
+                        focused
                      />
                   </Grid>
                </Grid>{' '}
@@ -1027,6 +1029,7 @@ export default function Adjustment() {
                         name="dnAdjPercentage"
                         label="DN Adj %"
                         placeholder="DN Adj %"
+                        focused
                      />
                   </Grid>
                </Grid>
