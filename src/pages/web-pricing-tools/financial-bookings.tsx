@@ -50,6 +50,7 @@ import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/Im
 import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
+import { paperStyle } from '@/theme/paperStyle';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -434,22 +435,10 @@ export default function Booking() {
          <AppLayout entity="booking">
             <Grid container spacing={1} sx={{ marginBottom: 2 }}>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Dealer Net ('000 USD)
+                           Dealer Net ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.dealerNet)}
@@ -458,22 +447,10 @@ export default function Booking() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Dealer Net After Surcharge ('000 USD)
+                           Dealer Net After Surcharge ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.dealerNetAfterSurcharge)}
@@ -482,22 +459,10 @@ export default function Booking() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Total Cost ('000 USD)
+                           Total Cost ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.totalCost)}
@@ -506,19 +471,7 @@ export default function Booking() {
                   </Paper>
                </Grid>
                <Grid item xs={3}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Margin % After Surcharge
@@ -845,11 +798,6 @@ export default function Booking() {
                            </ListItem>
                         ))}
                   </Grid>
-                  <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={6}>
-                     <Typography sx={{ marginRight: '20px' }}>
-                        Latest updated at {clientLatestUpdatedTime}
-                     </Typography>
-                  </Grid>
                </Grid>
             </When>
 
@@ -863,7 +811,7 @@ export default function Booking() {
                   },
                }}
             >
-               <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
+               <Grid container sx={{ height: `calc(93vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter
                      disableColumnMenu
@@ -885,6 +833,11 @@ export default function Booking() {
                      getRowId={(params) => params.orderNo}
                      onCellClick={handleOnCellClick}
                   />
+               </Grid>
+               <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
+                  <Typography sx={{ marginRight: 1, marginTop: 1 }}>
+                     Last updated at {clientLatestUpdatedTime}
+                  </Typography>
                </Grid>
 
                <DataTablePagination

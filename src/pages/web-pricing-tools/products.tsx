@@ -575,11 +575,6 @@ export default function Product() {
                            </ListItem>
                         ))}
                   </Grid>
-                  <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
-                     <Typography sx={{ marginRight: '20px' }}>
-                        Latest updated at {clientLatestUpdatedTime}
-                     </Typography>
-                  </Grid>
                </Grid>
             </When>
 
@@ -608,6 +603,12 @@ export default function Product() {
                      onRowClick={handleOpenProductDetailDialog}
                      onCellClick={handleOnCellClick}
                   />
+               </Grid>
+
+               <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
+                  <Typography sx={{ marginRight: 1, marginTop: 1 }}>
+                     Last updated at {clientLatestUpdatedTime}
+                  </Typography>
                </Grid>
 
                <DataTablePagination

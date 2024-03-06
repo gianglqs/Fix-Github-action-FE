@@ -192,14 +192,17 @@ const components: Components = {
                backgroundColor: secondaryColor.main,
             },
             '& .MuiDataGrid-cell': {
-               borderBottom: 'none',
+               border: '1px solid white',
                color: secondaryColor.contrastText,
                '&:focus-within': {
                   outline: 'none',
                },
             },
             '& .highlight-cell': {
-               backgroundColor: 'rgba(231, 168, 0, 0.8)',
+               backgroundColor: 'rgba(232, 192, 86, 0.6)',
+            },
+            '& .MuiDataGrid-row:nth-child(even) .highlight-cell': {
+               backgroundColor: 'rgba(232, 192, 86, 0.8)',
             },
             '& .MuiDataGrid-columnHeaderTitle': {
                fontWeight: 'bold',

@@ -49,6 +49,7 @@ import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { setCookie } from 'nookies';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
+import { paperStyle } from '@/theme/paperStyle';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -399,19 +400,7 @@ export default function Outlier() {
          <AppLayout entity="outlier">
             <Grid container spacing={1} sx={{ marginBottom: 2 }}>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: paperMinWidth,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Total Cost ('000)
@@ -423,19 +412,7 @@ export default function Outlier() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: paperMinWidth,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Dealer Net('000)
@@ -447,19 +424,7 @@ export default function Outlier() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: paperMinWidth,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Dealer Net After Surcharge ('000)
@@ -471,19 +436,7 @@ export default function Outlier() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: paperMinWidth,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Margin $ After Surcharge ('000)
@@ -495,19 +448,7 @@ export default function Outlier() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: paperMinWidth,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Margin % After Surcharge
@@ -693,11 +634,6 @@ export default function Outlier() {
                      Clear
                   </Button>
                </Grid>
-               <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
-                  <Typography sx={{ marginRight: '20px' }}>
-                     Latest updated at {clientLatestUpdatedTime}
-                  </Typography>
-               </Grid>
             </Grid>
             <Grid
                sx={{
@@ -737,6 +673,13 @@ export default function Outlier() {
                         getRowId={(params) => params.orderNo}
                      />
                   </Grid>
+
+                  <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
+                     <Typography sx={{ marginRight: 1, marginTop: 1 }}>
+                        Last updated at {clientLatestUpdatedTime}
+                     </Typography>
+                  </Grid>
+
                   <DataTablePagination
                      page={tableState.pageNo}
                      perPage={tableState.perPage}
