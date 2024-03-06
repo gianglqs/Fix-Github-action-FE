@@ -34,6 +34,7 @@ import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { setCookie } from 'nookies';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
+import { paperStyle } from '@/theme/paperStyle';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
