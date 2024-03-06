@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+export const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export const CHECK_TOKEN_URL = BASE_URL + 'oauth/checkToken';
 

@@ -16,6 +16,6 @@ export const convertServerTimeToClientTimeZone = (
       const clientTimeZone = moment.tz.guess();
       const convertedTime = serverMoment.tz(serverTimeZone).tz(clientTimeZone);
 
-      return convertedTime.format('HH:mm:ss YYYY-MM-DD');
+      return convertedTime.format('YYYY-MM-DD HH:mm');
    }
 };
