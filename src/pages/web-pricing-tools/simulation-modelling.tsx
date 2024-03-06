@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { adjustmentStore, commonStore } from '@/store/reducers';
 
 import moment from 'moment-timezone';
-import { rowColor } from '@/theme/colorRow';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -34,6 +33,7 @@ import { GetServerSidePropsContext } from 'next';
 import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { setCookie } from 'nookies';
+import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -264,7 +264,7 @@ export default function Adjustment() {
       {
          field: 'manualAdjFX',
          flex: 0.7,
-         headerName: "Adjusted FX ('000 USD)",
+         headerName: 'Adjusted FX %',
          ...formatNumbericColumn,
          backgroundColor: fxAdjColor,
          renderCell(params) {
@@ -621,38 +621,23 @@ export default function Adjustment() {
    };
 
    // show latest updated time
-   const convertServerTimeToClientTimeZone = () => {
+   const convertTimezone = () => {
       if (serverLatestUpdatedTime && serverTimeZone) {
-         const clientTimeZone = moment.tz.guess();
-         const convertedTime = moment
-            .tz(serverLatestUpdatedTime, serverTimeZone)
-            .tz(clientTimeZone);
-         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
-         // console.log('Converted Time:', convertedTime.format());
+         setClientLatestUpdatedTime(
+            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+         );
       }
    };
 
    useEffect(() => {
-      convertServerTimeToClientTimeZone();
+      convertTimezone();
    }, [serverLatestUpdatedTime, serverTimeZone]);
    return (
       <>
          <AppLayout entity="adjustment">
             <Grid container spacing={1} sx={{ marginBottom: 2 }}>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Number of Orders
@@ -664,19 +649,7 @@ export default function Adjustment() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Additional Units
@@ -688,19 +661,7 @@ export default function Adjustment() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Original DN ('000)
@@ -712,19 +673,7 @@ export default function Adjustment() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Original Margin $ ('000)
@@ -736,19 +685,7 @@ export default function Adjustment() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Original Margin %
@@ -760,19 +697,7 @@ export default function Adjustment() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Adjusted Cost ('000)
@@ -784,19 +709,7 @@ export default function Adjustment() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Adjusted Freight ('000)
@@ -808,19 +721,7 @@ export default function Adjustment() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Adjusted FX ('000)
@@ -832,19 +733,7 @@ export default function Adjustment() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Total Manual Adj Cost ('000)
@@ -856,19 +745,7 @@ export default function Adjustment() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            Adjusted Dealer Net ('000)
@@ -880,19 +757,7 @@ export default function Adjustment() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            New Margin $ ('000)
@@ -904,19 +769,7 @@ export default function Adjustment() {
                   </Paper>
                </Grid>
                <Grid item xs={2.4}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        padding: 2,
-                        height: 'fit-content',
-                        minWidth: 300,
-                        backgroundColor: '#e7a800',
-                        border: '1px solid #e7a800',
-                        ':hover': {
-                           border: '1px solid black',
-                        },
-                     }}
-                  >
+                  <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            New Margin %
@@ -1132,6 +985,7 @@ export default function Adjustment() {
                         name="costAdjPercentage"
                         label="Cost Adj %"
                         placeholder="Cost Adj %"
+                        focused
                      />
                   </Grid>
                </Grid>
@@ -1144,6 +998,7 @@ export default function Adjustment() {
                         name="freightAdj"
                         label="Freight Adj ('000 USD)"
                         placeholder="Freight Adj ('000 USD)"
+                        focused
                      />
                   </Grid>
                </Grid>{' '}
@@ -1171,6 +1026,7 @@ export default function Adjustment() {
                         name="dnAdjPercentage"
                         label="DN Adj %"
                         placeholder="DN Adj %"
+                        focused
                      />
                   </Grid>
                </Grid>
@@ -1191,11 +1047,6 @@ export default function Adjustment() {
                   >
                      Clear Calculators
                   </Button>
-               </Grid>
-               <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
-                  <Typography sx={{ marginRight: '20px' }}>
-                     Latest updated at {clientLatestUpdatedTime}
-                  </Typography>
                </Grid>
             </Grid>
 
@@ -1229,6 +1080,13 @@ export default function Adjustment() {
                      getRowId={(params) => params.id}
                   />
                </Grid>
+
+               <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
+                  <Typography sx={{ marginRight: 1, marginTop: 1 }}>
+                     Last updated at {clientLatestUpdatedTime}
+                  </Typography>
+               </Grid>
+
                <DataTablePagination
                   page={tableState.pageNo}
                   perPage={tableState.perPage}

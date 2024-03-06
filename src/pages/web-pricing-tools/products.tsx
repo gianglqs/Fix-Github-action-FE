@@ -40,6 +40,7 @@ import productApi from '@/api/product.api';
 import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { setCookie } from 'nookies';
+import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -347,20 +348,16 @@ export default function Product() {
 
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
-   // show latest updated time
-   const convertServerTimeToClientTimeZone = () => {
+   const convertTimezone = () => {
       if (serverLatestUpdatedTime && serverTimeZone) {
-         const clientTimeZone = moment.tz.guess();
-         const convertedTime = moment
-            .tz(serverLatestUpdatedTime, serverTimeZone)
-            .tz(clientTimeZone);
-         setClientLatestUpdatedTime(convertedTime.format('HH:mm:ss YYYY-MM-DD'));
-         console.log('Converted Time:', convertedTime.format());
+         setClientLatestUpdatedTime(
+            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+         );
       }
    };
 
    useEffect(() => {
-      convertServerTimeToClientTimeZone();
+      convertTimezone();
    }, [serverLatestUpdatedTime, serverTimeZone]);
 
    return (
@@ -578,11 +575,6 @@ export default function Product() {
                            </ListItem>
                         ))}
                   </Grid>
-                  <Grid sx={{ display: 'flex', justifyContent: 'end' }} xs={12}>
-                     <Typography sx={{ marginRight: '20px' }}>
-                        Latest updated at {clientLatestUpdatedTime}
-                     </Typography>
-                  </Grid>
                </Grid>
             </When>
 
@@ -611,6 +603,12 @@ export default function Product() {
                      onRowClick={handleOpenProductDetailDialog}
                      onCellClick={handleOnCellClick}
                   />
+               </Grid>
+
+               <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
+                  <Typography sx={{ marginRight: 1, marginTop: 1 }}>
+                     Last updated at {clientLatestUpdatedTime}
+                  </Typography>
                </Grid>
 
                <DataTablePagination
