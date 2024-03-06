@@ -208,12 +208,10 @@ export default function Product() {
       },
    ];
 
-   const handleUploadFile = async (files) => {
+   const handleUploadFile = async (file) => {
       let formData = new FormData();
 
-      files.map((file) => {
-         formData.append('files', file);
-      });
+      formData.append('file', file[0]);
 
       console.log(formData);
 
@@ -657,7 +655,7 @@ function UploadFileDropZone(props) {
       noClick: true,
       onDrop,
       maxSize: 10485760, // < 10MB
-      maxFiles: 2,
+      maxFiles: 1,
       accept: {
          'excel/xlsx': ['.xlsx'],
       },
