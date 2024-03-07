@@ -75,6 +75,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       'product-margin-analytics': 'Product Margin Analytics',
       products: 'Products',
       'exchange-rates': 'Exchange Rates',
+      'data-scraping': 'Data Scraping',
    };
 
    const renderMenu = () => {
