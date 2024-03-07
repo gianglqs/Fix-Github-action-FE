@@ -11,7 +11,13 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { Button, Typography } from '@mui/material';
 
-import { AppAutocomplete, AppLayout, AppTextField, DataTablePagination } from '@/components';
+import {
+   AppAutocomplete,
+   AppLayout,
+   AppNumberField,
+   AppTextField,
+   DataTablePagination,
+} from '@/components';
 
 import _ from 'lodash';
 import { produce } from 'immer';
@@ -977,57 +983,53 @@ export default function Adjustment() {
             <Grid container spacing={1} marginTop={0.5}>
                <Grid item xs={2}>
                   <Grid item xs={12}>
-                     <AppTextField
+                     <AppNumberField
                         value={dataCalculator.costAdjPercentage}
                         sx={{ backgroundColor: '#FFCC99' }}
-                        onChange={(e) =>
-                           handleChangeDataCalculator(e.target.value, 'costAdjPercentage')
-                        }
+                        onChange={(e) => handleChangeDataCalculator(e.value, 'costAdjPercentage')}
                         name="costAdjPercentage"
                         label="Cost Adj %"
                         placeholder="Cost Adj %"
-                        focused
+                        prefix={'$ '}
                      />
                   </Grid>
                </Grid>
                <Grid item xs={2}>
                   <Grid item xs={12}>
-                     <AppTextField
+                     <AppNumberField
                         value={dataCalculator.freightAdj}
                         sx={{ backgroundColor: '#f7c0a9' }}
-                        onChange={(e) => handleChangeDataCalculator(e.target.value, 'freightAdj')}
+                        onChange={(e) => handleChangeDataCalculator(e.value, 'freightAdj')}
                         name="freightAdj"
                         label="Freight Adj ('000 USD)"
                         placeholder="Freight Adj ('000 USD)"
-                        focused
+                        suffix=" %"
                      />
                   </Grid>
                </Grid>{' '}
                <Grid item xs={2}>
                   <Grid item xs={12}>
-                     <AppTextField
+                     <AppNumberField
                         value={dataCalculator.fxAdj}
                         sx={{ backgroundColor: '#e9d4c4' }}
-                        onChange={(e) => handleChangeDataCalculator(e.target.value, 'fxAdj')}
+                        onChange={(e) => handleChangeDataCalculator(e.value, 'fxAdj')}
                         name="fxAdj"
                         label="FX Adj %"
                         placeholder="FX Adj %"
-                        focused
+                        suffix=" %"
                      />
                   </Grid>
                </Grid>{' '}
                <Grid item xs={2}>
                   <Grid item xs={12}>
-                     <AppTextField
+                     <AppNumberField
                         value={dataCalculator.dnAdjPercentage}
                         sx={{ backgroundColor: '#f9d06d' }}
-                        onChange={(e) =>
-                           handleChangeDataCalculator(e.target.value, 'dnAdjPercentage')
-                        }
+                        onChange={(e) => handleChangeDataCalculator(e.value, 'dnAdjPercentage')}
                         name="dnAdjPercentage"
                         label="DN Adj %"
                         placeholder="DN Adj %"
-                        focused
+                        prefix={'$ '}
                      />
                   </Grid>
                </Grid>
