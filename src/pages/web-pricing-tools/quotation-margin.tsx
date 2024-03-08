@@ -1084,7 +1084,7 @@ function UploadFileDropZone(props) {
    const { getRootProps, getInputProps, open, fileRejections } = useDropzone({
       noClick: true,
       onDrop,
-      maxSize: 16777216,
+      maxSize: 50777216,
       maxFiles: 1,
       accept: {
          'excel/xlsx': ['.xlsx', '.xlsb'],
