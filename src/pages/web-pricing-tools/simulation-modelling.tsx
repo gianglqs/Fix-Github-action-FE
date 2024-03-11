@@ -990,7 +990,7 @@ export default function Adjustment() {
                         name="costAdjPercentage"
                         label="Cost Adj %"
                         placeholder="Cost Adj %"
-                        prefix={'$ '}
+                        suffix="%"
                      />
                   </Grid>
                </Grid>
@@ -1003,7 +1003,7 @@ export default function Adjustment() {
                         name="freightAdj"
                         label="Freight Adj ('000 USD)"
                         placeholder="Freight Adj ('000 USD)"
-                        suffix=" %"
+                        prefix="$"
                      />
                   </Grid>
                </Grid>{' '}
@@ -1016,7 +1016,7 @@ export default function Adjustment() {
                         name="fxAdj"
                         label="FX Adj %"
                         placeholder="FX Adj %"
-                        suffix=" %"
+                        suffix="%"
                      />
                   </Grid>
                </Grid>{' '}
@@ -1029,7 +1029,7 @@ export default function Adjustment() {
                         name="dnAdjPercentage"
                         label="DN Adj %"
                         placeholder="DN Adj %"
-                        prefix={'$ '}
+                        suffix="%"
                      />
                   </Grid>
                </Grid>
@@ -1084,18 +1084,13 @@ export default function Adjustment() {
                   />
                </Grid>
 
-               <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
-                  <Typography sx={{ marginRight: 1, marginTop: 1 }}>
-                     Last updated at {clientLatestUpdatedTime}
-                  </Typography>
-               </Grid>
-
                <DataTablePagination
                   page={tableState.pageNo}
                   perPage={tableState.perPage}
                   totalItems={tableState.totalItems}
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
+                  lastUpdated={clientLatestUpdatedTime}
                />
                <AppBackDrop open={loadingTable} hightHeaderTable={'102px'} />
             </Paper>

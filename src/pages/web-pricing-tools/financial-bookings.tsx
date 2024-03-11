@@ -811,7 +811,7 @@ export default function Booking() {
                   },
                }}
             >
-               <Grid container sx={{ height: `calc(93vh - ${heightComponentExcludingTable}px)` }}>
+               <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
                   <DataGridPro
                      hideFooter
                      disableColumnMenu
@@ -834,11 +834,6 @@ export default function Booking() {
                      onCellClick={handleOnCellClick}
                   />
                </Grid>
-               <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
-                  <Typography sx={{ marginRight: 1, marginTop: 1 }}>
-                     Last updated at {clientLatestUpdatedTime}
-                  </Typography>
-               </Grid>
 
                <DataTablePagination
                   page={tableState.pageNo}
@@ -846,6 +841,7 @@ export default function Booking() {
                   totalItems={tableState.totalItems}
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
+                  lastUpdated={clientLatestUpdatedTime}
                />
                <AppBackDrop open={loadingTable} hightHeaderTable={'93px'} />
             </Paper>

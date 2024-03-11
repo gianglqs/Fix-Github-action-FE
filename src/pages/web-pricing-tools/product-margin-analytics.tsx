@@ -649,7 +649,7 @@ export default function Outlier() {
                </Grid>
 
                <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
-                  <Grid container sx={{ height: 'calc(58vh - 238px)' }}>
+                  <Grid container sx={{ height: 'calc(60vh - 238px)' }}>
                      <DataGridPro
                         sx={{
                            '& .MuiDataGrid-columnHeaderTitle': {
@@ -674,18 +674,13 @@ export default function Outlier() {
                      />
                   </Grid>
 
-                  <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
-                     <Typography sx={{ marginRight: 1, marginTop: 1 }}>
-                        Last updated at {clientLatestUpdatedTime}
-                     </Typography>
-                  </Grid>
-
                   <DataTablePagination
                      page={tableState.pageNo}
                      perPage={tableState.perPage}
                      totalItems={tableState.totalItems}
                      onChangePage={handleChangePage}
                      onChangePerPage={handleChangePerPage}
+                     lastUpdated={clientLatestUpdatedTime}
                   />
                </Paper>
                <AppBackDrop open={loading} hightHeaderTable={'35px'} bottom={'43px'} />

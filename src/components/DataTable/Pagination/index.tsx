@@ -1,178 +1,170 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from 'react';
 
-import {
-  Menu,
-  MenuItem,
-  Button,
-  Typography,
-  styled,
-  Pagination,
-  Stack,
-} from "@mui/material"
+import { Menu, MenuItem, Button, Typography, styled, Pagination, Stack } from '@mui/material';
 
-import { ArrowDropDown as ArrowDropDownIcon } from "@mui/icons-material"
+import { ArrowDropDown as ArrowDropDownIcon } from '@mui/icons-material';
 
-import {
-  usePopupState,
-  bindTrigger,
-  bindMenu,
-} from "material-ui-popup-state/hooks"
+import { usePopupState, bindTrigger, bindMenu } from 'material-ui-popup-state/hooks';
 
-import type { NumberFormatValues } from "react-number-format"
-import type { DataTablePaginationProps } from "./type"
-import { AppNumberField } from "@/components/App"
+import type { NumberFormatValues } from 'react-number-format';
+import type { DataTablePaginationProps } from './type';
+import { AppNumberField } from '@/components/App';
 
 const StyledPagination = styled(Pagination)(({ theme }) => ({
-  "& .MuiPaginationItem-root": {
-    minWidth: "23px !important",
-    height: "23px !important",
-    padding: 0,
-    color: theme.palette.secondary.dark,
-  },
-  "& .MuiPaginationItem-icon": {
-    color: theme.palette.secondary.dark,
-  },
-  "& .Mui-selected": {
-    backgroundColor: `${theme.palette.secondary.dark} !important`,
-    color: theme.palette.common.white,
-  },
-}))
+   '& .MuiPaginationItem-root': {
+      minWidth: '23px !important',
+      height: '23px !important',
+      padding: 0,
+      color: theme.palette.secondary.dark,
+   },
+   '& .MuiPaginationItem-icon': {
+      color: theme.palette.secondary.dark,
+   },
+   '& .Mui-selected': {
+      backgroundColor: `${theme.palette.secondary.dark} !important`,
+      color: theme.palette.common.white,
+   },
+}));
 
 const StyledGoButton = styled(Button)(({ theme }) => ({
-  fontSize: theme.typography.body2.fontSize,
-  padding: 0,
-  width: 30,
-  minWidth: 30,
-  background: theme.palette.secondary.dark,
-  color: theme.palette.common.white,
-  height: 24,
-  border: "none",
-  "&:hover": {
-    opacity: 0.8,
-    backgroundColor: theme.palette.secondary.dark,
-  },
-}))
+   fontSize: theme.typography.body2.fontSize,
+   padding: 0,
+   width: 30,
+   minWidth: 30,
+   background: theme.palette.secondary.dark,
+   color: theme.palette.common.white,
+   height: 24,
+   border: 'none',
+   '&:hover': {
+      opacity: 0.8,
+      backgroundColor: theme.palette.secondary.dark,
+   },
+}));
 
-const DataTablePagination: React.FC<DataTablePaginationProps> = (props) => {
-  const {
-    page,
-    perPage,
-    totalItems,
-    perPageList,
-    onChangePage,
-    onChangePerPage,
-  } = props
-  const count = Math.ceil(totalItems / perPage)
+const DataTablePagination = (props) => {
+   const { page, perPage, totalItems, perPageList, onChangePage, onChangePerPage, lastUpdated } =
+      props;
+   const count = Math.ceil(totalItems / perPage);
 
-  const [numberGoToPage, setNumberGoToPage] = useState(0)
+   const [numberGoToPage, setNumberGoToPage] = useState(0);
 
-  const popupState = usePopupState({ variant: "popover", popupId: "demoMenu" })
+   const popupState = usePopupState({ variant: 'popover', popupId: 'demoMenu' });
 
-  useEffect(() => {
-    setNumberGoToPage(page)
-  }, [page])
+   useEffect(() => {
+      setNumberGoToPage(page);
+   }, [page]);
 
-  const renderPerPage = () =>
-    perPageList.map((item) => (
-      <MenuItem onClick={handleChangePerpage(item)} key={`perPage-${item}`}>
-        <Typography variant="body2">{item}</Typography>
-      </MenuItem>
-    ))
+   const renderPerPage = () =>
+      perPageList.map((item) => (
+         <MenuItem onClick={handleChangePerpage(item)} key={`perPage-${item}`}>
+            <Typography variant="body2">{item}</Typography>
+         </MenuItem>
+      ));
 
-  const handleChangePage = (event, nextPage: number) => {
-    if (nextPage !== 0 && nextPage <= count) {
-      onChangePage(nextPage)
-    }
-  }
+   const handleChangePage = (event, nextPage: number) => {
+      if (nextPage !== 0 && nextPage <= count) {
+         onChangePage(nextPage);
+      }
+   };
 
-  const handleChangePerpage = (perPage: number) => () => {
-    popupState.close()
-    onChangePerPage(perPage)
-  }
+   const handleChangePerpage = (perPage: number) => () => {
+      popupState.close();
+      onChangePerPage(perPage);
+   };
 
-  const handleChangeGoToPage = (values: NumberFormatValues) => {
-    setNumberGoToPage(values.floatValue)
-  }
+   const handleChangeGoToPage = (values: NumberFormatValues) => {
+      setNumberGoToPage(values.floatValue);
+   };
 
-  const handleGoToPage = (event) => {
-    event.preventDefault()
-    handleChangePage(event, numberGoToPage)
-  }
+   const handleGoToPage = (event) => {
+      event.preventDefault();
+      handleChangePage(event, numberGoToPage);
+   };
 
-  return (
-    <>
-      <Stack
-        direction="row"
-        justifyContent="end"
-        alignItems="center"
-        sx={{ mx: 1, color: "secondary.dark", height: 45 }}
-      >
-        {/* <Typography component="div" variant="body2" sx={{ fontSize: 10, fontWeight: 'fontWeightBold' }}>
+   return (
+      <>
+         <Stack
+            direction="row"
+            alignItems="center"
+            sx={{ mx: 1, color: 'secondary.dark', height: 45 }}
+         >
+            <Stack
+               direction="row"
+               spacing={0.5}
+               alignItems="center"
+               sx={{ width: '50%', color: 'black' }}
+            >
+               <div>Last updated at: {lastUpdated}</div>
+            </Stack>
+
+            {/* <Typography component="div" variant="body2" sx={{ fontSize: 10, fontWeight: 'fontWeightBold' }}>
           {countSelectedItems} SELECTED ITEM(S)
         </Typography> */}
-        <Stack direction="row" spacing={0.5} alignItems="center">
-          {/* Rows per page */}
-          <Stack direction="row" alignItems="center" spacing={0.5}>
-            <Typography component="div" variant="body1" sx={{ mr: 0.5 }}>
-              Rows per page:
-            </Typography>
             <Stack
-              sx={{ cursor: "pointer" }}
-              spacing={0.5}
-              direction="row"
-              alignItems="center"
-              {...bindTrigger(popupState)}
+               direction="row"
+               spacing={0.5}
+               alignItems="center"
+               justifyContent="end"
+               sx={{ width: '50%' }}
             >
-              <Typography component="span" variant="body1">
-                {perPage}
-              </Typography>
-              <ArrowDropDownIcon sx={{ ml: "0 !important" }} />
-            </Stack>
-          </Stack>
-          {/* Pagination */}
-          <StyledPagination
-            count={count}
-            onChange={handleChangePage}
-            page={page}
-          />
-          {/* Go to page */}
-          <form action="">
-            <AppNumberField
-              onChange={handleChangeGoToPage}
-              sx={{ width: 70 }}
-              decimalScale={0}
-              fixedDecimalScale={false}
-              value={numberGoToPage}
-              InputProps={{
-                endAdornment: (
-                  <StyledGoButton
-                    type="submit"
-                    onClick={handleGoToPage}
-                    aria-label="go-to-page"
+               {/* Rows per page */}
+               <Stack direction="row" alignItems="center" spacing={0.5}>
+                  <Typography component="div" variant="body1" sx={{ mr: 0.5 }}>
+                     Rows per page:
+                  </Typography>
+                  <Stack
+                     sx={{ cursor: 'pointer' }}
+                     spacing={0.5}
+                     direction="row"
+                     alignItems="center"
+                     {...bindTrigger(popupState)}
                   >
-                    Go
-                  </StyledGoButton>
-                ),
-              }}
-            />
-          </form>
-        </Stack>
-      </Stack>
-      <Menu
-        {...bindMenu(popupState)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        transformOrigin={{ vertical: "top", horizontal: "left" }}
-      >
-        {renderPerPage()}
-      </Menu>
-    </>
-  )
-}
+                     <Typography component="span" variant="body1">
+                        {perPage}
+                     </Typography>
+                     <ArrowDropDownIcon sx={{ ml: '0 !important' }} />
+                  </Stack>
+               </Stack>
+               {/* Pagination */}
+               <StyledPagination count={count} onChange={handleChangePage} page={page} />
+               {/* Go to page */}
+               <form action="">
+                  <AppNumberField
+                     onChange={handleChangeGoToPage}
+                     sx={{ width: 70 }}
+                     decimalScale={0}
+                     fixedDecimalScale={false}
+                     value={numberGoToPage}
+                     InputProps={{
+                        endAdornment: (
+                           <StyledGoButton
+                              type="submit"
+                              onClick={handleGoToPage}
+                              aria-label="go-to-page"
+                           >
+                              Go
+                           </StyledGoButton>
+                        ),
+                     }}
+                  />
+               </form>
+            </Stack>
+         </Stack>
+         <Menu
+            {...bindMenu(popupState)}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+         >
+            {renderPerPage()}
+         </Menu>
+      </>
+   );
+};
 
 DataTablePagination.defaultProps = {
-  perPageList: [10, 20, 50, 100, 200, 500],
-}
+   perPageList: [10, 20, 50, 100, 200, 500],
+};
 
-export * from "./type"
+export * from './type';
 
-export { DataTablePagination }
+export { DataTablePagination };
