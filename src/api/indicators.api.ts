@@ -54,6 +54,11 @@ class IndicatorApi extends HttpService<any> {
    importForecastFile = (data: any) => {
       return this.importData<any>('uploadForecastFile', data);
    };
+
+   getCountryByRegion = (region, context: GetServerSidePropsContext = null as any) => {
+      this.saveToken(context);
+      return this.instance.get(`filters/competitorPricing/get-country-name?region=${region}`);
+   };
 }
 
 const indicatorApi = new IndicatorApi('indicator');

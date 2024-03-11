@@ -146,6 +146,8 @@ export default function Indicators() {
       setLoadingSwot(false);
    }, [competitiveLandscapeData]);
 
+   const [bubbleCountryInitFilter, setBubbleCountryInitFilter] = useState(initDataFilter.countries);
+
    const handleFilterCompetitiveLandscape = async () => {
       if (!competitiveLandscapeData.clearFilter) setLoadingSwot(true);
       try {
@@ -169,8 +171,8 @@ export default function Indicators() {
                label: `${item.color.groupName}`,
                data: [
                   {
-                     x: item.competitorPricing,
-                     y: item.competitorLeadTime,
+                     y: item.competitorPricing,
+                     x: item.competitorLeadTime,
                      r: (item.marketShare * 100).toLocaleString(),
                   },
                ],
@@ -186,6 +188,25 @@ export default function Indicators() {
          dispatch(commonStore.actions.setErrorMessage(error.message));
       }
    };
+
+   useEffect(() => {
+      const getCountryByRegion = async () => {
+         const { data } = await indicatorApi.getCountryByRegion(swotDataFilter.regions);
+         return data;
+      };
+      getCountryByRegion()
+         .then((response) => {
+            const countries = response.country;
+            setBubbleCountryInitFilter(() =>
+               countries.map((value) => {
+                  return { value: value };
+               })
+            );
+         })
+         .catch((error) => {
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   }, [swotDataFilter.regions]);
 
    const handleChangeSwotFilter = (option, field) => {
       setSwotDataFilter((prev) =>
@@ -215,7 +236,6 @@ export default function Indicators() {
    }, [dataFilter]);
 
    useEffect(() => {
-      console.log(swotDataFilter);
       if (swotDataFilter.regions != null) setRegionError({ error: false });
    }, [swotDataFilter]);
 
@@ -417,19 +437,24 @@ export default function Indicators() {
    const options = {
       scales: {
          y: {
-            beginAtZero: true,
-            title: {
-               text: 'Lead Time (weeks)',
-               display: true,
-            },
-         },
-         x: {
             title: {
                text: 'Price $',
                display: true,
             },
             ticks: {
                stepSize: 2000,
+            },
+            // beginAtZero: true,
+            // title: {
+            //    text: 'Lead Time (weeks)',
+            //    display: true,
+            // },
+         },
+         x: {
+            beginAtZero: true,
+            title: {
+               text: 'Lead Time (weeks)',
+               display: true,
             },
          },
       },
@@ -475,9 +500,9 @@ export default function Indicators() {
                   label: {
                      display: true,
                      content: [
-                        'Low Price, High Lead Time   High Price, High Lead Time',
+                        'High Price, Low Lead Time   High Price, High Lead Time',
                         '',
-                        'Low Price, Low Lead Time   High Price, Low Lead Time',
+                        'Low Price, Low Lead Time   Low Price, High Lead Time',
                      ],
                      backgroundColor: 'transparent',
                      width: '40%',
@@ -1014,7 +1039,7 @@ export default function Indicators() {
                         value={_.map(swotDataFilter.countries, (item) => {
                            return { value: item };
                         })}
-                        options={initDataFilter.countries}
+                        options={bubbleCountryInitFilter}
                         label="Country"
                         onChange={(e, option) => handleChangeSwotFilter(option, 'countries')}
                         limitTags={1}
