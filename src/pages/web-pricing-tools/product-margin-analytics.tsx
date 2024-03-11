@@ -151,7 +151,7 @@ export default function Outlier() {
          flex: 0.6,
          headerName: 'Class',
          renderCell(params) {
-            return <span>{params.row.product?.clazz}</span>;
+            return <span>{params.row.product?.clazz.clazzName}</span>;
          },
       },
       {

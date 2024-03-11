@@ -327,6 +327,9 @@ export default function Indicators() {
          field: 'clazz',
          flex: 1,
          headerName: 'Class',
+         renderCell(params) {
+            return <span>{params.row.clazz?.clazzName}</span>;
+         },
       },
       {
          field: 'series',

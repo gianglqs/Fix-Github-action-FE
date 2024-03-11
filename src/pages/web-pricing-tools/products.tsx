@@ -158,6 +158,9 @@ export default function Product() {
          field: 'clazz',
          flex: 0.5,
          headerName: 'Class',
+         renderCell(params) {
+            return <span>{params.row.clazz?.clazzName}</span>;
+         },
       },
       {
          field: 'plant',
