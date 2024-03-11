@@ -937,18 +937,13 @@ export default function Indicators() {
                   />
                </Grid>
 
-               <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
-                  <Typography sx={{ marginRight: 1, marginTop: 1 }}>
-                     Last updated at {clientLatestUpdatedTime}
-                  </Typography>
-               </Grid>
-
                <DataTablePagination
                   page={tableState.pageNo}
                   perPage={tableState.perPage}
                   totalItems={tableState.totalItems}
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
+                  lastUpdated={clientLatestUpdatedTime}
                />
                <AppBackDrop open={loadingTable} hightHeaderTable={'102px'} />
             </Paper>
