@@ -400,7 +400,7 @@ export default function Booking() {
    const handleCloseImageDialog = () => {
       setImageDialogState({
          open: false,
-         imageUrl: null,
+         imageUrl: undefined,
       });
    };
 

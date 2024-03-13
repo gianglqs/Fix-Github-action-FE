@@ -333,7 +333,7 @@ export default function Product() {
    const handleCloseImageDialog = () => {
       setImageDialogState({
          open: false,
-         imageUrl: null,
+         imageUrl: undefined,
       });
    };
 

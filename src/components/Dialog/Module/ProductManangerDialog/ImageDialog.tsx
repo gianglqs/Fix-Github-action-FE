@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 export default function ShowImageDialog(props) {
    const { open, imageUrl, onClose } = props;
-   const [image, setImage] = useState();
+   const [image, setImage] = useState(undefined);
    useEffect(() => {
       setImage(imageUrl);
    }, [imageUrl]);
