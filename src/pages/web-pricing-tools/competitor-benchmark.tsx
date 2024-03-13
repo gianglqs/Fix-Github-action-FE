@@ -487,7 +487,7 @@ export default function Indicators() {
                   if (label) {
                      label += ': ';
                   }
-                  label += `($ ${context.parsed.x.toLocaleString()}, ${context.parsed.y.toLocaleString()} weeks, ${
+                  label += `($ ${context.parsed.y.toLocaleString()}, ${context.parsed.x.toLocaleString()} weeks, ${
                      context.raw.r
                   }%)`;
 
