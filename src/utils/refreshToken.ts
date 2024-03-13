@@ -42,7 +42,7 @@ export const refreshTokenForFunctionGetServerSidePropsLogin = async (
          }
       );
 
-      const accessToken = response.data.accessToken;
+      const accessToken = response.data.data.accessToken;
 
       const newRequest = {
          ...error.config,
