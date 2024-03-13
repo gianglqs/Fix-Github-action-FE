@@ -188,7 +188,7 @@ export default function Shipment() {
          flex: 0.7,
          headerName: 'Class',
          renderCell(params) {
-            return <span>{params.row.product?.clazz}</span>;
+            return <span>{params.row.product?.clazz?.clazzName}</span>;
          },
       },
       {
