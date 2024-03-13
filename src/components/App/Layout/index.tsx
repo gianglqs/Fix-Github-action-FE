@@ -18,6 +18,10 @@ import nookies, { destroyCookie, parseCookies } from 'nookies';
 import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/ChangePasswordDialog';
 import Image from 'next/image';
 import { NextPageContext } from 'next';
+import { useTranslation } from 'react-i18next';
+import { DialogUpdateUser } from '@/components/Dialog/Module/Dashboard/UpdateDialog';
+import { commonStore } from '@/store/reducers';
+import dashboardApi from '@/api/dashboard.api';
 const smallLogo = require('@/public/smallLogo.svg');
 
 const removeAllCookies = () => {
@@ -31,6 +35,7 @@ const removeAllCookies = () => {
 const AppLayout: React.FC<AppLayoutProps> = (props) => {
    const { children, entity, heightBody } = props;
    const classes = useStyles();
+   const { t } = useTranslation();
 
    const popupState = usePopupState({
       variant: 'popover',
@@ -49,6 +54,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
 
    let cookies = parseCookies();
    let userRoleCookies = cookies['role'];
+   let userId = cookies['id'];
    const [userName, setUserName] = useState('');
 
    useEffect(() => {
@@ -66,16 +72,16 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
    }, [router.pathname]);
 
    const menuObj = {
-      'financial-bookings': 'Financial Bookings',
-      'financial-shipments': 'Financial Shipments',
-      'quotation-margin': 'Quotation Margin %',
-      'competitor-benchmark': 'Competitor Benchmark',
-      'simulation-modelling': 'Simulation Modelling',
+      'financial-bookings': t('title.financialBookings'),
+      'financial-shipments': t('title.financialShipments'),
+      'quotation-margin': t('title.quotationMarginPercentage'),
+      'competitor-benchmark': t('title.competitorBenchmark'),
+      'simulation-modelling': t('title.simulationModelling'),
       // 'competitor-bubbles': 'Competitor Bubbles',
-      'product-margin-analytics': 'Product Margin Analytics',
-      products: 'Products',
-      'exchange-rates': 'Exchange Rates',
-      'data-scraping': 'Data Scraping',
+      'product-margin-analytics': t('title.productMarginAnalytics'),
+      products: t('title.products'),
+      'exchange-rates': t('title.exchangeRates'),
+      'data-scraping': t('title.dataScraping'),
    };
 
    const renderMenu = () => {
@@ -135,6 +141,35 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
          detail: {},
       });
    };
+
+   const [updateUserState, setUpdateUserState] = useState({
+      open: false,
+      detail: {} as any,
+   });
+
+   const handleCloseUpdateUserDialog = () => {
+      setUpdateUserState({
+         open: false,
+         detail: {},
+      });
+   };
+
+   const handleOpenUpdateUserDialog = async () => {
+      try {
+         // Get init data
+
+         const { data } = await dashboardApi.getDetailUser(userId);
+
+         // Open form
+         setUpdateUserState({
+            open: true,
+            detail: JSON.parse(data)?.userDetails,
+         });
+      } catch (error) {
+         dispatch(commonStore.actions.setErrorMessage(error));
+      }
+   };
+
    return (
       <>
          <Head>
@@ -198,17 +233,25 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
                      data-testid="user-item-testid"
                      id="logout__testid"
                   >
-                     Admin Page
+                     {t('user.adminPage')}
                   </Typography>
                </>
             )}
+            <Typography
+               style={{ margin: 10, cursor: 'pointer' }}
+               onClick={handleOpenUpdateUserDialog}
+               data-testid="user-item-testid"
+               id="logout__testid"
+            >
+               {t('user.userDetails')}
+            </Typography>
             <Typography
                style={{ margin: 10, cursor: 'pointer' }}
                onClick={handleOpenChangePasswordDialog}
                data-testid="user-item-testid"
                id="logout__testid"
             >
-               Change Password
+               {t('user.changePassword')}
             </Typography>
             <Typography
                style={{ margin: 10, cursor: 'pointer' }}
@@ -216,11 +259,12 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
                data-testid="user-item-testid"
                id="logout__testid"
             >
-               Log out
+               {t('user.logOut')}
             </Typography>
          </Popover>
          <AppFooter />
          <DialogChangePassword {...changePasswordState} onClose={handleCloseChangePasswordDialog} />
+         <DialogUpdateUser {...updateUserState} onClose={handleCloseUpdateUserDialog} />
       </>
    );
 };

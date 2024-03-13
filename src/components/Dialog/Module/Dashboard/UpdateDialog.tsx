@@ -10,11 +10,18 @@ import dashboardApi from '@/api/dashboard.api';
 
 import { useDispatch } from 'react-redux';
 import { commonStore, userStore } from '@/store/reducers';
+import { useTranslation } from 'react-i18next';
+import { parseCookies, setCookie } from 'nookies';
 
 const DialogUpdateUser: React.FC<any> = (props) => {
    const { open, onClose, detail } = props;
 
+   let cookies = parseCookies();
+   let openerRole = cookies['role'];
+   let userId = cookies['id'];
+
    const dispatch = useDispatch();
+   const { t, i18n } = useTranslation();
    const [loading, setLoading] = useState(false);
 
    const updateUserForm = useForm({
@@ -27,25 +34,32 @@ const DialogUpdateUser: React.FC<any> = (props) => {
       setRole(value);
    };
 
-   const handleSubmitForm = updateUserForm.handleSubmit(async (data: any) => {
-      if (data.name === '') {
+   const handleSubmitForm = updateUserForm.handleSubmit(async (formData: any) => {
+      if (formData.name === '') {
          dispatch(commonStore.actions.setErrorMessage('Username must be at least 2 characters'));
          return;
       }
 
       const transformData = {
-         name: data.name,
+         name: formData.name,
          role: role,
-         defaultLocale: data.defaultLocale,
+         defaultLocale: formData.defaultLocale,
       };
 
       try {
          setLoading(true);
          const { data } = await dashboardApi.updateUser(detail?.id, transformData);
 
-         const userList = await dashboardApi.getUser({ search: '' });
-         dispatch(userStore.actions.setUserList(JSON.parse(userList?.data)?.userList));
+         if (openerRole == 'ADMIN') {
+            const userList = await dashboardApi.getUser({ search: '' });
+            dispatch(userStore.actions.setUserList(JSON.parse(userList?.data)?.userList));
+         }
          dispatch(commonStore.actions.setSuccessMessage(data));
+
+         if (userId == detail?.id) {
+            i18n.changeLanguage(formData.defaultLocale);
+            setCookie(null, 'defaultLocale', formData.defaultLocale, { maxAge: 604800, path: '/' });
+         }
          onClose();
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error?.message));
@@ -64,8 +78,8 @@ const DialogUpdateUser: React.FC<any> = (props) => {
 
    const languageOptions = useMemo(
       () => [
-         { id: 'us', description: 'ENGLISH' },
-         { id: 'cn', description: 'CHINESE' },
+         { id: 'en', description: 'English' },
+         { id: 'vn', description: 'Vietnamese' },
       ],
       []
    );
@@ -81,15 +95,16 @@ const DialogUpdateUser: React.FC<any> = (props) => {
          loading={loading}
          onOk={handleSubmitForm}
          onClose={onClose}
-         title="User Details"
-         okText="Save"
+         title={t('user.userDetails')}
+         okText={t('button.save')}
+         closeText={t('button.close')}
       >
          <Grid container sx={{ paddingTop: 0.8, paddingBottom: 0.8 }} spacing={3}>
             <Grid item xs={12}>
                <FormControlledTextField
                   control={updateUserForm.control}
                   name="name"
-                  label="Name"
+                  label={t('user.name')}
                   required
                />
             </Grid>
@@ -97,7 +112,7 @@ const DialogUpdateUser: React.FC<any> = (props) => {
                <FormControlledTextField
                   control={updateUserForm.control}
                   name="email"
-                  label="Email"
+                  label={t('user.email')}
                   disabled
                />
             </Grid>
@@ -106,19 +121,20 @@ const DialogUpdateUser: React.FC<any> = (props) => {
                <FormControllerAutocomplete
                   control={updateUserForm.control}
                   name="role"
-                  label="User Role"
+                  label={t('user.role')}
                   renderOption={(prop, option) => `${option?.roleName}`}
                   getOptionLabel={(option) => `${option?.roleName}`}
                   required
                   options={roleOptions}
                   onChange={(value) => onChooseRole(value)}
+                  disabled={openerRole === 'ADMIN' ? false : true}
                />
             </Grid>
             <Grid item xs={6}>
                <FormControllerAutocomplete
                   control={updateUserForm.control}
                   name="defaultLocale"
-                  label="Language"
+                  label={t('user.language')}
                   required
                   options={languageOptions}
                />

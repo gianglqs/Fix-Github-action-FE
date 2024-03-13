@@ -78,6 +78,8 @@ export default function LoginPage() {
             const refreshToken = response.data.data.refreshToken;
             const name = response.data.data.name;
             const role = response.data.data.role;
+            const defaultLocale = response.data.data.defaultLocale;
+            const userId = response.data.data.id;
 
             setCookie(null, 'token', accessToken, {
                maxAge: 604800,
@@ -91,6 +93,8 @@ export default function LoginPage() {
 
             setCookie(null, 'role', role, { maxAge: 604800, path: '/' });
             setCookie(null, 'name', name, { maxAge: 604800, path: '/' });
+            setCookie(null, 'defaultLocale', defaultLocale, { maxAge: 604800, path: '/' });
+            setCookie(null, 'id', userId, { maxAge: 604800, path: '/' });
 
             router.push('/web-pricing-tools/admin/users');
          })

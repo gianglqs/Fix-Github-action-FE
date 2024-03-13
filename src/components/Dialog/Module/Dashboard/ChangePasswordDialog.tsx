@@ -9,11 +9,13 @@ import { commonStore } from '@/store/reducers';
 import FormControlledTextField from '@/components/FormController/TextField';
 import axios from 'axios';
 import { parseCookies } from 'nookies';
+import { useTranslation } from 'react-i18next';
 
 const DialogChangePassword: React.FC<any> = (props) => {
    const { open, onClose, detail } = props;
 
    const dispatch = useDispatch();
+   const { t } = useTranslation();
    const [loading, setLoading] = useState(false);
 
    const updateInformationForm = useForm({
@@ -64,8 +66,9 @@ const DialogChangePassword: React.FC<any> = (props) => {
          loading={loading}
          onOk={handleSubmitForm}
          onClose={onClose}
-         title="Change Password"
-         okText="Submit"
+         title={t('user.changePassword')}
+         okText={t('button.save')}
+         closeText={t('button.close')}
       >
          <Grid container sx={{ paddingTop: 0.8, paddingBottom: 0.8 }} spacing={2}>
             <Grid item xs={12}>
@@ -73,7 +76,7 @@ const DialogChangePassword: React.FC<any> = (props) => {
                   control={updateInformationForm.control}
                   type="password"
                   name="oldPassword"
-                  label="Old Password"
+                  label={t('user.oldPassword')}
                   required
                />
             </Grid>
@@ -82,7 +85,7 @@ const DialogChangePassword: React.FC<any> = (props) => {
                   control={updateInformationForm.control}
                   type="password"
                   name="newPassword"
-                  label="New password"
+                  label={t('user.newPassword')}
                   required
                />
             </Grid>
@@ -91,7 +94,7 @@ const DialogChangePassword: React.FC<any> = (props) => {
                   control={updateInformationForm.control}
                   type="password"
                   name="confirmNewPassword"
-                  label="Confirm new password"
+                  label={t('user.confirmNewPassword')}
                   required
                />
             </Grid>
