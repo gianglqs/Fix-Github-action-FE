@@ -36,6 +36,7 @@ import { commonStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
 import { parseCookies } from 'nookies';
 import { CURRENCY } from '@/utils/constant';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -43,6 +44,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function ExchangeRate() {
    const dispatch = useDispatch();
+   const { t } = useTranslation();
+
    let cookies = parseCookies();
    let userRoleCookies = cookies['role'];
    const [userRole, setUserRole] = useState('');
@@ -263,7 +266,7 @@ export default function ExchangeRate() {
                         sx={{ width: '45%', height: 24 }}
                         onClick={handleCompareCurrency}
                      >
-                        Compare
+                        {t('button.compare')}
                      </Button>
 
                      {userRole === 'ADMIN' && (
@@ -272,7 +275,7 @@ export default function ExchangeRate() {
                               uploadedFile={uploadedFile}
                               setUploadedFile={setUploadedFile}
                               handleUploadFile={handleUploadExchangeRate}
-                              buttonName="Upload File"
+                              buttonName={t('button.uploadFile')}
                               sx={{ width: '100%', height: 24 }}
                            />
                         </Grid>
@@ -317,7 +320,7 @@ export default function ExchangeRate() {
                         sx={{ width: '45%', height: 24, minWidth: 100 }}
                         onClick={handleClearAllFilters}
                      >
-                        Clear Filters
+                        {t('button.clear')}
                      </Button>
 
                      <Button
@@ -325,13 +328,13 @@ export default function ExchangeRate() {
                         sx={{ width: '45%', height: 24, minWidth: 100 }}
                         onClick={handleClearAllReports}
                      >
-                        Clear Reports
+                        {t('button.clearReports')}
                      </Button>
                   </Grid>
                </Grid>
                <Grid item xs={1}>
                   <AppDateField
-                     label="From Date"
+                     label={t('filters.fromDate')}
                      name="fromDate"
                      onChange={(e, value) =>
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
@@ -342,7 +345,7 @@ export default function ExchangeRate() {
                </Grid>
                <Grid item xs={1}>
                   <AppDateField
-                     label="To Date"
+                     label={t('filters.toDate')}
                      name="toDate"
                      onChange={(e, value) =>
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
@@ -365,11 +368,15 @@ export default function ExchangeRate() {
                         marginTop: 0.25,
                      }}
                   >
-                     <FormControlLabel value="Database" control={<Radio />} label="From Database" />
+                     <FormControlLabel
+                        value="Database"
+                        control={<Radio />}
+                        label={t('button.fromDatabase')}
+                     />
                      <FormControlLabel
                         value="Real-time"
                         control={<Radio />}
-                        label="From exchangerate-api.com"
+                        label={t('button.fromExchangeRateApi')}
                      />
                   </RadioGroup>
                </Grid>

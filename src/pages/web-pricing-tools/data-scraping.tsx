@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import dataScrapingApi from '@/api/data-scraping.api';
 import { commonStore } from '@/store/reducers';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -15,6 +16,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function DataScraping() {
    const dispatch = useDispatch();
+   const { t } = useTranslation();
+
    const [url, setUrl] = useState({ value: '', error: false });
    const [productList, setProductList] = useState([]);
    const [loading, setLoading] = useState(false);
@@ -50,14 +53,14 @@ export default function DataScraping() {
       {
          field: 'productName',
          flex: 0.8,
-         headerName: 'Product name',
+         headerName: t('table.productName'),
          headerAlign: 'center',
          align: 'left',
       },
       {
          field: 'image',
          flex: 0.8,
-         headerName: 'Image',
+         headerName: t('table.image'),
          headerAlign: 'center',
          align: 'center',
          renderCell(params) {
@@ -78,7 +81,7 @@ export default function DataScraping() {
       {
          field: 'price',
          flex: 0.8,
-         headerName: 'Price',
+         headerName: t('table.price'),
          headerAlign: 'center',
          align: 'right',
          renderCell(params) {
@@ -88,7 +91,7 @@ export default function DataScraping() {
       {
          field: 'currency',
          flex: 0.8,
-         headerName: 'Currency',
+         headerName: t('table.currency'),
          headerAlign: 'center',
          align: 'center',
       },
@@ -135,7 +138,7 @@ export default function DataScraping() {
                      sx={{ width: '45%', height: 24 }}
                      onClick={handleScrape}
                   >
-                     Scrape
+                     {t('button.scrape')}
                   </Button>
                </Grid>
             </Grid>

@@ -6,15 +6,17 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import Typography from '@mui/material/Typography';
 import _ from 'lodash';
 import List from '@mui/material/List';
+import { useTranslation } from 'react-i18next';
 
 const NavBar = () => {
    const router = useRouter();
+   const { t } = useTranslation();
 
    const navOptions = {
-      'financial-bookings': 'Dashboard',
-      competitors: 'Competitors',
-      users: 'Users',
-      'historical-import': 'Historical Importing',
+      'financial-bookings': t('navBar.dashboard'),
+      competitors: t('navBar.competitors'),
+      users: t('navBar.users'),
+      'historical-import': t('navBar.historicalImporting'),
    };
 
    const renderOptions = () => {

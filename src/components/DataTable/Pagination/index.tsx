@@ -9,6 +9,7 @@ import { usePopupState, bindTrigger, bindMenu } from 'material-ui-popup-state/ho
 import type { NumberFormatValues } from 'react-number-format';
 import type { DataTablePaginationProps } from './type';
 import { AppNumberField } from '@/components/App';
+import { useTranslation } from 'react-i18next';
 
 const StyledPagination = styled(Pagination)(({ theme }) => ({
    '& .MuiPaginationItem-root': {
@@ -42,6 +43,7 @@ const StyledGoButton = styled(Button)(({ theme }) => ({
 }));
 
 const DataTablePagination = (props) => {
+   const { t } = useTranslation();
    const { page, perPage, totalItems, perPageList, onChangePage, onChangePerPage, lastUpdated } =
       props;
    const count = Math.ceil(totalItems / perPage);
@@ -94,7 +96,9 @@ const DataTablePagination = (props) => {
                alignItems="center"
                sx={{ width: '50%', color: 'black' }}
             >
-               <div>Last updated at: {lastUpdated}</div>
+               <div>
+                  {t('table.lastUpdated')} {lastUpdated}
+               </div>
             </Stack>
 
             {/* <Typography component="div" variant="body2" sx={{ fontSize: 10, fontWeight: 'fontWeightBold' }}>
@@ -110,7 +114,7 @@ const DataTablePagination = (props) => {
                {/* Rows per page */}
                <Stack direction="row" alignItems="center" spacing={0.5}>
                   <Typography component="div" variant="body1" sx={{ mr: 0.5 }}>
-                     Rows per page:
+                     {t('table.rowsPerPage')}
                   </Typography>
                   <Stack
                      sx={{ cursor: 'pointer' }}

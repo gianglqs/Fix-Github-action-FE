@@ -4,18 +4,18 @@ import { useEffect, useMemo, useState } from 'react';
 import { Grid } from '@mui/material';
 import FormControlledTextField from '@/components/FormController/TextField';
 import { SketchPicker } from 'react-color';
-import { yupResolver } from '@hookform/resolvers/yup';
-import getValidationSchema from '../Dashboard/validationSchema';
 import { useForm } from 'react-hook-form';
 import { AppTextField } from '@/components/App';
 import competitorColorApi from '@/api/competitorColor.api';
 import { commonStore, competitorColorStore } from '@/store/reducers';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 const DialogUpdateCompetitor: React.FC<any> = (props) => {
    const { open, onClose, detail } = props;
 
    const dispatch = useDispatch();
+   const { t } = useTranslation();
    const [loading, setLoading] = useState(false);
 
    const [chosenColor, setChosenColor] = useState(detail.colorCode);
@@ -69,8 +69,9 @@ const DialogUpdateCompetitor: React.FC<any> = (props) => {
          loading={loading}
          onOk={handleSubmitForm}
          onClose={onClose}
-         title="Competitor Legend Color"
-         okText="Save"
+         title={t('competitors.competitorLegendColor')}
+         okText={t('button.save')}
+         closeText={t('button.close')}
       >
          <Grid
             container
@@ -84,7 +85,7 @@ const DialogUpdateCompetitor: React.FC<any> = (props) => {
                <FormControlledTextField
                   control={updateColorForm.control}
                   name="competitorName"
-                  label="Competitor Name"
+                  label={t('competitors.competitorName')}
                   required
                   disabled
                   defaultValue={chosenColor}

@@ -51,6 +51,7 @@ import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { paperStyle } from '@/theme/paperStyle';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -66,6 +67,7 @@ const defaultDataFilterBubbleChart = {
 
 export default function Indicators() {
    const dispatch = useDispatch();
+   const { t } = useTranslation();
 
    let cookies = parseCookies();
    let userRoleCookies = cookies['role'];
@@ -307,13 +309,13 @@ export default function Indicators() {
       {
          field: 'competitorName',
          flex: 1.5,
-         headerName: 'Competitor Name',
+         headerName: t('competitors.competitorName'),
       },
 
       {
          field: 'region',
          flex: 0.5,
-         headerName: 'Region',
+         headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.country.region.regionName}</span>;
          },
@@ -321,12 +323,12 @@ export default function Indicators() {
       {
          field: 'plant',
          flex: 0.8,
-         headerName: 'Plant',
+         headerName: t('table.plant'),
       },
       {
          field: 'clazz',
          flex: 1,
-         headerName: 'Class',
+         headerName: t('table.class'),
          renderCell(params) {
             return <span>{params.row.clazz?.clazzName}</span>;
          },
@@ -334,7 +336,7 @@ export default function Indicators() {
       {
          field: 'series',
          flex: 0.5,
-         headerName: 'Series',
+         headerName: t('table.series'),
       },
 
       {
@@ -367,13 +369,13 @@ export default function Indicators() {
       {
          field: 'competitorLeadTime',
          flex: 0.8,
-         headerName: 'Competitor Lead Time',
+         headerName: t('competitors.competitorLeadTime'),
          ...formatNumbericColumn,
       },
       {
          field: 'dealerStreetPricing',
          flex: 0.8,
-         headerName: "Dealer Street Pricing ('000 USD)",
+         headerName: `${t('competitors.dealerStreetPricing')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params.row.dealerStreetPricing)}</span>;
@@ -382,7 +384,7 @@ export default function Indicators() {
       {
          field: 'dealerHandlingCost',
          flex: 0.8,
-         headerName: "Dealer Handling Cost ('000 USD)",
+         headerName: `${t('competitors.dealerHandlingCost')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params.row.dealerHandlingCost)}</span>;
@@ -391,7 +393,7 @@ export default function Indicators() {
       {
          field: 'competitorPricing',
          flex: 1,
-         headerName: "Competition Pricing ('000 USD)",
+         headerName: `${t('competitors.competitorPricing')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params.row.competitorPricing)}</span>;
@@ -400,7 +402,7 @@ export default function Indicators() {
       {
          field: 'dealerPricingPremiumPercentage',
          flex: 1,
-         headerName: "Dealer Pricing Premium/Margin ('000 USD)",
+         headerName: `${t('competitors.dealerPricingPremium')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params.row.dealerPricingPremiumPercentage)}</span>;
@@ -410,7 +412,7 @@ export default function Indicators() {
       {
          field: 'dealerPremiumPercentage',
          flex: 1,
-         headerName: 'Dealer Premium / Margin %',
+         headerName: `${t('competitors.dealerPremium')}`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumberPercentage(params.row.dealerPremiumPercentage * 100)}</span>;
@@ -419,7 +421,7 @@ export default function Indicators() {
       {
          field: 'averageDN',
          flex: 0.8,
-         headerName: "Average Dealer Net ('000 USD)",
+         headerName: `${t('competitors.averageDealerNet')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params.row.averageDN)}</span>;
@@ -429,7 +431,7 @@ export default function Indicators() {
       {
          field: 'variancePercentage',
          flex: 1,
-         headerName: 'Varian % (Competitor - (Dealer Street + Premium))',
+         headerName: `${t('competitors.variancePercentage')}`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumberPercentage(params.row.variancePercentage * 100)}</span>;
@@ -468,7 +470,7 @@ export default function Indicators() {
          },
          title: {
             display: true,
-            text: 'Competitor Swot Analysis',
+            text: t('competitors.competitorSwotAnalysis'),
             position: 'top' as const,
          },
          tooltip: {
@@ -503,9 +505,13 @@ export default function Indicators() {
                   label: {
                      display: true,
                      content: [
-                        'High Price, Low Lead Time   High Price, High Lead Time',
+                        `${t('competitors.highPrice')}, ${t('competitors.lowLeadTime')}   ${t(
+                           'competitors.highPrice'
+                        )}, ${t('competitors.highLeadTime')}`,
                         '',
-                        'Low Price, Low Lead Time   Low Price, High Lead Time',
+                        `${t('competitors.lowPrice')}, ${t('competitors.lowLeadTime')}   ${t(
+                           'competitors.lowPrice'
+                        )}, ${t('competitors.highLeadTime')}`,
                      ],
                      backgroundColor: 'transparent',
                      width: '40%',
@@ -663,7 +669,7 @@ export default function Indicators() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Variance %
+                           {t('competitors.variancePercentage')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumberPercentage(listTotalRow[0]?.variancePercentage * 100)}
@@ -675,7 +681,7 @@ export default function Indicators() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Dealer Street Pricing ('000)
+                           {t('competitors.dealerStreetPricing')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.dealerStreetPricing)}
@@ -687,7 +693,7 @@ export default function Indicators() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Dealer Handling Cost ('000)
+                           {t('competitors.dealerHandlingCost')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.dealerHandlingCost)}
@@ -699,7 +705,7 @@ export default function Indicators() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Competitor Pricing ('000)
+                           {t('competitors.competitorPricing')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.competitorPricing)}
@@ -711,7 +717,7 @@ export default function Indicators() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Average Dealer Net ('000)
+                           {t('competitors.averageDealerNet')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.averageDN)}
@@ -728,7 +734,7 @@ export default function Indicators() {
                         return { value: item };
                      })}
                      options={initDataFilter.regions}
-                     label="Region"
+                     label={t('filters.region')}
                      onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
                      limitTags={2}
                      disableListWrap
@@ -745,7 +751,7 @@ export default function Indicators() {
                         return { value: item };
                      })}
                      options={initDataFilter.dealers}
-                     label="Dealer"
+                     label={t('filters.dealerName')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'dealers')}
                      limitTags={1}
@@ -763,7 +769,7 @@ export default function Indicators() {
                         return { value: item };
                      })}
                      options={initDataFilter.plants}
-                     label="Plant"
+                     label={t('filters.plant')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'plants')}
                      limitTags={1}
@@ -781,7 +787,7 @@ export default function Indicators() {
                         return { value: item };
                      })}
                      options={initDataFilter.metaSeries}
-                     label="MetaSeries"
+                     label={t('filters.metaSeries')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
                      limitTags={1}
@@ -800,7 +806,7 @@ export default function Indicators() {
                         return { value: item };
                      })}
                      options={initDataFilter.classes}
-                     label="Class"
+                     label={t('filters.class')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
                      limitTags={1}
@@ -818,7 +824,7 @@ export default function Indicators() {
                         return { value: item };
                      })}
                      options={initDataFilter.models}
-                     label="Model"
+                     label={t('filters.models')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'models')}
                      limitTags={1}
@@ -841,7 +847,7 @@ export default function Indicators() {
                            : { value: '' }
                      }
                      options={initDataFilter.chineseBrands}
-                     label="Chinese Brand"
+                     label={t('filters.chineseBrand')}
                      onChange={
                         (e, option) =>
                            handleChangeDataFilter(_.isNil(option) ? '' : option, 'chineseBrand')
@@ -864,7 +870,7 @@ export default function Indicators() {
                            : { value: '' }
                      }
                      options={initDataFilter.marginPercentageGrouping}
-                     label="Margin % Group"
+                     label={t('filters.marginPercentage')}
                      primaryKeyOption="value"
                      onChange={
                         (e, option) =>
@@ -883,7 +889,7 @@ export default function Indicators() {
                      onClick={handleFilterIndicator}
                      sx={{ width: '100%', height: 24 }}
                   >
-                     Filter
+                     {t('button.clear')}
                   </Button>
                </Grid>
                <Grid item xs={1}>
@@ -892,7 +898,7 @@ export default function Indicators() {
                      onClick={handleClearAllFilterTable}
                      sx={{ width: '100%', height: 24 }}
                   >
-                     Clear
+                     {t('button.clear')}
                   </Button>
                </Grid>
                {userRole === 'ADMIN' && (
@@ -1020,7 +1026,7 @@ export default function Indicators() {
                               : { value: '' }
                         }
                         options={initDataFilter.regions}
-                        label="Region"
+                        label={t('filters.region')}
                         onChange={(e, option) => handleChangeSwotFilter(option, 'regions')}
                         limitTags={1}
                         disableListWrap
@@ -1038,7 +1044,7 @@ export default function Indicators() {
                            return { value: item };
                         })}
                         options={bubbleCountryInitFilter}
-                        label="Country"
+                        label={t('filters.country')}
                         onChange={(e, option) => handleChangeSwotFilter(option, 'countries')}
                         limitTags={1}
                         disableListWrap
@@ -1055,7 +1061,7 @@ export default function Indicators() {
                            return { value: item };
                         })}
                         options={initDataFilter.classes}
-                        label="Competitor Class"
+                        label={t('filters.class')}
                         onChange={(e, option) => handleChangeSwotFilter(option, 'classes')}
                         disableListWrap
                         primaryKeyOption="value"
@@ -1073,7 +1079,7 @@ export default function Indicators() {
                            return { value: item };
                         })}
                         options={initDataFilter.categories}
-                        label="Category"
+                        label={t('filters.category')}
                         onChange={(e, option) => handleChangeSwotFilter(option, 'categories')}
                         disableListWrap
                         primaryKeyOption="value"
@@ -1091,7 +1097,7 @@ export default function Indicators() {
                            return { value: item };
                         })}
                         options={initDataFilter.series}
-                        label="Series"
+                        label={t('filters.series')}
                         onChange={(e, option) => handleChangeSwotFilter(option, 'series')}
                         limitTags={1}
                         disableListWrap
@@ -1109,7 +1115,7 @@ export default function Indicators() {
                         onClick={handleFilterCompetitiveLandscape}
                         sx={{ width: '100%', height: 24 }}
                      >
-                        Filter
+                        {t('button.filter')}
                      </Button>
                   </Grid>
                   <Grid item xs={1.5}>
@@ -1118,7 +1124,7 @@ export default function Indicators() {
                         onClick={handleClearAllFilterBubbleChart}
                         sx={{ width: '100%', height: 24 }}
                      >
-                        Clear
+                        {t('button.clear')}
                      </Button>
                   </Grid>
                </Grid>

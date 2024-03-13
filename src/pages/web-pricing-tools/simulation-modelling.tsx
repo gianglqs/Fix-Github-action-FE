@@ -41,6 +41,7 @@ import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { setCookie } from 'nookies';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { paperStyle } from '@/theme/paperStyle';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -57,6 +58,8 @@ const resetPaddingCell = makeStyles({
 
 export default function Adjustment() {
    const dispatch = useDispatch();
+   const { t } = useTranslation();
+
    const listAdjustment = useSelector(adjustmentStore.selectAdjustmentList);
    const initDataFilter = useSelector(adjustmentStore.selectInitDataFilter);
    const listTotalRow = useSelector(adjustmentStore.selectTotalRow);
@@ -182,7 +185,7 @@ export default function Adjustment() {
       {
          field: 'region',
          flex: 0.5,
-         headerName: 'Region',
+         headerName: t('table.region'),
          renderCell(params) {
             return <CellText value={params.row.region} />;
          },
@@ -191,7 +194,7 @@ export default function Adjustment() {
       {
          field: 'Plant',
          flex: 0.6,
-         headerName: 'Plant',
+         headerName: t('table.plant'),
          renderCell(params) {
             return <CellText value={params.row.plant} />;
          },
@@ -199,7 +202,7 @@ export default function Adjustment() {
       {
          field: 'truckClass',
          flex: 0.6,
-         headerName: 'Class',
+         headerName: t('table.class'),
          renderCell(params) {
             return <CellText value={params.row.clazz} />;
          },
@@ -207,7 +210,7 @@ export default function Adjustment() {
       {
          field: 'series',
          flex: 0.4,
-         headerName: 'Series',
+         headerName: t('table.series'),
          renderCell(params) {
             return <CellText value={params.row.metaSeries} />;
          },
@@ -215,7 +218,7 @@ export default function Adjustment() {
       {
          field: 'model',
          flex: 0.6,
-         headerName: 'Models',
+         headerName: t('table.models'),
          renderCell(params) {
             return <CellText value={params.row.model} />;
          },
@@ -223,7 +226,7 @@ export default function Adjustment() {
       {
          field: 'noOfOrder',
          flex: 0.3,
-         headerName: 'No of Orders',
+         headerName: t('table.numberOfOrders'),
          ...formatNumbericColumn,
          renderCell(params) {
             return (
@@ -234,7 +237,7 @@ export default function Adjustment() {
       {
          field: 'additionalVolume',
          flex: 0.5,
-         headerName: 'Additional Units',
+         headerName: t('table.additionalUnits'),
          ...formatNumbericColumn,
          renderCell(params) {
             return (
@@ -248,7 +251,7 @@ export default function Adjustment() {
       {
          field: 'manualAdjCost',
          flex: 0.8,
-         headerName: "Adjusted Cost ('000 USD)",
+         headerName: `${t('table.adjustedCost')} ('000 USD)`,
          ...formatNumbericColumn,
          backgroundColor: costAdjColor,
          renderCell(params) {
@@ -258,7 +261,7 @@ export default function Adjustment() {
       {
          field: 'manualAdjFreight',
          flex: 0.8,
-         headerName: "Adjusted Freight ('000 USD)",
+         headerName: `${t('table.adjustedFreight')} ('000 USD)`,
          ...formatNumbericColumn,
          padding: 0,
          backgroundColor: freightAdjColor,
@@ -271,7 +274,7 @@ export default function Adjustment() {
       {
          field: 'manualAdjFX',
          flex: 0.7,
-         headerName: 'Adjusted FX %',
+         headerName: `${t('table.adjustedFX')} %`,
          ...formatNumbericColumn,
          backgroundColor: fxAdjColor,
          renderCell(params) {
@@ -287,7 +290,7 @@ export default function Adjustment() {
       {
          field: 'totalManualAdjCost',
          flex: 0.6,
-         headerName: "Total Manual Adj Cost ('000 USD)",
+         headerName: `${t('table.totalManualAdjCost')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return (
@@ -299,7 +302,7 @@ export default function Adjustment() {
       {
          field: 'originalDN',
          flex: 0.7,
-         headerName: "Original DN ('000 USD)",
+         headerName: `${t('table.originalDealerNet')} ('000 USD)`,
          ...formatNumbericColumn,
 
          renderCell(params) {
@@ -309,7 +312,7 @@ export default function Adjustment() {
       {
          field: 'originalMargin',
          flex: 0.7,
-         headerName: "Original Margin $ ('000 USD)",
+         headerName: `${t('table.originalMargin')} ('000 USD)`,
          ...formatNumbericColumn,
 
          renderCell(params) {
@@ -319,7 +322,7 @@ export default function Adjustment() {
       {
          field: 'originalMarginPercentage',
          flex: 0.7,
-         headerName: 'Original Margin %',
+         headerName: t('table.originalMarginPercentage'),
          ...formatNumbericColumn,
 
          renderCell(params) {
@@ -332,7 +335,7 @@ export default function Adjustment() {
       {
          field: 'newDN',
          flex: 0.6,
-         headerName: "Adjusted Dealer Net ('000 USD)",
+         headerName: `${t('table.adjustedDealerNet')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <CellColor color={dnAdjColor} value={params?.row.newDN}></CellColor>;
@@ -341,7 +344,7 @@ export default function Adjustment() {
       {
          field: 'newMargin',
          flex: 0.6,
-         headerName: "New margin $ ('000 USD) After manual Adj",
+         headerName: `${t('table.newMargin')}`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <CellColor color={totalColor} value={params?.row.newMargin}></CellColor>;
@@ -350,7 +353,7 @@ export default function Adjustment() {
       {
          field: 'newMarginPercentage',
          flex: 0.6,
-         headerName: 'New margin % After manual Adj',
+         headerName: `${t('table.newMarginPercentage')}`,
          ...formatNumbericColumn,
          renderCell(params) {
             return (
@@ -647,7 +650,7 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Number of Orders
+                           {t('table.numberOfOrders')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {listTotalRow[0]?.noOfOrder}
@@ -659,7 +662,7 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Additional Units
+                           {t('table.additionalUnits')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {listTotalRow[0]?.additionalVolume}
@@ -671,7 +674,7 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Original DN ('000)
+                           {t('table.originalDealerNet')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.originalDN)}
@@ -683,7 +686,7 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Original Margin $ ('000)
+                           {t('table.originalMargin')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.originalMargin)}
@@ -695,7 +698,7 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Original Margin %
+                           {t('table.originalMarginPercentage')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumberPercentage(listTotalRow[0]?.originalMarginPercentage * 100)}
@@ -707,7 +710,7 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Adjusted Cost ('000)
+                           {t('table.adjustedCost')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.manualAdjCost)}
@@ -719,7 +722,7 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Adjusted Freight ('000)
+                           {t('table.adjustedFreight')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.manualAdjFreight)}
@@ -731,7 +734,7 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Adjusted FX ('000)
+                           {t('table.adjustedFX')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.manualAdjFreight)}
@@ -743,7 +746,7 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Total Manual Adj Cost ('000)
+                           {t('table.totalManualAdjCost')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.totalManualAdjCost)}
@@ -755,7 +758,7 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Adjusted Dealer Net ('000)
+                           {t('table.adjustedDealerNet')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.newDN)}
@@ -767,7 +770,7 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           New Margin $ ('000)
+                           {t('table.newMargin')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.newMargin)}
@@ -779,7 +782,7 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           New Margin %
+                           {t('table.newMarginPercentage')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumberPercentage(listTotalRow[0]?.newMarginPercentage * 100)}
@@ -796,7 +799,7 @@ export default function Adjustment() {
                         return { value: item };
                      })}
                      options={initDataFilter.regions}
-                     label="Region"
+                     label={t('filters.region')}
                      onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
                      limitTags={2}
                      disableListWrap
@@ -813,7 +816,7 @@ export default function Adjustment() {
                         return { value: item };
                      })}
                      options={initDataFilter.plants}
-                     label="Plant"
+                     label={t('filters.plant')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'plants')}
                      limitTags={1}
@@ -831,7 +834,7 @@ export default function Adjustment() {
                         return { value: item };
                      })}
                      options={initDataFilter.metaSeries}
-                     label="MetaSeries"
+                     label={t('filters.metaSeries')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
                      limitTags={1}
@@ -849,7 +852,7 @@ export default function Adjustment() {
                         return { value: item };
                      })}
                      options={initDataFilter.dealers}
-                     label="Dealer"
+                     label={t('filters.dealerName')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'dealers')}
                      limitTags={1}
@@ -867,7 +870,7 @@ export default function Adjustment() {
                         return { value: item };
                      })}
                      options={initDataFilter.classes}
-                     label="Class"
+                     label={t('filters.class')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
                      limitTags={1}
@@ -885,7 +888,7 @@ export default function Adjustment() {
                         return { value: item };
                      })}
                      options={initDataFilter.models}
-                     label="Model"
+                     label={t('filters.models')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'models')}
                      limitTags={1}
@@ -903,7 +906,7 @@ export default function Adjustment() {
                         return { value: item };
                      })}
                      options={initDataFilter.segments}
-                     label="Segment"
+                     label={t('filters.segment')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'segments')}
                      limitTags={1}
@@ -925,7 +928,7 @@ export default function Adjustment() {
                            : { value: '' }
                      }
                      options={initDataFilter.marginPercentageGroup}
-                     label="Margin %"
+                     label={t('filters.marginPercentage')}
                      onChange={(e, option) =>
                         handleChangeDataFilter(
                            _.isNil(option) ? '' : option?.value,
@@ -948,7 +951,7 @@ export default function Adjustment() {
                            : { value: '' }
                      }
                      options={initDataFilter.marginPercentageGroup}
-                     label="New Margin %"
+                     label={t('table.newMarginPercentage')}
                      onChange={(e, option) =>
                         handleChangeDataFilter(
                            _.isNil(option) ? '' : option?.value,
@@ -967,7 +970,7 @@ export default function Adjustment() {
                      onClick={handleFilterAdjustment}
                      sx={{ width: '100%', height: 24 }}
                   >
-                     Filter
+                     {t('button.filter')}
                   </Button>
                </Grid>
                <Grid item xs={1}>
@@ -976,7 +979,7 @@ export default function Adjustment() {
                      onClick={handleClearAllFilters}
                      sx={{ width: '100%', height: 24, minWidth: 100 }}
                   >
-                     Clear Filters
+                     {t('button.clear')}
                   </Button>
                </Grid>
             </Grid>
@@ -1039,7 +1042,7 @@ export default function Adjustment() {
                      onClick={handleCalculator}
                      sx={{ width: '100%', height: 24 }}
                   >
-                     Calculate
+                     {t('button.calculateData')}
                   </Button>
                </Grid>
                <Grid item xs={1}>
@@ -1048,7 +1051,7 @@ export default function Adjustment() {
                      onClick={handleClearAllCalculators}
                      sx={{ width: '100%', height: 24, minWidth: 130 }}
                   >
-                     Clear Calculators
+                     {t('button.clearCalculators')}
                   </Button>
                </Grid>
             </Grid>

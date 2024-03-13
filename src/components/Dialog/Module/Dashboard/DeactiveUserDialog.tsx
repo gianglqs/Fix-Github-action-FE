@@ -7,10 +7,12 @@ import { useDispatch } from 'react-redux';
 import { commonStore, userStore } from '@/store/reducers';
 
 import dashboardApi from '@/api/dashboard.api';
+import { useTranslation } from 'react-i18next';
 
 const DeactiveUserDialog: React.FC<any> = (props) => {
    const { open, onClose, detail } = props;
    const [loading, setLoading] = useState(false);
+   const { t } = useTranslation();
 
    const dispatch = useDispatch();
    const deactivateUserForm = useForm({
@@ -42,12 +44,13 @@ const DeactiveUserDialog: React.FC<any> = (props) => {
          loading={loading}
          onOk={handleDeactivateUser}
          onClose={onClose}
-         title={detail?.isActive ? 'Deactivate User' : 'Active User'}
-         okText="Accept"
-         closeText="Cancel"
+         title={detail?.isActive ? `${t('user.deactivateUser')}` : `${t('user.activateUser')}`}
+         okText={t('button.save')}
+         closeText={t('button.close')}
       >
          <Grid container>
-            Are you sure you want to {!detail?.isActive ? 'activate' : 'deactivate'} user{' '}
+            {t('user.activateUserQuestion')}{' '}
+            {!detail?.isActive ? `${t('user.activateUser')}` : `${t('user.deactivateUser')}`}
             {detail?.userName}?
          </Grid>
       </AppDialog>

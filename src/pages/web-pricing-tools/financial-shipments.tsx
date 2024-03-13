@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState, useTransition } from 'react';
 
 import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
@@ -46,6 +46,7 @@ import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { paperStyle } from '@/theme/paperStyle';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -56,6 +57,7 @@ interface FileChoosed {
 
 export default function Shipment() {
    const dispatch = useDispatch();
+   const { t } = useTranslation();
 
    const listShipment = useSelector(shipmentStore.selectShipmentList);
 
@@ -151,12 +153,12 @@ export default function Shipment() {
       {
          field: 'orderNo',
          flex: 0.4,
-         headerName: 'Order #',
+         headerName: t('table.order#'),
       },
       {
          field: 'date',
          flex: 0.5,
-         headerName: 'Create at',
+         headerName: t('table.createAt'),
          renderCell(params) {
             return <span>{formatDate(params.row.date)}</span>;
          },
@@ -164,7 +166,7 @@ export default function Shipment() {
       {
          field: 'region',
          flex: 0.3,
-         headerName: 'Region',
+         headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.region?.regionName}</span>;
          },
@@ -172,13 +174,13 @@ export default function Shipment() {
       {
          field: 'ctryCode',
          flex: 0.3,
-         headerName: 'Country',
+         headerName: t('table.country'),
       },
 
       {
          field: 'Plant',
          flex: 0.5,
-         headerName: 'Plant',
+         headerName: t('table.plant'),
          renderCell(params) {
             return <span>{params.row.product?.plant}</span>;
          },
@@ -186,7 +188,7 @@ export default function Shipment() {
       {
          field: 'truckClass',
          flex: 0.7,
-         headerName: 'Class',
+         headerName: t('table.class'),
          renderCell(params) {
             return <span>{params.row.product?.clazz?.clazzName}</span>;
          },
@@ -194,7 +196,7 @@ export default function Shipment() {
       {
          field: 'dealerName',
          flex: 1.2,
-         headerName: 'Dealer Name',
+         headerName: t('table.dealerName'),
          renderCell(params) {
             return <span>{params.row.dealer?.name}</span>;
          },
@@ -202,7 +204,7 @@ export default function Shipment() {
       {
          field: 'series',
          flex: 0.4,
-         headerName: 'Series',
+         headerName: t('table.series'),
          renderCell(params) {
             return <span>{params.row.series}</span>;
          },
@@ -210,7 +212,7 @@ export default function Shipment() {
       {
          field: 'model',
          flex: 0.6,
-         headerName: 'Models',
+         headerName: t('table.models'),
          renderCell(params) {
             return <span style={{ cursor: 'pointer' }}>{params.row.product.modelCode}</span>;
          },
@@ -218,14 +220,14 @@ export default function Shipment() {
       {
          field: 'quantity',
          flex: 0.2,
-         headerName: 'Qty',
+         headerName: t('table.qty'),
          ...formatNumbericColumn,
       },
 
       {
          field: 'dealerNet',
          flex: 0.8,
-         headerName: `DN ('000 ${currency})`,
+         headerName: `${t('table.dealerNet')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -235,7 +237,7 @@ export default function Shipment() {
       {
          field: 'dealerNetAfterSurcharge',
          flex: 0.8,
-         headerName: `DN After Surcharge ('000 ${currency})`,
+         headerName: `${t('table.dealerNetAfterSurcharge')} ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
@@ -244,7 +246,7 @@ export default function Shipment() {
       {
          field: 'totalCost',
          flex: 0.8,
-         headerName: `Total Actual Cost ('000 ${currency})`,
+         headerName: `${t('table.totalActualCost')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -254,7 +256,7 @@ export default function Shipment() {
       {
          field: 'marginAfterSurcharge',
          flex: 0.8,
-         headerName: `Margin $ After Surcharge ('000 ${currency})`,
+         headerName: `${t('table.marginAfterSurcharge')} ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
@@ -264,7 +266,7 @@ export default function Shipment() {
       {
          field: 'marginPercentageAfterSurcharge',
          flex: 0.6,
-         headerName: 'Margin % After Surcharge',
+         headerName: t('table.marginPercentageAfterSurcharge'),
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -278,7 +280,7 @@ export default function Shipment() {
       {
          field: 'bookingMarginPercentageAfterSurcharge',
          flex: 0.6,
-         headerName: 'Booking Margin %',
+         headerName: t('table.bookingMarginPercentage'),
          ...formatNumbericColumn,
          renderCell(params) {
             return (
@@ -294,7 +296,7 @@ export default function Shipment() {
       {
          field: 'aopmarginPercentage',
          flex: 0.6,
-         headerName: 'AOP Margin%',
+         headerName: t('table.aopMarginPercentage'),
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumberPercentage(params?.row.aopmargin.marginSTD * 100)}</span>;
@@ -446,7 +448,7 @@ export default function Shipment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Dealer Net ('000 {currency})
+                           {t('table.dealerNet')} ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.dealerNet)}
@@ -458,7 +460,7 @@ export default function Shipment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Dealer Net After Surcharge ('000 {currency})
+                           {t('table.dealerNetAfterSurcharge')} ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.dealerNetAfterSurcharge)}
@@ -470,7 +472,7 @@ export default function Shipment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Total Cost ('000 {currency})
+                           {t('table.totalCost')} ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.totalCost)}
@@ -482,7 +484,7 @@ export default function Shipment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Margin % After Surcharge
+                           {t('table.marginPercentageAfterSurcharge')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumberPercentage(
@@ -501,8 +503,8 @@ export default function Shipment() {
                         value={dataFilter.orderNo}
                         onChange={(e) => handleChangeDataFilter(e.target.value, 'orderNo')}
                         name="orderNo"
-                        label="Order #"
-                        placeholder="Search order by ID"
+                        label={t('filters.order#')}
+                        placeholder={t('filters.searchOrderById')}
                         focused
                      />
                   </Grid>
@@ -513,7 +515,7 @@ export default function Shipment() {
                         return { value: item };
                      })}
                      options={initDataFilter.regions}
-                     label="Region"
+                     label={t('filters.region')}
                      onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
                      limitTags={2}
                      disableListWrap
@@ -530,7 +532,7 @@ export default function Shipment() {
                         return { value: item };
                      })}
                      options={initDataFilter.plants}
-                     label="Plant"
+                     label={t('filters.plant')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'plants')}
                      limitTags={1}
@@ -548,7 +550,7 @@ export default function Shipment() {
                         return { value: item };
                      })}
                      options={initDataFilter.metaSeries}
-                     label="MetaSeries"
+                     label={t('filters.metaSeries')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
                      limitTags={1}
@@ -566,7 +568,7 @@ export default function Shipment() {
                         return { value: item };
                      })}
                      options={initDataFilter.dealers}
-                     label="Dealer"
+                     label={t('filters.dealerName')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'dealers')}
                      limitTags={1}
@@ -585,7 +587,7 @@ export default function Shipment() {
                         return { value: item };
                      })}
                      options={initDataFilter.classes}
-                     label="Class"
+                     label={t('filters.class')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
                      limitTags={1}
@@ -603,7 +605,7 @@ export default function Shipment() {
                         return { value: item };
                      })}
                      options={initDataFilter.models}
-                     label="Model"
+                     label={t('filters.models')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'models')}
                      limitTags={1}
@@ -621,7 +623,7 @@ export default function Shipment() {
                         return { value: item };
                      })}
                      options={initDataFilter.segments}
-                     label="Segment"
+                     label={t('filters.segment')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'segments')}
                      limitTags={1}
@@ -643,7 +645,7 @@ export default function Shipment() {
                            : { value: '' }
                      }
                      options={initDataFilter.marginPercentageGroup}
-                     label="Margin %"
+                     label={t('filters.marginPercentage')}
                      onChange={(e, option) =>
                         handleChangeDataFilter(
                            _.isNil(option) ? '' : option?.value,
@@ -667,7 +669,7 @@ export default function Shipment() {
                               : { value: '' }
                         }
                         options={initDataFilter.AOPMarginPercentageGroup}
-                        label="AOP Margin %"
+                        label={t('filters.aopMarginPercentage')}
                         primaryKeyOption="value"
                         onChange={(e, option) =>
                            handleChangeDataFilter(
@@ -683,7 +685,7 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2}>
                   <AppDateField
-                     label="From Date"
+                     label={t('filters.fromDate')}
                      name="from_date"
                      onChange={(e, value) =>
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
@@ -693,7 +695,7 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2}>
                   <AppDateField
-                     label="To Date"
+                     label={t('filters.toDate')}
                      name="toDate"
                      onChange={(e, value) =>
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
@@ -707,7 +709,7 @@ export default function Shipment() {
                      onClick={handleFilterOrderShipment}
                      sx={{ width: '100%', height: 24 }}
                   >
-                     Filter
+                     {t('button.filter')}
                   </Button>
                </Grid>
                <Grid item xs={1}>
@@ -716,7 +718,7 @@ export default function Shipment() {
                      onClick={handleClearAllFilters}
                      sx={{ width: '100%', height: 24 }}
                   >
-                     Clear
+                     {t('button.clear')}
                   </Button>
                </Grid>
 
@@ -768,7 +770,7 @@ export default function Shipment() {
                         onClick={handleImport}
                         sx={{ width: '100%', height: 24 }}
                      >
-                        Import
+                        {t('button.import')}
                      </Button>
                   </Grid>
                   <Grid item xs={4} sx={{ display: 'flex' }}>
@@ -863,6 +865,7 @@ export default function Shipment() {
 //function checkColumn();
 
 function UploadFileDropZone(props) {
+   const { t } = useTranslation();
    const onDrop = useCallback(
       (acceptedFiles) => {
          acceptedFiles.forEach((file) => {
@@ -913,7 +916,7 @@ function UploadFileDropZone(props) {
             variant="contained"
             sx={{ width: '100%', height: 24 }}
          >
-            Select file
+            {t('button.selectFile')}{' '}
          </Button>
       </div>
    );
