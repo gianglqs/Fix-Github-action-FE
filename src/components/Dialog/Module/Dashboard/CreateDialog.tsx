@@ -13,11 +13,14 @@ import FormControlledTextField from '@/components/FormController/TextField';
 import FormControllerAutocomplete from '@/components/FormController/Autocomplete';
 
 import getValidationSchema from './validationSchema';
+import { useTranslation } from 'react-i18next';
 
 const DialogCreateUser: React.FC<any> = (props) => {
    const { open, onClose, detail } = props;
 
    const dispatch = useDispatch();
+   const { t } = useTranslation();
+
    const [loading, setLoading] = useState(false);
 
    const validationSchema = useMemo(() => getValidationSchema(), []);
@@ -61,8 +64,8 @@ const DialogCreateUser: React.FC<any> = (props) => {
 
    const languageOptions = useMemo(
       () => [
-         { id: 'us', description: 'English' },
-         { id: 'cn', description: 'Chinese' },
+         { id: 'en', description: 'English' },
+         { id: 'vn', description: 'Vietnamese' },
       ],
       []
    );
@@ -77,15 +80,16 @@ const DialogCreateUser: React.FC<any> = (props) => {
          loading={loading}
          onOk={handleSubmitForm}
          onClose={onClose}
-         title="Create User"
-         okText="Save"
+         title={t('user.newUser')}
+         okText={t('button.save')}
+         closeText={t('button.close')}
       >
          <Grid container sx={{ paddingTop: 0.8, paddingBottom: 0.8 }} spacing={2}>
             <Grid item xs={12}>
                <FormControlledTextField
                   control={createForm.control}
                   name="userName"
-                  label="Name"
+                  label={t('user.name')}
                   required
                />
             </Grid>
@@ -93,7 +97,7 @@ const DialogCreateUser: React.FC<any> = (props) => {
                <FormControlledTextField
                   control={createForm.control}
                   name="email"
-                  label="Email"
+                  label={t('user.email')}
                   required
                />
             </Grid>
@@ -102,7 +106,7 @@ const DialogCreateUser: React.FC<any> = (props) => {
                   control={createForm.control}
                   type="password"
                   name="password"
-                  label="Password"
+                  label={t('user.password')}
                   autoComplete="new-password"
                   required
                />
@@ -111,7 +115,7 @@ const DialogCreateUser: React.FC<any> = (props) => {
                <FormControllerAutocomplete
                   control={createForm.control}
                   name="role"
-                  label="User Role"
+                  label={t('user.role')}
                   renderOption={(prop, option) => `${option?.roleName}`}
                   getOptionLabel={(option) => `${option?.roleName}`}
                   required
@@ -122,7 +126,7 @@ const DialogCreateUser: React.FC<any> = (props) => {
                <FormControllerAutocomplete
                   control={createForm.control}
                   name="defaultLocale"
-                  label="Language"
+                  label={t('user.language')}
                   required
                   options={languageOptions}
                />

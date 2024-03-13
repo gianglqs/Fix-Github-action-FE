@@ -1,4 +1,4 @@
-import { AppAutocomplete, AppLayout } from '@/components';
+import { AppAutocomplete, AppDateField, AppLayout } from '@/components';
 import { Button, Grid, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { produce } from 'immer';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -36,6 +36,7 @@ import { commonStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
 import { parseCookies } from 'nookies';
 import { CURRENCY } from '@/utils/constant';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -43,9 +44,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function ExchangeRate() {
    const dispatch = useDispatch();
+   const { t } = useTranslation();
+
    let cookies = parseCookies();
    let userRoleCookies = cookies['role'];
    const [userRole, setUserRole] = useState('');
+   const [dataFilter, setDataFilter] = useState({
+      fromDate: { value: '' },
+      toDate: { value: '' },
+      currentCurrency: { value: '', error: false },
+      comparisonCurrencies: {
+         value: [],
+         error: false,
+      },
+   });
 
    useEffect(() => {
       setUserRole(userRoleCookies);
@@ -53,11 +65,6 @@ export default function ExchangeRate() {
 
    const [currencyFilter, setCurrencyFilter] = useState([{ value: '' }]);
 
-   const [currentCurrency, setCurrentCurrency] = useState({ value: '', error: false });
-   const [comparisonCurrencies, setComparisonCurrencies] = useState({
-      value: [],
-      error: false,
-   });
    const months = [
       '',
       'Jan',
@@ -90,16 +97,18 @@ export default function ExchangeRate() {
    }, []);
 
    const handleChangeDataFilter = (option, field) => {
-      if (_.includes(['currentCurrency'], field)) {
-         setCurrentCurrency({ value: option.value, error: false });
-      } else {
-         setComparisonCurrencies((prev) =>
-            produce(prev, (draft) => {
-               draft.value = option.map(({ value }) => value);
-               draft.error = false;
-            })
-         );
-      }
+      setDataFilter((prev) =>
+         produce(prev, (draft) => {
+            if (_.includes(['currentCurrency'], field)) {
+               draft[field] = { value: option.value, error: false };
+            } else if (_.includes(['fromDate', 'toDate'], field)) {
+               draft[field].value = option.slice(0, -3);
+            } else {
+               draft[field].value = option.map(({ value }) => value);
+               draft[field].error = false;
+            }
+         })
+      );
    };
 
    const handleUploadExchangeRate = async (file) => {
@@ -118,35 +127,44 @@ export default function ExchangeRate() {
 
    const handleCompareCurrency = async () => {
       try {
-         if (currentCurrency.value == '') {
-            setCurrentCurrency({ value: '', error: true });
+         if (dataFilter.currentCurrency.value == '') {
+            setDataFilter((prev) =>
+               produce(prev, (draft) => {
+                  draft['currentCurrency'] = { value: '', error: true };
+               })
+            );
             return;
          }
-         if (comparisonCurrencies.value.length == 0) {
-            setComparisonCurrencies({ value: [], error: true });
+         if (dataFilter.comparisonCurrencies.value.length == 0) {
+            setDataFilter((prev) =>
+               produce(prev, (draft) => {
+                  draft['comparisonCurrencies'] = { value: [], error: true };
+               })
+            );
             return;
          }
          const request = {
-            currentCurrency: currentCurrency.value,
-            comparisonCurrencies: comparisonCurrencies.value,
+            currentCurrency: dataFilter.currentCurrency.value,
+            comparisonCurrencies: dataFilter.comparisonCurrencies.value,
+            fromDate: dataFilter.fromDate.value,
+            toDate: dataFilter.toDate.value,
             fromRealTime: exchangeRateSource == 'Database' ? false : true,
          };
 
          exchangeRatesApi
             .compareCurrency(request)
             .then((response) => {
-               console.log(response);
                const data = response.data.compareCurrency;
 
                // Setting Labels for chart
-               const labels = data[comparisonCurrencies.value[0]].exchangeRateList
+               const labels = data[dataFilter.comparisonCurrencies.value[0]].exchangeRateList
                   .map((item) => {
                      return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
                   })
                   .reverse();
 
                let datasets = [];
-               comparisonCurrencies.value.forEach((item) => {
+               dataFilter.comparisonCurrencies.value.forEach((item) => {
                   datasets.push({
                      label: item,
                      data: data[item].exchangeRateList.reverse().map((obj) => obj.rate),
@@ -161,8 +179,10 @@ export default function ExchangeRate() {
 
                const newChartData = {
                   title: `${
-                     currentCurrency.value == 'CNY' ? 'RMB' : currentCurrency.value
-                  } to${_.map(comparisonCurrencies.value, (item) => ` ${item}`)}`,
+                     dataFilter.currentCurrency.value == 'CNY'
+                        ? 'RMB'
+                        : dataFilter.currentCurrency.value
+                  } to${_.map(dataFilter.comparisonCurrencies.value, (item) => ` ${item}`)}`,
                   data: {
                      labels: labels,
                      datasets: datasets,
@@ -208,8 +228,15 @@ export default function ExchangeRate() {
 
    const handleClearAllFilters = () => {
       setExchangeRateSource('Database');
-      setCurrentCurrency({ value: '', error: false });
-      setComparisonCurrencies({ value: [], error: false });
+      setDataFilter({
+         fromDate: { value: '' },
+         toDate: { value: '' },
+         currentCurrency: { value: '', error: false },
+         comparisonCurrencies: {
+            value: [],
+            error: false,
+         },
+      });
    };
 
    const handleClearAllReports = () => {
@@ -229,9 +256,9 @@ export default function ExchangeRate() {
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
                      required
-                     error={currentCurrency.error}
+                     error={dataFilter.currentCurrency.error}
                      helperText="This field is required"
-                     value={currentCurrency.value}
+                     value={dataFilter.currentCurrency.value}
                   />
                   <Grid sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 1 }}>
                      <Button
@@ -239,7 +266,7 @@ export default function ExchangeRate() {
                         sx={{ width: '45%', height: 24 }}
                         onClick={handleCompareCurrency}
                      >
-                        Compare
+                        {t('button.compare')}
                      </Button>
 
                      {userRole === 'ADMIN' && (
@@ -248,7 +275,7 @@ export default function ExchangeRate() {
                               uploadedFile={uploadedFile}
                               setUploadedFile={setUploadedFile}
                               handleUploadFile={handleUploadExchangeRate}
-                              buttonName="Upload File"
+                              buttonName={t('button.uploadFile')}
                               sx={{ width: '100%', height: 24 }}
                            />
                         </Grid>
@@ -281,9 +308,9 @@ export default function ExchangeRate() {
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
                      required
-                     error={comparisonCurrencies.error}
+                     error={dataFilter.comparisonCurrencies.error}
                      helperText="This field requires at least one item"
-                     value={comparisonCurrencies.value.map((value) => {
+                     value={dataFilter.comparisonCurrencies.value.map((value) => {
                         return { value };
                      })}
                   />
@@ -293,7 +320,7 @@ export default function ExchangeRate() {
                         sx={{ width: '45%', height: 24, minWidth: 100 }}
                         onClick={handleClearAllFilters}
                      >
-                        Clear Filters
+                        {t('button.clear')}
                      </Button>
 
                      <Button
@@ -301,9 +328,31 @@ export default function ExchangeRate() {
                         sx={{ width: '45%', height: 24, minWidth: 100 }}
                         onClick={handleClearAllReports}
                      >
-                        Clear Reports
+                        {t('button.clearReports')}
                      </Button>
                   </Grid>
+               </Grid>
+               <Grid item xs={1}>
+                  <AppDateField
+                     label={t('filters.fromDate')}
+                     name="fromDate"
+                     onChange={(e, value) =>
+                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
+                     }
+                     value={dataFilter.fromDate.value}
+                     sx={{ marginTop: 1 }}
+                  />
+               </Grid>
+               <Grid item xs={1}>
+                  <AppDateField
+                     label={t('filters.toDate')}
+                     name="toDate"
+                     onChange={(e, value) =>
+                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
+                     }
+                     value={dataFilter.toDate.value}
+                     sx={{ marginTop: 1 }}
+                  />
                </Grid>
                <Grid item xs={2.5} sx={{ height: 50 }}>
                   <RadioGroup
@@ -319,11 +368,15 @@ export default function ExchangeRate() {
                         marginTop: 0.25,
                      }}
                   >
-                     <FormControlLabel value="Database" control={<Radio />} label="From Database" />
+                     <FormControlLabel
+                        value="Database"
+                        control={<Radio />}
+                        label={t('button.fromDatabase')}
+                     />
                      <FormControlLabel
                         value="Real-time"
                         control={<Radio />}
-                        label="From exchangerate-api.com"
+                        label={t('button.fromExchangeRateApi')}
                      />
                   </RadioGroup>
                </Grid>

@@ -48,6 +48,7 @@ interface AppBarProps extends MuiAppBarProps {
 
 import { GetServerSidePropsContext } from 'next';
 import { formatDate } from '@/utils/formatCell';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageAdmin(context);
@@ -106,6 +107,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Dashboard() {
+   const { t } = useTranslation();
    const [open, setOpen] = useState(true);
    createAction(`user/GET_LIST`);
    const entityApp = 'user';
@@ -264,17 +266,17 @@ export default function Dashboard() {
       {
          field: 'email',
          flex: 0.8,
-         headerName: 'Email',
+         headerName: t('user.email'),
       },
       {
          field: 'name',
          flex: 0.8,
-         headerName: 'Name',
+         headerName: t('user.name'),
       },
       {
          field: 'role',
          flex: 0.4,
-         headerName: 'Role',
+         headerName: t('user.role'),
          headerAlign: 'center',
          align: 'center',
          renderCell(params) {
@@ -284,7 +286,7 @@ export default function Dashboard() {
       {
          field: 'lastLogin',
          flex: 0.4,
-         headerName: 'Last Login',
+         headerName: t('user.lastLogin'),
          headerAlign: 'center',
          align: 'center',
          renderCell(params) {
@@ -295,7 +297,7 @@ export default function Dashboard() {
          ...iconColumn,
          field: 'active',
          flex: 0.4,
-         headerName: 'Status',
+         headerName: t('user.status'),
          headerAlign: 'center',
          align: 'center',
          renderCell(params) {
@@ -304,8 +306,11 @@ export default function Dashboard() {
                   variant="outlined"
                   color={`${params.row.active ? 'primary' : 'error'}`}
                   onClick={() => handleOpenDeactivateUser(params.row)}
+                  sx={{
+                     width: '80px',
+                  }}
                >
-                  {params.row.active ? 'Active' : 'Locked'}
+                  {params.row.active ? t('user.active') : t('user.locked')}
                </Button>
             );
          },
@@ -313,7 +318,7 @@ export default function Dashboard() {
       {
          ...iconColumn,
          field: 'id',
-         headerName: 'Edit',
+         headerName: t('user.edit'),
          flex: 0.4,
          headerAlign: 'center',
          align: 'center',
@@ -384,7 +389,7 @@ export default function Dashboard() {
                      data-testid="user-item-testid"
                      id="logout__testid"
                   >
-                     Change Password
+                     {t('user.changePassword')}
                   </Typography>
                   <Typography
                      style={{ margin: 10, cursor: 'pointer' }}
@@ -392,7 +397,7 @@ export default function Dashboard() {
                      data-testid="user-item-testid"
                      id="logout__testid"
                   >
-                     Log out
+                     {t('user.logOut')}
                   </Typography>
                </Popover>
             </AppBar>
@@ -433,7 +438,7 @@ export default function Dashboard() {
                <Grid container justifyContent="flex-end" sx={{ padding: 1 }}>
                   <Button variant="contained" style={{ marginLeft: 5 }} color="primary">
                      <ReloadIcon />
-                     Reload
+                     {t('user.reload')}
                   </Button>
                   <Button
                      onClick={handleOpenCreateDialog}
@@ -442,11 +447,11 @@ export default function Dashboard() {
                      color="primary"
                   >
                      <CreateIcon />
-                     New User
+                     {t('user.newUser')}
                   </Button>
                </Grid>
                <Grid container sx={{ padding: 1, paddingLeft: 1.5 }}>
-                  <AppSearchBar onSearch={handleSearch}></AppSearchBar>
+                  <AppSearchBar onSearch={handleSearch} placeholder={t('search')}></AppSearchBar>
                </Grid>
                <Paper elevation={1} sx={{ marginTop: 2 }}>
                   <Grid container sx={{ height: 'calc(100vh - 275px)', minHeight: '200px' }}>

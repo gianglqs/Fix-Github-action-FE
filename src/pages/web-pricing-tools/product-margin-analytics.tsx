@@ -50,6 +50,7 @@ import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { setCookie } from 'nookies';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { paperStyle } from '@/theme/paperStyle';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -58,6 +59,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 export default function Outlier() {
    const paperMinWidth = 300;
 
+   const { t } = useTranslation();
    const dispatch = useDispatch();
    const listOutlier = useSelector(outlierStore.selectOutlierList);
    const initDataFilter = useSelector(outlierStore.selectInitDataFilter);
@@ -133,7 +135,7 @@ export default function Outlier() {
       {
          field: 'region',
          flex: 0.5,
-         headerName: 'Region',
+         headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.region.regionName}</span>;
          },
@@ -141,7 +143,7 @@ export default function Outlier() {
       {
          field: 'Plant',
          flex: 0.6,
-         headerName: 'Plant',
+         headerName: t('table.plant'),
          renderCell(params) {
             return <span>{params.row.product?.plant}</span>;
          },
@@ -149,15 +151,15 @@ export default function Outlier() {
       {
          field: 'truckClass',
          flex: 0.6,
-         headerName: 'Class',
+         headerName: t('table.class'),
          renderCell(params) {
-            return <span>{params.row.product?.clazz}</span>;
+            return <span>{params.row.product?.clazz.clazzName}</span>;
          },
       },
       {
          field: 'series',
          flex: 0.4,
-         headerName: 'Series',
+         headerName: t('table.series'),
          renderCell(params) {
             return <span>{params.row.series}</span>;
          },
@@ -165,7 +167,7 @@ export default function Outlier() {
       {
          field: 'model',
          flex: 0.6,
-         headerName: 'Models',
+         headerName: t('table.models'),
          renderCell(params) {
             return <span>{params.row.product.modelCode}</span>;
          },
@@ -173,13 +175,13 @@ export default function Outlier() {
       {
          field: 'quantity',
          flex: 0.3,
-         headerName: 'Qty',
+         headerName: t('table.qty'),
          ...formatNumbericColumn,
       },
       {
          field: 'totalCost',
          flex: 0.8,
-         headerName: "Total Cost ('000 USD)",
+         headerName: `${t('table.totalCost')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.totalCost)}</span>;
@@ -188,7 +190,7 @@ export default function Outlier() {
       {
          field: 'dealerNet',
          flex: 0.8,
-         headerName: "DN ('000 USD)",
+         headerName: `${t('table.dealerNet')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNet)}</span>;
@@ -197,7 +199,7 @@ export default function Outlier() {
       {
          field: 'dealerNetAfterSurCharge',
          flex: 0.8,
-         headerName: "DN After Surcharge ('000 USD)",
+         headerName: `${t('table.dealerNetAfterSurcharge')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
@@ -206,7 +208,7 @@ export default function Outlier() {
       {
          field: 'marginAfterSurCharge',
          flex: 0.7,
-         headerName: "Margin $ After Surcharge ('000 USD)",
+         headerName: `${t('table.marginAfterSurcharge')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
@@ -216,7 +218,7 @@ export default function Outlier() {
       {
          field: 'marginPercentageAfterSurCharge',
          flex: 0.6,
-         headerName: 'Margin % After Surcharge',
+         headerName: t('table.marginPercentageAfterSurcharge'),
          ...formatNumbericColumn,
          renderCell(params) {
             return (
@@ -233,7 +235,7 @@ export default function Outlier() {
          x: {
             beginAtZero: true,
             title: {
-               text: 'Margin % After Surcharge',
+               text: t('table.marginPercentageAfterSurcharge'),
                display: true,
             },
             ticks: {
@@ -245,7 +247,7 @@ export default function Outlier() {
          },
          y: {
             title: {
-               text: 'Dealer Net $',
+               text: `${t('table.dealerNet')} $`,
                display: true,
             },
             ticks: {
@@ -403,7 +405,7 @@ export default function Outlier() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Total Cost ('000)
+                           {t('table.totalCost')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.dealerNet)}
@@ -415,7 +417,7 @@ export default function Outlier() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Dealer Net('000)
+                           {t('table.dealerNet')}('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.dealerNetAfterSurcharge)}
@@ -427,7 +429,7 @@ export default function Outlier() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Dealer Net After Surcharge ('000)
+                           {t('table.dealerNetAfterSurcharge')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.totalCost)}
@@ -439,7 +441,7 @@ export default function Outlier() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Margin $ After Surcharge ('000)
+                           {t('table.marginAfterSurcharge')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.marginAfterSurcharge)}
@@ -451,7 +453,7 @@ export default function Outlier() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           Margin % After Surcharge
+                           {t('table.marginPercentageAfterSurcharge')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumberPercentage(
@@ -470,7 +472,7 @@ export default function Outlier() {
                         return { value: item };
                      })}
                      options={initDataFilter.regions}
-                     label="Region"
+                     label={t('filters.region')}
                      onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
                      limitTags={2}
                      disableListWrap
@@ -487,7 +489,7 @@ export default function Outlier() {
                         return { value: item };
                      })}
                      options={initDataFilter.plants}
-                     label="Plant"
+                     label={t('filters.plant')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'plants')}
                      limitTags={1}
@@ -505,7 +507,7 @@ export default function Outlier() {
                         return { value: item };
                      })}
                      options={initDataFilter.metaSeries}
-                     label="MetaSeries"
+                     label={t('filters.metaSeries')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
                      limitTags={1}
@@ -523,7 +525,7 @@ export default function Outlier() {
                         return { value: item };
                      })}
                      options={initDataFilter.dealers}
-                     label="Dealer"
+                     label={t('filters.dealerName')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'dealers')}
                      limitTags={1}
@@ -542,7 +544,7 @@ export default function Outlier() {
                         return { value: item };
                      })}
                      options={initDataFilter.classes}
-                     label="Class"
+                     label={t('filters.class')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
                      limitTags={1}
@@ -560,7 +562,7 @@ export default function Outlier() {
                         return { value: item };
                      })}
                      options={initDataFilter.models}
-                     label="Model"
+                     label={t('filters.models')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'models')}
                      limitTags={1}
@@ -583,7 +585,7 @@ export default function Outlier() {
                            : { value: '' }
                      }
                      options={initDataFilter.marginPercentageGroup}
-                     label="Margin %"
+                     label={t('filters.marginPercentage')}
                      onChange={(e, option) =>
                         handleChangeDataFilter(
                            _.isNil(option) ? '' : option?.value,
@@ -598,7 +600,7 @@ export default function Outlier() {
                </Grid>
                <Grid item xs={2}>
                   <AppDateField
-                     label="From Date"
+                     label={t('filters.fromDate')}
                      name="from_date"
                      onChange={(e, value) =>
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
@@ -608,7 +610,7 @@ export default function Outlier() {
                </Grid>
                <Grid item xs={2}>
                   <AppDateField
-                     label="To Date"
+                     label={t('filters.toDate')}
                      name="toDate"
                      onChange={(e, value) =>
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
@@ -622,7 +624,7 @@ export default function Outlier() {
                      onClick={handleFilterOrderBooking}
                      sx={{ width: '100%', height: 24 }}
                   >
-                     Filter
+                     {t('button.filter')}
                   </Button>
                </Grid>
                <Grid item xs={1}>
@@ -631,7 +633,7 @@ export default function Outlier() {
                      onClick={handleClearAllFilters}
                      sx={{ width: '100%', height: 24 }}
                   >
-                     Clear
+                     {t('button.clear')}
                   </Button>
                </Grid>
             </Grid>
@@ -649,7 +651,7 @@ export default function Outlier() {
                </Grid>
 
                <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
-                  <Grid container sx={{ height: 'calc(58vh - 238px)' }}>
+                  <Grid container sx={{ height: 'calc(60vh - 238px)' }}>
                      <DataGridPro
                         sx={{
                            '& .MuiDataGrid-columnHeaderTitle': {
@@ -674,18 +676,13 @@ export default function Outlier() {
                      />
                   </Grid>
 
-                  <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
-                     <Typography sx={{ marginRight: 1, marginTop: 1 }}>
-                        Last updated at {clientLatestUpdatedTime}
-                     </Typography>
-                  </Grid>
-
                   <DataTablePagination
                      page={tableState.pageNo}
                      perPage={tableState.perPage}
                      totalItems={tableState.totalItems}
                      onChangePage={handleChangePage}
                      onChangePerPage={handleChangePerPage}
+                     lastUpdated={clientLatestUpdatedTime}
                   />
                </Paper>
                <AppBackDrop open={loading} hightHeaderTable={'35px'} bottom={'43px'} />

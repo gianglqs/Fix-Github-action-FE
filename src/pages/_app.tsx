@@ -9,6 +9,8 @@ import { useEffect } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import UserInfoProvider from '@/provider/UserInfoContext';
+import '../i18n/locales/config';
+import i18next from 'i18next';
 
 function MyApp({ Component, pageProps }: AppProps) {
    useEffect(() => {
@@ -16,7 +18,14 @@ function MyApp({ Component, pageProps }: AppProps) {
       if (jssStyles) {
          jssStyles.parentElement.removeChild(jssStyles);
       }
-   }, []);
+
+      const defaultLocale =
+         document.cookie
+            .split('; ')
+            .find((row) => row.startsWith('defaultLocale='))
+            ?.split('=')[1] || 'en';
+      i18next.changeLanguage(defaultLocale);
+   });
 
    return (
       <ThemeProvider theme={appTheme}>

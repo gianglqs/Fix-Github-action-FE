@@ -34,6 +34,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/ChangePasswordDialog';
 import { checkTokenBeforeLoadPageAdmin } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
+import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('@/public/logo.svg');
@@ -93,6 +94,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function competitors() {
+   const { t } = useTranslation();
    const [open, setOpen] = useState(true);
    const router = useRouter();
 
@@ -188,16 +190,16 @@ export default function competitors() {
       {
          field: 'groupName',
          flex: 0.8,
-         headerName: 'Competitor Name',
+         headerName: t('competitors.competitorName'),
       },
       {
          field: 'colorCode',
          flex: 0.8,
-         headerName: 'Color Code',
+         headerName: t('competitors.colorCode'),
       },
       {
          flex: 0.8,
-         headerName: 'Color',
+         headerName: t('competitors.color'),
          renderCell(params) {
             return <div style={{ backgroundColor: params.row.colorCode, width: 30, height: 30 }} />;
          },
@@ -205,7 +207,7 @@ export default function competitors() {
       {
          ...iconColumn,
          field: 'id',
-         headerName: 'Edit',
+         headerName: t('user.edit'),
          flex: 0.2,
          renderCell(params) {
             return <EditIcon onClick={() => handleOpenUpdateColorDialog(params.row.id)} />;
@@ -294,7 +296,7 @@ export default function competitors() {
                      data-testid="user-item-testid"
                      id="logout__testid"
                   >
-                     Change Password
+                     {t('user.changePassword')}
                   </Typography>
                   <Typography
                      style={{ margin: 10, cursor: 'pointer' }}
@@ -302,7 +304,7 @@ export default function competitors() {
                      data-testid="user-item-testid"
                      id="logout__testid"
                   >
-                     Log out
+                     {t('user.logOut')}
                   </Typography>
                </Popover>
             </AppBar>
@@ -343,11 +345,11 @@ export default function competitors() {
                <Grid container justifyContent="flex-end" sx={{ padding: 1 }}>
                   <Button variant="contained" style={{ marginLeft: 5 }} color="primary">
                      <ReloadIcon />
-                     Reload
+                     {t('user.reload')}
                   </Button>
                </Grid>
                <Grid container sx={{ padding: 1, paddingLeft: 1.5 }}>
-                  <AppSearchBar onSearch={handleSearch}></AppSearchBar>
+                  <AppSearchBar onSearch={handleSearch} placeholder={t('search')}></AppSearchBar>
                </Grid>
                <Paper elevation={1} sx={{ marginLeft: 1.5, marginRight: 1.5 }}>
                   <Grid container>

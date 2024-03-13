@@ -46,6 +46,7 @@ import { formatDate } from '@/utils/formatCell';
 import { DataGridPro } from '@mui/x-data-grid-pro';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { BASE_URL } from '@/Path/backend';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageAdmin(context);
@@ -96,6 +97,8 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function HistoricalImport() {
+   const { t } = useTranslation();
+
    const [open, setOpen] = useState(true);
    createAction(`historicalImport/GET_LIST`);
    const entityApp = 'historicalImport';
@@ -198,7 +201,7 @@ export default function HistoricalImport() {
          field: 'fileName',
          flex: 0.8,
          headerAlign: 'center',
-         headerName: 'File name',
+         headerName: t('table.fileName'),
          renderCell(params) {
             return (
                <a
@@ -216,12 +219,12 @@ export default function HistoricalImport() {
          field: 'screen',
          flex: 0.3,
          headerAlign: 'center',
-         headerName: 'Model',
+         headerName: t('table.models'),
       },
       {
          field: 'uploadedTime',
          flex: 0.4,
-         headerName: 'Import at',
+         headerName: t('table.importAt'),
          headerAlign: 'center',
          align: 'center',
          renderCell(params) {
@@ -235,7 +238,7 @@ export default function HistoricalImport() {
       {
          field: 'uploadedBy',
          flex: 0.5,
-         headerName: 'Import by',
+         headerName: t('table.importBy'),
          renderCell(params) {
             return <span>{params?.row?.uploadedBy?.name}</span>;
          },
@@ -243,7 +246,7 @@ export default function HistoricalImport() {
       {
          field: 'email',
          flex: 0.6,
-         headerName: 'Email',
+         headerName: t('user.email'),
          renderCell(params) {
             return <span>{params?.row?.uploadedBy?.email}</span>;
          },
@@ -253,7 +256,7 @@ export default function HistoricalImport() {
          ...iconColumn,
          field: 'active',
          flex: 0.3,
-         headerName: 'Status',
+         headerName: t('user.status'),
          renderCell(params) {
             return (
                <Tooltip title={!params.row.success && params.row.message} placement="top">
@@ -262,7 +265,7 @@ export default function HistoricalImport() {
                         variant="outlined"
                         color={`${params.row.success ? 'success' : 'error'}`}
                      >
-                        {params.row.success ? 'success' : 'failure'}
+                        {params.row.success ? t('success') : t('failure')}
                      </Button>
                   )}
                </Tooltip>
@@ -362,7 +365,7 @@ export default function HistoricalImport() {
                      data-testid="user-item-testid"
                      id="logout__testid"
                   >
-                     Change Password
+                     {t('user.changePassword')}
                   </Typography>
                   <Typography
                      style={{ margin: 10, cursor: 'pointer' }}
@@ -370,7 +373,7 @@ export default function HistoricalImport() {
                      data-testid="user-item-testid"
                      id="logout__testid"
                   >
-                     Log out
+                     {t('user.logOut')}
                   </Typography>
                </Popover>
             </AppBar>
@@ -416,11 +419,11 @@ export default function HistoricalImport() {
                      color="primary"
                   >
                      <ReloadIcon />
-                     Reload
+                     {t('user.reload')}
                   </Button>
                </Grid>
                <Grid container sx={{ padding: 1, paddingLeft: 1.5 }}>
-                  <AppSearchBar onSearch={handleSearch}></AppSearchBar>
+                  <AppSearchBar onSearch={handleSearch} placeholder={t('search')}></AppSearchBar>
                </Grid>
                <Paper elevation={1} sx={{ marginTop: 2 }}>
                   <Grid container>

@@ -7,11 +7,14 @@ import { AppTextField } from '@/components/App';
 import { commonStore, productStore } from '@/store/reducers';
 import ChooseImage from '@/components/App/chooseImage';
 import productApi from '@/api/product.api';
+import { useTranslation } from 'react-i18next';
 
 const DialogUpdateProduct: React.FC<any> = (props) => {
    const { open, onClose, preValue } = props;
 
    const dispatch = useDispatch();
+
+   const { t } = useTranslation();
 
    const [newValue, setNewValue] = useState(preValue);
 
@@ -74,8 +77,9 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
          loading={!enableSubmitForm}
          onOk={handleSubmitForm}
          onClose={handleCloseForm}
-         title="Update Product"
-         okText="Save"
+         title={t('updateProduct')}
+         okText={t('button.save')}
+         closeText={t('button.close')}
       >
          <Grid
             container
@@ -95,7 +99,7 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
                <AppTextField
                   name="description"
                   id="outlined-required"
-                  label="Description"
+                  label={t('table.description')}
                   defaultValue=" "
                   maxRows={3}
                   value={newValue.description}

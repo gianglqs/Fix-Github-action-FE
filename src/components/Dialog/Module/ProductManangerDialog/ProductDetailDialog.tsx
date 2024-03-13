@@ -18,6 +18,7 @@ import PartImageTooltip from '@/components/App/Tooltip/ImageTootip/Part';
 import { produce } from 'immer';
 import { When } from 'react-if';
 import { ProductImage } from '@/components/App/Image/ProductImage';
+import { useTranslation } from 'react-i18next';
 
 const ProductDetailDialog: React.FC<any> = (props) => {
    const { open, onClose, model, _series, orderNo, handleOpenImageDialog } = props;
@@ -27,6 +28,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    const [series, setSeries] = useState();
    const [productDetail, setProductDetail] = useState(null);
    const [orderNumber, setOrderNumber] = useState();
+   const { t } = useTranslation();
 
    useEffect(() => {
       setModelCode(model);
@@ -146,12 +148,12 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       {
          field: 'partNumber',
          flex: 0.3,
-         headerName: 'Part Number',
+         headerName: t('table.partNumber'),
       },
       {
          field: 'image',
          flex: 0.2,
-         headerName: 'image',
+         headerName: t('table.image'),
          ...centerHeaderColumn,
          ...iconColumn,
          renderCell(params) {
@@ -166,7 +168,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       {
          field: 'currency',
          flex: 0.2,
-         headerName: 'Currency',
+         headerName: t('table.currency'),
          ...centerColumn,
          renderCell(params) {
             return <span>{params.row.currency?.currency}</span>;
@@ -175,7 +177,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       {
          field: 'listPrice',
          flex: 0.3,
-         headerName: 'List Price',
+         headerName: t('table.listPrice'),
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.listPrice * 1000)}</span>;
@@ -185,7 +187,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
          field: 'description',
          ...centerHeaderColumn,
          flex: 1.4,
-         headerName: 'Description',
+         headerName: t('table.description'),
       },
    ];
 
@@ -219,7 +221,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   <Grid item xs={3}>
                      <TextField
                         id="outlined-read-only-input"
-                        label="Model Code"
+                        label={t('table.models')}
                         value={productDetail?.modelCode}
                         defaultValue=" "
                         InputProps={{
@@ -240,7 +242,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   <Grid item xs={3}>
                      <TextField
                         id="outlined-read-only-input"
-                        label="Brand"
+                        label={t('table.brand')}
                         value={productDetail?.brand}
                         defaultValue=" "
                         InputProps={{
@@ -261,7 +263,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   <Grid item xs={3}>
                      <TextField
                         id="outlined-read-only-input"
-                        label="Truck Type"
+                        label={t('table.truckType')}
                         value={productDetail?.truckType}
                         defaultValue=" "
                         InputProps={{
@@ -282,7 +284,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   <Grid item xs={3}>
                      <TextField
                         id="outlined-read-only-input"
-                        label="Plant"
+                        label={t('table.plant')}
                         value={productDetail?.plant}
                         defaultValue=" "
                         InputProps={{
@@ -303,7 +305,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   <Grid item xs={2}>
                      <TextField
                         id="outlined-read-only-input"
-                        label="Series"
+                        label={t('table.series')}
                         value={productDetail?.series}
                         defaultValue=" "
                         InputProps={{
@@ -324,7 +326,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   <Grid item xs={5}>
                      <TextField
                         id="outlined-read-only-input"
-                        label="Segment"
+                        label={t('table.segment')}
                         value={productDetail?.segment}
                         defaultValue=" "
                         InputProps={{
@@ -345,7 +347,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   <Grid item xs={3}>
                      <TextField
                         id="outlined-read-only-input"
-                        label="Family"
+                        label={t('table.family')}
                         value={productDetail?.family}
                         defaultValue=" "
                         InputProps={{
@@ -366,8 +368,8 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   <Grid item xs={2}>
                      <TextField
                         id="outlined-read-only-input"
-                        label="Class"
-                        value={productDetail?.clazz}
+                        label={t('table.class')}
+                        value={productDetail?.clazz.clazzName}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
@@ -387,7 +389,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   <Grid item xs={12}>
                      <AppTextField
                         id="outlined-read-only-input"
-                        label="Description"
+                        label={t('table.description')}
                         value={productDetail?.description}
                         defaultValue=" "
                         rows={3}
@@ -426,7 +428,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   <Grid item xs={4} sx={{ zIndex: 10, height: 25 }}>
                      <AppAutocomplete
                         options={initDataFilter.orderNos}
-                        label="OrderNo"
+                        label={t('filters.order#')}
                         sx={{ height: 25, zIndex: 10 }}
                         onChange={(e, option) => handleChangeDataFilter(option, 'orderNumbers')}
                         limitTags={1}
@@ -444,7 +446,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                         onClick={handleClickFilter}
                         sx={{ width: '100%', height: 24 }}
                      >
-                        Filter
+                        {t('button.filter')}
                      </Button>
                   </Grid>
                </Grid>

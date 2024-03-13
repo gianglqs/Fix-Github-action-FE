@@ -41,6 +41,7 @@ import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { setCookie } from 'nookies';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -52,6 +53,8 @@ interface FileChoosed {
 
 export default function Product() {
    const dispatch = useDispatch();
+   const { t } = useTranslation();
+
    const listProduct = useSelector(productStore.selectProductList);
    const initDataFilter = useSelector(productStore.selectInitDataFilter);
    const cacheDataFilter = useSelector(productStore.selectDataFilter);
@@ -142,54 +145,57 @@ export default function Product() {
       {
          field: 'modelCode',
          flex: 0.4,
-         headerName: 'Model Code',
+         headerName: t('table.models'),
       },
       {
          field: 'series',
          flex: 0.3,
-         headerName: 'Series',
+         headerName: t('table.series'),
       },
       {
          field: 'brand',
          flex: 0.3,
-         headerName: 'Brand',
+         headerName: t('table.brand'),
       },
       {
          field: 'clazz',
          flex: 0.5,
-         headerName: 'Class',
+         headerName: t('table.class'),
+         renderCell(params) {
+            return <span>{params.row.clazz?.clazzName}</span>;
+         },
       },
       {
          field: 'plant',
          flex: 0.5,
-         headerName: 'Plant',
+         headerName: t('table.plant'),
       },
       {
          field: 'segment',
          flex: 0.8,
-         headerName: 'Segment',
+         headerName: t('table.segment'),
       },
 
       {
          field: 'family',
          flex: 0.6,
-         headerName: 'Family',
+         headerName: t('table.family'),
       },
 
       {
          field: 'truckType',
          flex: 0.6,
-         headerName: 'Truck Type',
+         headerName: t('table.truckType'),
       },
       {
          field: 'description',
          flex: 1,
-         headerName: 'Description',
+         headerName: t('table.description'),
       },
 
       userRoleState === 'ADMIN' && {
          ...iconColumn,
-         headerName: 'Edit',
+         headerName: t('table.edit'),
          flex: 0.2,
          renderCell(params) {
             return (
@@ -367,8 +373,8 @@ export default function Product() {
                      <AppTextField
                         onChange={(e) => handleChangeDataFilter(e.target.value, 'modelCode')}
                         name="orderNo"
-                        label="Model Code"
-                        placeholder="Search Product by Model"
+                        label={t('filters.models')}
+                        placeholder={t('filters.searchProductByModel')}
                         value={dataFilter.modelCode}
                         focused
                      />
@@ -380,7 +386,7 @@ export default function Product() {
                         return { value: item };
                      })}
                      options={initDataFilter.classes}
-                     label="Class"
+                     label={t('filters.class')}
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
                      limitTags={2}
                      disableListWrap
@@ -397,7 +403,7 @@ export default function Product() {
                         return { value: item };
                      })}
                      options={initDataFilter.plants}
-                     label="Plant"
+                     label={t('filters.plant')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'plants')}
                      limitTags={1}
@@ -415,7 +421,7 @@ export default function Product() {
                         return { value: item };
                      })}
                      options={initDataFilter.metaSeries}
-                     label="MetaSeries"
+                     label={t('filters.metaSeries')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
                      limitTags={1}
@@ -433,7 +439,7 @@ export default function Product() {
                         return { value: item };
                      })}
                      options={initDataFilter.family}
-                     label="Family"
+                     label={t('filters.family')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'family')}
                      limitTags={1}
@@ -451,7 +457,7 @@ export default function Product() {
                         return { value: item };
                      })}
                      options={initDataFilter.segments}
-                     label="Segment"
+                     label={t('filters.segment')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'segments')}
                      limitTags={1}
@@ -469,7 +475,7 @@ export default function Product() {
                         return { value: item };
                      })}
                      options={initDataFilter.brands}
-                     label="Brand"
+                     label={t('filters.brand')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'brands')}
                      limitTags={1}
@@ -487,7 +493,7 @@ export default function Product() {
                         return { value: item };
                      })}
                      options={initDataFilter.truckType}
-                     label="Truck Type"
+                     label={t('filters.truckType')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'truckType')}
                      limitTags={1}
@@ -506,7 +512,7 @@ export default function Product() {
                      onClick={handleFilterProduct}
                      sx={{ width: '100%', height: 24 }}
                   >
-                     Filter
+                     {t('button.filter')}
                   </Button>
                </Grid>
                <Grid item xs={1}>
@@ -515,7 +521,7 @@ export default function Product() {
                      onClick={handleClearAllFilters}
                      sx={{ width: '100%', height: 24 }}
                   >
-                     Clear
+                     {t('button.clear')}{' '}
                   </Button>
                </Grid>
             </Grid>
@@ -603,18 +609,13 @@ export default function Product() {
                   />
                </Grid>
 
-               <Grid sx={{ display: 'flex', justifyContent: 'right', width: 'match-parent' }}>
-                  <Typography sx={{ marginRight: 1, marginTop: 1 }}>
-                     Last updated at {clientLatestUpdatedTime}
-                  </Typography>
-               </Grid>
-
                <DataTablePagination
                   page={tableState.pageNo}
                   perPage={tableState.perPage}
                   totalItems={tableState.totalItems}
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
+                  lastUpdated={clientLatestUpdatedTime}
                />
                <AppBackDrop open={loadingTable} hightHeaderTable={'74px'} bottom={'43px'} />
             </Paper>
