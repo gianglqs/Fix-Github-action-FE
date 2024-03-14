@@ -141,7 +141,8 @@
 
       "fileName": "File Name",
       "importAt": "Import At",
-      "importBy": "Import By"
+      "importBy": "Import By",
+      "size": "size"
    },
 
    "competitors": {

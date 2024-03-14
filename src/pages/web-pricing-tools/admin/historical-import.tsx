@@ -47,6 +47,7 @@ import { DataGridPro } from '@mui/x-data-grid-pro';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { BASE_URL } from '@/Path/backend';
 import { useTranslation } from 'react-i18next';
+import { formatFileSize } from '@/utils/formatFileSize';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageAdmin(context);
@@ -216,10 +217,13 @@ export default function HistoricalImport() {
          },
       },
       {
-         field: 'screen',
+         field: 'size',
          flex: 0.3,
          headerAlign: 'center',
-         headerName: t('table.models'),
+         headerName: t('table.size'),
+         renderCell(params) {
+            return <span>{formatFileSize(params?.row?.size)}</span>;
+         },
       },
       {
          field: 'uploadedTime',
@@ -243,15 +247,6 @@ export default function HistoricalImport() {
             return <span>{params?.row?.uploadedBy?.name}</span>;
          },
       },
-      {
-         field: 'email',
-         flex: 0.6,
-         headerName: t('user.email'),
-         renderCell(params) {
-            return <span>{params?.row?.uploadedBy?.email}</span>;
-         },
-      },
-
       {
          ...iconColumn,
          field: 'active',
