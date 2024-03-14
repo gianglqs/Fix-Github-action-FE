@@ -114,11 +114,6 @@ const CurrencyReport: React.FC<any> = (props) => {
                         chartName={chartData[index].title}
                         scales={chartItemScales}
                         tooltip={tooltip}
-                        subtitle={`Latest Value: ${
-                           chartData[index].lastUpdated == undefined
-                              ? ''
-                              : formatDate(chartData[index].lastUpdated)
-                        }`}
                      />
                   </Grid>
                   <Grid
