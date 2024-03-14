@@ -685,6 +685,7 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2}>
                   <AppDateField
+                     views={['day', 'month', 'year']}
                      label={t('filters.fromDate')}
                      name="from_date"
                      onChange={(e, value) =>
@@ -695,6 +696,7 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2}>
                   <AppDateField
+                     views={['day', 'month', 'year']}
                      label={t('filters.toDate')}
                      name="toDate"
                      onChange={(e, value) =>

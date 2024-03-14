@@ -334,6 +334,7 @@ export default function ExchangeRate() {
                </Grid>
                <Grid item xs={1}>
                   <AppDateField
+                     views={['month', 'year']}
                      label={t('filters.fromDate')}
                      name="fromDate"
                      onChange={(e, value) =>
@@ -345,6 +346,7 @@ export default function ExchangeRate() {
                </Grid>
                <Grid item xs={1}>
                   <AppDateField
+                     views={['month', 'year']}
                      label={t('filters.toDate')}
                      name="toDate"
                      onChange={(e, value) =>
