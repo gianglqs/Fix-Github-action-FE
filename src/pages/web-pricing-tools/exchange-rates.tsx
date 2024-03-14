@@ -243,6 +243,9 @@ export default function ExchangeRate() {
       setChartData([]);
    };
 
+   const currentYear = new Date().getFullYear();
+   const currentMonth = new Date().getMonth() + 1;
+
    return (
       <>
          <AppLayout entity="reports">
@@ -353,6 +356,7 @@ export default function ExchangeRate() {
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
                      }
                      value={dataFilter.toDate.value}
+                     maxDate={`${currentYear}-${currentMonth}`}
                      sx={{ marginTop: 1 }}
                   />
                </Grid>
