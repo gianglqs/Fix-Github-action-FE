@@ -188,6 +188,12 @@
       "dealerNet": "经销商净价"
    },
 
+   "exchangeRates": {
+      "weakeningText": "相对于弱于",
+      "stableText": "与持平",
+      "strengtheningText": "相对于强于"
+   },
+
    "yes": "是",
    "no": "否",
    "or": "或",
