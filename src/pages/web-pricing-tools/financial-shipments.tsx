@@ -104,7 +104,7 @@ export default function Shipment() {
    };
 
    useEffect(() => {
-      if (!hasSetDataFilter && cacheDataFilter) {
+      if (!hasSetDataFilter && Object.keys(cacheDataFilter).length != 0) {
          setDataFilter(cacheDataFilter);
 
          setHasSetDataFilter(true);
