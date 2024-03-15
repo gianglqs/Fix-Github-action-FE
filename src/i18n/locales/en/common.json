@@ -194,5 +194,6 @@
    "search": "Search ...",
    "updateProduct": "Update Product",
    "success": "Success",
-   "failure": "Failure"
+   "failure": "Failure",
+   "go": "Go"
 }

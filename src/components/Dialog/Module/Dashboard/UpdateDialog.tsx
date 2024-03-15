@@ -50,7 +50,7 @@ const DialogUpdateUser: React.FC<any> = (props) => {
          setLoading(true);
          const { data } = await dashboardApi.updateUser(detail?.id, transformData);
 
-         if (openerRole == 'ADMIN') {
+         if (userId != detail?.id) {
             const userList = await dashboardApi.getUser({ search: '' });
             dispatch(userStore.actions.setUserList(JSON.parse(userList?.data)?.userList));
          }
@@ -80,6 +80,7 @@ const DialogUpdateUser: React.FC<any> = (props) => {
       () => [
          { id: 'en', description: 'English' },
          { id: 'vn', description: 'Vietnamese' },
+         { id: 'cn', description: 'Chinese' },
       ],
       []
    );
@@ -127,7 +128,7 @@ const DialogUpdateUser: React.FC<any> = (props) => {
                   required
                   options={roleOptions}
                   onChange={(value) => onChooseRole(value)}
-                  disabled={openerRole === 'ADMIN' ? false : true}
+                  disabled={userId == detail?.id ? true : false}
                />
             </Grid>
             <Grid item xs={6}>

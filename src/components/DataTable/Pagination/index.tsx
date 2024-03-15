@@ -146,7 +146,7 @@ const DataTablePagination = (props) => {
                               onClick={handleGoToPage}
                               aria-label="go-to-page"
                            >
-                              Go
+                              {t('go')}
                            </StyledGoButton>
                         ),
                      }}
