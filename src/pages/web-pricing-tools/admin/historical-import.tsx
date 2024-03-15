@@ -21,7 +21,7 @@ import { commonStore, historicalImportStore, userStore } from '@/store/reducers'
 import { createAction } from '@reduxjs/toolkit';
 import { useRouter } from 'next/router';
 
-import { iconColumn } from '@/utils/columnProperties';
+import { formatNumbericColumn, iconColumn } from '@/utils/columnProperties';
 
 import { AppFooter, AppSearchBar, DataTable, DataTablePagination, EditIcon } from '@/components';
 import Image from 'next/image';
@@ -219,8 +219,10 @@ export default function HistoricalImport() {
       {
          field: 'size',
          flex: 0.3,
-         headerAlign: 'center',
          headerName: t('table.size'),
+         ...formatNumbericColumn,
+         headerAlign: 'right',
+         paddingRight: '20px',
          renderCell(params) {
             return <span>{formatFileSize(params?.row?.size)}</span>;
          },
