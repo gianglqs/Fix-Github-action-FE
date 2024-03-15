@@ -188,6 +188,12 @@
       "dealerNet": "Giá phân phối"
    },
 
+   "exchangeRates": {
+      "weakeningText": "yếu hơn so với",
+      "stableText": "cân bằng với",
+      "strengtheningText": "mạnh hơn so với"
+   },
+
    "yes": "Có",
    "no": "Không",
    "or": "Hoặc",

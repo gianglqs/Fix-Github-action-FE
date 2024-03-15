@@ -188,6 +188,12 @@
       "dealerNet": "Dealer Net"
    },
 
+   "exchangeRates": {
+      "weakeningText": "is weakening against",
+      "stableText": "is stable against",
+      "strengtheningText": "is strengthening against"
+   },
+
    "yes": "Yes",
    "no": "No",
    "or": "OR",
