@@ -991,7 +991,7 @@ export default function Adjustment() {
                         sx={{ backgroundColor: '#FFCC99' }}
                         onChange={(e) => handleChangeDataCalculator(e.value, 'costAdjPercentage')}
                         name="costAdjPercentage"
-                        label="Cost Adj %"
+                        label={`${t('table.adjustedCost')} %`}
                         placeholder="Cost Adj %"
                         suffix="%"
                      />
@@ -1004,7 +1004,7 @@ export default function Adjustment() {
                         sx={{ backgroundColor: '#f7c0a9' }}
                         onChange={(e) => handleChangeDataCalculator(e.value, 'freightAdj')}
                         name="freightAdj"
-                        label="Freight Adj ('000 USD)"
+                        label={`${t('table.adjustedFreight')} ('000 USD)`}
                         placeholder="Freight Adj ('000 USD)"
                         prefix="$"
                      />
@@ -1017,7 +1017,7 @@ export default function Adjustment() {
                         sx={{ backgroundColor: '#e9d4c4' }}
                         onChange={(e) => handleChangeDataCalculator(e.value, 'fxAdj')}
                         name="fxAdj"
-                        label="FX Adj %"
+                        label={`${t('table.adjustedFX')} %`}
                         placeholder="FX Adj %"
                         suffix="%"
                      />
@@ -1030,7 +1030,7 @@ export default function Adjustment() {
                         sx={{ backgroundColor: '#f9d06d' }}
                         onChange={(e) => handleChangeDataCalculator(e.value, 'dnAdjPercentage')}
                         name="dnAdjPercentage"
-                        label="DN Adj %"
+                        label={`${t('table.adjustedDealerNet')} %`}
                         placeholder="DN Adj %"
                         suffix="%"
                      />

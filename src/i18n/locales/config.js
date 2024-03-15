@@ -8,6 +8,9 @@ const resources = {
    vn: {
       common: require('./vn/common.json'),
    },
+   cn: {
+      common: require('./cn/common.json'),
+   },
 };
 
 i18n.use(initReactI18next).init({
@@ -16,9 +19,9 @@ i18n.use(initReactI18next).init({
    resources: resources,
    ns: ['common'],
    defaultNS: 'common',
-   supportedLngs: ['en', 'vn'],
+   supportedLngs: ['en', 'vn', 'cn'],
 });
 
-i18n.languages = ['en', 'vn'];
+i18n.languages = ['en', 'vn', 'cn'];
 
 export default i18n;

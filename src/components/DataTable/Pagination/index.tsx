@@ -96,9 +96,11 @@ const DataTablePagination = (props) => {
                alignItems="center"
                sx={{ width: '50%', color: 'black' }}
             >
-               <div>
-                  {t('table.lastUpdated')} {lastUpdated}
-               </div>
+               {lastUpdated && (
+                  <div>
+                     {t('table.lastUpdated')} {lastUpdated}
+                  </div>
+               )}
             </Stack>
 
             {/* <Typography component="div" variant="body2" sx={{ fontSize: 10, fontWeight: 'fontWeightBold' }}>
@@ -146,7 +148,7 @@ const DataTablePagination = (props) => {
                               onClick={handleGoToPage}
                               aria-label="go-to-page"
                            >
-                              Go
+                              {t('go')}
                            </StyledGoButton>
                         ),
                      }}

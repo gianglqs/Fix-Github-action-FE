@@ -2,10 +2,9 @@ import { Button, Grid, Typography } from '@mui/material';
 import LineChart from '../chart/Line';
 import _ from 'lodash';
 import React, { useRef } from 'react';
-import html2canvas from 'html2canvas';
 import { useDispatch } from 'react-redux';
-import { commonStore } from '@/store/reducers';
 import { formatDate } from '@/utils/formatCell';
+import { useTranslation } from 'react-i18next';
 
 const CurrencyReport: React.FC<any> = (props) => {
    const { chartData, closeAReportItem, itemRef } = props;
@@ -15,6 +14,7 @@ const CurrencyReport: React.FC<any> = (props) => {
    };
 
    const dispatch = useDispatch();
+   const { t } = useTranslation();
 
    const reportContent = () => {
       const otherOptions = _.keysIn(chartData);
@@ -114,7 +114,6 @@ const CurrencyReport: React.FC<any> = (props) => {
                         chartName={chartData[index].title}
                         scales={chartItemScales}
                         tooltip={tooltip}
-                        subtitle={`Latest Value: ${formatDate(chartData[index].lastUpdated)}`}
                      />
                   </Grid>
                   <Grid
@@ -128,7 +127,7 @@ const CurrencyReport: React.FC<any> = (props) => {
                         {chartData[index].conclusion.weakening.length > 0 ? (
                            <li>
                               <Typography fontSize={16}>
-                                 {currentCurrency} is weakening against
+                                 {currentCurrency} {t('exchangeRates.weakeningText')}
                               </Typography>{' '}
                               <ul>
                                  {_.map(chartData[index].conclusion.weakening, (item) => (
@@ -145,7 +144,7 @@ const CurrencyReport: React.FC<any> = (props) => {
                         {chartData[index].conclusion.stable.length > 0 ? (
                            <li>
                               <Typography fontSize={16}>
-                                 {currentCurrency} is stable against{' '}
+                                 {currentCurrency} {t('exchangeRates.stableText')}
                                  {_.map(
                                     chartData[index].conclusion.stable,
                                     (item, i) => `${i != '0' ? ', ' : ' '}${item}`
@@ -159,7 +158,7 @@ const CurrencyReport: React.FC<any> = (props) => {
                         {chartData[index].conclusion.strengthening.length > 0 ? (
                            <li>
                               <Typography fontSize={16}>
-                                 {currentCurrency} is strengthening against
+                                 {currentCurrency} {t('exchangeRates.strengtheningText')}
                               </Typography>{' '}
                               <ul>
                                  {_.map(chartData[index].conclusion.strengthening, (item) => (

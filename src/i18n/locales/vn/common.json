@@ -53,7 +53,7 @@
       "dealerName": "Nhà phân phối",
       "class": "Phân lớp",
       "models": "Mã sản phẩm",
-      "segment": "Segment",
+      "segment": "Bộ phận",
       "aopMarginPercentage": "AOP Margin %",
       "marginPercentage": "Lợi nhuận %",
       "fromDate": "Từ ngày",
@@ -108,8 +108,8 @@
       "marginPercentageAfterSurcharge": "Lợi nhuận % sau phụ phí",
       "aopMarginPercentage": "AOP Margin %",
 
-      "totalActualCost": "Total Actual Cost",
-      "bookingMarginPercentage": "Booking Margin %",
+      "totalActualCost": "Tổng giá thực tế",
+      "bookingMarginPercentage": "Lợi nhuận từ Đơn đặt hàng %",
 
       "partNumber": "Mã bộ phận",
       "listPrice": "Giá Niêm yết",
@@ -121,14 +121,14 @@
       "originalMarginPercentage": "Lợi nhuận % gốc",
       "adjustedCost": "Giá điều chỉnh",
       "adjustedFreight": "Chi phí vận chuyển điều chỉnh",
-      "adjustedFX": "Adjusted FX",
+      "adjustedFX": "Ngoại tệ điều chỉnh",
       "totalManualAdjCost": "Tổng giá điều chỉnh",
       "adjustedDealerNet": "Giá phân phối điều chỉnh",
       "newMargin": "Lợi nhuận mới",
       "newMarginPercentage": "Lợi nhuận % mới",
 
       "brand": "Hãng",
-      "segment": "Segment",
+      "segment": "Bộ phận",
       "family": "Family",
       "truckType": "Loại xe tải",
       "description": "Mô tả",
@@ -141,14 +141,15 @@
 
       "fileName": "Tên file",
       "importAt": "Được nhập ở",
-      "importBy": "Được nhập bởi"
+      "importBy": "Được nhập bởi",
+      "size": "Kích thước"
    },
 
    "competitors": {
       "competitorName": "Tên đối thủ",
       "colorCode": "Mã màu",
       "color": "Màu sắc",
-      "competitorLeadTime": "Competitor Lead Time",
+      "competitorLeadTime": "Thời gian Đối thủ hoàn thành sản phẩm",
       "dealerStreetPricing": "Giá phân phối thị trường",
       "dealerHandlingCost": "Giá phân phối",
       "competitorPricing": "Giá đối thủ",
@@ -188,11 +189,18 @@
       "dealerNet": "Giá phân phối"
    },
 
+   "exchangeRates": {
+      "weakeningText": "yếu hơn so với",
+      "stableText": "cân bằng với",
+      "strengtheningText": "mạnh hơn so với"
+   },
+
    "yes": "Có",
    "no": "Không",
    "or": "Hoặc",
    "search": "Tìm kiếm ...",
    "updateProduct": "Cập nhật Sản phẩm",
    "success": "Thành công",
-   "failure": "Thất bại"
+   "failure": "Thất bại",
+   "go": "Đi"
 }
