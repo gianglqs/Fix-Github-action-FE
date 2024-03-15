@@ -141,7 +141,8 @@
 
       "fileName": "Tên file",
       "importAt": "Được nhập ở",
-      "importBy": "Được nhập bởi"
+      "importBy": "Được nhập bởi",
+      "size": "Kích thước"
    },
 
    "competitors": {
