@@ -92,6 +92,7 @@
       "rowsPerPage": "每页行数：",
 
       "order#": "订单号",
+      "quoteNumber": "報價單號",
       "createAt": "创建时间",
       "region": "地区",
       "country": "国家",

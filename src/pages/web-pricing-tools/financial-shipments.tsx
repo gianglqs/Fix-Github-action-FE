@@ -156,6 +156,11 @@ export default function Shipment() {
          headerName: t('table.order#'),
       },
       {
+         field: 'quoteNumber',
+         flex: 0.6,
+         headerName: t('table.quoteNumber'),
+      },
+      {
          field: 'date',
          flex: 0.5,
          headerName: t('table.createAt'),
