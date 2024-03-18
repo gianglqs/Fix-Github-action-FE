@@ -92,6 +92,7 @@
       "rowsPerPage": "Rows per page: ",
 
       "order#": "Order #",
+      "quoteNumber": "Quote Number",
       "createAt": "Create At",
       "region": "Region",
       "country": "Country",
