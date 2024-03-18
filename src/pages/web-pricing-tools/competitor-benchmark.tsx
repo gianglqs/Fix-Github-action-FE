@@ -127,7 +127,7 @@ export default function Indicators() {
 
    useEffect(() => {
       const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
-         if (!isEmptyObject(swotDataFilter) && swotDataFilter != cachDataFilterBubbleChart) {
+         if (!isEmptyObject(swotDataFilter)) {
             setCookie(null, 'indicatorBubbleChartFilter', JSON.stringify(swotDataFilter), {
                maxAge: 604800,
                path: '/',
