@@ -92,6 +92,7 @@
       "rowsPerPage": "Số dòng mỗi trang: ",
 
       "order#": "Mã đơn hàng #",
+      "quoteNumber": "Số báo giá",
       "createAt": "Ngày tạo",
       "region": "Khu vực",
       "country": "Quốc gia",
