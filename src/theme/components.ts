@@ -198,6 +198,9 @@ const components: Components = {
                   outline: 'none',
                },
             },
+            '& .highlight-row': {
+               backgroundColor: 'rgba(10, 194, 93, 0.6)',
+            },
             '& .highlight-cell': {
                backgroundColor: 'rgba(232, 192, 86, 0.6)',
             },

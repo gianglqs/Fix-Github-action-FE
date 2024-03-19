@@ -15,7 +15,8 @@
       "productMarginAnalytics": "产品利润分析",
       "products": "产品",
       "exchangeRates": "汇率",
-      "dataScraping": "数据抓取"
+      "dataScraping": "数据抓取",
+      "volumeDiscountAnalysis": "数量折扣分析"
    },
 
    "user": {
@@ -65,7 +66,12 @@
       "family": "家族",
       "truckType": "卡车类型",
       "searchOrderById": "按订单ID搜索",
-      "searchProductByModel": "按型号代码搜索产品"
+      "searchProductByModel": "按型号代码搜索产品",
+      "startingPricePerUnit": "每单位的起始销售价格",
+      "costOfGoodSold": "每单位的销售成本",
+      "marginPercentagePerUnit": "每单位的利润率",
+      "discountPercentagePerOneNewItem": "每增加 1 个新项目的折扣率",
+      "unitIncreaseLever": "单位增长杠杆"
    },
 
    "button": {
@@ -142,7 +148,8 @@
 
       "fileName": "文件名",
       "importAt": "导入时间",
-      "importBy": "导入者"
+      "importBy": "导入者",
+      "size": "大小"
    },
 
    "competitors": {
@@ -193,6 +200,22 @@
       "weakeningText": "相对于弱于",
       "stableText": "与持平",
       "strengtheningText": "相对于强于"
+   },
+
+   "volumeDiscount": {
+      "discountAdded": "已添加折扣",
+      "totalDiscount": "总折扣",
+      "pricePerUnit": "每单位价格",
+      "totalPrice": "总价格",
+      "costOfGoodSold": "销售成本",
+      "standardMargin": "标准利润",
+      "averageStandardMargin": "每单位平均标准利润",
+      "expectedUnitSales": "预期单位销售量",
+      "revenue": "收入",
+      "ocos": "OCOS",
+      "adjustedStandardMargin": "调整后的标准利润",
+      "grossProfit": "毛利润",
+      "volume": "销量"
    },
 
    "yes": "是",
