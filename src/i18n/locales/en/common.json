@@ -149,7 +149,7 @@
       "fileName": "File Name",
       "importAt": "Import At",
       "importBy": "Import By",
-      "size": "size"
+      "size": "Size"
    },
 
    "competitors": {
@@ -214,7 +214,8 @@
       "revenue": "Revenue",
       "ocos": "OCOS",
       "adjustedStandardMargin": "Adjusted Standard Margin",
-      "grossProfit": "Gross Profit"
+      "grossProfit": "Gross Profit",
+      "volume": "Volume"
    },
 
    "yes": "Yes",

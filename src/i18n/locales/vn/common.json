@@ -16,7 +16,7 @@
       "products": "Sản phẩm",
       "exchangeRates": "Tỷ giá tiền tệ",
       "dataScraping": "Thu nhập dữ liệu",
-      "volumeDiscountAnalysis": "Phân tích khối lượng giảm giá"
+      "volumeDiscountAnalysis": "Phân tích số lượng giảm giá"
    },
 
    "user": {
@@ -214,7 +214,8 @@
       "revenue": "Doanh thu",
       "ocos": "OCOS",
       "adjustedStandardMargin": "Lợi nhuận cơ bản điều chỉnh",
-      "grossProfit": "Lợi nhuận gộp"
+      "grossProfit": "Lợi nhuận gộp",
+      "volume": "Số lượng"
    },
 
    "yes": "Có",

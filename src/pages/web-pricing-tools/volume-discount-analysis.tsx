@@ -114,7 +114,10 @@ export default function VolumeDiscountAnalysis() {
          const labels = volumeDiscountAnalysis.map(({ volume }) => volume);
          const datasets = [
             {
-               label: 'Standard Margin',
+               label:
+                  grossProfitSegments.find((item) => item == dataFilter.segment.value) != undefined
+                     ? t('volumeDiscount.grossProfit')
+                     : t('volumeDiscount.standardMargin'),
                data: volumeDiscountAnalysis.map((item) => item.standardMargin),
                fill: false,
                borderColor: 'rgb(75, 192, 192)',
@@ -387,7 +390,7 @@ export default function VolumeDiscountAnalysis() {
       },
       x: {
          title: {
-            text: 'Volume',
+            text: t('volumeDiscount.volume'),
             display: true,
          },
       },
