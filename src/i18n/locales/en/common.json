@@ -15,7 +15,8 @@
       "productMarginAnalytics": "Product Margin Analytics",
       "products": "Products",
       "exchangeRates": "Exchange Rates",
-      "dataScraping": "Data Scraping"
+      "dataScraping": "Data Scraping",
+      "volumeDiscountAnalysis": "Volume Discount Analysis"
    },
 
    "user": {
@@ -65,7 +66,12 @@
       "family": "Family",
       "truckType": "Truck Type",
       "searchOrderById": "Search Order by ID",
-      "searchProductByModel": "Search Product by Model Code"
+      "searchProductByModel": "Search Product by Model Code",
+      "startingPricePerUnit": "Starting Sales Price per Unit",
+      "costOfGoodSold": "Cost of Goods Sold per Unit",
+      "marginPercentagePerUnit": "Margin % per Unit",
+      "discountPercentagePerOneNewItem": "% Discount per 1 new Added Item",
+      "unitIncreaseLever": "Unit Increase Lever"
    },
 
    "button": {
@@ -186,6 +192,21 @@
       "partNumber": "Part Number",
       "totalCost": "Total Cost",
       "dealerNet": "Dealer Net"
+   },
+
+   "volumeDiscount": {
+      "discountAdded": "Discount Added",
+      "totalDiscount": "Total Discount",
+      "pricePerUnit": "Price per Unit",
+      "totalPrice": "Total Price",
+      "costOfGoodSold": "Cost of Goods Sold",
+      "standardMargin": "Standard Margin",
+      "averageStandardMargin": "Average Standard Margin per Unit",
+      "expectedUnitSales": "Expected Unit Sales",
+      "revenue": "Revenue",
+      "ocos": "OCOS",
+      "adjustedStandardMargin": "Adjusted Standard Margin",
+      "grossProfit": "Gross Profit"
    },
 
    "yes": "Yes",
