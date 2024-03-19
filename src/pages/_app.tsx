@@ -1,6 +1,5 @@
 import '@/theme/_global.css';
 import { wrapper } from '@/store/config';
-import type { AppProps } from 'next/app';
 import appTheme from '@/theme/appTheme';
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
@@ -12,20 +11,34 @@ import UserInfoProvider from '@/provider/UserInfoContext';
 import '../i18n/locales/config';
 import i18next from 'i18next';
 
-function MyApp({ Component, pageProps }: AppProps) {
+import { GetServerSidePropsContext } from 'next';
+import { parseCookies } from 'nookies';
+
+MyApp.getInitialProps = async ({
+   Component,
+   ctx,
+}: {
+   Component: any;
+   ctx: GetServerSidePropsContext;
+}) => {
+   const cookies = parseCookies(ctx);
+   const defaultLocate = cookies['defaultLocale'];
+   let pageProps = {};
+   if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps(ctx);
+   }
+
+   return { pageProps, defaultLocate: defaultLocate };
+};
+
+function MyApp({ Component, pageProps, defaultLocate }) {
    useEffect(() => {
       const jssStyles = document.querySelector('#jss-server-side');
       if (jssStyles) {
          jssStyles.parentElement.removeChild(jssStyles);
       }
-
-      const defaultLocale =
-         document.cookie
-            .split('; ')
-            .find((row) => row.startsWith('defaultLocale='))
-            ?.split('=')[1] || 'en';
-      i18next.changeLanguage(defaultLocale);
    });
+   i18next.changeLanguage(defaultLocate);
 
    return (
       <ThemeProvider theme={appTheme}>
