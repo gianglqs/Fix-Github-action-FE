@@ -203,6 +203,13 @@ export default function MarginAnalysis() {
 
    const columns = [
       {
+         field: 'quoteNumber',
+         flex: 0.8,
+         headerName: 'Quote Number',
+         headerAlign: 'center',
+         align: 'center',
+      },
+      {
          field: 'type',
          flex: 0.8,
          headerName: '#',
