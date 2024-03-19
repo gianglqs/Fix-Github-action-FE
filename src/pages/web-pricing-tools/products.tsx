@@ -333,7 +333,7 @@ export default function Product() {
    const handleCloseImageDialog = () => {
       setImageDialogState({
          open: false,
-         imageUrl: null,
+         imageUrl: undefined,
       });
    };
 
@@ -541,7 +541,7 @@ export default function Product() {
                         onClick={handleImport}
                         sx={{ width: '100%', height: 24 }}
                      >
-                        Import
+                        {t('button.import')}
                      </Button>
                   </Grid>
 
@@ -662,6 +662,7 @@ function UploadFileDropZone(props) {
       },
    });
    const dispatch = useDispatch();
+   const { t } = useTranslation();
    const isFileInvalid = fileRejections.length > 0 ? true : false;
    if (isFileInvalid) {
       const errors = fileRejections[0].errors;
@@ -682,7 +683,7 @@ function UploadFileDropZone(props) {
             variant="contained"
             sx={{ width: '100%', height: 24 }}
          >
-            Select file
+            {t('button.selectFile')}
          </Button>
       </div>
    );

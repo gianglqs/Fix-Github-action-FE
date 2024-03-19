@@ -165,6 +165,11 @@ export default function Booking() {
          headerName: t('table.order#'),
       },
       {
+         field: 'quoteNumber',
+         flex: 0.6,
+         headerName: t('table.quoteNumber'),
+      },
+      {
          field: 'date',
          flex: 0.5,
          headerName: t('table.createAt'),
@@ -400,7 +405,7 @@ export default function Booking() {
    const handleCloseImageDialog = () => {
       setImageDialogState({
          open: false,
-         imageUrl: null,
+         imageUrl: undefined,
       });
    };
 
@@ -677,6 +682,7 @@ export default function Booking() {
                </Grid>
                <Grid item xs={2}>
                   <AppDateField
+                     views={['day', 'month', 'year']}
                      label={t('filters.fromDate')}
                      name="from_date"
                      onChange={(e, value) =>
@@ -687,6 +693,7 @@ export default function Booking() {
                </Grid>
                <Grid item xs={2}>
                   <AppDateField
+                     views={['day', 'month', 'year']}
                      label={t('filters.toDate')}
                      name="toDate"
                      onChange={(e, value) =>

@@ -127,7 +127,7 @@ export default function Indicators() {
 
    useEffect(() => {
       const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
-         if (!isEmptyObject(swotDataFilter) && swotDataFilter != cachDataFilterBubbleChart) {
+         if (!isEmptyObject(swotDataFilter)) {
             setCookie(null, 'indicatorBubbleChartFilter', JSON.stringify(swotDataFilter), {
                maxAge: 604800,
                path: '/',
@@ -906,14 +906,14 @@ export default function Indicators() {
                      <Grid item xs={2}>
                         <UploadFileDropZone
                            handleUploadFile={handleImportFile}
-                           buttonName="Import Competitor File"
+                           buttonName={`${t('button.import')} Competitor File`}
                            sx={{ width: '100%', height: 24, minWidth: 165 }}
                         />
                      </Grid>
                      <Grid item xs={2}>
                         <UploadFileDropZone
                            handleUploadFile={handleUploadForecastFile}
-                           buttonName="Import Forecast File"
+                           buttonName={`${t('button.import')} Forecast File`}
                            sx={{ width: '100%', height: 24, minWidth: 165 }}
                         />
                      </Grid>

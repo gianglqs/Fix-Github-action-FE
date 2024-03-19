@@ -6,11 +6,11 @@ import { DATE_FORMAT } from '@/utils/constant';
 
 import type { DialogCalendarProps } from './type';
 import { AppDialog } from '../../Module/AppDialog/AppDialog';
-import CalendarPicker from '@mui/lab/CalendarPicker';
 import { DateCalendar } from '@mui/x-date-pickers';
 
 const DialogCalendar: React.FC<DialogCalendarProps> = (props) => {
    const { date, minDate, maxDate, disabled, onChange, onClose, ...dialogProps } = props;
+   const { views } = props;
 
    const formatDate = useMemo(() => {
       if (date) {
@@ -49,6 +49,7 @@ const DialogCalendar: React.FC<DialogCalendarProps> = (props) => {
    return (
       <AppDialog maxWidth="xs" onClose={onClose} {...dialogProps}>
          <DateCalendar
+            views={views}
             disabled={disabled}
             value={formatDate}
             minDate={formatMinDate}
@@ -60,6 +61,7 @@ const DialogCalendar: React.FC<DialogCalendarProps> = (props) => {
 };
 
 DialogCalendar.defaultProps = {
+   views: ['day', 'month', 'year'],
    minDate: null,
    maxDate: null,
 };

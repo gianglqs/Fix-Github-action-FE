@@ -104,7 +104,7 @@ export default function Shipment() {
    };
 
    useEffect(() => {
-      if (!hasSetDataFilter && cacheDataFilter) {
+      if (!hasSetDataFilter && Object.keys(cacheDataFilter).length != 0) {
          setDataFilter(cacheDataFilter);
 
          setHasSetDataFilter(true);
@@ -154,6 +154,11 @@ export default function Shipment() {
          field: 'orderNo',
          flex: 0.4,
          headerName: t('table.order#'),
+      },
+      {
+         field: 'quoteNumber',
+         flex: 0.6,
+         headerName: t('table.quoteNumber'),
       },
       {
          field: 'date',
@@ -409,7 +414,7 @@ export default function Shipment() {
    const handleCloseImageDialog = () => {
       setImageDialogState({
          open: false,
-         imageUrl: null,
+         imageUrl: undefined,
       });
    };
 
@@ -685,6 +690,7 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2}>
                   <AppDateField
+                     views={['day', 'month', 'year']}
                      label={t('filters.fromDate')}
                      name="from_date"
                      onChange={(e, value) =>
@@ -695,6 +701,7 @@ export default function Shipment() {
                </Grid>
                <Grid item xs={2}>
                   <AppDateField
+                     views={['day', 'month', 'year']}
                      label={t('filters.toDate')}
                      name="toDate"
                      onChange={(e, value) =>

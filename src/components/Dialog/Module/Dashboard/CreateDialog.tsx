@@ -66,6 +66,7 @@ const DialogCreateUser: React.FC<any> = (props) => {
       () => [
          { id: 'en', description: 'English' },
          { id: 'vn', description: 'Vietnamese' },
+         { id: 'cn', description: 'Chinese' },
       ],
       []
    );

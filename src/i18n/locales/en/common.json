@@ -98,6 +98,7 @@
       "rowsPerPage": "Rows per page: ",
 
       "order#": "Order #",
+      "quoteNumber": "Quote Number",
       "createAt": "Create At",
       "region": "Region",
       "country": "Country",
@@ -147,7 +148,8 @@
 
       "fileName": "File Name",
       "importAt": "Import At",
-      "importBy": "Import By"
+      "importBy": "Import By",
+      "size": "size"
    },
 
    "competitors": {
@@ -194,6 +196,12 @@
       "dealerNet": "Dealer Net"
    },
 
+   "exchangeRates": {
+      "weakeningText": "is weakening against",
+      "stableText": "is stable against",
+      "strengtheningText": "is strengthening against"
+   },
+
    "volumeDiscount": {
       "discountAdded": "Discount Added",
       "totalDiscount": "Total Discount",
@@ -215,5 +223,6 @@
    "search": "Search ...",
    "updateProduct": "Update Product",
    "success": "Success",
-   "failure": "Failure"
+   "failure": "Failure",
+   "go": "Go"
 }

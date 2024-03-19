@@ -243,6 +243,9 @@ export default function ExchangeRate() {
       setChartData([]);
    };
 
+   const currentYear = new Date().getFullYear();
+   const currentMonth = new Date().getMonth() + 1;
+
    return (
       <>
          <AppLayout entity="reports">
@@ -334,6 +337,7 @@ export default function ExchangeRate() {
                </Grid>
                <Grid item xs={1}>
                   <AppDateField
+                     views={['month', 'year']}
                      label={t('filters.fromDate')}
                      name="fromDate"
                      onChange={(e, value) =>
@@ -345,12 +349,14 @@ export default function ExchangeRate() {
                </Grid>
                <Grid item xs={1}>
                   <AppDateField
+                     views={['month', 'year']}
                      label={t('filters.toDate')}
                      name="toDate"
                      onChange={(e, value) =>
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
                      }
                      value={dataFilter.toDate.value}
+                     maxDate={`${currentYear}-${currentMonth}`}
                      sx={{ marginTop: 1 }}
                   />
                </Grid>
