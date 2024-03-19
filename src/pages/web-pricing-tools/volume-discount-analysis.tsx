@@ -45,8 +45,6 @@ import { useTranslation } from 'react-i18next';
 import volumeDiscountApi from '@/api/volume-discount.api';
 import { formatNumberPercentage } from '@/utils/formatCell';
 import { useSelector } from 'react-redux';
-import { isEmptyObject } from '@/utils/checkEmptyObject';
-import { setCookie } from 'nookies';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -58,8 +56,6 @@ export default function VolumeDiscountAnalysis() {
    const [loading, setLoading] = useState(false);
 
    const initDataFilter = useSelector(volumeDiscountStore.selectInitDataFilter);
-   const cacheDataFilter = useSelector(volumeDiscountStore.selectDataFilter);
-   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
 
    const [volumeDiscountData, setVolumeDiscountData] = useState([]);
    const [chartData, setChartData] = useState({ labels: [], datasets: [] });
@@ -72,29 +68,6 @@ export default function VolumeDiscountAnalysis() {
       ocos: { value: '', error: false },
       segment: { value: '', error: false },
    });
-
-   useEffect(() => {
-      if (!hasSetDataFilter && cacheDataFilter) {
-         setDataFilter(cacheDataFilter);
-         setHasSetDataFilter(true);
-      }
-   }, [cacheDataFilter]);
-
-   useEffect(() => {
-      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
-         if (!isEmptyObject(dataFilter) && dataFilter !== cacheDataFilter) {
-            setCookie(null, 'volumeDiscountFilter', JSON.stringify(dataFilter), {
-               maxAge: 604800,
-               path: '/',
-            });
-         }
-      }, 700);
-
-      debouncedHandleWhenChangeDataFilter();
-      handleCalculateVolumeDiscount();
-
-      return () => debouncedHandleWhenChangeDataFilter.cancel();
-   }, [dataFilter]);
 
    const handleCalculateVolumeDiscount = async () => {
       try {
