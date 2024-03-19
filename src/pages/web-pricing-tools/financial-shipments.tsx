@@ -173,15 +173,17 @@ export default function Shipment() {
          flex: 0.3,
          headerName: t('table.region'),
          renderCell(params) {
-            return <span>{params.row.region?.regionName}</span>;
+            return <span>{params.row.country?.region?.regionName}</span>;
          },
       },
       {
          field: 'ctryCode',
-         flex: 0.3,
+         flex: 0.6,
          headerName: t('table.country'),
+         renderCell(params) {
+            return <span>{params.row.country?.countryName}</span>;
+         },
       },
-
       {
          field: 'Plant',
          flex: 0.5,
