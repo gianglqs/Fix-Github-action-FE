@@ -64,3 +64,13 @@ export const defaultValueFilterPart = {
 export const defaultValueFilterAdmin = {
    filter: '',
 };
+
+export const defaultValueFilterVolumeDiscount = {
+   pricePerUnit: { value: 0, error: false },
+   costOfGoodSold: { value: 0, error: false },
+   discountPercentage: { value: 0, error: false },
+   lever: { value: '', error: false },
+   expectedUnitSales: { value: '', error: false },
+   ocos: { value: '', error: false },
+   segment: { value: '', error: false },
+};
