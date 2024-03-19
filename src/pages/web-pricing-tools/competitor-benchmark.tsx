@@ -151,7 +151,12 @@ export default function Indicators() {
    const [bubbleCountryInitFilter, setBubbleCountryInitFilter] = useState(initDataFilter.countries);
 
    const handleFilterCompetitiveLandscape = async () => {
-      if (!competitiveLandscapeData.clearFilter) setLoadingSwot(true);
+      if (
+         !competitiveLandscapeData.clearFilter &&
+         JSON.stringify(swotDataFilter) !== JSON.stringify(defaultDataFilterBubbleChart)
+      ) {
+         setLoadingSwot(true);
+      }
       try {
          if (swotDataFilter.regions == '') {
             setRegionError({ error: true });
