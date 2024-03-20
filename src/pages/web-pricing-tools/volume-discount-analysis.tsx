@@ -57,41 +57,30 @@ export default function VolumeDiscountAnalysis() {
    const { t } = useTranslation();
    const [loading, setLoading] = useState(false);
 
-   const initDataFilter = useSelector(volumeDiscountStore.selectInitDataFilter);
-   const cacheDataFilter = useSelector(volumeDiscountStore.selectDataFilter);
-   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
-
    const [volumeDiscountData, setVolumeDiscountData] = useState([]);
    const [chartData, setChartData] = useState({ labels: [], datasets: [] });
-   const [dataFilter, setDataFilter] = useState({
-      pricePerUnit: { value: 0, error: false },
-      costOfGoodSold: { value: 0, error: false },
-      discountPercentage: { value: 0, error: false },
-      lever: { value: '', error: false },
-      expectedUnitSales: { value: '', error: false },
-      ocos: { value: '', error: false },
-      segment: { value: '', error: false },
-   });
+
+   const initDataFilter = useSelector(volumeDiscountStore.selectInitDataFilter);
+   const cacheDataFilter = useSelector(volumeDiscountStore.selectDataFilter);
+   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
 
    useEffect(() => {
-      if (!hasSetDataFilter && cacheDataFilter) {
+      if (cacheDataFilter) {
          setDataFilter(cacheDataFilter);
-         setHasSetDataFilter(true);
       }
    }, [cacheDataFilter]);
 
    useEffect(() => {
       const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
-         if (!isEmptyObject(dataFilter) && dataFilter !== cacheDataFilter) {
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
             setCookie(null, 'volumeDiscountFilter', JSON.stringify(dataFilter), {
                maxAge: 604800,
                path: '/',
             });
          }
       }, 700);
-
-      debouncedHandleWhenChangeDataFilter();
       handleCalculateVolumeDiscount();
+      debouncedHandleWhenChangeDataFilter();
 
       return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
@@ -102,12 +91,12 @@ export default function VolumeDiscountAnalysis() {
          const {
             data: { volumeDiscountAnalysis },
          } = await volumeDiscountApi.calculateVolumeDiscount({
-            pricePerUnit: dataFilter.pricePerUnit.value,
-            costOfGoodSold: dataFilter.costOfGoodSold.value,
-            discountPercentage: dataFilter.discountPercentage.value / 100,
-            lever: dataFilter.lever.value,
-            expectedUnitSales: dataFilter.expectedUnitSales.value,
-            ocos: dataFilter.ocos.value,
+            pricePerUnit: dataFilter.pricePerUnit?.value,
+            costOfGoodSold: dataFilter.costOfGoodSold?.value,
+            discountPercentage: dataFilter.discountPercentage?.value / 100,
+            lever: dataFilter.lever?.value,
+            expectedUnitSales: dataFilter.expectedUnitSales?.value,
+            ocos: dataFilter.ocos?.value,
          });
          setVolumeDiscountData(volumeDiscountAnalysis);
 
@@ -115,7 +104,7 @@ export default function VolumeDiscountAnalysis() {
          const datasets = [
             {
                label:
-                  grossProfitSegments.find((item) => item == dataFilter.segment.value) != undefined
+                  grossProfitSegments.find((item) => item == dataFilter.segment?.value) != undefined
                      ? t('volumeDiscount.grossProfit')
                      : t('volumeDiscount.standardMargin'),
                data: volumeDiscountAnalysis.map((item) => item.standardMargin),
@@ -382,7 +371,7 @@ export default function VolumeDiscountAnalysis() {
       y: {
          title: {
             text:
-               grossProfitSegments.find((item) => item == dataFilter.segment.value) != undefined
+               grossProfitSegments.find((item) => item == dataFilter.segment?.value) != undefined
                   ? t('volumeDiscount.grossProfit')
                   : t('volumeDiscount.standardMargin'),
             display: true,
@@ -415,7 +404,9 @@ export default function VolumeDiscountAnalysis() {
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppNumberField
-                     value={dataFilter.pricePerUnit.value == 0 ? '' : dataFilter.pricePerUnit.value}
+                     value={
+                        dataFilter.pricePerUnit?.value == 0 ? '' : dataFilter.pricePerUnit?.value
+                     }
                      onChange={(e) => handleChangeDataFilter(e.value, 'pricePerUnit')}
                      name="pricePerUnit"
                      label={t('filters.startingPricePerUnit')}
@@ -426,7 +417,9 @@ export default function VolumeDiscountAnalysis() {
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppNumberField
                      value={
-                        dataFilter.costOfGoodSold.value == 0 ? '' : dataFilter.costOfGoodSold.value
+                        dataFilter.costOfGoodSold?.value == 0
+                           ? ''
+                           : dataFilter.costOfGoodSold?.value
                      }
                      onChange={(e) => handleChangeDataFilter(e.value, 'costOfGoodSold')}
                      name="costOfGoodSold"
@@ -438,8 +431,9 @@ export default function VolumeDiscountAnalysis() {
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppNumberField
                      value={
-                        ((dataFilter.pricePerUnit.value - dataFilter.costOfGoodSold.value) * 100) /
-                        dataFilter.pricePerUnit.value
+                        ((dataFilter.pricePerUnit?.value - dataFilter.costOfGoodSold?.value) *
+                           100) /
+                        dataFilter.pricePerUnit?.value
                      }
                      onChange={() => {}}
                      name="marginPerUnit"
@@ -451,7 +445,7 @@ export default function VolumeDiscountAnalysis() {
                </Grid>
                <Grid item xs={2}>
                   <AppNumberField
-                     value={dataFilter.discountPercentage.value}
+                     value={dataFilter.discountPercentage?.value}
                      onChange={(e) => handleChangeDataFilter(e.value, 'discountPercentage')}
                      name="discountPercentage"
                      label={t('filters.discountPercentagePerOneNewItem')}
@@ -462,7 +456,7 @@ export default function VolumeDiscountAnalysis() {
 
                <Grid item xs={2}>
                   <AppNumberField
-                     value={dataFilter.lever.value}
+                     value={dataFilter.lever?.value}
                      onChange={(e) => handleChangeDataFilter(e.value, 'lever')}
                      name="lever"
                      label={t('filters.unitIncreaseLever')}
@@ -471,7 +465,7 @@ export default function VolumeDiscountAnalysis() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     value={dataFilter.segment}
+                     value={{ value: dataFilter.segment?.value }}
                      options={initDataFilter.segments}
                      label={t('filters.segment')}
                      sx={{ height: 25, zIndex: 10 }}
@@ -486,7 +480,7 @@ export default function VolumeDiscountAnalysis() {
 
                <Grid item xs={2}>
                   <AppNumberField
-                     value={dataFilter.expectedUnitSales.value}
+                     value={dataFilter.expectedUnitSales?.value}
                      onChange={(e) => handleChangeDataFilter(e.value, 'expectedUnitSales')}
                      name="expectedUnitSales"
                      label={t('volumeDiscount.expectedUnitSales')}
@@ -496,7 +490,7 @@ export default function VolumeDiscountAnalysis() {
 
                <Grid item xs={2}>
                   <AppNumberField
-                     value={dataFilter.ocos.value}
+                     value={dataFilter.ocos?.value}
                      onChange={(e) => handleChangeDataFilter(e.value, 'ocos')}
                      name="ocos"
                      label={t('volumeDiscount.ocos')}
@@ -571,7 +565,7 @@ export default function VolumeDiscountAnalysis() {
                >
                   <LineChart
                      chartData={chartData}
-                     chartName={dataFilter.segment.value}
+                     chartName={dataFilter.segment?.value}
                      scales={chartScales}
                      tooltip={tooltip}
                   />
