@@ -408,7 +408,7 @@ export default function Outlier() {
                            {t('table.totalCost')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           $ {formatNumber(listTotalRow[0]?.dealerNet)}
+                           $ {formatNumber(listTotalRow[0]?.totalCost)}
                         </Typography>
                      </div>
                   </Paper>
@@ -420,7 +420,7 @@ export default function Outlier() {
                            {t('table.dealerNet')}('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           $ {formatNumber(listTotalRow[0]?.dealerNetAfterSurcharge)}
+                           $ {formatNumber(listTotalRow[0]?.dealerNet)}
                         </Typography>
                      </div>
                   </Paper>
@@ -432,7 +432,7 @@ export default function Outlier() {
                            {t('table.dealerNetAfterSurcharge')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           $ {formatNumber(listTotalRow[0]?.totalCost)}
+                           $ {formatNumber(listTotalRow[0]?.dealerNetAfterSurcharge)}
                         </Typography>
                      </div>
                   </Paper>
