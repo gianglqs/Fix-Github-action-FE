@@ -137,7 +137,7 @@ export default function Outlier() {
          flex: 0.5,
          headerName: t('table.region'),
          renderCell(params) {
-            return <span>{params.row.region.regionName}</span>;
+            return <span>{params.row.country.region.regionName}</span>;
          },
       },
       {
