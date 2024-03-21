@@ -1,5 +1,5 @@
 import { AppAutocomplete, AppDateField, AppLayout } from '@/components';
-import { Button, Grid, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { Button, Grid, RadioGroup, FormControlLabel, Radio, CircularProgress } from '@mui/material';
 import { produce } from 'immer';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
@@ -49,6 +49,8 @@ export default function ExchangeRate() {
    let cookies = parseCookies();
    let userRoleCookies = cookies['role'];
    const [userRole, setUserRole] = useState('');
+
+   const [loading, setLoading] = useState(false);
    const [dataFilter, setDataFilter] = useState({
       fromDate: { value: '' },
       toDate: { value: '' },
@@ -127,6 +129,7 @@ export default function ExchangeRate() {
 
    const handleCompareCurrency = async () => {
       try {
+         setLoading(true);
          if (dataFilter.currentCurrency.value == '') {
             setDataFilter((prev) =>
                produce(prev, (draft) => {
@@ -157,7 +160,7 @@ export default function ExchangeRate() {
                const data = response.data.compareCurrency;
 
                // Setting Labels for chart
-               const labels = data[dataFilter.comparisonCurrencies.value[0]].exchangeRateList
+               const labels = data[dataFilter.comparisonCurrencies.value[0]]
                   .map((item) => {
                      return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
                   })
@@ -167,7 +170,7 @@ export default function ExchangeRate() {
                dataFilter.comparisonCurrencies.value.forEach((item) => {
                   datasets.push({
                      label: item,
-                     data: data[item].exchangeRateList.reverse().map((obj) => obj.rate),
+                     data: data[item].reverse().map((obj) => obj.rate),
                      borderColor: CURRENCY[item],
                      backgroundColor: CURRENCY[item],
                      pointStyle: 'circle',
@@ -198,7 +201,8 @@ export default function ExchangeRate() {
             })
             .catch((error) => {
                dispatch(commonStore.actions.setErrorMessage(error.message));
-            });
+            })
+            .finally(() => setLoading(false));
          isCompareClicked.current = !isCompareClicked.current;
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error.message));
@@ -249,6 +253,30 @@ export default function ExchangeRate() {
    return (
       <>
          <AppLayout entity="reports">
+            {loading ? (
+               <div
+                  style={{
+                     top: 0,
+                     left: 0,
+                     right: 0,
+                     bottom: 0,
+                     backgroundColor: 'rgba(0,0,0, 0.3)',
+                     position: 'absolute',
+                     display: 'flex',
+                     justifyContent: 'center',
+                     alignItems: 'center',
+                     zIndex: 1001,
+                  }}
+               >
+                  <CircularProgress
+                     color="info"
+                     size={60}
+                     sx={{
+                        position: 'relative',
+                     }}
+                  />
+               </div>
+            ) : null}
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 70, marginLeft: 1, marginTop: 1 }}>
                   <AppAutocomplete
@@ -344,6 +372,11 @@ export default function ExchangeRate() {
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
                      }
                      value={dataFilter.fromDate.value}
+                     maxDate={
+                        dataFilter.toDate.value == ''
+                           ? `${currentYear}-${currentMonth}`
+                           : dataFilter.toDate.value
+                     }
                      sx={{ marginTop: 1 }}
                   />
                </Grid>
