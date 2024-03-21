@@ -12,6 +12,7 @@ import productSaga from './productSaga';
 import partSaga from './partSaga';
 import historicalImportSaga from './historicalImportSaga';
 import volumeDiscountSaga from './volumeDiscountSaga';
+import bookingMarginTrialTestSaga from './bookingMarginTrialTestSaga';
 
 function* rootSaga() {
    yield fork(userSaga);
@@ -27,6 +28,7 @@ function* rootSaga() {
    yield fork(partSaga);
    yield fork(historicalImportSaga);
    yield fork(volumeDiscountSaga);
+   yield fork(bookingMarginTrialTestSaga);
 }
 
 export default rootSaga;

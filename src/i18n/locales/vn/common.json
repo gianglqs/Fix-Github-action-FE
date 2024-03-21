@@ -16,7 +16,8 @@
       "products": "Sản phẩm",
       "exchangeRates": "Tỷ giá tiền tệ",
       "dataScraping": "Thu nhập dữ liệu",
-      "volumeDiscountAnalysis": "Phân tích số lượng giảm giá"
+      "volumeDiscountAnalysis": "Phân tích số lượng giảm giá",
+      "bookingMarginTrialTest": "So Sánh Lợi Nhuận"
    },
 
    "user": {
