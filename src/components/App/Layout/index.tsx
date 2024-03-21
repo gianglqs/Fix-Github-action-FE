@@ -83,6 +83,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       'exchange-rates': t('title.exchangeRates'),
       'data-scraping': t('title.dataScraping'),
       'volume-discount-analysis': t('title.volumeDiscountAnalysis'),
+      'booking-margin-trial-test': t('title.bookingMarginTrialTest'),
    };
 
    const renderMenu = () => {

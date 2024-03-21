@@ -13,8 +13,9 @@ export const formatNumbericColumn = {
    headerAlign: 'center',
    justifyContent: 'flex-end',
    padding: 0,
+   backgroudColor: 'red',
 } as Record<any, any>;
 
 export const centerHeaderColumn = {
    headerAlign: 'center',
-};
+} as Record<any, any>;
