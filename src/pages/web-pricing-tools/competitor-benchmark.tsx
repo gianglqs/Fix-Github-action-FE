@@ -202,51 +202,7 @@ export default function Indicators() {
       }
    };
 
-   const handleFilterForecastLandscape = async () => {
-      if (
-         !competitiveLandscapeData.clearFilter &&
-         JSON.stringify(swotDataFilter) !== JSON.stringify(defaultDataFilterBubbleChart)
-      ) {
-         setLoadingSwot(true);
-      }
-      try {
-         if (swotDataFilter.regions == '') {
-            setRegionError({ error: true });
-            return;
-         }
-
-         const {
-            data: { competitiveLandscape },
-         } = await indicatorApi.getCompetitiveLandscape({
-            regions: swotDataFilter.regions,
-            countries: swotDataFilter.countries,
-            classes: swotDataFilter.classes,
-            categories: swotDataFilter.categories,
-            series: swotDataFilter.series,
-         });
-
-         const datasets = competitiveLandscape.map((item) => {
-            return {
-               label: `${item.color.groupName}`,
-               data: [
-                  {
-                     y: item.competitorPricing,
-                     x: item.competitorLeadTime,
-                     r: (item.marketShare * 100).toLocaleString(),
-                  },
-               ],
-               backgroundColor: `${item.color.colorCode}`,
-            };
-         });
-
-         setCompetitiveLandscapeData({
-            datasets: datasets,
-            clearFilter: false,
-         });
-      } catch (error) {
-         dispatch(commonStore.actions.setErrorMessage(error.message));
-      }
-   };
+   //
 
    useEffect(() => {
       const getCountryByRegion = async () => {
@@ -354,7 +310,6 @@ export default function Indicators() {
             setLoading(false);
             dispatch(commonStore.actions.setSuccessMessage('Upload successfully'));
             handleFilterIndicator();
-            handleFilterForecastLandscape();
          })
          .catch((error) => {
             setLoading(false);
