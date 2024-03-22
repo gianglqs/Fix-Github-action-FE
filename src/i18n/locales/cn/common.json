@@ -16,7 +16,8 @@
       "products": "产品",
       "exchangeRates": "汇率",
       "dataScraping": "数据抓取",
-      "volumeDiscountAnalysis": "数量折扣分析"
+      "volumeDiscountAnalysis": "数量折扣分析",
+      "bookingMarginTrialTest": "比较利润"
    },
 
    "user": {

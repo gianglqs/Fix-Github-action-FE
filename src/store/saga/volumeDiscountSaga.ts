@@ -8,10 +8,6 @@ import { parseCookies } from 'nookies';
 function* fetchVolumeDiscount() {
    try {
       const initDataFilter = yield* call(volumeDiscountApi.getSegmentFilters);
-      yield put(
-         volumeDiscountStore.actions.selectInitDataFilter(JSON.parse(String(initDataFilter.data)))
-      );
-
       const { defaultValueFilterVolumeDiscount } = yield* all({
          defaultValueFilterVolumeDiscount: select(
             volumeDiscountStore.selectDefaultValueFilterVolumeDiscount
@@ -23,12 +19,14 @@ function* fetchVolumeDiscount() {
       let dataFilter;
       if (jsonDataFilter) {
          dataFilter = JSON.parse(String(jsonDataFilter));
-         yield put(volumeDiscountStore.actions.setDataFilter(dataFilter));
       } else {
          dataFilter = defaultValueFilterVolumeDiscount;
       }
 
       yield put(volumeDiscountStore.actions.setDataFilter(dataFilter));
+      yield put(
+         volumeDiscountStore.actions.selectInitDataFilter(JSON.parse(String(initDataFilter.data)))
+      );
    } catch (error) {}
 }
 

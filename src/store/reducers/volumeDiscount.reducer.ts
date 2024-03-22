@@ -7,7 +7,7 @@ export const resetState = createAction(`${name}/RESET_STATE`);
 
 export const initialState = {
    initDataFilter: {} as any,
-   defaultValueFilterVolumeDiscount: defaultValueFilterVolumeDiscount,
+   defaultValueFilterVolumeDiscount: defaultValueFilterVolumeDiscount as any,
    dataFilter: {} as any,
 };
 

@@ -16,7 +16,8 @@
       "products": "Products",
       "exchangeRates": "Exchange Rates",
       "dataScraping": "Data Scraping",
-      "volumeDiscountAnalysis": "Volume Discount Analysis"
+      "volumeDiscountAnalysis": "Volume Discount Analysis",
+      "bookingMarginTrialTest": "Booking Margin Trial Test"
    },
 
    "user": {
@@ -149,7 +150,13 @@
       "fileName": "File Name",
       "importAt": "Import At",
       "importBy": "Import By",
-      "size": "Size"
+      "size": "Size",
+      "total": "Total",
+      "margin%": "Margin %",
+      "margin": "Margin",
+      "type": "Type",
+      "remark": "Remark",
+      "cost": "Cost"
    },
 
    "competitors": {
