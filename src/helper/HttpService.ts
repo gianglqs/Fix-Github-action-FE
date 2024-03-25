@@ -96,12 +96,14 @@ class HttpService<GetList = any> {
    protected saveToken = (context: GetServerSidePropsContext = null as any) => {
       const cookies = parseCookies(context);
       const accessToken = cookies['token'];
+      const locale = cookies['defaultLocale'];
       // Set token if had
       if (accessToken) {
          this.instance.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
          this.instance.defaults.headers.common = {
             Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
+            locale: locale,
          };
       } else {
          delete this.instance.defaults.headers.Authorization;
@@ -111,11 +113,13 @@ class HttpService<GetList = any> {
    protected setHeaderForApiTransferFile = (context: GetServerSidePropsContext = null as any) => {
       const cookies = parseCookies(context);
       const accessToken = cookies['token'];
+      const locale = cookies['defaultLocale'];
       // Set token if had
       if (accessToken) {
          this.instance.defaults.headers.common = {
             Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'multipart/form-data',
+            locale: locale,
          };
       } else {
          delete this.instance.defaults.headers.Authorization;
