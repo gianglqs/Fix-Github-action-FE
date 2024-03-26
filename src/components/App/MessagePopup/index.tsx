@@ -40,6 +40,7 @@ const AppMessagePopup: React.FC = () => {
          }}
          onClose={handleClose}
          onClick={onClick}
+         sx={{ cursor: 'pointer' }}
       >
          <AppAlert onClose={handleClose} severity={messageState.status}>
             {messageState.message}
