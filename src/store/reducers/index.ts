@@ -1,5 +1,3 @@
-import bookingMarginTrialTestSlice from './bookingMarginTrialTest.reducer';
-
 export * as userStore from './user.reducer';
 export * as commonStore from './common.reducer';
 export * as bookingStore from './booking.reducer';
@@ -15,3 +13,4 @@ export * as partStore from './part.reducer';
 export * as historicalImportStore from './historicalImport.reducer';
 export * as volumeDiscountStore from './volumeDiscount.reducer';
 export * as bookingMarginTrialTestStore from './bookingMarginTrialTest.reducer';
+export * as importFailureStore from './importFailure.reducer';

@@ -14,6 +14,7 @@ import part from './part.reducer';
 import historicalImport from './historicalImport.reducer';
 import volumeDiscount from './volumeDiscount.reducer';
 import bookingMarginTrialTest from './bookingMarginTrialTest.reducer';
+import importFailure from './importFailure.reducer';
 
 const rootReducers = combineReducers({
    [common.name]: common.reducer,
@@ -31,6 +32,7 @@ const rootReducers = combineReducers({
    [historicalImport.name]: historicalImport.reducer,
    [volumeDiscount.name]: volumeDiscount.reducer,
    [bookingMarginTrialTest.name]: bookingMarginTrialTest.reducer,
+   [importFailure.name]: importFailure.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;

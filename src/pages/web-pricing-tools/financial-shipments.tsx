@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useState, useTransition } from 'rea
 import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
-import { shipmentStore, commonStore } from '@/store/reducers';
+import { shipmentStore, commonStore, importFailureStore } from '@/store/reducers';
 import moment from 'moment-timezone';
 
 import Grid from '@mui/material/Grid';
@@ -47,6 +47,8 @@ import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { paperStyle } from '@/theme/paperStyle';
 import { useTranslation } from 'react-i18next';
+import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
+import { extractTextInParentheses } from '@/utils/getString';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -85,6 +87,9 @@ export default function Shipment() {
    const [loading, setLoading] = useState(false);
    const [loadingTable, setLoadingTable] = useState(false);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
+
+   // import failure dialog
+   const importFailureDialogDataFilter = useSelector(importFailureStore.selectDataFilter);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -341,6 +346,19 @@ export default function Shipment() {
    const handleWhenImportSuccessfully = (res) => {
       //show message
       dispatch(commonStore.actions.setSuccessMessage(res.data.message));
+
+      // update importFailureState, prepare to open dialog
+      dispatch(
+         importFailureStore.actions.setDataFilter({
+            ...importFailureDialogDataFilter,
+            fileUUID: res.data.data,
+         })
+      );
+      dispatch(
+         importFailureStore.actions.setImportFailureDialogState({
+            overview: extractTextInParentheses(res.data.message),
+         })
+      );
 
       dispatch(shipmentStore.sagaGetList());
    };
@@ -866,6 +884,8 @@ export default function Shipment() {
          >
             <CircularProgress color="inherit" />
          </Backdrop>
+
+         <LogImportFailureDialog />
       </>
    );
 }
