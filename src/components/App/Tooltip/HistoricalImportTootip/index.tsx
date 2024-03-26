@@ -29,7 +29,7 @@ export default function HistoricalImportTooltip(props) {
       <Tooltip title={!success && message} placement="top" arrow>
          {!loading && (
             <Button variant="outlined" color={`${success ? 'success' : 'error'}`} onClick={onClick}>
-               {success ? t('success') : t('failure')}
+               {success ? t('complete') : t('failure')}
             </Button>
          )}
       </Tooltip>
