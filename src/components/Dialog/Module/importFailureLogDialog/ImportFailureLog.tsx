@@ -109,7 +109,7 @@ export const LogImportFailureDialog: React.FC<any> = (props) => {
 
    // reset when CLOSE dialog
    const resetData = () => {
-      // handle
+      dispatch(importFailureStore.resetState());
    };
 
    const handleSearch = async (event, searchQuery) => {
