@@ -20,6 +20,7 @@ const LineChart: React.FC<any> = (props) => {
                },
                tooltip,
             },
+            spanGaps: true,
          }}
       />
    );

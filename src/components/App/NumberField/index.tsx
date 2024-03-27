@@ -17,7 +17,8 @@ const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) =>
          ref={ref as any}
          allowNegative={true}
          format="#### #### #### ####"
-         fixedDecimalScale={true}
+         fixedDecimalScale={false}
+         decimalScale={2}
       />
    );
 });

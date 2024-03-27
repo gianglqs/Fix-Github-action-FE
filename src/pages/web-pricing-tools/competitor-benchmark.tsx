@@ -102,6 +102,12 @@ export default function Indicators() {
       datasets: [],
       clearFilter: false,
    });
+
+   const [forecastLandscapeData, setForecastLandscapeData] = useState({
+      datasets: [],
+      clearFilter: false,
+   });
+
    const cachDataFilterBubbleChart = useSelector(indicatorStore.selectDataFilterBubbleChart);
    const [swotDataFilter, setSwotDataFilter] = useState(cachDataFilterBubbleChart);
 
@@ -151,7 +157,12 @@ export default function Indicators() {
    const [bubbleCountryInitFilter, setBubbleCountryInitFilter] = useState(initDataFilter.countries);
 
    const handleFilterCompetitiveLandscape = async () => {
-      if (!competitiveLandscapeData.clearFilter) setLoadingSwot(true);
+      if (
+         !competitiveLandscapeData.clearFilter &&
+         JSON.stringify(swotDataFilter) !== JSON.stringify(defaultDataFilterBubbleChart)
+      ) {
+         setLoadingSwot(true);
+      }
       try {
          if (swotDataFilter.regions == '') {
             setRegionError({ error: true });
@@ -190,6 +201,8 @@ export default function Indicators() {
          dispatch(commonStore.actions.setErrorMessage(error.message));
       }
    };
+
+   //
 
    useEffect(() => {
       const getCountryByRegion = async () => {
@@ -283,7 +296,7 @@ export default function Indicators() {
          })
          .catch((error) => {
             setLoading(false);
-            dispatch(commonStore.actions.setErrorMessage(error.response.data.message));
+            dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
 
@@ -296,10 +309,11 @@ export default function Indicators() {
          .then(() => {
             setLoading(false);
             dispatch(commonStore.actions.setSuccessMessage('Upload successfully'));
+            handleFilterIndicator();
          })
-         .catch(() => {
+         .catch((error) => {
             setLoading(false);
-            dispatch(commonStore.actions.setErrorMessage('Error on uploading new file'));
+            dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
 

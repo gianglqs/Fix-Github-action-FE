@@ -173,10 +173,11 @@ const components: Components = {
             '& .MuiDataGrid-columnHeaders': {
                borderBottom: 'none',
                backgroundColor: secondaryColor.main,
-               color: '#606F89',
+               color: 'black',
                fontWeight: 'bold',
                lineHeight: '1.5rem',
             },
+
             '& .MuiDataGrid-row': {
                '&:hover': {
                   backgroundColor: `${secondaryColor.light} !important`,
@@ -198,11 +199,26 @@ const components: Components = {
                   outline: 'none',
                },
             },
+            '& .highlight-row': {
+               backgroundColor: 'rgba(10, 194, 93, 0.6)',
+            },
             '& .highlight-cell': {
                backgroundColor: 'rgba(232, 192, 86, 0.6)',
             },
             '& .MuiDataGrid-row:nth-child(even) .highlight-cell': {
                backgroundColor: 'rgba(232, 192, 86, 0.8)',
+            },
+            '& .highlight-cell-FPA': {
+               backgroundColor: 'rgba(255, 204, 153, 0.6)',
+            },
+            '& .MuiDataGrid-row:nth-child(even) .highlight-cell-FPA': {
+               backgroundColor: 'rgba(255, 204, 153, 0.8)',
+            },
+            '& .highlight-cell-actual': {
+               backgroundColor: 'rgba(0, 153, 76, 0.4)',
+            },
+            '& .MuiDataGrid-row:nth-child(even) .highlight-cell-actual': {
+               backgroundColor: 'rgba(0, 153, 76, 0.6)',
             },
             '& .MuiDataGrid-columnHeaderTitle': {
                fontWeight: 'bold',
@@ -212,6 +228,21 @@ const components: Components = {
                   visibility: 'visible !important',
                   width: 'auto',
                },
+            },
+            '& .MuiDataGrid-columnHeaders .pricing-team': {
+               backgroundColor: 'rgba(232, 192, 86, 0.8)',
+               borderRight: '1px solid white',
+               borderLeft: '1px solid white',
+            },
+            '& .MuiDataGrid-columnHeaders .FPA-team': {
+               backgroundColor: 'rgba(255, 204, 153, 0.8)',
+               borderRight: '1px solid white',
+               borderLeft: '1px solid white',
+            },
+            '& .MuiDataGrid-columnHeaders .actual-team': {
+               backgroundColor: 'rgba(0, 153, 76, 0.6)',
+               borderRight: '1px solid white',
+               borderLeft: '1px solid white',
             },
          },
       },

@@ -11,6 +11,9 @@ import competitorColorSaga from './competitorColorSaga';
 import productSaga from './productSaga';
 import partSaga from './partSaga';
 import historicalImportSaga from './historicalImportSaga';
+import volumeDiscountSaga from './volumeDiscountSaga';
+import bookingMarginTrialTestSaga from './bookingMarginTrialTestSaga';
+import importFailureSaga from './importFailureSaga';
 
 function* rootSaga() {
    yield fork(userSaga);
@@ -25,6 +28,9 @@ function* rootSaga() {
    yield fork(productSaga);
    yield fork(partSaga);
    yield fork(historicalImportSaga);
+   yield fork(volumeDiscountSaga);
+   yield fork(bookingMarginTrialTestSaga);
+   yield fork(importFailureSaga);
 }
 
 export default rootSaga;

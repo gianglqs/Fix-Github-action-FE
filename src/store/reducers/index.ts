@@ -11,3 +11,6 @@ export * as competitorColorStore from './competitorColor.reducer';
 export * as productStore from './product.reducer';
 export * as partStore from './part.reducer';
 export * as historicalImportStore from './historicalImport.reducer';
+export * as volumeDiscountStore from './volumeDiscount.reducer';
+export * as bookingMarginTrialTestStore from './bookingMarginTrialTest.reducer';
+export * as importFailureStore from './importFailure.reducer';

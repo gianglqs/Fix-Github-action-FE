@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
-import { bookingStore, commonStore } from '@/store/reducers';
+import { bookingStore, commonStore, importFailureStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
 import moment from 'moment-timezone';
 
@@ -52,6 +52,8 @@ import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { paperStyle } from '@/theme/paperStyle';
 import { useTranslation } from 'react-i18next';
+import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
+import { extractTextInParentheses } from '@/utils/getString';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -93,6 +95,9 @@ export default function Booking() {
 
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
+
+   // import failure dialog
+   const importFailureDialogDataFilter = useSelector(importFailureStore.selectDataFilter);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -182,13 +187,16 @@ export default function Booking() {
          flex: 0.5,
          headerName: t('table.region'),
          renderCell(params) {
-            return <span>{params.row.region?.regionName}</span>;
+            return <span>{params.row.country?.region?.regionName}</span>;
          },
       },
       {
          field: 'ctryCode',
-         flex: 0.3,
+         flex: 0.6,
          headerName: t('table.country'),
+         renderCell(params) {
+            return <span>{params.row.country?.countryName}</span>;
+         },
       },
       {
          field: 'dealerName',
@@ -329,6 +337,18 @@ export default function Booking() {
    const handleWhenImportSuccessfully = (res) => {
       //show message
       dispatch(commonStore.actions.setSuccessMessage(res.data.message));
+      // update importFailureState, prepare to open dialog
+      dispatch(
+         importFailureStore.actions.setDataFilter({
+            ...importFailureDialogDataFilter,
+            fileUUID: res.data.data,
+         })
+      );
+      dispatch(
+         importFailureStore.actions.setImportFailureDialogState({
+            overview: extractTextInParentheses(res.data.message),
+         })
+      );
       //refresh data table and paging
       dispatch(bookingStore.sagaGetList());
    };
@@ -868,6 +888,7 @@ export default function Booking() {
          >
             <CircularProgress color="inherit" />
          </Backdrop>
+         <LogImportFailureDialog />
       </>
    );
 }

@@ -1,9 +1,9 @@
 import { useCallback, useContext, useEffect, useState, useTransition } from 'react';
 
-import { formatNumbericColumn } from '@/utils/columnProperties';
+import { centerHeaderColumn, formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
-import { shipmentStore, commonStore, importFailureStore } from '@/store/reducers';
+import { bookingMarginTrialTestStore, commonStore, importFailureStore } from '@/store/reducers';
 import moment from 'moment-timezone';
 
 import Grid from '@mui/material/Grid';
@@ -34,19 +34,28 @@ import _ from 'lodash';
 import { produce } from 'immer';
 
 import { defaultValueFilterOrder } from '@/utils/defaultValues';
-import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
+import {
+   DataGridPro,
+   GridColDef,
+   GridColumnGroupHeaderParams,
+   GridColumnGroupingModel,
+   GridToolbar,
+} from '@mui/x-data-grid-pro';
 import { UserInfoContext } from '@/provider/UserInfoContext';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
-import shipmentApi from '@/api/shipment.api';
+import bookingMarginTrialTestApi from '@/api/bookingMarginTrialTest.api';
 import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import AppBackDrop from '@/components/App/BackDrop';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
-import { paperStyle } from '@/theme/paperStyle';
+import { componentType, paperStyle } from '@/theme/paperStyle';
 import { useTranslation } from 'react-i18next';
+import BuildIcon from '@mui/icons-material/Build';
+import PersonIcon from '@mui/icons-material/Person';
+import { styled } from '@mui/material/styles';
 import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
 import { extractTextInParentheses } from '@/utils/getString';
 
@@ -57,29 +66,54 @@ interface FileChoosed {
    name: string;
 }
 
+const HeaderWithIconRoot = styled('div')(({ theme }) => ({
+   overflow: 'hidden',
+   display: 'flex',
+   alignItems: 'center',
+   '& span': {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      marginRight: theme.spacing(0.5),
+   },
+}));
+
+interface HeaderWithIconProps extends GridColumnGroupHeaderParams {
+   icon: React.ReactNode;
+}
+
+function HeaderWithIcon(props: HeaderWithIconProps) {
+   const { icon, ...params } = props;
+
+   return (
+      <HeaderWithIconRoot>
+         <span>{params.headerName ?? params.groupId}</span> {icon}
+      </HeaderWithIconRoot>
+   );
+}
+
 export default function Shipment() {
    const dispatch = useDispatch();
    const { t } = useTranslation();
 
-   const listShipment = useSelector(shipmentStore.selectShipmentList);
+   const initDataFilter = useSelector(bookingMarginTrialTestStore.selectInitDataFilter);
+   const listTotalRow = useSelector(bookingMarginTrialTestStore.selectTotalRow);
 
-   const initDataFilter = useSelector(shipmentStore.selectInitDataFilter);
-   const listTotalRow = useSelector(shipmentStore.selectTotalRow);
-
-   const cacheDataFilter = useSelector(shipmentStore.selectDataFilter);
+   const cacheDataFilter = useSelector(bookingMarginTrialTestStore.selectDataFilter);
 
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
+
+   const listShipment = useSelector(bookingMarginTrialTestStore.selectOrderList);
 
    const [listOrder, setListOrder] = useState(listShipment);
 
    const [totalRow, setTotalRow] = useState(listTotalRow);
 
-   const serverTimeZone = useSelector(shipmentStore.selectServerTimeZone);
-   const serverLatestUpdatedTime = useSelector(shipmentStore.selectLatestUpdatedTime);
+   const serverTimeZone = useSelector(bookingMarginTrialTestStore.selectServerTimeZone);
+   const serverLatestUpdatedTime = useSelector(bookingMarginTrialTestStore.selectLatestUpdatedTime);
 
    const [currency, setCurrency] = useState('USD');
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
-   const listExchangeRate = useSelector(shipmentStore.selectExchangeRateList);
+   const listExchangeRate = useSelector(bookingMarginTrialTestStore.selectExchangeRateList);
 
    //  const [uploadedFile, setUploadedFile] = useState({ name: '' });
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
@@ -87,7 +121,6 @@ export default function Shipment() {
    const [loading, setLoading] = useState(false);
    const [loadingTable, setLoadingTable] = useState(false);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
-
    // import failure dialog
    const importFailureDialogDataFilter = useSelector(importFailureStore.selectDataFilter);
 
@@ -120,7 +153,7 @@ export default function Shipment() {
       const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
          if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
             console.log('hehe, ', dataFilter);
-            setCookie(null, 'shipmentFilter', JSON.stringify(dataFilter), {
+            setCookie(null, 'bookingMarginTrialTestFilter', JSON.stringify(dataFilter), {
                maxAge: 604800,
                path: '/',
             });
@@ -134,7 +167,7 @@ export default function Shipment() {
 
    const handleFilterOrderShipment = () => {
       setLoadingTable(true);
-      dispatch(shipmentStore.actions.setDefaultValueFilterOrder(dataFilter));
+      dispatch(bookingMarginTrialTestStore.actions.setDefaultValueFilterOrder(dataFilter));
       handleChangePage(1);
    };
 
@@ -144,7 +177,7 @@ export default function Shipment() {
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
-      dispatch(shipmentStore.sagaGetList());
+      dispatch(bookingMarginTrialTestStore.sagaGetList());
    };
 
    const handleChangePerPage = (perPage: number) => {
@@ -154,39 +187,21 @@ export default function Shipment() {
 
    const tableState = useSelector(commonStore.selectTableState);
 
-   const columns = [
+   const columns: GridColDef[] = [
       {
          field: 'orderNo',
          flex: 0.4,
          headerName: t('table.order#'),
-      },
-      {
-         field: 'quoteNumber',
-         flex: 0.6,
-         headerName: t('table.quoteNumber'),
-      },
-      {
-         field: 'date',
-         flex: 0.5,
-         headerName: t('table.createAt'),
          renderCell(params) {
-            return <span>{formatDate(params.row.date)}</span>;
+            return <span>{params.row.booking.orderNo}</span>;
          },
       },
       {
-         field: 'region',
+         field: 'series',
          flex: 0.3,
-         headerName: t('table.region'),
+         headerName: t('table.series'),
          renderCell(params) {
-            return <span>{params.row.country?.region?.regionName}</span>;
-         },
-      },
-      {
-         field: 'ctryCode',
-         flex: 0.6,
-         headerName: t('table.country'),
-         renderCell(params) {
-            return <span>{params.row.country?.countryName}</span>;
+            return <span>{params.row.booking.series}</span>;
          },
       },
       {
@@ -194,125 +209,247 @@ export default function Shipment() {
          flex: 0.5,
          headerName: t('table.plant'),
          renderCell(params) {
-            return <span>{params.row.product?.plant}</span>;
+            return <span>{params.row.booking.product?.plant}</span>;
          },
       },
       {
          field: 'truckClass',
-         flex: 0.7,
+         flex: 0.6,
          headerName: t('table.class'),
          renderCell(params) {
-            return <span>{params.row.product?.clazz?.clazzName}</span>;
+            return <span>{params.row.booking.product?.clazz?.clazzName}</span>;
          },
       },
       {
-         field: 'dealerName',
-         flex: 1.2,
-         headerName: t('table.dealerName'),
-         renderCell(params) {
-            return <span>{params.row.dealer?.name}</span>;
-         },
-      },
-      {
-         field: 'series',
-         flex: 0.4,
-         headerName: t('table.series'),
-         renderCell(params) {
-            return <span>{params.row.series}</span>;
-         },
-      },
-      {
-         field: 'model',
+         field: 'ctryCode',
          flex: 0.6,
-         headerName: t('table.models'),
+         headerName: t('table.country'),
          renderCell(params) {
-            return <span style={{ cursor: 'pointer' }}>{params.row.product.modelCode}</span>;
+            return <span>{params.row.booking.country?.countryName}</span>;
          },
       },
       {
-         field: 'quantity',
-         flex: 0.2,
-         headerName: t('table.qty'),
-         ...formatNumbericColumn,
+         field: 'region',
+         flex: 0.4,
+         headerName: t('table.region'),
+         renderCell(params) {
+            return <span>{params.row.booking.country?.region?.regionName}</span>;
+         },
       },
-
+      {
+         field: 'date',
+         flex: 0.5,
+         headerName: t('table.createAt'),
+         cellClassName: 'highlight-cell',
+         headerClassName: 'pricing-team',
+         renderCell(params) {
+            return <span>{formatDate(params?.row?.booking.date)}</span>;
+         },
+      },
       {
          field: 'dealerNet',
-         flex: 0.8,
-         headerName: `${t('table.dealerNet')} ('000 ${currency})`,
+         flex: 0.6,
+         headerName: `${t('table.dealerNet')}`,
+         ...formatNumbericColumn,
          cellClassName: 'highlight-cell',
-         ...formatNumbericColumn,
+         headerClassName: 'pricing-team',
          renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNet)}</span>;
-         },
-      },
-      {
-         field: 'dealerNetAfterSurcharge',
-         flex: 0.8,
-         headerName: `${t('table.dealerNetAfterSurcharge')} ('000 ${currency})`,
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
-         },
-      },
-      {
-         field: 'totalCost',
-         flex: 0.8,
-         headerName: `${t('table.totalActualCost')} ('000 ${currency})`,
-         cellClassName: 'highlight-cell',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.totalCost)}</span>;
-         },
-      },
-      {
-         field: 'marginAfterSurcharge',
-         flex: 0.8,
-         headerName: `${t('table.marginAfterSurcharge')} ('000 ${currency})`,
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
+            return <span>{formatNumber(params?.row.booking.dealerNetAfterSurcharge * 1000)}</span>;
          },
       },
 
       {
          field: 'marginPercentageAfterSurcharge',
-         flex: 0.6,
-         headerName: t('table.marginPercentageAfterSurcharge'),
+         flex: 0.5,
+         headerName: t('table.margin%'),
          cellClassName: 'highlight-cell',
+         headerClassName: 'pricing-team',
          ...formatNumbericColumn,
          renderCell(params) {
             return (
                <span>
-                  {formatNumberPercentage(params?.row.marginPercentageAfterSurcharge * 100)}
+                  {formatNumberPercentage(params?.row.booking.marginPercentageAfterSurcharge * 100)}
+               </span>
+            );
+         },
+      },
+
+      // FP&A team
+      {
+         field: 'FPA_dealerNet',
+         flex: 0.6,
+         headerName: t('table.dealerNet'),
+         ...formatNumbericColumn,
+         cellClassName: 'highlight-cell-FPA',
+         headerClassName: 'FPA-team',
+         renderCell(params) {
+            return (
+               <span>
+                  {params?.row.bookingFPA?.dealerNet &&
+                     formatNumber(params?.row.bookingFPA?.dealerNet * 1000)}
                </span>
             );
          },
       },
       {
-         field: 'bookingMarginPercentageAfterSurcharge',
+         field: 'FPA_cost',
          flex: 0.6,
-         headerName: t('table.bookingMarginPercentage'),
+         headerName: t('table.cost'),
+         ...formatNumbericColumn,
+         cellClassName: 'highlight-cell-FPA',
+         headerClassName: 'FPA-team',
+         renderCell(params) {
+            return (
+               <span>
+                  {params?.row.bookingFPA?.totalCost &&
+                     formatNumber(params?.row.bookingFPA?.totalCost * 1000)}
+               </span>
+            );
+         },
+      },
+      {
+         field: 'FPA_margin',
+         flex: 0.6,
+         headerName: t('table.margin'),
+         cellClassName: 'highlight-cell-FPA',
+         headerClassName: 'FPA-team',
          ...formatNumbericColumn,
          renderCell(params) {
             return (
                <span>
-                  {params?.row.bookingMarginPercentageAfterSurcharge &&
+                  {params?.row.bookingFPA?.margin &&
+                     formatNumber(params?.row.bookingFPA?.margin * 1000)}
+               </span>
+            );
+         },
+      },
+      {
+         field: 'FPA_marginpercentage',
+         flex: 0.5,
+         headerName: t('table.margin%'),
+         ...formatNumbericColumn,
+         cellClassName: 'highlight-cell-FPA',
+         headerClassName: 'FPA-team',
+         renderCell(params) {
+            return (
+               <span>
+                  {params?.row.bookingFPA?.marginPercentage &&
+                     formatNumberPercentage(params?.row.bookingFPA?.marginPercentage * 100)}
+               </span>
+            );
+         },
+      },
+      // Actual Order
+      {
+         field: 'actual_dealerNet',
+         flex: 0.6,
+         headerName: t('table.dealerNet'),
+         ...formatNumbericColumn,
+         cellClassName: 'highlight-cell-actual',
+         headerClassName: 'actual-team',
+         renderCell(params) {
+            return (
+               <span>
+                  {params?.row.shipment?.dealerNetAfterSurcharge &&
+                     formatNumber(params?.row.shipment?.dealerNetAfterSurcharge * 1000)}
+               </span>
+            );
+         },
+      },
+      {
+         field: 'actual_cost',
+         flex: 0.6,
+         headerName: t('table.cost'),
+         ...formatNumbericColumn,
+         cellClassName: 'highlight-cell-actual',
+         headerClassName: 'actual-team',
+         renderCell(params) {
+            return (
+               <span>
+                  {params?.row.shipment?.totalCost &&
+                     formatNumber(params?.row.shipment?.totalCost * 1000)}
+               </span>
+            );
+         },
+      },
+      {
+         field: 'actual_margin',
+         flex: 0.6,
+         headerName: t('table.margin'),
+         ...formatNumbericColumn,
+         cellClassName: 'highlight-cell-actual',
+         headerClassName: 'actual-team',
+         renderCell(params) {
+            return (
+               <span>
+                  {params?.row.shipment?.marginAfterSurcharge &&
+                     formatNumber(params?.row.shipment?.marginAfterSurcharge * 1000)}
+               </span>
+            );
+         },
+      },
+      {
+         field: 'actual_margin%',
+         flex: 0.5,
+         headerName: t('table.margin%'),
+         ...formatNumbericColumn,
+         cellClassName: 'highlight-cell-actual',
+         headerClassName: 'actual-team',
+         renderCell(params) {
+            return (
+               <span>
+                  {params?.row.shipment?.marginPercentageAfterSurcharge &&
                      formatNumberPercentage(
-                        params?.row.bookingMarginPercentageAfterSurcharge * 100
+                        params?.row.shipment?.marginPercentageAfterSurcharge * 100
                      )}
                </span>
             );
          },
       },
       {
-         field: 'aopmarginPercentage',
-         flex: 0.6,
-         headerName: t('table.aopMarginPercentage'),
-         ...formatNumbericColumn,
+         field: 'remark',
+         flex: 0.9,
+         ...centerHeaderColumn,
+         headerName: t('table.remark'),
          renderCell(params) {
-            return <span>{formatNumberPercentage(params?.row.aopmargin.marginSTD * 100)}</span>;
+            return <span>{params.row.booking.comment}</span>;
          },
+      },
+   ];
+
+   const columnGroupingModel: GridColumnGroupingModel = [
+      {
+         groupId: 'pricing_team',
+         headerName: 'Pricing Team Booking Margin',
+         children: [
+            { field: 'date' },
+            { field: 'dealerNet' },
+            { field: 'marginPercentageAfterSurcharge' },
+         ],
+         renderHeaderGroup: (params) => (
+            <HeaderWithIcon {...params} icon={<BuildIcon fontSize="small" />} />
+         ),
+      },
+      {
+         groupId: 'FPA_team',
+         headerName: 'FP&A Team Est. Billing Margin',
+         children: [
+            { field: 'FPA_dealerNet' },
+            { field: 'FPA_cost' },
+            { field: 'FPA_margin' },
+            { field: 'FPA_marginpercentage' },
+         ],
+      },
+      {
+         groupId: 'actual',
+         headerName: 'Actual',
+         freeReordering: true,
+         children: [
+            { field: 'actual_dealerNet' },
+            { field: 'actual_cost' },
+            { field: 'actual_margin' },
+            { field: 'FPA_marginpercentage' },
+         ],
       },
    ];
 
@@ -321,8 +458,9 @@ export default function Shipment() {
    const [userRoleState, setUserRoleState] = useState('');
 
    if (userRoleState === 'ADMIN') {
-      heightComponentExcludingTable = 329;
+      heightComponentExcludingTable = 272;
    }
+
    useEffect(() => {
       setUserRoleState(userRole);
    });
@@ -330,8 +468,8 @@ export default function Shipment() {
    const handleUploadFile = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
-      shipmentApi
-         .importDataShipment(formData)
+      bookingMarginTrialTestApi
+         .importDataBookingFPA(formData)
          .then((response) => {
             setLoading(false);
             handleWhenImportSuccessfully(response);
@@ -343,11 +481,10 @@ export default function Shipment() {
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
+
    const handleWhenImportSuccessfully = (res) => {
       //show message
       dispatch(commonStore.actions.setSuccessMessage(res.data.message));
-
-      // update importFailureState, prepare to open dialog
       dispatch(
          importFailureStore.actions.setDataFilter({
             ...importFailureDialogDataFilter,
@@ -360,7 +497,7 @@ export default function Shipment() {
          })
       );
 
-      dispatch(shipmentStore.sagaGetList());
+      dispatch(bookingMarginTrialTestStore.sagaGetList());
    };
 
    const handleImport = () => {
@@ -379,12 +516,6 @@ export default function Shipment() {
    };
    const appendFileIntoList = (file) => {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
-   };
-
-   // ======= CONVERT CURRENCY ========
-
-   const handleChange = (event) => {
-      setCurrency(event.target.value);
    };
 
    useEffect(() => {
@@ -467,60 +598,7 @@ export default function Shipment() {
 
    return (
       <>
-         <AppLayout entity="shipment">
-            <Grid container spacing={1} sx={{ marginBottom: 2 }}>
-               <Grid item xs={3}>
-                  <Paper elevation={2} sx={paperStyle}>
-                     <div className="space-between-element">
-                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.dealerNet')} ('000 {currency})
-                        </Typography>
-                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {formatNumber(totalRow[0]?.dealerNet)}
-                        </Typography>
-                     </div>
-                  </Paper>
-               </Grid>
-               <Grid item xs={3}>
-                  <Paper elevation={2} sx={paperStyle}>
-                     <div className="space-between-element">
-                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.dealerNetAfterSurcharge')} ('000 {currency})
-                        </Typography>
-                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {formatNumber(totalRow[0]?.dealerNetAfterSurcharge)}
-                        </Typography>
-                     </div>
-                  </Paper>
-               </Grid>
-               <Grid item xs={3}>
-                  <Paper elevation={2} sx={paperStyle}>
-                     <div className="space-between-element">
-                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.totalCost')} ('000 {currency})
-                        </Typography>
-                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {formatNumber(totalRow[0]?.totalCost)}
-                        </Typography>
-                     </div>
-                  </Paper>
-               </Grid>
-               <Grid item xs={3}>
-                  <Paper elevation={2} sx={paperStyle}>
-                     <div className="space-between-element">
-                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.marginPercentageAfterSurcharge')}
-                        </Typography>
-                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {formatNumberPercentage(
-                              totalRow[0]?.marginPercentageAfterSurcharge * 100
-                           )}
-                        </Typography>
-                     </div>
-                  </Paper>
-               </Grid>
-            </Grid>
-
+         <AppLayout entity="bookingMarginTrialTest">
             <Grid container spacing={1}>
                <Grid item xs={4}>
                   <Grid item xs={12}>
@@ -587,24 +665,6 @@ export default function Shipment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
-                  <AppAutocomplete
-                     value={_.map(dataFilter.dealers, (item) => {
-                        return { value: item };
-                     })}
-                     options={initDataFilter.dealers}
-                     label={t('filters.dealerName')}
-                     sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'dealers')}
-                     limitTags={1}
-                     disableListWrap
-                     primaryKeyOption="value"
-                     multiple
-                     disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
-                     getOptionLabel={(option) => `${option.value}`}
-                  />
-               </Grid>
 
                <Grid item xs={2}>
                   <AppAutocomplete
@@ -624,90 +684,7 @@ export default function Shipment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2}>
-                  <AppAutocomplete
-                     value={_.map(dataFilter.models, (item) => {
-                        return { value: item };
-                     })}
-                     options={initDataFilter.models}
-                     label={t('filters.models')}
-                     sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'models')}
-                     limitTags={1}
-                     disableListWrap
-                     primaryKeyOption="value"
-                     multiple
-                     disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
-                     getOptionLabel={(option) => `${option.value}`}
-                  />
-               </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
-                  <AppAutocomplete
-                     value={_.map(dataFilter.segments, (item) => {
-                        return { value: item };
-                     })}
-                     options={initDataFilter.segments}
-                     label={t('filters.segment')}
-                     sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'segments')}
-                     limitTags={1}
-                     disableListWrap
-                     primaryKeyOption="value"
-                     multiple
-                     disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
-                     getOptionLabel={(option) => `${option.value}`}
-                  />
-               </Grid>
-               <Grid item xs={2}>
-                  <AppAutocomplete
-                     value={
-                        dataFilter.marginPercentage !== undefined
-                           ? {
-                                value: `${dataFilter.marginPercentage}`,
-                             }
-                           : { value: '' }
-                     }
-                     options={initDataFilter.marginPercentageGroup}
-                     label={t('filters.marginPercentage')}
-                     onChange={(e, option) =>
-                        handleChangeDataFilter(
-                           _.isNil(option) ? '' : option?.value,
-                           'marginPercentage'
-                        )
-                     }
-                     disableClearable={false}
-                     primaryKeyOption="value"
-                     renderOption={(prop, option) => `${option.value}`}
-                     getOptionLabel={(option) => `${option.value}`}
-                  />
-               </Grid>
-               <Grid item xs={4} sx={{ paddingRight: 0.5 }}>
-                  <Grid item xs={6}>
-                     <AppAutocomplete
-                        value={
-                           dataFilter.aopMarginPercentageGroup !== undefined
-                              ? {
-                                   value: `${dataFilter.aopMarginPercentageGroup}`,
-                                }
-                              : { value: '' }
-                        }
-                        options={initDataFilter.AOPMarginPercentageGroup}
-                        label={t('filters.aopMarginPercentage')}
-                        primaryKeyOption="value"
-                        onChange={(e, option) =>
-                           handleChangeDataFilter(
-                              _.isNil(option) ? '' : option?.value,
-                              'aopMarginPercentageGroup'
-                           )
-                        }
-                        disableClearable={false}
-                        renderOption={(prop, option) => `${option.value}`}
-                        getOptionLabel={(option) => `${option.value}`}
-                     />
-                  </Grid>
-               </Grid>
+
                <Grid item xs={2}>
                   <AppDateField
                      views={['day', 'month', 'year']}
@@ -747,39 +724,6 @@ export default function Shipment() {
                   >
                      {t('button.clear')}
                   </Button>
-               </Grid>
-
-               <Grid item>
-                  <RadioGroup
-                     row
-                     value={currency}
-                     onChange={handleChange}
-                     aria-labelledby="demo-row-radio-buttons-group-label"
-                     name="row-radio-buttons-group"
-                     sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        marginLeft: 1,
-                        height: '90%',
-                     }}
-                  >
-                     <FormControlLabel
-                        sx={{
-                           height: '80%',
-                        }}
-                        value="USD"
-                        control={<Radio />}
-                        label="USD"
-                     />
-                     <FormControlLabel
-                        sx={{
-                           height: '80%',
-                        }}
-                        value="AUD"
-                        control={<Radio />}
-                        label="AUD"
-                     />
-                  </RadioGroup>
                </Grid>
             </Grid>
             {userRoleState === 'ADMIN' && (
@@ -836,6 +780,42 @@ export default function Shipment() {
                   </Grid>
                </Grid>
             )}
+            <Grid
+               container
+               spacing={1}
+               sx={{ marginTop: 1, display: 'flex', justifyContent: 'center' }}
+            >
+               <Grid item xs={2.5}>
+                  <Paper
+                     elevation={2}
+                     sx={{ ...componentType, backgroundColor: 'rgba(232, 192, 86, 0.8)' }}
+                  >
+                     <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                        Pricing Team Booking Margin
+                     </Typography>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.5}>
+                  <Paper
+                     elevation={2}
+                     sx={{ ...componentType, backgroundColor: 'rgba(255, 204, 153, 0.8)' }}
+                  >
+                     <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                        FP&A Team Est. Billing Margin
+                     </Typography>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.5}>
+                  <Paper
+                     elevation={2}
+                     sx={{ ...componentType, backgroundColor: 'rgba(0, 153, 76, 0.6)' }}
+                  >
+                     <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                        Actual
+                     </Typography>
+                  </Paper>
+               </Grid>
+            </Grid>
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
@@ -848,7 +828,7 @@ export default function Shipment() {
                            lineHeight: 1.2,
                         },
                      }}
-                     columnHeaderHeight={60}
+                     columnHeaderHeight={40}
                      slots={{
                         toolbar: GridToolbar,
                      }}
@@ -857,8 +837,9 @@ export default function Shipment() {
                      rowBuffer={35}
                      rowThreshold={25}
                      columns={columns}
-                     getRowId={(params) => params.orderNo}
+                     getRowId={(params) => params.booking.orderNo}
                      onCellClick={handleOnCellClick}
+                     columnGroupingModel={columnGroupingModel}
                   />
                </Grid>
                <DataTablePagination
@@ -884,7 +865,6 @@ export default function Shipment() {
          >
             <CircularProgress color="inherit" />
          </Backdrop>
-
          <LogImportFailureDialog />
       </>
    );

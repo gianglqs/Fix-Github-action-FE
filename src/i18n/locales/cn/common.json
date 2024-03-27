@@ -15,7 +15,9 @@
       "productMarginAnalytics": "产品利润分析",
       "products": "产品",
       "exchangeRates": "汇率",
-      "dataScraping": "数据抓取"
+      "dataScraping": "数据抓取",
+      "volumeDiscountAnalysis": "数量折扣分析",
+      "bookingMarginTrialTest": "比较利润"
    },
 
    "user": {
@@ -65,7 +67,12 @@
       "family": "家族",
       "truckType": "卡车类型",
       "searchOrderById": "按订单ID搜索",
-      "searchProductByModel": "按型号代码搜索产品"
+      "searchProductByModel": "按型号代码搜索产品",
+      "startingPricePerUnit": "每单位的起始销售价格",
+      "costOfGoodSold": "每单位的销售成本",
+      "marginPercentagePerUnit": "每单位的利润率",
+      "discountPercentagePerOneNewItem": "每增加 1 个新项目的折扣率",
+      "unitIncreaseLever": "单位增长杠杆"
    },
 
    "button": {
@@ -142,7 +149,8 @@
 
       "fileName": "文件名",
       "importAt": "导入时间",
-      "importBy": "导入者"
+      "importBy": "导入者",
+      "size": "大小"
    },
 
    "competitors": {
@@ -195,12 +203,49 @@
       "strengtheningText": "相对于强于"
    },
 
+   "volumeDiscount": {
+      "discountAdded": "已添加折扣",
+      "totalDiscount": "总折扣",
+      "pricePerUnit": "每单位价格",
+      "totalPrice": "总价格",
+      "costOfGoodSold": "销售成本",
+      "standardMargin": "标准利润",
+      "averageStandardMargin": "每单位平均标准利润",
+      "expectedUnitSales": "预期单位销售量",
+      "revenue": "收入",
+      "ocos": "OCOS",
+      "adjustedStandardMargin": "调整后的标准利润",
+      "grossProfit": "毛利润",
+      "volume": "销量"
+   },
+   "message": {
+      "success": {
+         "import-complete": "导入 %s 已完成（%d 个错误，%d 个警告",
+         "update_image": "更新图片成功!",
+         "totalError-totalWarning": "%d 个错误，%d 个警告"
+      },
+      "failure": {
+         "import_file": "导入失败!",
+         "missing_column": "缺少列",
+         "missing_sheet": "未找到工作表：''",
+         "blank_sheet": "工作表是空白的：''",
+         "invalid_fileName": "无效的文件名：''"
+      },
+      "warning": {
+         "not-find-country-with-code": "未找到代码为“%s”的国家/地区。 使用代码自动创建一个新国家."
+      },
+      "error": {
+         "not-find-product-with-modelCode-series": "未找到型号代码为“%s”且系列为“%s”的产品。”",
+         "not-find-Dealer-with-name": "未找到名为“%s”的经销商。",
+         "not-find-AOPMargin-with-region-series-plant-year": "未找到区域“%s”、MestaSeries“%s”、工厂“%s”和年份“%s”的 AOPMargin。"
+      }
+   },
    "yes": "是",
    "no": "否",
    "or": "或",
    "search": "搜索 ...",
    "updateProduct": "更新产品",
-   "success": "成功",
+   "complete": "成功",
    "failure": "失败",
    "go": "去"
 }
