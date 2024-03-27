@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { productStore, commonStore } from '@/store/reducers';
+import { productStore, commonStore, importFailureStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
 import moment from 'moment-timezone';
 
@@ -42,6 +42,8 @@ import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { setCookie } from 'nookies';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { useTranslation } from 'react-i18next';
+import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
+import { extractTextInParentheses } from '@/utils/getString';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -67,6 +69,9 @@ export default function Product() {
 
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
+
+   // import failure dialog
+   const importFailureDialogDataFilter = useSelector(importFailureStore.selectDataFilter);
 
    const appendFileIntoList = (file) => {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
@@ -238,6 +243,19 @@ export default function Product() {
    const handleWhenImportSuccessfully = (res) => {
       //show message
       dispatch(commonStore.actions.setSuccessMessage(res.data.message));
+
+      dispatch(
+         importFailureStore.actions.setDataFilter({
+            ...importFailureDialogDataFilter,
+            fileUUID: res.data.data,
+         })
+      );
+      dispatch(
+         importFailureStore.actions.setImportFailureDialogState({
+            overview: extractTextInParentheses(res.data.message),
+         })
+      );
+
       //refresh data table and paging
       dispatch(productStore.sagaGetList());
    };
@@ -627,6 +645,7 @@ export default function Product() {
             onClose={handleCloseProductDetail}
          />
          <ShowImageDialog {...imageDialogState} onClose={handleCloseImageDialog} />
+         <LogImportFailureDialog />
       </>
    );
 }

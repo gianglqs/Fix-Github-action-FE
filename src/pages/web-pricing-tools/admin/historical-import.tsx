@@ -42,12 +42,12 @@ interface AppBarProps extends MuiAppBarProps {
 }
 
 import { GetServerSidePropsContext } from 'next';
-import { formatDate } from '@/utils/formatCell';
-import { DataGridPro } from '@mui/x-data-grid-pro';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { BASE_URL } from '@/Path/backend';
 import { useTranslation } from 'react-i18next';
 import { formatFileSize } from '@/utils/formatFileSize';
+import HistoricalImportTooltip from '@/components/App/Tooltip/HistoricalImportTootip';
+import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageAdmin(context);
@@ -256,16 +256,12 @@ export default function HistoricalImport() {
          headerName: t('user.status'),
          renderCell(params) {
             return (
-               <Tooltip title={!params.row.success && params.row.message} placement="top">
-                  {!params.row.loading && (
-                     <Button
-                        variant="outlined"
-                        color={`${params.row.success ? 'success' : 'error'}`}
-                     >
-                        {params.row.success ? t('success') : t('failure')}
-                     </Button>
-                  )}
-               </Tooltip>
+               <HistoricalImportTooltip
+                  success={params.row.success}
+                  loading={params.row.loading}
+                  fileUUID={params.row.uuid}
+                  message={params.row.message}
+               />
             );
          },
       },
@@ -457,6 +453,7 @@ export default function HistoricalImport() {
          </Box>
 
          <DialogChangePassword {...changePasswordState} onClose={handleCloseChangePasswordDialog} />
+         <LogImportFailureDialog />
       </>
    );
 }
