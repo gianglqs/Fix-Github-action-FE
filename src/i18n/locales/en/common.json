@@ -87,7 +87,7 @@
       "compare": "Compare",
       "uploadFile": "Upload File",
       "clearReports": "Clear Reports",
-      "fromHYG": "From HYG",
+      "HYGexchangeRate": "HYG exchange rate",
       "fromExchangeRateApi": "From exchangerate-api.com",
       "scrape": "Scrape",
       "save": "Save",

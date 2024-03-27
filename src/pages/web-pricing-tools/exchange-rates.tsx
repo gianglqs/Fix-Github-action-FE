@@ -257,15 +257,6 @@ export default function ExchangeRate() {
       setChartData([]);
    };
 
-   const handleFromDateChange = (e, value) => {
-      if (!handleChangeRadioButton) {
-         alert(
-            'Pleaase select at least one option ("From HYG" or "From exchangerate-api.com") before continuing'
-         );
-         return;
-      }
-   };
-
    const currentYear = new Date().getFullYear();
    const currentMonth = new Date().getMonth() + 1;
    // const currentDay = new Date().getDay;
@@ -401,7 +392,7 @@ export default function ExchangeRate() {
                      <FormControlLabel
                         value="Database"
                         control={<Radio />}
-                        label={t('button.fromHYG')}
+                        label={t('button.HYGexchangeRate')}
                      />
                      <FormControlLabel
                         value="Real-time"
