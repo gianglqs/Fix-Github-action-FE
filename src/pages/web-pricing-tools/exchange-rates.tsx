@@ -131,8 +131,8 @@ export default function ExchangeRate() {
 
    const handleCompareCurrency = async () => {
       try {
-         setLoading(true);
          if (dataFilter.currentCurrency.value == '') {
+            dispatch(commonStore.actions.setErrorMessage('User must select currency unit'));
             setDataFilter((prev) =>
                produce(prev, (draft) => {
                   draft['currentCurrency'] = { value: '', error: true };
@@ -141,6 +141,7 @@ export default function ExchangeRate() {
             return;
          }
          if (dataFilter.comparisonCurrencies.value.length == 0) {
+            dispatch(commonStore.actions.setErrorMessage('User must select comparison currencies'));
             setDataFilter((prev) =>
                produce(prev, (draft) => {
                   draft['comparisonCurrencies'] = { value: [], error: true };
@@ -155,7 +156,7 @@ export default function ExchangeRate() {
             toDate: dataFilter.toDate.value,
             fromRealTime: exchangeRateSource == 'Database' ? false : true,
          };
-
+         setLoading(true);
          exchangeRatesApi
             .compareCurrency(request)
             .then((response) => {
