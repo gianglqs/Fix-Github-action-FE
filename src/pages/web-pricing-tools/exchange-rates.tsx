@@ -104,7 +104,9 @@ export default function ExchangeRate() {
             if (_.includes(['currentCurrency'], field)) {
                draft[field] = { value: option.value, error: false };
             } else if (_.includes(['fromDate', 'toDate'], field)) {
-               draft[field].value = option.slice(0, -3);
+               exchangeRateSource === 'Database'
+                  ? (draft[field].value = option.slice(0, -3))
+                  : (draft[field].value = option.slice(0));
             } else {
                draft[field].value = option.map(({ value }) => value);
                draft[field].error = false;
@@ -162,7 +164,13 @@ export default function ExchangeRate() {
                // Setting Labels for chart
                const labels = data[dataFilter.comparisonCurrencies.value[0]]
                   .map((item) => {
-                     return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
+                     if (exchangeRateSource === 'Database') {
+                        return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
+                     } else {
+                        return `${item.date[2]} ${months[item.date[1]]} ${String(
+                           item.date[0]
+                        ).substring(2)}`;
+                     }
                   })
                   .reverse();
 
@@ -228,6 +236,8 @@ export default function ExchangeRate() {
 
    const handleChangeRadioButton = (event) => {
       setExchangeRateSource(event.target.value);
+      handleChangeDataFilter('', 'fromDate');
+      handleChangeDataFilter('', 'toDate');
    };
 
    const handleClearAllFilters = () => {
@@ -249,6 +259,7 @@ export default function ExchangeRate() {
 
    const currentYear = new Date().getFullYear();
    const currentMonth = new Date().getMonth() + 1;
+   // const currentDay = new Date().getDay;
 
    return (
       <>
@@ -363,36 +374,7 @@ export default function ExchangeRate() {
                      </Button>
                   </Grid>
                </Grid>
-               <Grid item xs={1}>
-                  <AppDateField
-                     views={['month', 'year']}
-                     label={t('filters.fromDate')}
-                     name="fromDate"
-                     onChange={(e, value) =>
-                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
-                     }
-                     value={dataFilter.fromDate.value}
-                     maxDate={
-                        dataFilter.toDate.value == ''
-                           ? `${currentYear}-${currentMonth}`
-                           : dataFilter.toDate.value
-                     }
-                     sx={{ marginTop: 1 }}
-                  />
-               </Grid>
-               <Grid item xs={1}>
-                  <AppDateField
-                     views={['month', 'year']}
-                     label={t('filters.toDate')}
-                     name="toDate"
-                     onChange={(e, value) =>
-                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
-                     }
-                     value={dataFilter.toDate.value}
-                     maxDate={`${currentYear}-${currentMonth}`}
-                     sx={{ marginTop: 1 }}
-                  />
-               </Grid>
+
                <Grid item xs={2.5} sx={{ height: 50 }}>
                   <RadioGroup
                      row
@@ -410,7 +392,7 @@ export default function ExchangeRate() {
                      <FormControlLabel
                         value="Database"
                         control={<Radio />}
-                        label={t('button.fromDatabase')}
+                        label={t('button.HYGexchangeRate')}
                      />
                      <FormControlLabel
                         value="Real-time"
@@ -418,6 +400,45 @@ export default function ExchangeRate() {
                         label={t('button.fromExchangeRateApi')}
                      />
                   </RadioGroup>
+               </Grid>
+
+               <Grid item xs={1}>
+                  <AppDateField
+                     views={
+                        exchangeRateSource === 'Database'
+                           ? ['month', 'year']
+                           : ['day', 'month', 'year']
+                     }
+                     label={t('filters.fromDate')}
+                     name="fromDate"
+                     onChange={(e, value) =>
+                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
+                     }
+                     value={dataFilter.fromDate.value}
+                     maxDate={
+                        dataFilter.toDate.value == ''
+                           ? `${currentYear}-${currentMonth}`
+                           : dataFilter.toDate.value
+                     }
+                     sx={{ marginTop: 1 }}
+                  />
+               </Grid>
+               <Grid item xs={1}>
+                  <AppDateField
+                     views={
+                        exchangeRateSource === 'Database'
+                           ? ['month', 'year']
+                           : ['day', 'month', 'year']
+                     }
+                     label={t('filters.toDate')}
+                     name="toDate"
+                     onChange={(e, value) =>
+                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
+                     }
+                     value={dataFilter.toDate.value}
+                     maxDate={`${currentYear}-${currentMonth}`}
+                     sx={{ marginTop: 1 }}
+                  />
                </Grid>
 
                <CurrencyReport
