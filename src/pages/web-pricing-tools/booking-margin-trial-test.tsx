@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useState, useTransition } from 'rea
 import { centerHeaderColumn, formatNumbericColumn } from '@/utils/columnProperties';
 import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
-import { bookingMarginTrialTestStore, commonStore } from '@/store/reducers';
+import { bookingMarginTrialTestStore, commonStore, importFailureStore } from '@/store/reducers';
 import moment from 'moment-timezone';
 
 import Grid from '@mui/material/Grid';
@@ -56,6 +56,8 @@ import { useTranslation } from 'react-i18next';
 import BuildIcon from '@mui/icons-material/Build';
 import PersonIcon from '@mui/icons-material/Person';
 import { styled } from '@mui/material/styles';
+import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
+import { extractTextInParentheses } from '@/utils/getString';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -119,6 +121,8 @@ export default function Shipment() {
    const [loading, setLoading] = useState(false);
    const [loadingTable, setLoadingTable] = useState(false);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
+   // import failure dialog
+   const importFailureDialogDataFilter = useSelector(importFailureStore.selectDataFilter);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -481,6 +485,17 @@ export default function Shipment() {
    const handleWhenImportSuccessfully = (res) => {
       //show message
       dispatch(commonStore.actions.setSuccessMessage(res.data.message));
+      dispatch(
+         importFailureStore.actions.setDataFilter({
+            ...importFailureDialogDataFilter,
+            fileUUID: res.data.data,
+         })
+      );
+      dispatch(
+         importFailureStore.actions.setImportFailureDialogState({
+            overview: extractTextInParentheses(res.data.message),
+         })
+      );
 
       dispatch(bookingMarginTrialTestStore.sagaGetList());
    };
@@ -850,6 +865,7 @@ export default function Shipment() {
          >
             <CircularProgress color="inherit" />
          </Backdrop>
+         <LogImportFailureDialog />
       </>
    );
 }
