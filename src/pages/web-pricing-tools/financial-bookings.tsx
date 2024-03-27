@@ -42,6 +42,7 @@ import { When } from 'react-if';
 import { UserInfoContext } from '@/provider/UserInfoContext';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import bookingApi from '@/api/booking.api';
+import dealerApi from '@/api/dealer.api';
 
 import { GetServerSidePropsContext } from 'next';
 import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
@@ -329,6 +330,24 @@ export default function Booking() {
          });
    };
 
+   const handleUploadFileDealer = async (file) => {
+      let formData = new FormData();
+      formData.append('file', file);
+
+      dealerApi
+         .importDataDealer(formData)
+         .then((response) => {
+            setLoading(false);
+            handleWhenImportSuccessfully(response);
+         })
+         .catch((error) => {
+            // stop spiner
+            setLoading(false);
+            //show message
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   };
+
    const handleWhenImportSuccessfully = (res) => {
       //show message
       dispatch(commonStore.actions.setSuccessMessage(res.data.message));
@@ -341,6 +360,16 @@ export default function Booking() {
          // resert message
          setLoading(true);
          handleUploadFile(uploadedFile[0]);
+      } else {
+         dispatch(commonStore.actions.setErrorMessage('No file choosed'));
+      }
+   };
+
+   const handleImportDealer = () => {
+      if (uploadedFile.length > 0) {
+         // resert message
+         setLoading(true);
+         handleUploadFileDealer(uploadedFile[0]);
       } else {
          dispatch(commonStore.actions.setErrorMessage('No file choosed'));
       }
@@ -774,6 +803,16 @@ export default function Booking() {
                         sx={{ width: '100%', height: 24 }}
                      >
                         {t('button.import')}
+                     </Button>
+                  </Grid>
+
+                  <Grid item xs={1}>
+                     <Button
+                        variant="contained"
+                        onClick={handleImportDealer}
+                        sx={{ width: '100%', height: 24 }}
+                     >
+                        {t('Import Dealer')}
                      </Button>
                   </Grid>
 
