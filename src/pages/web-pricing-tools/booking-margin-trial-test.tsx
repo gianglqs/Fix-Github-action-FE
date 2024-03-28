@@ -679,6 +679,7 @@ export default function Shipment() {
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
                      }
                      value={dataFilter?.fromDate}
+                     maxDate={new Date().toISOString().slice(0, 10)}
                   />
                </Grid>
                <Grid item xs={2}>
@@ -690,6 +691,7 @@ export default function Shipment() {
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
                      }
                      value={dataFilter?.toDate}
+                     maxDate={new Date().toISOString().slice(0, 10)}
                   />
                </Grid>
                <Grid item xs={1}>
