@@ -416,11 +416,7 @@ export default function ExchangeRate() {
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
                      }
                      value={dataFilter.fromDate.value}
-                     maxDate={
-                        dataFilter.toDate.value == ''
-                           ? `${currentYear}-${currentMonth}`
-                           : dataFilter.toDate.value
-                     }
+                     maxDate={new Date().toISOString().slice(0, 10)}
                      sx={{ marginTop: 1 }}
                   />
                </Grid>
@@ -437,7 +433,7 @@ export default function ExchangeRate() {
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
                      }
                      value={dataFilter.toDate.value}
-                     maxDate={`${currentYear}-${currentMonth}`}
+                     maxDate={new Date().toISOString().slice(0, 10)}
                      sx={{ marginTop: 1 }}
                   />
                </Grid>
