@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useEffect } from 'react';
+import '@fontsource/poppins';
 
 const Custom404Page = () => {
    const router = useRouter();
@@ -13,6 +14,10 @@ const Custom404Page = () => {
    useEffect(() => {
       document.title = '404 - Page Not Found'; // Set the page title
    }, []);
+   const logo = require('src/pages/404-page.png');
+   const fonts = {
+      body: 'Poppins, sans-serif',
+   };
 
    return (
       <section
@@ -21,30 +26,35 @@ const Custom404Page = () => {
             alignItems: 'center',
             justifyContent: 'center',
             minHeight: '100vh',
-            paddingLeft: '205px',
          }}
       >
-         <div style={{ width: '50%', textAlign: 'left', marginRight: '2rem' }}>
+         <div style={{ width: '50%', textAlign: 'center' }}>
+            <img alt="logo" style={{ width: 600, alignItems: 'center' }} src={String(logo)} />
             <h1
                style={{
-                  fontSize: 36,
-                  fontWeight: 600,
-                  color: '#2d2b2b',
-                  marginTop: '2 rem',
-                  fontFamily: 'monospace',
+                  fontSize: '60px',
+                  fontWeight: '500',
+                  color: '#606060',
+                  fontFamily: 'Poppins',
+                  alignItems: 'center',
+                  lineHeight: '72px',
+                  marginTop: '10px',
                }}
             >
-               Uh Ohh!
+               Under maintenance
             </h1>
             <p
                style={{
-                  fontSize: 20,
-                  marginTop: '1rem',
-                  lineHeight: 1.5,
-                  fontFamily: 'monospace',
+                  fontSize: '20px',
+                  fontWeight: '400',
+                  lineHeight: '30px',
+                  alignItems: 'center',
+                  fontFamily: 'Poppins',
+                  color: '#777777',
+                  marginTop: '-30px',
                }}
             >
-               We couldn't find the page that you are looking for :(
+               Sorry, the page you are looking for doesn't exist or has been moved.
             </p>
             <div>
                <button
@@ -52,6 +62,8 @@ const Custom404Page = () => {
                      padding: '12px 20px',
                      fontSize: '18px',
                      backgroundColor: '#333',
+                     fontWeight: '400',
+                     lineHeight: '30px',
                      color: '#fff',
                      border: 'none',
                      borderRadius: '4px',
@@ -60,7 +72,7 @@ const Custom404Page = () => {
                      textDecoration: 'none',
                      position: 'relative',
                      overflow: 'hidden',
-                     fontFamily: 'monospace',
+                     fontFamily: 'Poppins',
                   }}
                   onClick={navigateBack}
                >
@@ -73,6 +85,8 @@ const Custom404Page = () => {
                         padding: '12px 20px',
                         fontSize: '18px',
                         backgroundColor: '#e7a800',
+                        fontWeight: '400',
+                        lineHeight: '30px',
                         color: '#000',
                         border: 'none',
                         borderRadius: '4px',
@@ -83,7 +97,7 @@ const Custom404Page = () => {
                         overflow: 'hidden',
                         marginLeft: 20,
                         marginTop: 10,
-                        fontFamily: 'monospace',
+                        fontFamily: 'Poppins',
                      }}
                   >
                      Home Page
@@ -91,16 +105,6 @@ const Custom404Page = () => {
                </Link>
             </div>
          </div>
-
-         <img
-            // src="https://github.com/smthari/404-page-using-html-css/blob/Starter/Images/404.png?raw=true"
-            src="https://github.com/CodMark/404-error-page-not-found-using-html-amd-css/blob/main/gifs.gif?raw=true"
-            alt="home image"
-            style={{
-               height: '80vh',
-               animation: 'MoveUpDown 2s ease-in-out infinite alternate-reverse both',
-            }}
-         />
       </section>
    );
 };
