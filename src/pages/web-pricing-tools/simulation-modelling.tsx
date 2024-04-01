@@ -734,10 +734,10 @@ export default function Adjustment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.adjustedFX')} ('000)
+                           {t('table.adjustedFX')} %
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           $ {formatNumber(listTotalRow[0]?.manualAdjFreight)}
+                           {formatNumberPercentage(listTotalRow[0]?.manualAdjFX)}
                         </Typography>
                      </div>
                   </Paper>
