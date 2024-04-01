@@ -18,6 +18,7 @@
       "dataScraping": "Data Scraping",
       "volumeDiscountAnalysis": "Volume Discount Analysis",
       "bookingMarginTrialTest": "Booking Margin Trial Test",
+      "priceVolumeSensitivity": "Price Volume Sensitivity"
       "error404": "Error 404"
    },
 
@@ -157,7 +158,8 @@
       "margin": "Margin",
       "type": "Type",
       "remark": "Remark",
-      "cost": "Cost"
+      "cost": "Cost",
+      "volume": "Volume"
    },
 
    "competitors": {
@@ -224,6 +226,22 @@
       "adjustedStandardMargin": "Adjusted Standard Margin",
       "grossProfit": "Gross Profit",
       "volume": "Volume"
+   },
+   "priceVolumeSensitivity": {
+      "withMarginVolumeRecovery": "With margin volume recovery",
+      "withoutMarginVolumeRecovery": "Without margin volume recovery",
+      "COGS": "COGS",
+      "margin": "Margin",
+      "margin%": "% Margin",
+      "newDealerNetASP": "New Dealer Net(ASP)",
+      "unitVolumeOffset": "Unit Volume Offset",
+      "newVolume": "Volume After Surcharge",
+      "newRevenue": "Revenue After Surcharge",
+      "newCOGS": "COGS After Surcharge",
+      "newMargin": "Margin After Surcharge %",
+      "newMargin%": "% Margin After Surcharge",
+      "revenue": "Revenue",
+      "discount": "% Discount"
    },
 
    "yes": "Yes",

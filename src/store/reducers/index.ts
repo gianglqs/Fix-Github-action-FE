@@ -14,3 +14,4 @@ export * as historicalImportStore from './historicalImport.reducer';
 export * as volumeDiscountStore from './volumeDiscount.reducer';
 export * as bookingMarginTrialTestStore from './bookingMarginTrialTest.reducer';
 export * as importFailureStore from './importFailure.reducer';
+export * as priceVolumeSensitivityStore from './priceVolumeSensitivity.reducer';
