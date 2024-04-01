@@ -285,12 +285,14 @@ export default function Indicators() {
    const handleImportFile = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
+      setLoading(true);
 
       indicatorApi
          .importIndicatorFile(formData)
          .then(() => {
             setLoading(false);
-            dispatch(commonStore.actions.setSuccessMessage('Import successfully'));
+            dispatch(commonStore.actions.setSuccessMessage('Import succesfully'));
+
             handleFilterIndicator();
             handleFilterCompetitiveLandscape();
          })
@@ -303,7 +305,7 @@ export default function Indicators() {
    const handleUploadForecastFile = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
-
+      setLoading(true);
       indicatorApi
          .importForecastFile(formData)
          .then(() => {

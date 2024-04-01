@@ -17,7 +17,8 @@
       "exchangeRates": "Exchange Rates",
       "dataScraping": "Data Scraping",
       "volumeDiscountAnalysis": "Volume Discount Analysis",
-      "bookingMarginTrialTest": "Booking Margin Trial Test"
+      "bookingMarginTrialTest": "Booking Margin Trial Test",
+      "error404": "Error 404"
    },
 
    "user": {
