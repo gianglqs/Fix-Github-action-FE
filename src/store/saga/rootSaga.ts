@@ -14,6 +14,7 @@ import historicalImportSaga from './historicalImportSaga';
 import volumeDiscountSaga from './volumeDiscountSaga';
 import bookingMarginTrialTestSaga from './bookingMarginTrialTestSaga';
 import importFailureSaga from './importFailureSaga';
+import priceVolumeSensitivitySaga from './priceVolumeSensitivitySaga';
 
 function* rootSaga() {
    yield fork(userSaga);
@@ -31,6 +32,7 @@ function* rootSaga() {
    yield fork(volumeDiscountSaga);
    yield fork(bookingMarginTrialTestSaga);
    yield fork(importFailureSaga);
+   yield fork(priceVolumeSensitivitySaga);
 }
 
 export default rootSaga;

@@ -17,7 +17,8 @@
       "exchangeRates": "Tỷ giá tiền tệ",
       "dataScraping": "Thu nhập dữ liệu",
       "volumeDiscountAnalysis": "Phân tích số lượng giảm giá",
-      "bookingMarginTrialTest": "So Sánh Lợi Nhuận"
+      "bookingMarginTrialTest": "So Sánh Lợi Nhuận",
+      "priceVolumeSensitivity": "Tương quan giá và số lượng"
    },
 
    "user": {
@@ -150,7 +151,8 @@
       "fileName": "Tên file",
       "importAt": "Được nhập ở",
       "importBy": "Được nhập bởi",
-      "size": "Kích thước"
+      "size": "Kích thước",
+      "volume": "Số lượng"
    },
 
    "competitors": {
@@ -217,6 +219,23 @@
       "adjustedStandardMargin": "Lợi nhuận cơ bản điều chỉnh",
       "grossProfit": "Lợi nhuận gộp",
       "volume": "Số lượng"
+   },
+
+   "priceVolumeSensitivity": {
+      "withMarginVolumeRecovery": "Phục hồi khối lượng ký quỹ",
+      "withoutMarginVolumeRecovery": "Không phục hồi khối lượng ký quỹ",
+      "COGS": "Giá vốn hàng bán",
+      "margin": "Lợi nhuận",
+      "margin%": "% Lợi nhuận",
+      "newDealerNetASP": "Giá bán mới(ASP)",
+      "unitVolumeOffset": "Đơn vị bù đắp số lượng",
+      "newVolume": "Số lượng sau giảm giá",
+      "newRevenue": "Doanh thu sau giảm giá",
+      "newCOGS": "Giá vốn hàng bán sau giảm giá",
+      "newMargin": "Lợi nhuận sau giảm giá $",
+      "newMargin%": "% Lợi nhuận sau giảm giá",
+      "revenue": "Doanh thu",
+      "discount": "% Giảm giá"
    },
 
    "yes": "Có",

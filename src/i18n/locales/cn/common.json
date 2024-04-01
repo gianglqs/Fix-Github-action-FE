@@ -17,7 +17,8 @@
       "exchangeRates": "汇率",
       "dataScraping": "数据抓取",
       "volumeDiscountAnalysis": "数量折扣分析",
-      "bookingMarginTrialTest": "比较利润"
+      "bookingMarginTrialTest": "比较利润",
+      "priceVolumeSensitivity": "价格量敏感度"
    },
 
    "user": {
@@ -150,7 +151,8 @@
       "fileName": "文件名",
       "importAt": "导入时间",
       "importBy": "导入者",
-      "size": "大小"
+      "size": "大小",
+      "volume": "调整"
    },
 
    "competitors": {
@@ -218,28 +220,24 @@
       "grossProfit": "毛利润",
       "volume": "销量"
    },
-   "message": {
-      "success": {
-         "import-complete": "导入 %s 已完成（%d 个错误，%d 个警告",
-         "update_image": "更新图片成功!",
-         "totalError-totalWarning": "%d 个错误，%d 个警告"
-      },
-      "failure": {
-         "import_file": "导入失败!",
-         "missing_column": "缺少列",
-         "missing_sheet": "未找到工作表：''",
-         "blank_sheet": "工作表是空白的：''",
-         "invalid_fileName": "无效的文件名：''"
-      },
-      "warning": {
-         "not-find-country-with-code": "未找到代码为“%s”的国家/地区。 使用代码自动创建一个新国家."
-      },
-      "error": {
-         "not-find-product-with-modelCode-series": "未找到型号代码为“%s”且系列为“%s”的产品。”",
-         "not-find-Dealer-with-name": "未找到名为“%s”的经销商。",
-         "not-find-AOPMargin-with-region-series-plant-year": "未找到区域“%s”、MestaSeries“%s”、工厂“%s”和年份“%s”的 AOPMargin。"
-      }
+
+   "priceVolumeSensitivity": {
+      "withMarginVolumeRecovery": "保证金量恢复",
+      "withoutMarginVolumeRecovery": "存款量无恢复",
+      "COGS": "销售商品成本",
+      "margin": "利润",
+      "margin%": "% 利润",
+      "newDealerNetASP": "新售价(ASP)",
+      "unitVolumeOffset": "数量偏移单位",
+      "newVolume": "折扣后数量",
+      "newRevenue": "折扣后收入",
+      "newCOGS": "折扣后的商品销售成本",
+      "newMargin": "折扣后利润 $",
+      "newMargin%": "% 折扣后利润",
+      "revenue": "收入",
+      "discount": "% 折扣"
    },
+
    "yes": "是",
    "no": "否",
    "or": "或",
