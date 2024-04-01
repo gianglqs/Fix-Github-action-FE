@@ -291,13 +291,13 @@ export default function MarginAnalysis() {
          value: 'Asia',
       },
       {
-         value: 'Australia',
-      },
-      {
-         value: 'India',
-      },
-      {
          value: 'Pacific',
+      },
+      {
+         value: 'India Sub COntinent',
+      },
+      {
+         value: 'China',
       },
    ];
 
