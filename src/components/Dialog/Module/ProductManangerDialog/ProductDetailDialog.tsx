@@ -193,7 +193,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    const handleClose = () => {
       onClose();
-      setTimeout(resetData, 500);
+      setTimeout(resetData, 300);
    };
 
    // reset when CLOSE dialog
