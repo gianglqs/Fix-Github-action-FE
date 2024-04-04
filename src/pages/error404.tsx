@@ -11,6 +11,10 @@ const Custom404Page = () => {
       router.back();
    };
 
+   const navigateHomepage = () => {
+      window.location.href = '/web-pricing-tools/financial-bookings';
+   };
+
    useEffect(() => {
       document.title = '404 - Page Not Found'; // Set the page title
    }, []);
@@ -79,30 +83,29 @@ const Custom404Page = () => {
                   Go Back
                </button>
 
-               <Link href="web-pricing-tools/financial-bookings" passHref>
-                  <button
-                     style={{
-                        padding: '12px 20px',
-                        fontSize: '18px',
-                        backgroundColor: '#e7a800',
-                        fontWeight: '400',
-                        lineHeight: '30px',
-                        color: '#000',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                        textDecoration: 'none',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        marginLeft: 20,
-                        marginTop: 10,
-                        fontFamily: 'Poppins',
-                     }}
-                  >
-                     Home Page
-                  </button>
-               </Link>
+               <button
+                  style={{
+                     padding: '12px 20px',
+                     fontSize: '18px',
+                     backgroundColor: '#e7a800',
+                     fontWeight: '400',
+                     lineHeight: '30px',
+                     color: '#000',
+                     border: 'none',
+                     borderRadius: '4px',
+                     cursor: 'pointer',
+                     transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                     textDecoration: 'none',
+                     position: 'relative',
+                     overflow: 'hidden',
+                     marginLeft: 20,
+                     marginTop: 10,
+                     fontFamily: 'Poppins',
+                  }}
+                  onClick={navigateHomepage}
+               >
+                  Home Page
+               </button>
             </div>
          </div>
       </section>
