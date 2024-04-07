@@ -18,7 +18,8 @@
       "dataScraping": "数据抓取",
       "volumeDiscountAnalysis": "数量折扣分析",
       "bookingMarginTrialTest": "比较利润",
-      "priceVolumeSensitivity": "价格量敏感度"
+      "priceVolumeSensitivity": "价格量敏感度",
+      "redidualValue": "折旧值表"
    },
 
    "user": {

@@ -18,7 +18,8 @@
       "dataScraping": "Thu nhập dữ liệu",
       "volumeDiscountAnalysis": "Phân tích số lượng giảm giá",
       "bookingMarginTrialTest": "So Sánh Lợi Nhuận",
-      "priceVolumeSensitivity": "Tương quan giá và số lượng"
+      "priceVolumeSensitivity": "Tương quan giá và số lượng",
+      "redidualValue": "Bảng giá trị khấu hao"
    },
 
    "user": {

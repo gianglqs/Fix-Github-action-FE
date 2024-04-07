@@ -19,7 +19,8 @@
       "volumeDiscountAnalysis": "Volume Discount Analysis",
       "bookingMarginTrialTest": "Booking Margin Trial Test",
       "priceVolumeSensitivity": "Price Volume Sensitivity",
-      "error404": "Error 404"
+      "error404": "Error 404",
+      "residualValue": "Residual Value"
    },
 
    "user": {
@@ -74,7 +75,10 @@
       "costOfGoodSold": "Cost of Goods Sold per Unit",
       "marginPercentagePerUnit": "Margin % per Unit",
       "discountPercentagePerOneNewItem": "% Discount per 1 new Added Item",
-      "unitIncreaseLever": "Unit Increase Lever"
+      "unitIncreaseLever": "Unit Increase Lever",
+      "modelType": "Model Type",
+      "model": "Model",
+      "year": "Year"
    },
 
    "button": {

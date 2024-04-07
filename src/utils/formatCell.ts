@@ -30,3 +30,10 @@ export const formatDate = (calendar) => {
       return format(date, 'dd-MM-yyyy');
    }
 };
+
+export const formatNumberTwoPercentDigit = (num: number) => {
+   return num.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+   });
+};
