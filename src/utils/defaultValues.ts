@@ -1,3 +1,5 @@
+import { ResidualValueDataFilter } from '@/types/defaultValue';
+
 export const defaultValueFilterIndicator = {
    regions: [],
    dealers: [],
@@ -74,3 +76,11 @@ export const defaultValueFilterVolumeDiscount = {
    ocos: { value: '', error: false },
    segment: { value: '', error: false },
 };
+
+export const defaultValueFilterResidualValue = {
+   modelType: '',
+   brand: '',
+   modelCode: '',
+   year: 2,
+   price: 0,
+} as ResidualValueDataFilter;

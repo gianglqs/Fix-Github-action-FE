@@ -16,6 +16,7 @@ import volumeDiscount from './volumeDiscount.reducer';
 import bookingMarginTrialTest from './bookingMarginTrialTest.reducer';
 import importFailure from './importFailure.reducer';
 import priceVolumeSensitivity from './priceVolumeSensitivity.reducer';
+import residualValue from './residualValue.reducer';
 
 const rootReducers = combineReducers({
    [common.name]: common.reducer,
@@ -35,6 +36,7 @@ const rootReducers = combineReducers({
    [bookingMarginTrialTest.name]: bookingMarginTrialTest.reducer,
    [importFailure.name]: importFailure.reducer,
    [priceVolumeSensitivity.name]: priceVolumeSensitivity.reducer,
+   [residualValue.name]: residualValue.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;
