@@ -228,6 +228,7 @@ export default function Indicators() {
          produce(prev, (draft) => {
             if (_.includes(['regions'], field)) {
                draft[field] = option.value;
+               draft.countries = [];
             } else {
                draft[field] = option.map(({ value }) => value);
             }
