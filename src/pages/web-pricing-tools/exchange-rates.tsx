@@ -124,8 +124,9 @@ export default function ExchangeRate() {
          .then(() => {
             dispatch(commonStore.actions.setSuccessMessage('Upload Exchange Rate successfully'));
          })
-         .catch(() => {
-            dispatch(commonStore.actions.setErrorMessage('Error on uploading Exchange Rate'));
+         .catch((error) => {
+            console.log(error);
+            dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
 
