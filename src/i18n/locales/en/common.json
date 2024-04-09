@@ -245,7 +245,11 @@
       "newMargin": "Margin After Surcharge %",
       "newMargin%": "% Margin After Surcharge",
       "revenue": "Revenue",
-      "discount": "% Discount"
+      "discount": "% Discount",
+      "volumnAfterDiscount": "Volume After Discount",
+      "COGSAfterDiscount": "COGS After Discount",
+      "marginAfterDiscount": "Margin After Discount",
+      "%MarginAfterDiscount": "% Margin After Discount"
    },
 
    "yes": "Yes",
