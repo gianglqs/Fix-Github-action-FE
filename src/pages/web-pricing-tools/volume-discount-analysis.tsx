@@ -503,7 +503,7 @@ export default function VolumeDiscountAnalysis() {
                   <Button
                      variant="contained"
                      onClick={handleCalculateVolumeDiscount}
-                     sx={{ width: '100%', height: 24 }}
+                     sx={{ width: '120%', height: 24 }}
                   >
                      {t('button.calculateData')}
                   </Button>
@@ -512,7 +512,7 @@ export default function VolumeDiscountAnalysis() {
                   <Button
                      variant="contained"
                      onClick={handleClearAllFilterTable}
-                     sx={{ width: '100%', height: 24 }}
+                     sx={{ width: '120%', marginLeft: 3, height: 24 }}
                   >
                      {t('button.clearCalculators')}
                   </Button>

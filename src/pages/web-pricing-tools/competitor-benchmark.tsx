@@ -228,6 +228,7 @@ export default function Indicators() {
          produce(prev, (draft) => {
             if (_.includes(['regions'], field)) {
                draft[field] = option.value;
+               draft.countries = [];
             } else {
                draft[field] = option.map(({ value }) => value);
             }
@@ -324,13 +325,13 @@ export default function Indicators() {
    const columns = [
       {
          field: 'competitorName',
-         flex: 1.5,
+         flex: 0.8,
          headerName: t('competitors.competitorName'),
       },
 
       {
          field: 'region',
-         flex: 0.5,
+         flex: 0.7,
          headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.country.region.regionName}</span>;
@@ -338,7 +339,7 @@ export default function Indicators() {
       },
       {
          field: 'plant',
-         flex: 0.8,
+         flex: 0.6,
          headerName: t('table.plant'),
       },
       {
@@ -351,13 +352,13 @@ export default function Indicators() {
       },
       {
          field: 'series',
-         flex: 0.5,
+         flex: 0.6,
          headerName: t('table.series'),
       },
 
       {
          field: 'actual',
-         flex: 0.5,
+         flex: 0.6,
          headerName: `${currentYear - 1} Actual`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -366,7 +367,7 @@ export default function Indicators() {
       },
       {
          field: 'aopf',
-         flex: 0.5,
+         flex: 0.6,
          headerName: `${currentYear} AOPF`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -375,7 +376,7 @@ export default function Indicators() {
       },
       {
          field: 'lrff',
-         flex: 0.5,
+         flex: 0.6,
          headerName: `${currentYear + 1} LRFF`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -446,7 +447,7 @@ export default function Indicators() {
 
       {
          field: 'variancePercentage',
-         flex: 1,
+         flex: 0.6,
          headerName: `${t('competitors.variancePercentage')}`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -947,7 +948,7 @@ export default function Indicators() {
                            lineHeight: 1.2,
                         },
                      }}
-                     columnHeaderHeight={70}
+                     columnHeaderHeight={100}
                      hideFooter
                      disableColumnMenu
                      slots={{

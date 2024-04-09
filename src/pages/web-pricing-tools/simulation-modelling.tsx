@@ -193,7 +193,7 @@ export default function Adjustment() {
 
       {
          field: 'Plant',
-         flex: 0.6,
+         flex: 0.5,
          headerName: t('table.plant'),
          renderCell(params) {
             return <CellText value={params.row.plant} />;
@@ -209,7 +209,7 @@ export default function Adjustment() {
       },
       {
          field: 'series',
-         flex: 0.4,
+         flex: 0.5,
          headerName: t('table.series'),
          renderCell(params) {
             return <CellText value={params.row.metaSeries} />;
@@ -225,7 +225,7 @@ export default function Adjustment() {
       },
       {
          field: 'noOfOrder',
-         flex: 0.3,
+         flex: 0.5,
          headerName: t('table.numberOfOrders'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -236,7 +236,7 @@ export default function Adjustment() {
       },
       {
          field: 'additionalVolume',
-         flex: 0.5,
+         flex: 0.6,
          headerName: t('table.additionalUnits'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -378,7 +378,7 @@ export default function Adjustment() {
 
       {
          field: 'Plant',
-         flex: 0.6,
+         flex: 0.5,
          headerName: 'Plant',
          renderCell(params) {
             return <span></span>;
@@ -386,7 +386,7 @@ export default function Adjustment() {
       },
       {
          field: 'truckClass',
-         flex: 0.6,
+         flex: 0.3,
          headerName: 'Class',
          renderCell(params) {
             return <span>{params.row.clazz}</span>;
@@ -394,7 +394,7 @@ export default function Adjustment() {
       },
       {
          field: 'series',
-         flex: 0.4,
+         flex: 0.6,
          headerName: 'Series',
          renderCell(params) {
             return <span>{params.row.metaSeries}</span>;
@@ -410,7 +410,7 @@ export default function Adjustment() {
       },
       {
          field: 'noOfOrder',
-         flex: 0.3,
+         flex: 0.5,
          headerName: 'No of Orders',
          ...formatNumbericColumn,
       },
@@ -1040,7 +1040,7 @@ export default function Adjustment() {
                   <Button
                      variant="contained"
                      onClick={handleCalculator}
-                     sx={{ width: '100%', height: 24 }}
+                     sx={{ width: '100%', height: 24, minWidth: 110 }}
                   >
                      {t('button.calculateData')}
                   </Button>
@@ -1074,7 +1074,7 @@ export default function Adjustment() {
                      }}
                      hideFooter
                      disableColumnMenu
-                     columnHeaderHeight={70}
+                     columnHeaderHeight={90}
                      rowHeight={30}
                      slots={{
                         toolbar: GridToolbar,

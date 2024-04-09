@@ -166,7 +166,7 @@ export default function Booking() {
    const columns = [
       {
          field: 'orderNo',
-         flex: 0.4,
+         flex: 0.5,
          headerName: t('table.order#'),
       },
       {
@@ -200,7 +200,7 @@ export default function Booking() {
       },
       {
          field: 'dealerName',
-         flex: 1.2,
+         flex: 0.6,
          headerName: t('table.dealerName'),
          renderCell(params) {
             return <span>{params.row.dealer?.name}</span>;
@@ -208,7 +208,7 @@ export default function Booking() {
       },
       {
          field: 'Plant',
-         flex: 0.6,
+         flex: 0.5,
          headerName: t('table.plant'),
          renderCell(params) {
             return <span>{params.row.product?.plant}</span>;
@@ -216,7 +216,7 @@ export default function Booking() {
       },
       {
          field: 'truckClass',
-         flex: 0.6,
+         flex: 0.5,
          headerName: t('table.class'),
          renderCell(params) {
             return <span>{params.row.product?.clazz?.clazzName}</span>;
@@ -224,7 +224,7 @@ export default function Booking() {
       },
       {
          field: 'series',
-         flex: 0.4,
+         flex: 0.5,
          headerName: t('table.series'),
          renderCell(params) {
             return <span>{params.row.series}</span>;
@@ -240,14 +240,14 @@ export default function Booking() {
       },
       {
          field: 'quantity',
-         flex: 0.3,
+         flex: 0.5,
          headerName: t('table.qty'),
          ...formatNumbericColumn,
       },
 
       {
          field: 'dealerNet',
-         flex: 0.8,
+         flex: 0.6,
          headerName: `${t('table.dealerNet')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -257,7 +257,7 @@ export default function Booking() {
       },
       {
          field: 'dealerNetAfterSurcharge',
-         flex: 0.8,
+         flex: 0.7,
          headerName: `${t('table.dealerNetAfterSurcharge')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -267,7 +267,7 @@ export default function Booking() {
       },
       {
          field: 'totalCost',
-         flex: 0.8,
+         flex: 0.6,
          headerName: `${t('table.totalCost')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -853,7 +853,7 @@ export default function Booking() {
                            lineHeight: 1.2,
                         },
                      }}
-                     columnHeaderHeight={60}
+                     columnHeaderHeight={90}
                      rowHeight={30}
                      slots={{
                         toolbar: GridToolbar,
