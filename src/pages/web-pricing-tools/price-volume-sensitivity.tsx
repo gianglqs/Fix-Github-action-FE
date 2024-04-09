@@ -73,7 +73,6 @@ export default function PriceVolumeSensitivity() {
    const listExchangeRate = useSelector(priceVolumeSensitivityStore.selectExchangeRateList);
 
    const cacheDiscountPercent = useSelector(priceVolumeSensitivityStore.selectDiscountPercent);
-   const [isDiscountChanged, setIsDiscountChanged] = useState(false);
    const [discountPercent, setDiscountPercent] = useState(cacheDiscountPercent);
    const [showColumnSeries, setShowColumnSeries] = useState(false);
 
@@ -273,11 +272,10 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newVolume',
          flex: 0.3,
-         headerName: `${t('priceVolumeSensitivity.newMargin')}`,
-         // headerName: isDiscountChanged
-         //    ? `${t('priceVolumeSensitivity.volumnAfterDiscount')}`
-         //    : `${t('priceVolumeSensitivity.volumnAfterDiscount')}`,
-
+         headerName:
+            discountPercent !== 0
+               ? `${t('priceVolumeSensitivity.volumnAfterDiscount')}`
+               : `${t('priceVolumeSensitivity.newVolume')}`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -287,7 +285,10 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newRevenue',
          flex: 0.4,
-         headerName: `${t('priceVolumeSensitivity.newRevenue')} ('000$)`,
+         headerName:
+            discountPercent !== 0
+               ? `${t('priceVolumeSensitivity.RevenueAfterterDiscount')} ('000$)`
+               : `${t('priceVolumeSensitivity.newRevenue')}  ('000$)`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -297,7 +298,10 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newCOGS',
          flex: 0.4,
-         headerName: `${t('priceVolumeSensitivity.newCOGS')} ('000$)`,
+         headerName:
+            discountPercent !== 0
+               ? `${t('priceVolumeSensitivity.COGSAfterDiscount')} ('000$)`
+               : `${t('priceVolumeSensitivity.newCOGS')}  ('000$)`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -307,21 +311,14 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newMargin',
          flex: 0.4,
-         headerName: `${t('priceVolumeSensitivity.newMargin')} ('000$)`,
+         headerName:
+            discountPercent !== 0
+               ? `${t('priceVolumeSensitivity.marginAfterDiscount')} ('000$)`
+               : `${t('priceVolumeSensitivity.newMargin')}  ('000$)`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.newMargin)}</span>;
-         },
-      },
-      {
-         field: 'newMargin%',
-         flex: 0.4,
-         headerName: `${t('priceVolumeSensitivity.newMargin%')}`,
-         cellClassName: 'highlight-cell',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumberPercentage(params?.row.newMarginPercent * 100)}</span>;
          },
       },
    ];
@@ -412,7 +409,10 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newVolume',
          flex: 0.3,
-         headerName: `${t('priceVolumeSensitivity.newVolume')}`,
+         headerName:
+            discountPercent !== 0
+               ? `${t('priceVolumeSensitivity.volumnAfterDiscount')}`
+               : `${t('priceVolumeSensitivity.newVolume')}`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -422,7 +422,10 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newRevenue',
          flex: 0.4,
-         headerName: `${t('priceVolumeSensitivity.newRevenue')} ('000$)`,
+         headerName:
+            discountPercent !== 0
+               ? `${t('priceVolumeSensitivity.RevenueAfterterDiscount')} ('000$)`
+               : `${t('priceVolumeSensitivity.newRevenue')}  ('000$)`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -432,7 +435,10 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newCOGS',
          flex: 0.4,
-         headerName: `${t('priceVolumeSensitivity.newCOGS')} ('000$)`,
+         headerName:
+            discountPercent !== 0
+               ? `${t('priceVolumeSensitivity.COGSAfterDiscount')} ('000$)`
+               : `${t('priceVolumeSensitivity.newCOGS')}  ('000$)`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -442,7 +448,10 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newMargin',
          flex: 0.4,
-         headerName: `${t('priceVolumeSensitivity.newMargin')} ('000$)`,
+         headerName:
+            discountPercent !== 0
+               ? `${t('priceVolumeSensitivity.marginAfterDiscount')} ('000$)`
+               : `${t('priceVolumeSensitivity.newMargin')}  ('000$)`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -452,7 +461,10 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newMargin%',
          flex: 0.4,
-         headerName: `${t('priceVolumeSensitivity.newMargin%')}`,
+         headerName:
+            discountPercent !== 0
+               ? `${t('priceVolumeSensitivity.marginAfterDiscount%')}`
+               : `${t('priceVolumeSensitivity.newMargin%')}`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -660,7 +672,6 @@ export default function PriceVolumeSensitivity() {
                         value={discountPercent}
                         onChange={(e) => {
                            setDiscountPercent(Number(e.value));
-                           setIsDiscountChanged(true);
                         }}
                         name="costAdjPercentage"
                         label={`${t('priceVolumeSensitivity.discount')}`}

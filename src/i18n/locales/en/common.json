@@ -247,9 +247,10 @@
       "revenue": "Revenue",
       "discount": "% Discount",
       "volumnAfterDiscount": "Volume After Discount",
+      "RevenueAfterterDiscount": "Revenue Afterter Discount",
       "COGSAfterDiscount": "COGS After Discount",
       "marginAfterDiscount": "Margin After Discount",
-      "%MarginAfterDiscount": "% Margin After Discount"
+      "marginAfterDiscount%": "% Margin After Discount"
    },
 
    "yes": "Yes",
