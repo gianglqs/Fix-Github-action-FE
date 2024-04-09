@@ -391,7 +391,7 @@ export default function PriceVolumeSensitivity() {
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params?.row.newDN * 100)}</span>;
+            return <span>{formatNumber(params?.row.newDN * 1000)}</span>;
          },
       },
       {
