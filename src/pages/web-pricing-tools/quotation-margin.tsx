@@ -204,37 +204,37 @@ export default function MarginAnalysis() {
    const columns = [
       {
          field: 'quoteNumber',
-         flex: 0.8,
+         flex: 0.5,
          headerName: 'Quote Number',
          headerAlign: 'center',
          align: 'center',
       },
       {
          field: 'type',
-         flex: 0.8,
+         flex: 0.3,
          headerName: '#',
          headerAlign: 'center',
          align: 'center',
       },
       {
          field: 'modelCode',
-         flex: 0.8,
+         flex: 0.5,
          headerName: t('table.models'),
          align: 'left',
       },
       {
          field: 'optionCode',
-         flex: 0.8,
+         flex: 0.4,
          headerName: t('table.partNumber'),
       },
       {
          field: 'series',
-         flex: 0.8,
+         flex: 0.4,
          headerName: t('table.series'),
       },
       {
          field: 'plant',
-         flex: 0.8,
+         flex: 0.3,
          headerName: t('table.plant'),
       },
       {
@@ -247,7 +247,7 @@ export default function MarginAnalysis() {
       },
       {
          field: 'manufacturingCost',
-         flex: 0.8,
+         flex: 0.7,
          headerName: t('quotationMargin.manufacturingCost'),
          headerAlign: 'right',
          align: 'right',
@@ -262,7 +262,7 @@ export default function MarginAnalysis() {
       },
       {
          field: 'isSPED',
-         flex: 0.8,
+         flex: 0.6,
          headerName: 'SPED',
          headerAlign: 'center',
          align: 'center',

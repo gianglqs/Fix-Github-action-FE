@@ -190,7 +190,7 @@ export default function Shipment() {
    const columns: GridColDef[] = [
       {
          field: 'orderNo',
-         flex: 0.4,
+         flex: 0.5,
          headerName: t('table.order#'),
          renderCell(params) {
             return <span>{params.row.booking.orderNo}</span>;
@@ -198,7 +198,7 @@ export default function Shipment() {
       },
       {
          field: 'series',
-         flex: 0.3,
+         flex: 0.5,
          headerName: t('table.series'),
          renderCell(params) {
             return <span>{params.row.booking.series}</span>;
@@ -230,7 +230,7 @@ export default function Shipment() {
       },
       {
          field: 'region',
-         flex: 0.4,
+         flex: 0.5,
          headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.booking.country?.region?.regionName}</span>;
@@ -238,7 +238,7 @@ export default function Shipment() {
       },
       {
          field: 'date',
-         flex: 0.5,
+         flex: 0.6,
          headerName: t('table.createAt'),
          cellClassName: 'highlight-cell',
          headerClassName: 'pricing-team',
@@ -408,7 +408,7 @@ export default function Shipment() {
       },
       {
          field: 'remark',
-         flex: 0.9,
+         flex: 0.4,
          ...centerHeaderColumn,
          headerName: t('table.remark'),
          renderCell(params) {

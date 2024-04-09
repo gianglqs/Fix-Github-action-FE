@@ -186,9 +186,11 @@ export default function PriceVolumeSensitivity() {
          field: 'series',
          flex: 0.2,
          ...centerHeaderColumn,
-         headerName: t('table.series'),
+         headerName: `${t('table.series')}`,
+
+         ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{params.row.series}</span>;
+            return <span>{params?.row.series}</span>;
          },
       },
 
@@ -329,7 +331,7 @@ export default function PriceVolumeSensitivity() {
 
       {
          field: 'volume',
-         flex: 0.2,
+         flex: 0.3,
          ...centerHeaderColumn,
          headerName: `${t('table.volume')}`,
          ...formatNumbericColumn,
@@ -337,7 +339,7 @@ export default function PriceVolumeSensitivity() {
 
       {
          field: 'revenue',
-         flex: 0.4,
+         flex: 0.3,
          headerName: `${t('priceVolumeSensitivity.revenue')} ('000$)`,
 
          ...formatNumbericColumn,
@@ -704,7 +706,7 @@ export default function PriceVolumeSensitivity() {
                            lineHeight: 1.2,
                         },
                      }}
-                     columnHeaderHeight={60}
+                     columnHeaderHeight={70}
                      slots={{
                         toolbar: GridToolbar,
                      }}

@@ -157,7 +157,7 @@ export default function Shipment() {
    const columns = [
       {
          field: 'orderNo',
-         flex: 0.4,
+         flex: 0.5,
          headerName: t('table.order#'),
       },
       {
@@ -175,7 +175,7 @@ export default function Shipment() {
       },
       {
          field: 'region',
-         flex: 0.3,
+         flex: 0.5,
          headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.country?.region?.regionName}</span>;
@@ -207,7 +207,7 @@ export default function Shipment() {
       },
       {
          field: 'dealerName',
-         flex: 1.2,
+         flex: 0.6,
          headerName: t('table.dealerName'),
          renderCell(params) {
             return <span>{params.row.dealer?.name}</span>;
@@ -215,7 +215,7 @@ export default function Shipment() {
       },
       {
          field: 'series',
-         flex: 0.4,
+         flex: 0.5,
          headerName: t('table.series'),
          renderCell(params) {
             return <span>{params.row.series}</span>;
@@ -231,14 +231,14 @@ export default function Shipment() {
       },
       {
          field: 'quantity',
-         flex: 0.2,
+         flex: 0.6,
          headerName: t('table.qty'),
          ...formatNumbericColumn,
       },
 
       {
          field: 'dealerNet',
-         flex: 0.8,
+         flex: 0.6,
          headerName: `${t('table.dealerNet')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -248,7 +248,7 @@ export default function Shipment() {
       },
       {
          field: 'dealerNetAfterSurcharge',
-         flex: 0.8,
+         flex: 0.6,
          headerName: `${t('table.dealerNetAfterSurcharge')} ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -257,7 +257,7 @@ export default function Shipment() {
       },
       {
          field: 'totalCost',
-         flex: 0.8,
+         flex: 0.6,
          headerName: `${t('table.totalActualCost')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -267,7 +267,7 @@ export default function Shipment() {
       },
       {
          field: 'marginAfterSurcharge',
-         flex: 0.8,
+         flex: 0.7,
          headerName: `${t('table.marginAfterSurcharge')} ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -850,7 +850,7 @@ export default function Shipment() {
                            lineHeight: 1.2,
                         },
                      }}
-                     columnHeaderHeight={60}
+                     columnHeaderHeight={90}
                      slots={{
                         toolbar: GridToolbar,
                      }}

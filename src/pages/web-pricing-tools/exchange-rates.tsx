@@ -368,7 +368,7 @@ export default function ExchangeRate() {
 
                      <Button
                         variant="contained"
-                        sx={{ width: '45%', height: 24, minWidth: 100 }}
+                        sx={{ width: '55%', marginLeft: 1, height: 24, minWidth: 100 }}
                         onClick={handleClearAllReports}
                      >
                         {t('button.clearReports')}
