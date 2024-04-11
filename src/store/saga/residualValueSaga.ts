@@ -51,27 +51,25 @@ function* fetchAllInitDataFilter() {
 
    yield put(residualValueStore.actions.setInitDataFilterModelCode(dataModelCodeFilter));
 
-   if (dataFilter.dataFilter.modelCode) {
-      const residualValueData = yield* call(
-         residualValueApi.getListResidualValue,
-         dataFilter.dataFilter.modelCode
-      );
-      yield put(
-         residualValueStore.actions.setListResidualValue(
-            JSON.parse(String(residualValueData.data)).listResidualValue
-         )
-      );
-      yield put(
-         residualValueStore.actions.setServerTimeZone(
-            JSON.parse(String(residualValueData.data)).serverTimeZone
-         )
-      );
-      yield put(
-         residualValueStore.actions.setLatestUpdatedTime(
-            JSON.parse(String(residualValueData.data)).latestUpdatedTime
-         )
-      );
-   }
+   const residualValueData = yield* call(
+      residualValueApi.getListResidualValue,
+      dataFilter.dataFilter.modelCode
+   );
+   yield put(
+      residualValueStore.actions.setListResidualValue(
+         JSON.parse(String(residualValueData.data)).listResidualValue
+      )
+   );
+   yield put(
+      residualValueStore.actions.setServerTimeZone(
+         JSON.parse(String(residualValueData.data)).serverTimeZone
+      )
+   );
+   yield put(
+      residualValueStore.actions.setLatestUpdatedTime(
+         JSON.parse(String(residualValueData.data)).latestUpdatedTime
+      )
+   );
 }
 
 function* fetchDataResidualValue() {
