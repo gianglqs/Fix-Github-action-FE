@@ -17,6 +17,7 @@ const NavBar = () => {
       competitors: t('navBar.competitors'),
       users: t('navBar.users'),
       'historical-import': t('navBar.historicalImporting'),
+      'import-tracking': t('navBar.importTracking'),
    };
 
    const renderOptions = () => {

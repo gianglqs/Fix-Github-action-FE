@@ -1,4 +1,4 @@
-import { ResidualValueDataFilter } from '@/types/defaultValue';
+import { ImportTrackingDataFilter, ResidualValueDataFilter } from '@/types/defaultValue';
 
 export const defaultValueFilterIndicator = {
    regions: [],
@@ -84,3 +84,7 @@ export const defaultValueFilterResidualValue = {
    year: 2,
    price: 0,
 } as ResidualValueDataFilter;
+
+export const defaultValueFilterImportTracking = {
+   date: '',
+} as ImportTrackingDataFilter;

@@ -21,6 +21,8 @@ import {
    fetchDataResidualValueSaga,
 } from './residualValueSaga';
 
+import { fetchImportTracking } from './importTrackingSaga';
+
 function* rootSaga() {
    yield fork(userSaga);
    yield fork(bookingSaga);
@@ -41,6 +43,7 @@ function* rootSaga() {
    yield fork(fetchFirstResidualValue);
    yield fork(fetchModelCodeSaga);
    yield fork(fetchDataResidualValueSaga);
+   yield fork(fetchImportTracking);
 }
 
 export default rootSaga;

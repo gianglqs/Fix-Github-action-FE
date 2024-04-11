@@ -3,7 +3,8 @@
       "dashboard": "Dashboard",
       "competitors": "Competitors",
       "users": "Users",
-      "historicalImporting": "Historical Importing"
+      "historicalImporting": "Historical Importing",
+      "importTracking": "Import Tracking"
    },
 
    "title": {
@@ -78,7 +79,8 @@
       "unitIncreaseLever": "Unit Increase Lever",
       "modelType": "Model Type",
       "model": "Model",
-      "year": "Year"
+      "year": "Year",
+      "monthYear": "Month Year"
    },
 
    "button": {
@@ -163,7 +165,9 @@
       "type": "Type",
       "remark": "Remark",
       "cost": "Cost",
-      "volume": "Volume"
+      "volume": "Volume",
+      "fileStyle": "File Style",
+      "frequency": "Frequency"
    },
 
    "competitors": {
