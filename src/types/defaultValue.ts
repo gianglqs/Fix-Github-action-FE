@@ -5,3 +5,7 @@ export type ResidualValueDataFilter = {
    year: number;
    price: number;
 };
+
+export type ImportTrackingDataFilter = {
+   date: string;
+};

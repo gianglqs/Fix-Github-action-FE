@@ -3,7 +3,8 @@
       "dashboard": "仪表板",
       "competitors": "竞争对手",
       "users": "用户",
-      "historicalImporting": "历史导入"
+      "historicalImporting": "历史导入",
+      "importTracking": "进口追踪"
    },
 
    "title": {
@@ -74,7 +75,8 @@
       "costOfGoodSold": "每单位的销售成本",
       "marginPercentagePerUnit": "每单位的利润率",
       "discountPercentagePerOneNewItem": "每增加 1 个新项目的折扣率",
-      "unitIncreaseLever": "单位增长杠杆"
+      "unitIncreaseLever": "单位增长杠杆",
+      "monthYear": "可能"
    },
 
    "button": {
@@ -153,7 +155,9 @@
       "importAt": "导入时间",
       "importBy": "导入者",
       "size": "大小",
-      "volume": "调整"
+      "volume": "调整",
+      "fileStyle": "文件风格",
+      "frequency": "频率"
    },
 
    "competitors": {

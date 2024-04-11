@@ -3,7 +3,8 @@
       "dashboard": "Bảng thống kê",
       "competitors": "Đối thủ cạnh tranh",
       "users": "Người dùng",
-      "historicalImporting": "Lịch sử nhập dữ liệu"
+      "historicalImporting": "Lịch sử nhập dữ liệu",
+      "importTracking": "Theo dõi nhập dữ liệu"
    },
 
    "title": {
@@ -74,7 +75,8 @@
       "costOfGoodSold": "Giá vốn mỗi đơn vị",
       "marginPercentagePerUnit": "Lợi nhuận % mỗi đơn vị",
       "discountPercentagePerOneNewItem": "Giảm giá % mỗi đơn vị thêm vào",
-      "unitIncreaseLever": "Đòn bẩy tăng đơn vị"
+      "unitIncreaseLever": "Đòn bẩy tăng đơn vị",
+      "monthYear": "Tháng năm"
    },
 
    "button": {
@@ -153,7 +155,9 @@
       "importAt": "Được nhập ở",
       "importBy": "Được nhập bởi",
       "size": "Kích thước",
-      "volume": "Số lượng"
+      "volume": "Số lượng",
+      "fileStyle": "Loại File",
+      "frequency": "Tần suất"
    },
 
    "competitors": {

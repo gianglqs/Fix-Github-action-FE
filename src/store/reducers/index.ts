@@ -16,3 +16,4 @@ export * as bookingMarginTrialTestStore from './bookingMarginTrialTest.reducer';
 export * as importFailureStore from './importFailure.reducer';
 export * as priceVolumeSensitivityStore from './priceVolumeSensitivity.reducer';
 export * as residualValueStore from './residualValue.reducer';
+export * as importTrackingStore from './importTracking.reducer';
