@@ -159,7 +159,11 @@ class HttpService<GetList = any> {
       context: GetServerSidePropsContext = null as any
    ) => {
       this.setHeaderForApiTransferFile(context);
-      return this.instance.post<T>(endpoint, data);
+      return this.instance.post<T>(endpoint, data).catch((error) => {
+         if (error.status === 500) {
+            Router.push('/500');
+         }
+      });
    };
 
    getListData = <T = any>(

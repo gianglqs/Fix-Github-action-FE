@@ -5,7 +5,6 @@ import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/format
 import { useDispatch, useSelector } from 'react-redux';
 import { shipmentStore, commonStore, importFailureStore } from '@/store/reducers';
 import moment from 'moment-timezone';
-
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import {
@@ -339,7 +338,6 @@ export default function Shipment() {
          .catch((error) => {
             // stop spiner
             setLoading(false);
-            //show message
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
