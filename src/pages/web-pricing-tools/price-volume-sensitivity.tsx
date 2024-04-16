@@ -636,6 +636,7 @@ export default function PriceVolumeSensitivity() {
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
                      }
                      value={dataFilter?.fromDate}
+                     maxDate={new Date().toISOString().slice(0, 10)}
                   />
                </Grid>
                <Grid item xs={1.5}>
@@ -647,6 +648,7 @@ export default function PriceVolumeSensitivity() {
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
                      }
                      value={dataFilter?.toDate}
+                     maxDate={new Date().toISOString().slice(0, 10)}
                   />
                </Grid>
                <Grid item xs={1}>
