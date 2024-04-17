@@ -84,3 +84,10 @@ jobs:
 
                 # run
               docker run -p 3005:3005 -d --name=hysteryale-fe --restart unless-stopped ghcr.io/phoenix-software-development/hyster-yale-frontend:latest
+
+              sleep 15
+
+              if [[ $(lsof -i:3005 | grep "next-rout") != "" ]]
+              then
+                  curl 'http://localhost:8080/hysteryale/version/updateVersion?version={{github.event.release.tag_name}}&type=frontend'
+              fi

@@ -1,4 +1,4 @@
-import { styled, Paper, Grid } from '@mui/material';
+import { styled, Paper, Grid, Box, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import FormControlledTextField from '@/components/FormController/TextField';
 
@@ -20,6 +20,7 @@ import { AppFooter } from '@/components';
 import Image from 'next/image';
 import { GetServerSidePropsContext } from 'next';
 import { checkTokenBeforeLoadPageLogin } from '@/utils/checkTokenBeforeLoadPage';
+import { useState } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('../public/logo.svg');
@@ -102,12 +103,42 @@ export default function LoginPage() {
             dispatch(commonStore.actions.setErrorMessage('Error on signing in'));
          });
    });
+   const [backendVersion, setBackendVersion] = useState('');
+   const [frontendVersion, setFrontendVersion] = useState('');
+   axios
+      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}version/getVersion?isNewDesign=false`)
+      .then((response) => {
+         setBackendVersion(response.data.backend);
+         setFrontendVersion(response.data.frontend);
+      })
+      .catch((error) => {
+         console.log(error);
+      });
 
    return (
       <>
          <NextHead>
             <title>HysterYale - Sign in</title>
          </NextHead>
+         <Box
+            sx={{
+               position: 'absolute',
+               right: '5px',
+               top: '10px',
+               border: '1px solid #b9d5ff99',
+               padding: '10px',
+            }}
+         >
+            <Typography sx={{ fontWeight: 900, color: '#e7a800' }}>SOFTWARE VERSION:</Typography>
+            <Typography
+               variant="body1"
+               marginLeft={'4px'}
+            >{`Backend: ${backendVersion}`}</Typography>
+            <Typography
+               variant="body1"
+               marginLeft={'4px'}
+            >{`Frontend: ${frontendVersion}`}</Typography>
+         </Box>
          <StyledContainer className="center-element">
             {/* <CssBaseline /> */}
             <StyledFormContainer>
