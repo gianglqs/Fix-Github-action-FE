@@ -64,6 +64,8 @@ class HttpService<GetList = any> {
                            message: error.response.data.message,
                         };
                         return Promise.reject(formatError);
+                     } else if (error.response.status == 500) {
+                        Router.push('/500');
                      } else {
                         Router.push('/login');
                         return;
@@ -133,15 +135,27 @@ class HttpService<GetList = any> {
       responseType = 'default' as ResponseType
    ) => {
       this.saveToken(context);
-      return this.instance.get<T>(endpoint, { params, responseType });
+      return this.instance.get<T>(endpoint, { params, responseType }).catch((error) => {
+         if (error.status === 500) {
+            Router.push('/500');
+         }
+      });
    };
 
    getList = (params = {} as Record<string, any>, context: GetServerSidePropsContext = null) =>
-      this.get<GetList>(this.entity, params, context);
+      this.get<GetList>(this.entity, params, context).catch((error) => {
+         if (error.status === 500) {
+            Router.push('/500');
+         }
+      });
 
    getListUser = <T = any>(endpoint: string, context: GetServerSidePropsContext = null) => {
       this.saveToken(context);
-      return this.instance.get<T>(endpoint);
+      return this.instance.get<T>(endpoint).catch((error) => {
+         if (error.status === 500) {
+            Router.push('/500');
+         }
+      });
    };
 
    post = <T = any>(
@@ -150,7 +164,11 @@ class HttpService<GetList = any> {
       context: GetServerSidePropsContext = null as any
    ) => {
       this.saveToken(context);
-      return this.instance.post<T>(endpoint, data);
+      return this.instance.post<T>(endpoint, data).catch((error) => {
+         if (error.status === 500) {
+            Router.push('/500');
+         }
+      });
    };
 
    importData = <T = any>(
@@ -159,7 +177,11 @@ class HttpService<GetList = any> {
       context: GetServerSidePropsContext = null as any
    ) => {
       this.setHeaderForApiTransferFile(context);
-      return this.instance.post<T>(endpoint, data);
+      return this.instance.post<T>(endpoint, data).catch((error) => {
+         if (error.status === 500) {
+            Router.push('/500');
+         }
+      });
    };
 
    getListData = <T = any>(
@@ -169,7 +191,11 @@ class HttpService<GetList = any> {
       responseType = 'default' as ResponseType
    ) => {
       this.saveToken(context);
-      return this.instance.post<T>(this.entity, data, { params, responseType });
+      return this.instance.post<T>(this.entity, data, { params, responseType }).catch((error) => {
+         if (error.status === 500) {
+            Router.push('/500');
+         }
+      });
    };
 
    getDataList = <T = any>(
@@ -179,7 +205,11 @@ class HttpService<GetList = any> {
       responseType = 'default' as ResponseType
    ) => {
       this.saveToken(context);
-      return this.instance.get<T>(endpoint, { params, responseType });
+      return this.instance.get<T>(endpoint, { params, responseType }).catch((error) => {
+         if (error.status === 500) {
+            Router.push('/500');
+         }
+      });
    };
 
    put = <T = any>(
@@ -188,7 +218,11 @@ class HttpService<GetList = any> {
       context: GetServerSidePropsContext = null
    ) => {
       this.saveToken(context);
-      return this.instance.put<T>(endpoint, data);
+      return this.instance.put<T>(endpoint, data).catch((error) => {
+         if (error.status === 500) {
+            Router.push('/500');
+         }
+      });
    };
 
    updateFile = <T = any>(
@@ -197,7 +231,11 @@ class HttpService<GetList = any> {
       context: GetServerSidePropsContext = null as any
    ) => {
       this.setHeaderForApiTransferFile(context);
-      return this.instance.put<T>(endpoint, data);
+      return this.instance.put<T>(endpoint, data).catch((error) => {
+         if (error.status === 500) {
+            Router.push('/500');
+         }
+      });
    };
 }
 
