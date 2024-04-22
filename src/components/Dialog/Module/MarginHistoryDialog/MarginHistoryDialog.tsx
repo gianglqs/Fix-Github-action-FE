@@ -1,8 +1,14 @@
 import { Dialog, Grid } from '@mui/material';
 import { DataTable } from '@/components/DataTable';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DifferenceIcon from '@mui/icons-material/Difference';
+import marginAnalysisApi from '@/api/marginAnalysis.api';
+import { useDispatch } from 'react-redux';
+import { commonStore } from '@/store/reducers';
 
 export default function MarginHistoryDialog(props) {
-   const { open, onClose, data, handleOnRowClick } = props;
+   const { open, onClose, data, handleOnRowClick, loadHistoryMargin } = props;
+   const dispatch = useDispatch();
 
    const columns = [
       {
@@ -35,7 +41,57 @@ export default function MarginHistoryDialog(props) {
          flex: 0.5,
          headerName: 'Region',
       },
+      {
+         field: 'choose',
+         flex: 0.25,
+         headerName: '',
+         align: 'center',
+         renderCell(params) {
+            return (
+               <span>
+                  <DifferenceIcon
+                     sx={{ fill: 'black' }}
+                     onClick={() => handleOnCellClick(params)}
+                  />
+               </span>
+            );
+         },
+      },
+      {
+         field: 'delete',
+         flex: 0.25,
+         headerName: '',
+         align: 'center',
+         renderCell(params) {
+            return (
+               <span>
+                  <DeleteIcon sx={{ fill: 'red' }} onClick={() => handleClickDelete(params)} />
+               </span>
+            );
+         },
+      },
    ];
+
+   const handleClickDelete = async (params) => {
+      const transformedData = {
+         quoteNumber: params.row.quoteNumber,
+         type: params.row.type,
+         modelCode: params.row.modelCode,
+         series: params.row.series,
+         currency: params.row.currency,
+         region: params.row.region,
+      };
+
+      await marginAnalysisApi
+         .deleteMarginData(transformedData)
+         .then(() => {
+            dispatch(commonStore.actions.setSuccessMessage('Deleted'));
+            loadHistoryMargin();
+         })
+         .catch((error) => {
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   };
 
    const getRowId = (row) => {
       const quoteNumber = String(row.quoteNumber);
@@ -48,8 +104,7 @@ export default function MarginHistoryDialog(props) {
       return quoteNumber + type + modelCode + series + currency + region;
    };
 
-   const handleOnCellClick = (params, event) => {
-      event.stopPropagation();
+   const handleOnCellClick = (params) => {
       const data = {
          quoteNumber: params.row.quoteNumber,
          type: params.row.type,
@@ -72,7 +127,6 @@ export default function MarginHistoryDialog(props) {
                columns={columns}
                getRowId={getRowId}
                sx={{ borderBottom: '1px solid #a8a8a8', borderTop: '1px solid #a8a8a8' }}
-               onCellClick={handleOnCellClick}
             />
          </Grid>
       </Dialog>

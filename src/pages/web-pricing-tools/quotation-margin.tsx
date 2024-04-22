@@ -325,7 +325,24 @@ export default function MarginAnalysis() {
       return quoteNumber + type + modelCode + partNumber;
    };
 
-   const handleSaveData = () => {};
+   const handleSaveData = async () => {
+      if (marginAnalysisSummary == null) {
+         dispatch(commonStore.actions.setErrorMessage('No data to save!'));
+      } else {
+         const transformedData = {
+            annually: marginAnalysisSummary.annually,
+            monthly: marginAnalysisSummary.monthly,
+         };
+         await marginAnalysisApi
+            .saveMarginData(transformedData)
+            .then((response) => {
+               dispatch(commonStore.actions.setSuccessMessage(response.data.message));
+            })
+            .catch((error) => {
+               dispatch(commonStore.actions.setErrorMessage(error.data.message));
+            });
+      }
+   };
 
    const handleViewHistory = () => {
       handleOpenCompareMargin();
@@ -516,11 +533,11 @@ export default function MarginAnalysis() {
 
             <Grid container spacing={1} sx={{ marginTop: 1 }}>
                <MarginPercentageAOPRateBox
-                  data={marginAnalysisSummary?.MarginAnalystSummaryAnnually}
+                  data={marginAnalysisSummary?.annually}
                   valueCurrency={valueCurrency}
                />
                <MarginPercentageAOPRateBox
-                  data={marginAnalysisSummary?.MarginAnalystSummaryMonthly}
+                  data={marginAnalysisSummary?.monthly}
                   valueCurrency={valueCurrency}
                />
                <Grid item xs={4}>
@@ -580,11 +597,11 @@ export default function MarginAnalysis() {
                </Grid>
 
                <FullCostAOPRateBox
-                  data={marginAnalysisSummary?.MarginAnalystSummaryAnnually}
+                  data={marginAnalysisSummary?.annually}
                   valueCurrency={valueCurrency}
                />
                <FullCostAOPRateBox
-                  data={marginAnalysisSummary?.MarginAnalystSummaryMonthly}
+                  data={marginAnalysisSummary?.monthly}
                   valueCurrency={valueCurrency}
                />
 
@@ -610,8 +627,8 @@ export default function MarginAnalysis() {
                   </Grid>
                </Grid>
 
-               <ForUSPricingBox data={marginAnalysisSummary?.MarginAnalystSummaryAnnually} />
-               <ForUSPricingBox data={marginAnalysisSummary?.MarginAnalystSummaryMonthly} />
+               <ForUSPricingBox data={marginAnalysisSummary?.annually} />
+               <ForUSPricingBox data={marginAnalysisSummary?.monthly} />
             </Grid>
          </AppLayout>
          <CompareMarginDialog open={openCompareMargin} onClose={handleCloseCompareMargin} />

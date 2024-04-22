@@ -39,6 +39,12 @@ class MarginAnalysisApi extends HttpService<any> {
    viewHistoryMargin = (data: any) => {
       return this.post<any>('view-history-margin', data);
    };
+   saveMarginData = (data: any) => {
+      return this.post<any>('save-margin-data', data);
+   };
+   deleteMarginData = (data: any) => {
+      return this.delete<any>('delete-margin-data', data);
+   };
 }
 
 const marginAnalysisApi = new MarginAnalysisApi('bookingOrder');

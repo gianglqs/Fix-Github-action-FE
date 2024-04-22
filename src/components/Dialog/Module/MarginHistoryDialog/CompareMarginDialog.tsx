@@ -25,13 +25,16 @@ export default function CompareMarginDialog(props) {
 
    const [chooseState, setChooseState] = useState(1);
 
-   const handleChoose = async (value) => {
+   const loadHistoryMargin = async () => {
       const { data } = await marginAnalysisApi.listHistoryMargin({});
       setOpenHistory({
          open: true,
          data: data?.historicalMargin,
       });
+   };
 
+   const handleChoose = async (value) => {
+      loadHistoryMargin();
       setChooseState(value);
    };
    const handleClose = () => {
@@ -76,6 +79,19 @@ export default function CompareMarginDialog(props) {
          });
    };
 
+   const handleClear = (value) => {
+      if (value == 1)
+         setData1({
+            annually: null,
+            monthly: null,
+         });
+      else
+         setData2({
+            annually: null,
+            monthly: null,
+         });
+   };
+
    return (
       <>
          <Dialog open={open} onClose={onClose} maxWidth="lg">
@@ -88,6 +104,13 @@ export default function CompareMarginDialog(props) {
                   >
                      Choose
                   </Button>
+                  <Button
+                     variant="contained"
+                     sx={{ width: '25%', height: 24, marginLeft: 1 }}
+                     onClick={() => handleClear(1)}
+                  >
+                     Clear
+                  </Button>
                </Grid>
                <Grid item xs={6}>
                   <Button
@@ -96,6 +119,13 @@ export default function CompareMarginDialog(props) {
                      onClick={() => handleChoose(2)}
                   >
                      Choose
+                  </Button>
+                  <Button
+                     variant="contained"
+                     sx={{ width: '25%', height: 24, marginLeft: 1 }}
+                     onClick={() => handleClear(2)}
+                  >
+                     Clear
                   </Button>
                </Grid>
 
@@ -117,6 +147,7 @@ export default function CompareMarginDialog(props) {
             onClose={handleClose}
             data={openHistory.data}
             handleOnRowClick={handleOnRowClick}
+            loadHistoryMargin={loadHistoryMargin}
          />
       </>
    );
