@@ -610,7 +610,7 @@ export default function MarginAnalysis() {
                      <Button
                         variant="contained"
                         onClick={handleSaveData}
-                        sx={{ width: '25%', height: 24, minWidth: 100 }}
+                        sx={{ width: '25%', height: 24, minWidth: 130 }}
                      >
                         Save
                      </Button>
@@ -620,9 +620,9 @@ export default function MarginAnalysis() {
                      <Button
                         variant="contained"
                         onClick={handleViewHistory}
-                        sx={{ width: '25%', height: 24, marginTop: 1, minWidth: 100 }}
+                        sx={{ width: '25%', height: 24, marginTop: 1, minWidth: 130 }}
                      >
-                        View History
+                        Compare Margin
                      </Button>
                   </Grid>
                </Grid>
