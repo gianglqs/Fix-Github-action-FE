@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import '@fontsource/poppins';
 
-const Custom404Page = () => {
+const Custom500Page = () => {
    const router = useRouter();
 
    // Function to handle navigation back to the previous page
@@ -16,9 +16,9 @@ const Custom404Page = () => {
    };
 
    useEffect(() => {
-      document.title = '404 - Page Not Found'; // Set the page title
+      document.title = '500 - Server Error'; // Set the page title
    }, []);
-   const logo = require('src/pages/images/404-page.png');
+   const logo = require('src/pages/images/500-page.png');
    const fonts = {
       body: 'Poppins, sans-serif',
    };
@@ -33,7 +33,7 @@ const Custom404Page = () => {
          }}
       >
          <div style={{ width: '50%', textAlign: 'center' }}>
-            <img alt="logo" style={{ width: 600, alignItems: 'center' }} src={String(logo)} />
+            <img alt="logo" style={{ width: 400, alignItems: 'center' }} src={String(logo)} />
             <h1
                style={{
                   fontSize: '60px',
@@ -58,7 +58,7 @@ const Custom404Page = () => {
                   marginTop: '-30px',
                }}
             >
-               Sorry, the page you are looking for doesn't exist or has been moved.
+               Sorry, this page is under maintenance. Kindly be patient and try again
             </p>
             <div>
                <button
@@ -114,4 +114,4 @@ const Custom404Page = () => {
 
 <style></style>;
 
-export default Custom404Page;
+export default Custom500Page;

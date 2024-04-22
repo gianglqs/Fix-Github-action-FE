@@ -181,6 +181,9 @@ export default function PriceVolumeSensitivity() {
          flex: 0.6,
          ...centerHeaderColumn,
          headerName: t('table.segment'),
+         renderCell(params) {
+            return <span>{params?.row.segment}</span>;
+         },
       },
       {
          field: 'series',
@@ -633,6 +636,7 @@ export default function PriceVolumeSensitivity() {
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
                      }
                      value={dataFilter?.fromDate}
+                     maxDate={new Date().toISOString().slice(0, 10)}
                   />
                </Grid>
                <Grid item xs={1.5}>
@@ -644,6 +648,7 @@ export default function PriceVolumeSensitivity() {
                         handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
                      }
                      value={dataFilter?.toDate}
+                     maxDate={new Date().toISOString().slice(0, 10)}
                   />
                </Grid>
                <Grid item xs={1}>
