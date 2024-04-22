@@ -135,27 +135,15 @@ class HttpService<GetList = any> {
       responseType = 'default' as ResponseType
    ) => {
       this.saveToken(context);
-      return this.instance.get<T>(endpoint, { params, responseType }).catch((error) => {
-         if (error.status === 500) {
-            Router.push('/500');
-         }
-      });
+      return this.instance.get<T>(endpoint, { params, responseType });
    };
 
    getList = (params = {} as Record<string, any>, context: GetServerSidePropsContext = null) =>
-      this.get<GetList>(this.entity, params, context).catch((error) => {
-         if (error.status === 500) {
-            Router.push('/500');
-         }
-      });
+      this.get<GetList>(this.entity, params, context);
 
    getListUser = <T = any>(endpoint: string, context: GetServerSidePropsContext = null) => {
       this.saveToken(context);
-      return this.instance.get<T>(endpoint).catch((error) => {
-         if (error.status === 500) {
-            Router.push('/500');
-         }
-      });
+      return this.instance.get<T>(endpoint);
    };
 
    post = <T = any>(
@@ -164,11 +152,7 @@ class HttpService<GetList = any> {
       context: GetServerSidePropsContext = null as any
    ) => {
       this.saveToken(context);
-      return this.instance.post<T>(endpoint, data).catch((error) => {
-         if (error.status === 500) {
-            Router.push('/500');
-         }
-      });
+      return this.instance.post<T>(endpoint, data);
    };
 
    importData = <T = any>(
@@ -177,11 +161,7 @@ class HttpService<GetList = any> {
       context: GetServerSidePropsContext = null as any
    ) => {
       this.setHeaderForApiTransferFile(context);
-      return this.instance.post<T>(endpoint, data).catch((error) => {
-         if (error.status === 500) {
-            Router.push('/500');
-         }
-      });
+      return this.instance.post<T>(endpoint, data);
    };
 
    getListData = <T = any>(
@@ -191,11 +171,7 @@ class HttpService<GetList = any> {
       responseType = 'default' as ResponseType
    ) => {
       this.saveToken(context);
-      return this.instance.post<T>(this.entity, data, { params, responseType }).catch((error) => {
-         if (error.status === 500) {
-            Router.push('/500');
-         }
-      });
+      return this.instance.post<T>(this.entity, data, { params, responseType });
    };
 
    getDataList = <T = any>(
@@ -205,11 +181,7 @@ class HttpService<GetList = any> {
       responseType = 'default' as ResponseType
    ) => {
       this.saveToken(context);
-      return this.instance.get<T>(endpoint, { params, responseType }).catch((error) => {
-         if (error.status === 500) {
-            Router.push('/500');
-         }
-      });
+      return this.instance.get<T>(endpoint, { params, responseType });
    };
 
    put = <T = any>(
@@ -218,11 +190,7 @@ class HttpService<GetList = any> {
       context: GetServerSidePropsContext = null
    ) => {
       this.saveToken(context);
-      return this.instance.put<T>(endpoint, data).catch((error) => {
-         if (error.status === 500) {
-            Router.push('/500');
-         }
-      });
+      return this.instance.put<T>(endpoint, data);
    };
 
    updateFile = <T = any>(
@@ -231,11 +199,7 @@ class HttpService<GetList = any> {
       context: GetServerSidePropsContext = null as any
    ) => {
       this.setHeaderForApiTransferFile(context);
-      return this.instance.put<T>(endpoint, data).catch((error) => {
-         if (error.status === 500) {
-            Router.push('/500');
-         }
-      });
+      return this.instance.put<T>(endpoint, data);
    };
 }
 
