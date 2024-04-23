@@ -32,6 +32,19 @@ class MarginAnalysisApi extends HttpService<any> {
    importPowerBiFile = (data: any) => {
       return this.importData<any>('importPowerBiFile', data);
    };
+
+   listHistoryMargin = (data: any) => {
+      return this.post<any>('list-history-margin', data);
+   };
+   viewHistoryMargin = (data: any) => {
+      return this.post<any>('view-history-margin', data);
+   };
+   saveMarginData = (data: any) => {
+      return this.post<any>('save-margin-data', data);
+   };
+   deleteMarginData = (data: any) => {
+      return this.delete<any>('delete-margin-data', data);
+   };
 }
 
 const marginAnalysisApi = new MarginAnalysisApi('bookingOrder');
