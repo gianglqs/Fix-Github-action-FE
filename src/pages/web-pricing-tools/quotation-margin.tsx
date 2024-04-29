@@ -590,7 +590,7 @@ export default function MarginAnalysis() {
                            component="span"
                            sx={{ fontWeight: 'bold', marginRight: 1 }}
                         >
-                           {targetMargin * 100}%
+                           {(targetMargin * 100).toLocaleString()}%
                         </Typography>
                      </div>
                   </Paper>
