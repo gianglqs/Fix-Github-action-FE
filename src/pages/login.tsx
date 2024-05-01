@@ -20,7 +20,7 @@ import { AppFooter } from '@/components';
 import Image from 'next/image';
 import { GetServerSidePropsContext } from 'next';
 import { checkTokenBeforeLoadPageLogin } from '@/utils/checkTokenBeforeLoadPage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('../public/logo.svg');
@@ -41,8 +41,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageLogin(context);
 }
 
-export default function LoginPage() {
+export default function LoginPage(props) {
    const router = useRouter();
+   const { imageTagFE, releaseTagFE } = props;
 
    const validationSchema = yup.object({
       email: yup.string().required('Email is required'),
@@ -103,17 +104,21 @@ export default function LoginPage() {
             dispatch(commonStore.actions.setErrorMessage('Error on signing in'));
          });
    });
-   const [backendVersion, setBackendVersion] = useState('');
-   const [frontendVersion, setFrontendVersion] = useState('');
-   axios
-      .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}version/getVersion?isNewDesign=false`)
-      .then((response) => {
-         setBackendVersion(response.data.backend);
-         setFrontendVersion(response.data.frontend);
-      })
-      .catch((error) => {
-         console.log(error);
-      });
+   const [backendVersion, setBackendVersion] = useState({ imageTag: '', releaseTag: '' });
+
+   useEffect(() => {
+      axios
+         .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}backend-version/version`)
+         .then((response) => {
+            setBackendVersion({
+               imageTag: response.data.imageTag,
+               releaseTag: response.data.releaseTag,
+            });
+         })
+         .catch((error) => {
+            console.log(error);
+         });
+   }, []);
 
    return (
       <>
@@ -130,14 +135,29 @@ export default function LoginPage() {
             }}
          >
             <Typography sx={{ fontWeight: 900, color: '#e7a800' }}>SOFTWARE VERSION:</Typography>
-            <Typography
-               variant="body1"
-               marginLeft={'4px'}
-            >{`Backend: ${backendVersion}`}</Typography>
-            <Typography
-               variant="body1"
-               marginLeft={'4px'}
-            >{`Frontend: ${frontendVersion}`}</Typography>
+            <Box>
+               <Typography>Backend</Typography>
+               <ul style={{ paddingLeft: 15, margin: 0 }}>
+                  <li>
+                     <Typography>Image Tag: {backendVersion.imageTag}</Typography>
+                  </li>
+                  <li>
+                     <Typography>Release Tag: {backendVersion.releaseTag}</Typography>
+                  </li>
+               </ul>
+            </Box>
+
+            <Box>
+               <Typography>Frontend</Typography>
+               <ul style={{ paddingLeft: 15, margin: 0 }}>
+                  <li>
+                     <Typography>Image Tag: {imageTagFE}</Typography>
+                  </li>
+                  <li>
+                     <Typography>Release Tag: {releaseTagFE}</Typography>
+                  </li>
+               </ul>
+            </Box>
          </Box>
          <StyledContainer className="center-element">
             {/* <CssBaseline /> */}
