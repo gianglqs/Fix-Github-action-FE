@@ -1,0 +1,10 @@
+services:
+   hysteryale-fe:
+      image: ${IMAGE_NAME}
+      container_name: ${CONTAINER_NAME}
+      ports:
+         - '3005:3005'
+      volumes:
+         - /opt/hysteryale:/opt/hysteryale
+      environment:
+         - TZ=${TIMEZONE_HY}
