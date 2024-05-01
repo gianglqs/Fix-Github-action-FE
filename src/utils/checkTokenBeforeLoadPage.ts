@@ -74,13 +74,14 @@ export const checkTokenBeforeLoadPageLogin = async (context: GetServerSidePropsC
       if (error.response?.status == 401)
          return refreshTokenForFunctionGetServerSidePropsLogin(error, context);
 
-      var des = PATH_LOGIN;
-      if (error.response?.status == 403) des = PATH_BOOKING;
-      return {
-         redirect: {
-            destination: des,
-            permanent: false,
-         },
-      };
+      if (error.response?.status == 403)
+         return {
+            redirect: {
+               destination: PATH_BOOKING,
+               permanent: true,
+            },
+         };
+
+      return { props: {} };
    }
 };

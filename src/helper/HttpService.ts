@@ -64,6 +64,8 @@ class HttpService<GetList = any> {
                            message: error.response.data.message,
                         };
                         return Promise.reject(formatError);
+                     } else if (error.response.status == 500) {
+                        Router.push('/500');
                      } else {
                         Router.push('/login');
                         return;
@@ -198,6 +200,15 @@ class HttpService<GetList = any> {
    ) => {
       this.setHeaderForApiTransferFile(context);
       return this.instance.put<T>(endpoint, data);
+   };
+
+   delete = <T = any>(
+      endpoint: string,
+      data = {} as Record<string, any>,
+      context: GetServerSidePropsContext = null as any
+   ) => {
+      this.saveToken(context);
+      return this.instance.delete<T>(endpoint, { data: data });
    };
 }
 
