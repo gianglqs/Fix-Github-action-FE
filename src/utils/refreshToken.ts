@@ -69,8 +69,12 @@ export const refreshTokenForFunctionGetServerSidePropsLogin = async (
             },
          };
       }
+
+      const releaseTagFE = process.env.RELEASE_TAG_ENV;
+      const imageTagFE = process.env.IMAGE_TAG_ENV;
+
       return {
-         props: {},
+         props: { imageTagFE, releaseTagFE },
       };
    }
 };

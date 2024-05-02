@@ -82,6 +82,9 @@ export const checkTokenBeforeLoadPageLogin = async (context: GetServerSidePropsC
             },
          };
 
-      return { props: {} };
+      const imageTagFE = process.env.IMAGE_TAG_ENV;
+      const releaseTagFE = process.env.RELEASE_TAG_ENV;
+
+      return { props: { imageTagFE, releaseTagFE } };
    }
 };
