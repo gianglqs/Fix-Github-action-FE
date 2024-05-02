@@ -4,16 +4,13 @@ FROM node:18-alpine
 # sets the working directory 
 WORKDIR /hysteryale-frontend/
 
-# copy source code
-# COPY public/ /hysteryale-frontend/public
-# COPY src/ /hysteryale-frontend/src
-# COPY package.json /hysteryale-frontend/
-# COPY .env /hysteryale-frontend/
-# COPY tsconfig.json /hysteryale-frontend/
 ADD ./ /hysteryale-frontend/
 
-# set env variable
-#ENV NEXT_PUBLIC_BACKEND_URL
+ARG RELEASE_TAG
+ARG IMAGE_TAG
+
+ENV IMAGE_TAG_ENV=$IMAGE_TAG
+ENV RELEASE_TAG_ENV=$RELEASE_TAG
 
 #install and build 
 RUN yarn install   
