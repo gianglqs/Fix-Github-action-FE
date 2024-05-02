@@ -71,7 +71,7 @@
       "truckType": "卡车类型",
       "searchOrderById": "按订单ID搜索",
       "searchProductByModel": "按型号代码搜索产品",
-      "startingPricePerUnit": "每单位的起始销售价格",
+      "dealerNet": "经销商净价",
       "costOfGoodSold": "每单位的销售成本",
       "marginPercentagePerUnit": "每单位的利润率",
       "discountPercentagePerOneNewItem": "每增加 1 个新项目的折扣率",
