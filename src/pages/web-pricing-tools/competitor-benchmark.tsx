@@ -156,6 +156,8 @@ export default function Indicators() {
 
    const [bubbleCountryInitFilter, setBubbleCountryInitFilter] = useState(initDataFilter.countries);
 
+   const [bubbleClassInitFilter, setBubbleClassInitFilter] = useState(initDataFilter.classes);
+
    const handleFilterCompetitiveLandscape = async () => {
       if (
          !competitiveLandscapeData.clearFilter &&
@@ -222,6 +224,29 @@ export default function Indicators() {
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    }, [swotDataFilter.regions]);
+
+   useEffect(() => {
+      const getClassByFilter = async () => {
+         const { data } = await indicatorApi.getClassByFilter(
+            swotDataFilter.countries,
+            swotDataFilter.categories,
+            swotDataFilter.series
+         );
+         return data;
+      };
+      getClassByFilter()
+         .then((response) => {
+            const classes = response.class;
+            setBubbleClassInitFilter(() =>
+               classes.map((value) => {
+                  return { value: value };
+               })
+            );
+         })
+         .catch((error) => {
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   }, [swotDataFilter.countries, swotDataFilter.categories, swotDataFilter.series]);
 
    const handleChangeSwotFilter = (option, field) => {
       setSwotDataFilter((prev) =>
@@ -1077,7 +1102,7 @@ export default function Indicators() {
                         value={_.map(swotDataFilter.classes, (item) => {
                            return { value: item };
                         })}
-                        options={initDataFilter.classes}
+                        options={bubbleClassInitFilter}
                         label={t('filters.class')}
                         onChange={(e, option) => handleChangeSwotFilter(option, 'classes')}
                         disableListWrap

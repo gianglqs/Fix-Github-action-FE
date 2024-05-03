@@ -59,6 +59,20 @@ class IndicatorApi extends HttpService<any> {
       this.saveToken(context);
       return this.instance.get(`filters/competitorPricing/get-country-name?region=${region}`);
    };
+
+   getClassByFilter = <T = any>(
+      country = {} as Record<string, any>,
+      category = {} as Record<string, any>,
+      series = {} as Record<string, any>,
+      context: GetServerSidePropsContext = null as any
+   ) => {
+      this.saveToken(context);
+      return this.instance.post<T>(`filters/competitorPricing/get-class`, {
+         country,
+         category,
+         series,
+      });
+   };
 }
 
 const indicatorApi = new IndicatorApi('indicator');
