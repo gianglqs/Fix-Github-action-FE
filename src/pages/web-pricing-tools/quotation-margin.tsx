@@ -225,6 +225,11 @@ export default function MarginAnalysis() {
          },
       },
       {
+         field: 'series',
+         flex: 0.4,
+         headerName: t('table.series'),
+      },
+      {
          field: 'modelCode',
          flex: 0.5,
          headerName: t('table.models'),
@@ -240,11 +245,6 @@ export default function MarginAnalysis() {
          renderCell(params) {
             return <span>{params.row.id.partNumber}</span>;
          },
-      },
-      {
-         field: 'series',
-         flex: 0.4,
-         headerName: t('table.series'),
       },
       {
          field: 'plant',
