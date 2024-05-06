@@ -66,7 +66,8 @@ export default function PriceVolumeSensitivity() {
    const [listOrder, setListOrder] = useState(listPriceVolumeSensitivity);
 
    const serverTimeZone = useSelector(priceVolumeSensitivityStore.selectServerTimeZone);
-   const serverLatestUpdatedTime = useSelector(priceVolumeSensitivityStore.selectLatestUpdatedTime);
+   const serverLastUpdatedTime = useSelector(priceVolumeSensitivityStore.selectLastUpdatedTime);
+   const serverLastUpdatedBy = useSelector(priceVolumeSensitivityStore.selectLastUpdatedBy);
 
    const [withMarginVolumeRecovery, setWithMarginVolumeRecovery] = useState(true);
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
@@ -549,9 +550,9 @@ export default function PriceVolumeSensitivity() {
 
    // show latest updated time
    const convertTimezone = () => {
-      if (serverLatestUpdatedTime && serverTimeZone) {
+      if (serverLastUpdatedTime && serverTimeZone) {
          setClientLatestUpdatedTime(
-            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+            convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
          );
       }
    };
@@ -749,7 +750,8 @@ export default function PriceVolumeSensitivity() {
                   totalItems={tableState.totalItems}
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
-                  lastUpdated={clientLatestUpdatedTime}
+                  lastUpdatedAt={clientLatestUpdatedTime}
+                  lastUpdatedBy={serverLastUpdatedBy}
                />
                <AppBackDrop open={loadingTable} hightHeaderTable={'93px'} />
             </Paper>

@@ -54,7 +54,8 @@ function* fetchPriceVolumeSensitivity() {
       const listOrder = JSON.parse(String(data)).listOrder;
       const dataTotalRow = JSON.parse(String(data)).totalItems;
       const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
-      const dataLatestUpdatedTime = JSON.parse(String(data)).latestUpdatedTime;
+      const dataLastUpdatedTime = JSON.parse(String(data)).lastUpdatedTime;
+      const dataLastUpdatedBy = JSON.parse(String(data)).lastUpdatedBy;
 
       yield put(
          priceVolumeSensitivityStore.actions.setInitDataFilter(
@@ -69,7 +70,8 @@ function* fetchPriceVolumeSensitivity() {
          })
       );
       yield put(priceVolumeSensitivityStore.actions.setServerTimeZone(dataServerTimeZone));
-      yield put(priceVolumeSensitivityStore.actions.setLatestUpdatedTime(dataLatestUpdatedTime));
+      yield put(priceVolumeSensitivityStore.actions.setLastUpdatedTime(dataLastUpdatedTime));
+      yield put(priceVolumeSensitivityStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
    } catch (error) {}
 }
 

@@ -34,13 +34,15 @@ function* fetchOutlier() {
       const dataOutlier = JSON.parse(String(data)).listOutlier;
       const dataTotalRow = JSON.parse(String(data)).total;
       const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
-      const dataLatestUpdatedTime = JSON.parse(String(data)).latestUpdatedTime;
+      const dataLastUpdatedTime = JSON.parse(String(data)).lastUpdatedTime;
+      const dataLastUpdatedBy = JSON.parse(String(data)).lastUpdatedBy;
 
       yield put(outlierStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
       yield put(outlierStore.actions.setOutlierList(dataOutlier));
       yield put(outlierStore.actions.setTotalRow(dataTotalRow));
       yield put(outlierStore.actions.setServerTimeZone(dataServerTimeZone));
-      yield put(outlierStore.actions.setLatestUpdatedTime(dataLatestUpdatedTime));
+      yield put(outlierStore.actions.setLastUpdatedTime(dataLastUpdatedTime));
+      yield put(outlierStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
 
       yield put(
          commonStore.actions.setTableState({

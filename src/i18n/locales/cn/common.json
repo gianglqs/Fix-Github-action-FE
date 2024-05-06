@@ -99,7 +99,8 @@
    },
 
    "table": {
-      "lastUpdated": "最后更新时间：",
+      "lastUpdatedBy": "最后更新者",
+      "lastUpdatedAt": "在",
       "rowsPerPage": "每页行数：",
 
       "order#": "订单号",

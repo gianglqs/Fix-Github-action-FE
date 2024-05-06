@@ -103,7 +103,8 @@
    },
 
    "table": {
-      "lastUpdated": "Last updated at: ",
+      "lastUpdatedBy": "Last updated by",
+      "lastUpdatedAt": "on",
       "rowsPerPage": "Rows per page: ",
 
       "order#": "Order #",

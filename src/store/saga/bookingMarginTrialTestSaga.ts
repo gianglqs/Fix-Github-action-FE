@@ -37,7 +37,8 @@ function* fetchBookingTrialTest() {
       //const dataTotalRow = JSON.parse(String(data)).total;
       // const dataExchangeRate = JSON.parse(String(data)).listExchangeRate;
       const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
-      const dataLatestUpdatedTime = JSON.parse(String(data)).latestUpdatedTime;
+      const dataLastUpdatedTime = JSON.parse(String(data)).lastUpdatedTime;
+      const dataLastUpdatedBy = JSON.parse(String(data)).lastUpdatedBy;
 
       yield put(
          bookingMarginTrialTestStore.actions.setInitDataFilter(
@@ -49,7 +50,8 @@ function* fetchBookingTrialTest() {
       // yield put(bookingMarginTrialTestStore.actions.setTotalRow(dataTotalRow));
       // yield put(bookingMarginTrialTestStore.actions.setExchangeRateList(dataExchangeRate));
       yield put(bookingMarginTrialTestStore.actions.setServerTimeZone(dataServerTimeZone));
-      yield put(bookingMarginTrialTestStore.actions.setLatestUpdatedTime(dataLatestUpdatedTime));
+      yield put(bookingMarginTrialTestStore.actions.setLastUpdatedTime(dataLastUpdatedTime));
+      yield put(bookingMarginTrialTestStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
 
       yield put(
          commonStore.actions.setTableState({

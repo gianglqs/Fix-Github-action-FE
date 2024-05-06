@@ -92,7 +92,8 @@ export default function Indicators() {
 
    const getDataForTable = useSelector(indicatorStore.selectIndicatorList);
    const serverTimeZone = useSelector(indicatorStore.selectServerTimeZone);
-   const serverLatestUpdatedTime = useSelector(indicatorStore.selectLatestUpdatedTime);
+   const serverLastUpdatedTime = useSelector(indicatorStore.selectLastUpdatedTime);
+   const serverLastUpdatedBy = useSelector(indicatorStore.selectLastUpdatedBy);
 
    // Select data line Chart Region in store
    // const dataForLineChartRegion = useSelector(indicatorStore.selectDataForLineChartRegion);
@@ -610,13 +611,13 @@ export default function Indicators() {
 
    useEffect(() => {
       convertTimezone();
-   }, [serverTimeZone, serverLatestUpdatedTime]);
+   }, [serverTimeZone, serverLastUpdatedTime]);
 
    // show latest updated time
    const convertTimezone = () => {
-      if (serverLatestUpdatedTime && serverTimeZone) {
+      if (serverLastUpdatedTime && serverTimeZone) {
          setClientLatestUpdatedTime(
-            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+            convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
          );
       }
    };
@@ -969,7 +970,8 @@ export default function Indicators() {
                   totalItems={tableState.totalItems}
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
-                  lastUpdated={clientLatestUpdatedTime}
+                  lastUpdatedAt={clientLatestUpdatedTime}
+                  lastUpdatedBy={serverLastUpdatedBy}
                />
                <AppBackDrop open={loadingTable} hightHeaderTable={'102px'} />
             </Paper>

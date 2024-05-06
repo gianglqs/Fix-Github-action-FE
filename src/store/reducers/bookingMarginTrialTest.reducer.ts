@@ -14,7 +14,8 @@ export const initialState = {
    exchangeRateList: [] as any[],
    dataFilter: {} as any,
    serverTimeZone: '' as any,
-   latestUpdatedTime: '' as any,
+   lastUpdatedTime: '' as any,
+   lastUpdatedBy: '' as any,
 };
 
 const bookingMarginTrialTestSlice = createSlice({
@@ -45,8 +46,11 @@ const bookingMarginTrialTestSlice = createSlice({
       setServerTimeZone(state, { payload }: PayloadAction<any[]>) {
          state.serverTimeZone = payload;
       },
-      setLatestUpdatedTime(state, { payload }: PayloadAction<any[]>) {
-         state.latestUpdatedTime = payload;
+      setLastUpdatedTime(state, { payload }: PayloadAction<any[]>) {
+         state.lastUpdatedTime = payload;
+      },
+      setLastUpdatedBy(state, { payload }: PayloadAction<any[]>) {
+         state.lastUpdatedBy = payload;
       },
    },
    extraReducers: {
@@ -73,10 +77,9 @@ export const selectDefaultValueFilterOrder = createSelector(
    (state) => state.defaultValueFilterOrder
 );
 export const selectServerTimeZone = createSelector(selectState, (state) => state.serverTimeZone);
-export const selectLatestUpdatedTime = createSelector(
-   selectState,
-   (state) => state.latestUpdatedTime
-);
+export const selectLastUpdatedTime = createSelector(selectState, (state) => state.lastUpdatedTime);
+
+export const selectLastUpdatedBy = createSelector(selectState, (state) => state.lastUpdatedBy);
 export const { actions } = bookingMarginTrialTestSlice;
 
 export default bookingMarginTrialTestSlice;
