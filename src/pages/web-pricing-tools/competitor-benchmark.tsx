@@ -158,6 +158,12 @@ export default function Indicators() {
 
    const [bubbleClassInitFilter, setBubbleClassInitFilter] = useState(initDataFilter.classes);
 
+   const [bubbleCategoryInitFilter, setBubbleCategoryInitFilter] = useState(
+      initDataFilter.categories
+   );
+
+   const [bubbleSerieInitFilter, setBubbleSerieInitFilter] = useState(initDataFilter.series);
+
    const handleFilterCompetitiveLandscape = async () => {
       if (
          !competitiveLandscapeData.clearFilter &&
@@ -247,6 +253,52 @@ export default function Indicators() {
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    }, [swotDataFilter.countries, swotDataFilter.categories, swotDataFilter.series]);
+
+   useEffect(() => {
+      const getCategoryByFilter = async () => {
+         const { data } = await indicatorApi.getCategoryByFilter(
+            swotDataFilter.countries,
+            swotDataFilter.classes,
+            swotDataFilter.series
+         );
+         return data;
+      };
+      getCategoryByFilter()
+         .then((response) => {
+            const categories = response.category;
+            setBubbleCategoryInitFilter(() =>
+               categories.map((value) => {
+                  return { value: value };
+               })
+            );
+         })
+         .catch((error) => {
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   }, [swotDataFilter.countries, swotDataFilter.classes, swotDataFilter.series]);
+
+   useEffect(() => {
+      const getSeriesByFilter = async () => {
+         const { data } = await indicatorApi.getSeriesByFilter(
+            swotDataFilter.countries,
+            swotDataFilter.classes,
+            swotDataFilter.categories
+         );
+         return data;
+      };
+      getSeriesByFilter()
+         .then((response) => {
+            const series = response.series;
+            setBubbleSerieInitFilter(() =>
+               series.map((value) => {
+                  return { value: value };
+               })
+            );
+         })
+         .catch((error) => {
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   }, [swotDataFilter.countries, swotDataFilter.classes, swotDataFilter.categories]);
 
    const handleChangeSwotFilter = (option, field) => {
       setSwotDataFilter((prev) =>
@@ -1120,7 +1172,7 @@ export default function Indicators() {
                         value={_.map(swotDataFilter.categories, (item) => {
                            return { value: item };
                         })}
-                        options={initDataFilter.categories}
+                        options={bubbleCategoryInitFilter}
                         label={t('filters.category')}
                         onChange={(e, option) => handleChangeSwotFilter(option, 'categories')}
                         disableListWrap
@@ -1138,7 +1190,7 @@ export default function Indicators() {
                         value={_.map(swotDataFilter.series, (item) => {
                            return { value: item };
                         })}
-                        options={initDataFilter.series}
+                        options={bubbleSerieInitFilter}
                         label={t('filters.series')}
                         onChange={(e, option) => handleChangeSwotFilter(option, 'series')}
                         limitTags={1}
