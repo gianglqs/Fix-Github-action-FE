@@ -132,14 +132,20 @@ export default function CompareMarginDialog(props) {
                <MarginInformationBox data={data1} />
                <MarginInformationBox data={data2} />
 
-               <MarginPercentageAOPRateBox data={data1} valueCurrency={'USD'} />
-               <MarginPercentageAOPRateBox data={data2} valueCurrency={'USD'} />
+               <MarginPercentageAOPRateBox
+                  data={data1}
+                  valueCurrency={data1?.annually?.id?.currency}
+               />
+               <MarginPercentageAOPRateBox
+                  data={data2}
+                  valueCurrency={data2?.annually?.id?.currency}
+               />
 
-               <FullCostAOPRateBox data={data1} valueCurrency={'USD'} />
-               <FullCostAOPRateBox data={data2} valueCurrency={'USD'} />
+               <FullCostAOPRateBox data={data1} valueCurrency={data1?.annually?.id?.currency} />
+               <FullCostAOPRateBox data={data2} valueCurrency={data2?.annually?.id?.currency} />
 
-               <ForUSPricingBox data={data1} />
-               <ForUSPricingBox data={data2} />
+               <ForUSPricingBox data={data1} valueCurrency={data1?.annually?.id?.currency} />
+               <ForUSPricingBox data={data2} valueCurrency={data2?.annually?.id?.currency} />
             </Grid>
          </Dialog>
          <MarginHistoryDialog
@@ -535,7 +541,7 @@ const FullCostAOPRateBox = (props) => {
 
 const ForUSPricingBox = (props) => {
    const { t } = useTranslation();
-   const { data, data2 } = props;
+   const { data, valueCurrency } = props;
 
    return (
       <Grid item xs={6}>
@@ -547,7 +553,7 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.manufacturingCost')} (USD)
+                  {t('quotationMargin.manufacturingCost')} ({valueCurrency})
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>
@@ -561,7 +567,7 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.addWarranty')} (USD)
+                  {t('quotationMargin.addWarranty')} ({valueCurrency})
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>
@@ -575,7 +581,7 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.surcharge')} (USD)
+                  {t('quotationMargin.surcharge')} ({valueCurrency})
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>
@@ -589,7 +595,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')} (USD)
+                  {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')} (
+                  {valueCurrency})
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>
@@ -603,7 +610,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')} (USD)
+                  {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')} (
+                  {valueCurrency})
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>
