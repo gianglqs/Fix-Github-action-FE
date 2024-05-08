@@ -14,8 +14,8 @@ import {
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import marginAnalysisApi from '@/api/marginAnalysis.api';
-import { useDispatch } from 'react-redux';
-import { commonStore } from '@/store/reducers';
+import { useDispatch, useSelector } from 'react-redux';
+import { commonStore, marginAnalysisStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
 import { parseCookies, setCookie } from 'nookies';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
@@ -48,7 +48,9 @@ export default function MarginAnalysis() {
    const [listDataAnalysis, setListDataAnalysis] = useState([]);
    const [marginAnalysisSummary, setMarginAnalysisSummary] = useState(null);
    const [uploadedFile, setUploadedFile] = useState({ name: '' });
-   const [loading, setLoading] = useState(false);
+   const loading = useSelector(marginAnalysisStore.selectIsLoadingPage);
+   // const [loading, setLoading] = useState(isLoadingPage);
+   console.log(loading);
 
    const [typeValue, setTypeValue] = useState({ value: 'None', error: false });
    const handleTypeValue = (option) => {
@@ -363,6 +365,10 @@ export default function MarginAnalysis() {
    };
    const handleCloseCompareMargin = () => {
       setOpenCompareMargin(false);
+   };
+
+   const setLoading = (status: boolean) => {
+      dispatch(marginAnalysisStore.actions.setLoadingPage(status));
    };
 
    return (
