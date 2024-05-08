@@ -8,6 +8,7 @@ export const resetState = createAction(`${name}/RESET_STATE`);
 export const initialState = {
    marginAnalystData: [] as any[],
    dealerList: [] as any[],
+   isLoadingPage: false as boolean,
 };
 
 const marginAnalysisSlice = createSlice({
@@ -19,6 +20,10 @@ const marginAnalysisSlice = createSlice({
       },
       setDealerList(state, { payload }: PayloadAction<any[]>) {
          state.dealerList = payload;
+      },
+
+      setLoadingPage(state, { payload }: PayloadAction<any>) {
+         state.isLoadingPage = payload;
       },
    },
    extraReducers: {
@@ -35,6 +40,8 @@ export const selectMarginAnalystData = createSelector(
    selectState,
    (state) => state.marginAnalystData
 );
+
+export const selectIsLoadingPage = createSelector(selectState, (state) => state.isLoadingPage);
 
 export const selectDealerList = createSelector(selectState, (state) => state.dealerList);
 
