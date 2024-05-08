@@ -23,6 +23,8 @@ import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
 import CompareMarginDialog from '@/components/Dialog/Module/MarginHistoryDialog/CompareMarginDialog';
 
+import { v4 as uuidv4 } from 'uuid';
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
@@ -175,8 +177,15 @@ export default function MarginAnalysis() {
       formData.append('file', file);
       setLoading(true);
 
+      const requestId = uuidv4();
+      console.log(requestId);
+      setCookie(null, 'quotation-margin/requestId', requestId, {
+         maxAge: 604800,
+         path: '/',
+      });
+
       marginAnalysisApi
-         .importMacroFile(formData)
+         .importMacroFile(requestId, formData)
          .then((response) => {
             setLoading(false);
             dispatch(commonStore.actions.setSuccessMessage('Import successfully'));

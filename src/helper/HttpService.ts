@@ -158,10 +158,11 @@ class HttpService<GetList = any> {
    importData = <T = any>(
       endpoint: string,
       data = {} as Record<string, any>,
+      params = {} as Record<string, any>,
       context: GetServerSidePropsContext = null as any
    ) => {
       this.setHeaderForApiTransferFile(context);
-      return this.instance.post<T>(endpoint, data);
+      return this.instance.post<T>(endpoint, data, { params });
    };
 
    getListData = <T = any>(
