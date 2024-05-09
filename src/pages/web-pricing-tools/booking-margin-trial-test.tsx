@@ -1,26 +1,16 @@
-import { useCallback, useContext, useEffect, useState, useTransition } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
-import { centerHeaderColumn, formatNumbericColumn } from '@/utils/columnProperties';
-import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
-import { useDispatch, useSelector } from 'react-redux';
 import { bookingMarginTrialTestStore, commonStore, importFailureStore } from '@/store/reducers';
-import moment from 'moment-timezone';
+import { centerHeaderColumn, formatNumbericColumn } from '@/utils/columnProperties';
+import { formatDate, formatNumber, formatNumberPercentage } from '@/utils/formatCell';
+import { useDispatch, useSelector } from 'react-redux';
 
+import ClearIcon from '@mui/icons-material/Clear';
+import { Backdrop, Button, CircularProgress, ListItem } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import {
-   Backdrop,
-   Button,
-   CircularProgress,
-   FormControlLabel,
-   ListItem,
-   Radio,
-   RadioGroup,
-   Typography,
-} from '@mui/material';
-import { useDropzone } from 'react-dropzone';
 import { setCookie } from 'nookies';
-import ClearIcon from '@mui/icons-material/Clear';
+import { useDropzone } from 'react-dropzone';
 
 import {
    AppAutocomplete,
@@ -30,37 +20,31 @@ import {
    DataTablePagination,
 } from '@/components';
 
-import _ from 'lodash';
 import { produce } from 'immer';
+import _ from 'lodash';
 
+import bookingMarginTrialTestApi from '@/api/bookingMarginTrialTest.api';
+import AppBackDrop from '@/components/App/BackDrop';
+import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
+import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
+import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
+import { UserInfoContext } from '@/provider/UserInfoContext';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
+import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { defaultValueFilterOrder } from '@/utils/defaultValues';
+import { extractTextInParentheses } from '@/utils/getString';
+import { styled } from '@mui/material/styles';
 import {
    DataGridPro,
    GridColDef,
    GridColumnGroupHeaderParams,
    GridColumnGroupingModel,
    GridToolbar,
-   GridRenderHeaderParams
 } from '@mui/x-data-grid-pro';
-import { UserInfoContext } from '@/provider/UserInfoContext';
-import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
-import bookingMarginTrialTestApi from '@/api/bookingMarginTrialTest.api';
-import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
-import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
-import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
-import AppBackDrop from '@/components/App/BackDrop';
-import { isEmptyObject } from '@/utils/checkEmptyObject';
-import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
-import { componentType, paperStyle } from '@/theme/paperStyle';
 import { useTranslation } from 'react-i18next';
-import BuildIcon from '@mui/icons-material/Build';
-import PersonIcon from '@mui/icons-material/Person';
-import { styled } from '@mui/material/styles';
-import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
-import { extractTextInParentheses } from '@/utils/getString';
-
-
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -96,7 +80,6 @@ function HeaderWithIcon(props: HeaderWithIconProps) {
 
 export default function Shipment() {
    const dispatch = useDispatch();
-
 
    const { t } = useTranslation();
 
@@ -423,13 +406,11 @@ export default function Shipment() {
       },
    ];
 
-
    const columnGroupingModel: GridColumnGroupingModel = [
       {
          groupId: 'pricing_team',
          headerName: 'Pricing Team Booking Margin',
-         headerClassName:'pricing-team'
-         ,
+         headerClassName: 'pricing-team',
          children: [
             { field: 'date' },
             { field: 'dealerNet' },
@@ -439,7 +420,7 @@ export default function Shipment() {
       {
          groupId: 'FPA_team',
          headerName: 'FP&A Team Est. Billing Margin',
-         headerClassName:'FPA-team',
+         headerClassName: 'FPA-team',
          children: [
             { field: 'FPA_dealerNet' },
             { field: 'FPA_cost' },
@@ -451,7 +432,7 @@ export default function Shipment() {
          groupId: 'actual',
          headerName: 'Actual',
          freeReordering: true,
-         headerClassName:'actual-team',
+         headerClassName: 'actual-team',
          children: [
             { field: 'actual_dealerNet' },
             { field: 'actual_cost' },
@@ -616,7 +597,6 @@ export default function Shipment() {
                         name="orderNo"
                         label={t('filters.order#')}
                         placeholder={t('filters.searchOrderById')}
-                        
                         focused
                      />
                   </Grid>
@@ -791,7 +771,6 @@ export default function Shipment() {
                   </Grid>
                </Grid>
             )}
-        
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
@@ -809,10 +788,7 @@ export default function Shipment() {
                      }}
                      columnHeaderHeight={40}
                      rowHeight={30}
-                     
-                     rowBuffer={35}
-                     rowThreshold={25}
-   
+                     rowBufferPx={35}
                      getRowId={(params) => params.booking.orderNo}
                      onCellClick={handleOnCellClick}
                      columnGroupingModel={columnGroupingModel}

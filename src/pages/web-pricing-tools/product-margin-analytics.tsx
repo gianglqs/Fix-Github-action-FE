@@ -674,8 +674,7 @@ export default function Outlier() {
                         slots={{
                            toolbar: GridToolbar,
                         }}
-                        rowBuffer={35}
-                        rowThreshold={25}
+                        rowBufferPx={35}
                         columns={columns}
                         getRowId={(params) => params.orderNo}
                      />
