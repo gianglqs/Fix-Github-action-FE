@@ -1,15 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Menu, MenuItem, Button, Typography, styled, Pagination, Stack } from '@mui/material';
+import { Button, Menu, MenuItem, Pagination, Stack, Typography, styled } from '@mui/material';
 
 import { ArrowDropDown as ArrowDropDownIcon } from '@mui/icons-material';
 
-import { usePopupState, bindTrigger, bindMenu } from 'material-ui-popup-state/hooks';
+import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
 
-import type { NumberFormatValues } from 'react-number-format';
-import type { DataTablePaginationProps } from './type';
 import { AppNumberField } from '@/components/App';
 import { useTranslation } from 'react-i18next';
+import type { NumberFormatValues } from 'react-number-format';
 
 const StyledPagination = styled(Pagination)(({ theme }) => ({
    '& .MuiPaginationItem-root': {
@@ -44,8 +43,16 @@ const StyledGoButton = styled(Button)(({ theme }) => ({
 
 const DataTablePagination = (props) => {
    const { t } = useTranslation();
-   const { page, perPage, totalItems, perPageList, onChangePage, onChangePerPage, lastUpdated } =
-      props;
+   const {
+      page,
+      perPage,
+      totalItems,
+      perPageList,
+      onChangePage,
+      onChangePerPage,
+      lastUpdatedAt,
+      lastUpdatedBy,
+   } = props;
    const count = Math.ceil(totalItems / perPage);
 
    const [numberGoToPage, setNumberGoToPage] = useState(0);
@@ -96,9 +103,10 @@ const DataTablePagination = (props) => {
                alignItems="center"
                sx={{ width: '50%', color: 'black' }}
             >
-               {lastUpdated && (
+               {lastUpdatedAt && (
                   <div>
-                     {t('table.lastUpdated')} {lastUpdated}
+                     {t('table.lastUpdatedBy')} {lastUpdatedBy} {t('table.lastUpdatedAt')}{' '}
+                     {lastUpdatedAt}
                   </div>
                )}
             </Stack>

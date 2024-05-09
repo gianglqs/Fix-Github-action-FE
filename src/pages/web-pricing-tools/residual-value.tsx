@@ -76,7 +76,8 @@ export default function ResidualValue() {
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
 
    const serverTimeZone = useSelector(residualValueStore.selectServerTimeZone);
-   const serverLatestUpdatedTime = useSelector(residualValueStore.selectLatestUpdatedTime);
+   const serverLastUpdatedTime = useSelector(residualValueStore.selectLastUpdatedTime);
+   const serverLastUpdatedBy = useSelector(residualValueStore.selectLastUpdatedBy);
 
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
@@ -278,9 +279,9 @@ export default function ResidualValue() {
 
    // show latest updated time
    const convertTimezone = () => {
-      if (serverLatestUpdatedTime && serverTimeZone) {
+      if (serverLastUpdatedTime && serverTimeZone) {
          setClientLatestUpdatedTime(
-            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+            convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
          );
       }
    };
@@ -490,7 +491,8 @@ export default function ResidualValue() {
                      ModelCode: {dataFilter.modelCode}
                   </Typography>
                   <Typography sx={{ bottom: '30px', position: 'absolute' }}>
-                     Last updated at: {clientLatestUpdatedTime}
+                     {t('table.lastUpdatedBy')} {serverLastUpdatedBy} {t('table.lastUpdatedAt')}{' '}
+                     {clientLatestUpdatedTime}
                   </Typography>
                </Grid>
                <Grid

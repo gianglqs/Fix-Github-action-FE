@@ -69,7 +69,8 @@ export default function Outlier() {
    const [loading, setLoading] = useState(false);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
    const serverTimeZone = useSelector(outlierStore.selectServerTimeZone);
-   const serverLatestUpdatedTime = useSelector(outlierStore.selectLatestUpdatedTime);
+   const serverLastUpdatedTime = useSelector(outlierStore.selectLastUpdatedTime);
+   const serverLastUpdatedBy = useSelector(outlierStore.selectLastUpdatedBy);
 
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
@@ -386,16 +387,16 @@ export default function Outlier() {
 
    // show latest updated time
    const convertTimezone = () => {
-      if (serverLatestUpdatedTime && serverTimeZone) {
+      if (serverLastUpdatedTime && serverTimeZone) {
          setClientLatestUpdatedTime(
-            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+            convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
          );
       }
    };
 
    useEffect(() => {
       convertTimezone();
-   }, [serverLatestUpdatedTime, serverTimeZone]);
+   }, [serverLastUpdatedTime, serverTimeZone]);
 
    return (
       <>
@@ -686,7 +687,8 @@ export default function Outlier() {
                      totalItems={tableState.totalItems}
                      onChangePage={handleChangePage}
                      onChangePerPage={handleChangePerPage}
-                     lastUpdated={clientLatestUpdatedTime}
+                     lastUpdatedAt={clientLatestUpdatedTime}
+                     lastUpdatedBy={serverLastUpdatedBy}
                   />
                </Paper>
                <AppBackDrop open={loading} hightHeaderTable={'35px'} bottom={'43px'} />

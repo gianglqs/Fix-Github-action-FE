@@ -14,7 +14,8 @@ export const initialState = {
    exchangeRateList: [] as any[],
    dataFilter: {} as any,
    serverTimeZone: '' as any,
-   latestUpdatedTime: '' as any,
+   lastUpdatedTime: '' as any,
+   lastUpdatedBy: '' as any,
    discountPercent: 0 as number,
    withMarginVolumeRecovery: true as boolean,
 };
@@ -47,8 +48,11 @@ const pricevolumesensitivitySlice = createSlice({
       setServerTimeZone(state, { payload }: PayloadAction<any[]>) {
          state.serverTimeZone = payload;
       },
-      setLatestUpdatedTime(state, { payload }: PayloadAction<any[]>) {
-         state.latestUpdatedTime = payload;
+      setLastUpdatedTime(state, { payload }: PayloadAction<any[]>) {
+         state.lastUpdatedTime = payload;
+      },
+      setLastUpdatedBy(state, { payload }: PayloadAction<any[]>) {
+         state.lastUpdatedBy = payload;
       },
       setDiscountPercent(state, { payload }: PayloadAction<number>) {
          state.discountPercent = payload;
@@ -83,10 +87,9 @@ export const selectDefaultValueFilterOrder = createSelector(
    (state) => state.defaultValueFilterOrder
 );
 export const selectServerTimeZone = createSelector(selectState, (state) => state.serverTimeZone);
-export const selectLatestUpdatedTime = createSelector(
-   selectState,
-   (state) => state.latestUpdatedTime
-);
+export const selectLastUpdatedTime = createSelector(selectState, (state) => state.lastUpdatedTime);
+
+export const selectLastUpdatedBy = createSelector(selectState, (state) => state.lastUpdatedBy);
 export const selectDiscountPercent = createSelector(selectState, (state) => state.discountPercent);
 export const selectWithMarginVolumeRecovery = createSelector(
    selectState,

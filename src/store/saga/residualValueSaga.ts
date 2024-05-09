@@ -65,9 +65,15 @@ function* fetchAllInitDataFilter() {
          JSON.parse(String(residualValueData.data)).serverTimeZone
       )
    );
+
    yield put(
-      residualValueStore.actions.setLatestUpdatedTime(
-         JSON.parse(String(residualValueData.data)).latestUpdatedTime
+      residualValueStore.actions.setLastUpdatedTime(
+         JSON.parse(String(residualValueData.data)).lastUpdatedTime
+      )
+   );
+   yield put(
+      residualValueStore.actions.setLastUpdatedBy(
+         JSON.parse(String(residualValueData.data)).lastUpdatedBy
       )
    );
 }
@@ -87,7 +93,10 @@ function* fetchDataResidualValue() {
       );
       yield put(residualValueStore.actions.setServerTimeZone(JSON.parse(data).serverTimeZone));
       yield put(
-         residualValueStore.actions.setLatestUpdatedTime(JSON.parse(data).latestUpdatedTime)
+         residualValueStore.actions.setLastUpdatedTime(JSON.parse(String(data)).lastUpdatedTime)
+      );
+      yield put(
+         residualValueStore.actions.setLastUpdatedBy(JSON.parse(String(data)).lastUpdatedBy)
       );
    }
 }

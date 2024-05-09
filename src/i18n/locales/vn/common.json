@@ -99,7 +99,8 @@
    },
 
    "table": {
-      "lastUpdated": "Cập nhật lần cuối: ",
+      "lastUpdatedBy": "Cập nhật lần cuối bởi",
+      "lastUpdatedAt": "vào lúc",
       "rowsPerPage": "Số dòng mỗi trang: ",
 
       "order#": "Mã đơn hàng #",

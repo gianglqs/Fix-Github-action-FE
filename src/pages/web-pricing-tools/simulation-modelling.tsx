@@ -81,7 +81,8 @@ export default function Adjustment() {
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
    const [hasSetDataCalculator, setHasSetDataCalculator] = useState(false);
    const serverTimeZone = useSelector(adjustmentStore.selectServerTimeZone);
-   const serverLatestUpdatedTime = useSelector(adjustmentStore.selectLatestUpdatedTime);
+   const serverLastUpdatedTime = useSelector(adjustmentStore.selectLastUpdatedTime);
+   const serverLastUpdatedBy = useSelector(adjustmentStore.selectLastUpdatedBy);
 
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
@@ -672,16 +673,16 @@ export default function Adjustment() {
 
    // show latest updated time
    const convertTimezone = () => {
-      if (serverLatestUpdatedTime && serverTimeZone) {
+      if (serverLastUpdatedTime && serverTimeZone) {
          setClientLatestUpdatedTime(
-            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+            convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
          );
       }
    };
 
    useEffect(() => {
       convertTimezone();
-   }, [serverLatestUpdatedTime, serverTimeZone]);
+   }, [serverLastUpdatedTime, serverTimeZone]);
    return (
       <>
          <AppLayout entity="adjustment">
@@ -1162,7 +1163,8 @@ export default function Adjustment() {
                   totalItems={tableState.totalItems}
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
-                  lastUpdated={clientLatestUpdatedTime}
+                  lastUpdatedAt={clientLatestUpdatedTime}
+                  lastUpdatedBy={serverLastUpdatedBy}
                />
                <AppBackDrop open={loadingTable} hightHeaderTable={'102px'} />
             </Paper>
