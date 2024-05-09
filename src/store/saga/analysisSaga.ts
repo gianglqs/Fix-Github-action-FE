@@ -1,10 +1,11 @@
 import { takeEvery, put, delay } from 'redux-saga/effects';
-import { marginAnalysisStore } from '../reducers';
+import { commonStore, marginAnalysisStore } from '../reducers';
 import { all, call, select } from 'typed-redux-saga';
 import checkProcessingApi from '@/api/checkProcessing.api';
 import { destroyCookie, parseCookies } from 'nookies';
+import marginAnalysisApi from '@/api/marginAnalysis.api';
 
-function* fetchMarginAnalysis() {
+function* getLoadingPage() {
    try {
       const cookies = parseCookies();
       const requestId = cookies['quotation-margin/requestId'];
@@ -12,11 +13,22 @@ function* fetchMarginAnalysis() {
       if (requestId) {
          yield put(marginAnalysisStore.actions.setLoadingPage(true));
 
-         yield call(checkProcessingApi.checkProcessing, { requestId });
          while (true) {
             console.log('hehehe');
             const { data } = yield call(checkProcessingApi.checkProcessing, { requestId });
-            if (data === 'false') break;
+
+            console.log('data day', data);
+
+            if (data === '') break;
+
+            const processingData = JSON.parse(String(data));
+            if (processingData.state == 'success') {
+               yield put(commonStore.actions.setSuccessMessage(processingData.message));
+               break;
+            } else if (processingData.state == 'error') {
+               yield put(commonStore.actions.setErrorMessage(processingData.message));
+               break;
+            }
 
             yield delay(5000);
          }
@@ -31,8 +43,30 @@ function* fetchMarginAnalysis() {
    }
 }
 
-function* marginAnalysisSaga() {
-   yield takeEvery(marginAnalysisStore.sagaGetList, fetchMarginAnalysis);
+function* getDataViewPrevious() {
+   try {
+      const { data } = yield call(marginAnalysisApi.getPreviousDataView);
+      const dataConvert = JSON.parse(String(data));
+
+      yield put(
+         marginAnalysisStore.actions.setInitDataFilter({
+            modelCode: dataConvert.modelCodeFilters,
+            series: dataConvert.seriesFilters,
+            orderNumber: dataConvert.orderNumberFilters,
+            type: dataConvert.typeFilters,
+         })
+      );
+   } catch (error) {
+      console.log(error);
+   }
 }
 
-export default marginAnalysisSaga;
+function* fetchLoadingQuotationMarginPage() {
+   yield takeEvery(marginAnalysisStore.sagaGetList, getLoadingPage);
+}
+
+function* fetchDataViewPrevious() {
+   yield takeEvery(marginAnalysisStore.sagaGetList, getDataViewPrevious);
+}
+
+export { fetchLoadingQuotationMarginPage, fetchDataViewPrevious };

@@ -9,6 +9,8 @@ export const initialState = {
    marginAnalystData: [] as any[],
    dealerList: [] as any[],
    isLoadingPage: false as boolean,
+   initDataFilter: {} as any,
+   fileUUID: '' as string,
 };
 
 const marginAnalysisSlice = createSlice({
@@ -24,6 +26,13 @@ const marginAnalysisSlice = createSlice({
 
       setLoadingPage(state, { payload }: PayloadAction<any>) {
          state.isLoadingPage = payload;
+      },
+
+      setInitDataFilter(state, { payload }: PayloadAction<any>) {
+         state.initDataFilter = payload;
+      },
+      setFileUUID(state, { payload }: PayloadAction<any>) {
+         state.fileUUID = payload;
       },
    },
    extraReducers: {
@@ -44,6 +53,8 @@ export const selectMarginAnalystData = createSelector(
 export const selectIsLoadingPage = createSelector(selectState, (state) => state.isLoadingPage);
 
 export const selectDealerList = createSelector(selectState, (state) => state.dealerList);
+export const selectInitDataFilter = createSelector(selectState, (state) => state.initDataFilter);
+export const selectFileUUID = createSelector(selectState, (state) => state.fileUUID);
 
 export const { actions } = marginAnalysisSlice;
 

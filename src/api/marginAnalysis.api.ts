@@ -45,8 +45,12 @@ class MarginAnalysisApi extends HttpService<any> {
    deleteMarginData = (data: any) => {
       return this.delete<any>('delete-margin-data', data);
    };
+
+   getPreviousDataView = () => {
+      return this.get<any>('get-previous-data-view-quotation-margin');
+   };
 }
 
-const marginAnalysisApi = new MarginAnalysisApi('bookingOrder');
+const marginAnalysisApi = new MarginAnalysisApi('QuotationMargin');
 
 export default marginAnalysisApi;

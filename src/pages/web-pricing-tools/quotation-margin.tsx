@@ -49,8 +49,7 @@ export default function MarginAnalysis() {
    const [marginAnalysisSummary, setMarginAnalysisSummary] = useState(null);
    const [uploadedFile, setUploadedFile] = useState({ name: '' });
    const loading = useSelector(marginAnalysisStore.selectIsLoadingPage);
-   // const [loading, setLoading] = useState(isLoadingPage);
-   console.log(loading);
+   const initDataFilter = useSelector(marginAnalysisStore.selectInitDataFilter);
 
    const [typeValue, setTypeValue] = useState({ value: 'None', error: false });
    const handleTypeValue = (option) => {
@@ -297,18 +296,27 @@ export default function MarginAnalysis() {
       },
    ];
 
-   const [marginFilter, setMarginFilter] = useState({
-      type: [{ value: 'None' }],
-      modelCode: [{ value: 'None' }],
-      series: [{ value: 'None' }],
-      orderNumber: [{ value: 'None' }],
-   });
+   const [marginFilter, setMarginFilter] = useState(initDataFilter);
 
    useEffect(() => {
-      setTypeValue({ value: marginFilter.type[0]?.value, error: false });
-      setModelCodeValue({ value: marginFilter.modelCode[0]?.value });
-      setSeries({ value: marginFilter.series[0]?.value, error: false });
-      setOrderNumberValue({ value: marginFilter.orderNumber[0]?.value });
+      setMarginFilter(initDataFilter);
+   }, [initDataFilter]);
+
+   useEffect(() => {
+      setTypeValue({
+         value: marginFilter?.type ? marginFilter?.type[0]?.value : 'None',
+         error: false,
+      });
+      setModelCodeValue({
+         value: marginFilter.modelCode ? marginFilter.modelCode[0]?.value : 'None',
+      });
+      setSeries({
+         value: marginFilter.series ? marginFilter.series[0]?.value : 'None',
+         error: false,
+      });
+      setOrderNumberValue({
+         value: marginFilter.orderNumber ? marginFilter.orderNumber[0]?.value : 'None',
+      });
    }, [marginFilter]);
 
    const regionOptions = [
