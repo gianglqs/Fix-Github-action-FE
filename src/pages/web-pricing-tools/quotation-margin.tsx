@@ -251,10 +251,11 @@ export default function MarginAnalysis() {
          flex: 0.3,
          headerName: t('table.plant'),
       },
+
       {
          field: 'listPrice',
          flex: 0.4,
-         headerName: t('table.listPrice'),
+         headerName: t('table.listPrice') + ` (${valueCurrency})`,
          headerAlign: 'right',
          align: 'right',
          cellClassName: 'highlight-cell',
@@ -262,7 +263,7 @@ export default function MarginAnalysis() {
       {
          field: 'manufacturingCost',
          flex: 0.7,
-         headerName: t('quotationMargin.manufacturingCost'),
+         headerName: t('quotationMargin.manufacturingCost') + ` (${valueCurrency})`,
          headerAlign: 'right',
          align: 'right',
       },
@@ -518,19 +519,6 @@ export default function MarginAnalysis() {
                )}
             </Grid>
 
-            <Grid container sx={{ marginTop: 1 }}>
-               <DataTable
-                  hideFooter
-                  disableColumnMenu
-                  tableHeight={250}
-                  rowHeight={50}
-                  rows={listDataAnalysis}
-                  columns={columns}
-                  getRowId={getRowId}
-                  sx={{ borderBottom: '1px solid #a8a8a8', borderTop: '1px solid #a8a8a8' }}
-               />
-            </Grid>
-
             <Grid container spacing={1} sx={{ marginTop: 1 }}>
                <MarginPercentageAOPRateBox
                   data={marginAnalysisSummary?.annually}
@@ -629,6 +617,19 @@ export default function MarginAnalysis() {
 
                <ForUSPricingBox data={marginAnalysisSummary?.annually} />
                <ForUSPricingBox data={marginAnalysisSummary?.monthly} />
+            </Grid>
+
+            <Grid container sx={{ marginTop: 1 }}>
+               <DataTable
+                  hideFooter
+                  disableColumnMenu
+                  tableHeight={250}
+                  rowHeight={50}
+                  rows={listDataAnalysis}
+                  columns={columns}
+                  getRowId={getRowId}
+                  sx={{ borderBottom: '1px solid #a8a8a8', borderTop: '1px solid #a8a8a8' }}
+               />
             </Grid>
          </AppLayout>
          <CompareMarginDialog open={openCompareMargin} onClose={handleCloseCompareMargin} />
