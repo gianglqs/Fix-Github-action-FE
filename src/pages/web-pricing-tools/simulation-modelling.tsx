@@ -16,6 +16,7 @@ import {
    AppLayout,
    AppNumberField,
    AppTextField,
+   AppDateField,
    DataTablePagination,
 } from '@/components';
 
@@ -87,7 +88,12 @@ export default function Adjustment() {
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
          produce(prev, (draft) => {
-            if (_.includes(['marginPercentage', 'marginPercentageAfterAdj'], field)) {
+            if (
+               _.includes(
+                  ['fromDate', 'toDate', 'marginPercentage', 'marginPercentageAfterAdj'],
+                  field
+               )
+            ) {
                draft[field] = option;
             } else {
                draft[field] = option.map(({ value }) => value);
@@ -964,6 +970,32 @@ export default function Adjustment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
+
+               <Grid item xs={2}>
+                  <AppDateField
+                     views={['day', 'month', 'year']}
+                     label={t('filters.fromDate')}
+                     name="from_date"
+                     onChange={(e, value) =>
+                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
+                     }
+                     value={dataFilter?.fromDate}
+                     maxDate={new Date().toISOString().slice(0, 10)}
+                  />
+               </Grid>
+               <Grid item xs={2}>
+                  <AppDateField
+                     views={['day', 'month', 'year']}
+                     label={t('filters.toDate')}
+                     name="toDate"
+                     onChange={(e, value) =>
+                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
+                     }
+                     value={dataFilter?.toDate}
+                     maxDate={new Date().toISOString().slice(0, 10)}
+                  />
+               </Grid>
+
                <Grid item xs={1}>
                   <Button
                      variant="contained"
