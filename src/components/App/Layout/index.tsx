@@ -84,7 +84,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       'data-scraping': t('title.dataScraping'),
       'volume-discount-analysis': t('title.volumeDiscountAnalysis'),
       'booking-margin-trial-test': t('title.bookingMarginTrialTest'),
-      'price-volume-sensitivity': t('title.priceVolumeSensitivity'),
+      // 'price-volume-sensitivity': t('title.priceVolumeSensitivity'),
       'residual-value': t('title.residualValue'),
    };
 
