@@ -952,7 +952,7 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.manufacturingCost')} (USD)
+                  {t('quotationMargin.manufacturingCost')} ({data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.manufacturingCostUSD.toLocaleString()}
@@ -960,7 +960,7 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.addWarranty')} (USD)
+                  {t('quotationMargin.addWarranty')} ({data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.warrantyCost.toLocaleString()}
@@ -968,7 +968,7 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.surcharge')} (USD)
+                  {t('quotationMargin.surcharge')} ({data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.surchargeCost.toLocaleString()}
@@ -976,7 +976,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')} (USD)
+                  {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')} (
+                  {data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCostWithoutFreight.toLocaleString()}
@@ -984,7 +985,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')} (USD)
+                  {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')} (
+                  {data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCostWithFreight.toLocaleString()}
