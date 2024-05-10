@@ -423,6 +423,8 @@ export default function MarginAnalysis() {
       dispatch(marginAnalysisStore.actions.setLoadingPage(status));
    };
 
+   console.log(targetMargin);
+
    return (
       <>
          <AppLayout entity="margin_analysis">
@@ -644,7 +646,7 @@ export default function MarginAnalysis() {
                            component="span"
                            sx={{ fontWeight: 'bold', marginRight: 1 }}
                         >
-                           {formatNumberPercentage((targetMargin * 100).toLocaleString())}
+                           {formatNumberPercentage(targetMargin * 100)}
                         </Typography>
                      </div>
                   </Paper>
