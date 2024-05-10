@@ -423,9 +423,9 @@ export default function VolumeDiscountAnalysis() {
                         dataFilter.pricePerUnit?.value == 0 ? '' : dataFilter.pricePerUnit?.value
                      }
                      onChange={(e) => handleChangeDataFilter(e.value, 'pricePerUnit')}
-                     name="pricePerUnit"
-                     label={t('filters.startingPricePerUnit')}
-                     placeholder={t('filters.startingPricePerUnit')}
+                     name="pricePerUnittt"
+                     label={t('filters.dealerNet')}
+                     placeholder={t('filters.dealerNet')}
                      prefix="$"
                   />
                </Grid>
@@ -552,8 +552,7 @@ export default function VolumeDiscountAnalysis() {
                      }}
                      rowHeight={35}
                      rows={volumeDiscountData}
-                     rowBuffer={35}
-                     rowThreshold={25}
+                     rowBufferPx={35}
                      columns={columns}
                      getRowId={(params) => params.id}
                   />

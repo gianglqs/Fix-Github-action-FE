@@ -33,7 +33,8 @@ function* fetchProduct() {
 
       const dataProduct = JSON.parse(String(data)).listData;
       const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
-      const dataLatestUpdatedTime = JSON.parse(String(data)).latestUpdatedTime;
+      const dataLastUpdatedTime = JSON.parse(String(data)).lastUpdatedTime;
+      const dataLastUpdatedBy = JSON.parse(String(data)).lastUpdatedBy;
 
       yield put(productStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
       yield put(productStore.actions.setProductList(dataProduct));
@@ -44,7 +45,8 @@ function* fetchProduct() {
          })
       );
       yield put(productStore.actions.setServerTimeZone(dataServerTimeZone));
-      yield put(productStore.actions.setLatestUpdatedTime(dataLatestUpdatedTime));
+      yield put(productStore.actions.setLastUpdatedTime(dataLastUpdatedTime));
+      yield put(productStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
    } catch (error) {}
 }
 

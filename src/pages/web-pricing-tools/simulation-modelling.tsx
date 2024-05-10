@@ -16,6 +16,7 @@ import {
    AppLayout,
    AppNumberField,
    AppTextField,
+   AppDateField,
    DataTablePagination,
 } from '@/components';
 
@@ -26,7 +27,12 @@ import {
    defaultValueFilterOrder,
    defaultValueCaculatorForAjustmentCost,
 } from '@/utils/defaultValues';
-import { DataGridPro, GridCellParams, GridToolbar } from '@mui/x-data-grid-pro';
+import {
+   DataGridPro,
+   GridCellParams,
+   GridToolbar,
+   GridColumnGroupingModel,
+} from '@mui/x-data-grid-pro';
 
 import CellColor, {
    CellPercentageColor,
@@ -80,14 +86,20 @@ export default function Adjustment() {
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
    const [hasSetDataCalculator, setHasSetDataCalculator] = useState(false);
    const serverTimeZone = useSelector(adjustmentStore.selectServerTimeZone);
-   const serverLatestUpdatedTime = useSelector(adjustmentStore.selectLatestUpdatedTime);
+   const serverLastUpdatedTime = useSelector(adjustmentStore.selectLastUpdatedTime);
+   const serverLastUpdatedBy = useSelector(adjustmentStore.selectLastUpdatedBy);
 
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
          produce(prev, (draft) => {
-            if (_.includes(['marginPercentage', 'marginPercentageAfterAdj'], field)) {
+            if (
+               _.includes(
+                  ['fromDate', 'toDate', 'marginPercentage', 'marginPercentageAfterAdj'],
+                  field
+               )
+            ) {
                draft[field] = option;
             } else {
                draft[field] = option.map(({ value }) => value);
@@ -188,7 +200,7 @@ export default function Adjustment() {
          minWidth: 60,
          headerName: t('table.region'),
          renderCell(params) {
-            return <CellText value={params.row.region} />;
+            return <span>{params.row.region}</span>;
          },
       },
 
@@ -316,7 +328,8 @@ export default function Adjustment() {
          minWidth: 100,
          headerName: `${t('table.originalDealerNet')} ('000 USD)`,
          ...formatNumbericColumn,
-
+         cellClassName: 'highlight-cell',
+         headerClassName: 'origin',
          renderCell(params) {
             return <CellColor color={''} value={params?.row.originalDN}></CellColor>;
          },
@@ -324,7 +337,10 @@ export default function Adjustment() {
       {
          field: 'originalMargin',
          flex: 0.7,
+
          minWidth: 150,
+         cellClassName: 'highlight-cell',
+         headerClassName: 'origin',
          headerName: `${t('table.originalMargin')} ('000 USD)`,
          ...formatNumbericColumn,
 
@@ -336,6 +352,8 @@ export default function Adjustment() {
          field: 'originalMarginPercentage',
          flex: 0.7,
          minWidth: 100,
+         cellClassName: 'highlight-cell',
+         headerClassName: 'origin',
          headerName: t('table.originalMarginPercentage'),
          ...formatNumbericColumn,
 
@@ -350,6 +368,8 @@ export default function Adjustment() {
          field: 'newDN',
          flex: 0.6,
          minWidth: 100,
+         cellClassName: 'highlight-cell-adjusted',
+         headerClassName: 'adjusted',
          headerName: `${t('table.adjustedDealerNet')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -360,6 +380,8 @@ export default function Adjustment() {
          field: 'newMargin',
          flex: 0.6,
          minWidth: 100,
+         cellClassName: 'highlight-cell-adjusted',
+         headerClassName: 'adjusted',
          headerName: `${t('table.newMargin')}`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -370,6 +392,8 @@ export default function Adjustment() {
          field: 'newMarginPercentage',
          flex: 0.6,
          minWidth: 100,
+         cellClassName: 'highlight-cell-adjusted',
+         headerClassName: 'adjusted',
          headerName: `${t('table.newMarginPercentage')}`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -382,7 +406,24 @@ export default function Adjustment() {
          },
       },
    ];
-
+   const columnGroupingModel: GridColumnGroupingModel = [
+      {
+         groupId: 'Original',
+         headerName: 'Original',
+         headerClassName: 'origin',
+         children: [
+            { field: 'originalDN' },
+            { field: 'originalMargin' },
+            { field: 'originalMarginPercentage' },
+         ],
+      },
+      {
+         groupId: 'Adjusted',
+         headerName: 'Adjusted',
+         headerClassName: 'adjusted',
+         children: [{ field: 'newDN' }, { field: 'newMargin' }, { field: 'newMarginPercentage' }],
+      },
+   ];
    const totalColumns = [
       {
          field: 'region',
@@ -666,16 +707,16 @@ export default function Adjustment() {
 
    // show latest updated time
    const convertTimezone = () => {
-      if (serverLatestUpdatedTime && serverTimeZone) {
+      if (serverLastUpdatedTime && serverTimeZone) {
          setClientLatestUpdatedTime(
-            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+            convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
          );
       }
    };
 
    useEffect(() => {
       convertTimezone();
-   }, [serverLatestUpdatedTime, serverTimeZone]);
+   }, [serverLastUpdatedTime, serverTimeZone]);
    return (
       <>
          <AppLayout entity="adjustment">
@@ -998,6 +1039,32 @@ export default function Adjustment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
+
+               <Grid item xs={2}>
+                  <AppDateField
+                     views={['day', 'month', 'year']}
+                     label={t('filters.fromDate')}
+                     name="from_date"
+                     onChange={(e, value) =>
+                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
+                     }
+                     value={dataFilter?.fromDate}
+                     maxDate={new Date().toISOString().slice(0, 10)}
+                  />
+               </Grid>
+               <Grid item xs={2}>
+                  <AppDateField
+                     views={['day', 'month', 'year']}
+                     label={t('filters.toDate')}
+                     name="toDate"
+                     onChange={(e, value) =>
+                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
+                     }
+                     value={dataFilter?.toDate}
+                     maxDate={new Date().toISOString().slice(0, 10)}
+                  />
+               </Grid>
+
                <Grid item xs={1}>
                   <Button
                      variant="contained"
@@ -1101,22 +1168,21 @@ export default function Adjustment() {
                            padding: 0,
                         },
                         '& .MuiDataGrid-columnHeaderTitle': {
-                           textOverflow: 'clip',
                            whiteSpace: 'break-spaces',
                            lineHeight: 1.2,
                         },
                      }}
                      hideFooter
                      disableColumnMenu
-                     columnHeaderHeight={90}
+                     columnHeaderHeight={60}
                      rowHeight={30}
                      slots={{
                         toolbar: GridToolbar,
                      }}
                      rows={listAdjustment}
-                     rowBuffer={35}
-                     rowThreshold={25}
+                     rowBufferPx={35}
                      columns={columns}
+                     columnGroupingModel={columnGroupingModel}
                      getRowId={(params) => params.id}
                   />
                </Grid>
@@ -1127,7 +1193,8 @@ export default function Adjustment() {
                   totalItems={tableState.totalItems}
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
-                  lastUpdated={clientLatestUpdatedTime}
+                  lastUpdatedAt={clientLatestUpdatedTime}
+                  lastUpdatedBy={serverLastUpdatedBy}
                />
                <AppBackDrop open={loadingTable} hightHeaderTable={'102px'} />
             </Paper>

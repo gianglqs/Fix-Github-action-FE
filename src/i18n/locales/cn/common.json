@@ -71,7 +71,7 @@
       "truckType": "卡车类型",
       "searchOrderById": "按订单ID搜索",
       "searchProductByModel": "按型号代码搜索产品",
-      "startingPricePerUnit": "每单位的起始销售价格",
+      "dealerNet": "经销商净价",
       "costOfGoodSold": "每单位的销售成本",
       "marginPercentagePerUnit": "每单位的利润率",
       "discountPercentagePerOneNewItem": "每增加 1 个新项目的折扣率",
@@ -99,7 +99,8 @@
    },
 
    "table": {
-      "lastUpdated": "最后更新时间：",
+      "lastUpdatedBy": "最后更新者",
+      "lastUpdatedAt": "在",
       "rowsPerPage": "每页行数：",
 
       "order#": "订单号",
@@ -132,7 +133,7 @@
       "originalMargin": "原始利润",
       "originalMarginPercentage": "原始利润率",
       "adjustedCost": "调整后成本",
-      "adjustedFreight": "调整运费",
+      "adjustedFreight": "运费",
       "adjustedFX": "调整汇率",
       "totalManualAdjCost": "总手动调整成本",
       "adjustedDealerNet": "调整后经销商净价",

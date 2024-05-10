@@ -3,7 +3,6 @@ import { bookingStore, commonStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import bookingApi from '@/api/booking.api';
 import { parseCookies } from 'nookies';
-import { json } from 'node:stream/consumers';
 
 function* fetchBooking() {
    try {
@@ -35,7 +34,8 @@ function* fetchBooking() {
       const dataTotalRow = JSON.parse(String(data)).total;
       const dataExchangeRate = JSON.parse(String(data)).listExchangeRate;
       const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
-      const dataLatestUpdatedTime = JSON.parse(String(data)).latestUpdatedTime;
+      const dataLastUpdatedTime = JSON.parse(String(data)).lastUpdatedTime;
+      const dataLastUpdatedBy = JSON.parse(String(data)).lastUpdatedBy;
 
       yield put(bookingStore.actions.setDataFilter(dataFilter));
       yield put(bookingStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
@@ -43,7 +43,8 @@ function* fetchBooking() {
       yield put(bookingStore.actions.setTotalRow(dataTotalRow));
       yield put(bookingStore.actions.setExchangeRateList(dataExchangeRate));
       yield put(bookingStore.actions.setServerTimeZone(dataServerTimeZone));
-      yield put(bookingStore.actions.setLatestUpdatedTime(dataLatestUpdatedTime));
+      yield put(bookingStore.actions.setLastUpdatedTime(dataLastUpdatedTime));
+      yield put(bookingStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
 
       yield put(
          commonStore.actions.setTableState({

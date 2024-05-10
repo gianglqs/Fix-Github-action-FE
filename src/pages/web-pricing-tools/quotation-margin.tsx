@@ -14,14 +14,17 @@ import {
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import marginAnalysisApi from '@/api/marginAnalysis.api';
-import { useDispatch } from 'react-redux';
-import { commonStore } from '@/store/reducers';
+import { useDispatch, useSelector } from 'react-redux';
+import { commonStore, marginAnalysisStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
 import { parseCookies, setCookie } from 'nookies';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
 import CompareMarginDialog from '@/components/Dialog/Module/MarginHistoryDialog/CompareMarginDialog';
+
+import { v4 as uuidv4 } from 'uuid';
+import { formatNumberPercentage } from '@/utils/formatCell';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -46,7 +49,10 @@ export default function MarginAnalysis() {
    const [listDataAnalysis, setListDataAnalysis] = useState([]);
    const [marginAnalysisSummary, setMarginAnalysisSummary] = useState(null);
    const [uploadedFile, setUploadedFile] = useState({ name: '' });
-   const [loading, setLoading] = useState(false);
+   const loading = useSelector(marginAnalysisStore.selectIsLoadingPage);
+   const initDataFilter = useSelector(marginAnalysisStore.selectInitDataFilter);
+   const dataFilter = useSelector(marginAnalysisStore.selectDataFilter);
+   const marginDataStore = useSelector(marginAnalysisStore.selectMarginData);
 
    const [typeValue, setTypeValue] = useState({ value: 'None', error: false });
    const handleTypeValue = (option) => {
@@ -67,13 +73,24 @@ export default function MarginAnalysis() {
 
    const [regionValue, setRegionValue] = useState({ value: 'Asia' });
    const handleChangeRegionOptions = (option) => {
-      setRegionValue({ value: option.value });
+      setRegionValue({ value: option });
    };
 
    const [modelCodeValue, setModelCodeValue] = useState({ value: 'None' });
    const handleChangeModelCodeValue = (option) => {
       setModelCodeValue({ value: option });
    };
+
+   useEffect(() => {
+      if (dataFilter) {
+         handleChangeModelCodeValue(dataFilter.modelCode == 'null' ? 'None' : dataFilter.modelCode);
+         handleSeriesValue(dataFilter.series);
+         handleChangeRegionOptions(dataFilter.region);
+         handleOrderNumber(dataFilter.orderNumber);
+         handleTypeValue(dataFilter.type);
+         setValueCurrency(dataFilter.currency);
+      }
+   }, [dataFilter]);
 
    const [targetMargin, setTargetMargin] = useState(0);
 
@@ -100,9 +117,19 @@ export default function MarginAnalysis() {
          };
 
          setLoading(true);
-         const { data } = await marginAnalysisApi.estimateMarginAnalystData({
-            ...transformData,
+
+         const requestId = uuidv4();
+         setCookie(null, 'quotation-margin/requestId', requestId, {
+            maxAge: 604800,
+            path: '/',
          });
+
+         const { data } = await marginAnalysisApi.estimateMarginAnalystData(
+            {
+               ...transformData,
+            },
+            requestId
+         );
 
          const analysisSummary = data?.MarginAnalystSummary;
          const marginAnalystData = data?.MarginAnalystData;
@@ -123,6 +150,25 @@ export default function MarginAnalysis() {
          setLoading(false);
       }
    };
+   useEffect(() => {
+      if (marginDataStore && Object.keys(marginDataStore).length !== 0) {
+         const clonedMarginAnalystData = JSON.parse(JSON.stringify(marginDataStore));
+
+         const analysisSummary = clonedMarginAnalystData?.MarginAnalystSummary;
+         const marginAnalystData = clonedMarginAnalystData?.MarginAnalystData;
+
+         marginAnalystData.forEach((margin) => {
+            margin.listPrice = margin.listPrice.toLocaleString();
+            margin.manufacturingCost = margin.manufacturingCost.toLocaleString();
+            margin.dealerNet = margin.dealerNet.toLocaleString();
+         });
+
+         setMarginAnalysisSummary(analysisSummary);
+         setListDataAnalysis(marginAnalystData);
+
+         setTargetMargin(Number(clonedMarginAnalystData?.TargetMargin));
+      }
+   }, [marginDataStore]);
 
    const handleOpenMarginFile = async (file) => {
       let formData = new FormData();
@@ -175,8 +221,15 @@ export default function MarginAnalysis() {
       formData.append('file', file);
       setLoading(true);
 
+      const requestId = uuidv4();
+      console.log(requestId);
+      setCookie(null, 'quotation-margin/requestId', requestId, {
+         maxAge: 604800,
+         path: '/',
+      });
+
       marginAnalysisApi
-         .importMacroFile(formData)
+         .importMacroFile(requestId, formData)
          .then((response) => {
             setLoading(false);
             dispatch(commonStore.actions.setSuccessMessage('Import successfully'));
@@ -257,11 +310,12 @@ export default function MarginAnalysis() {
          minWidth: 150,
          headerName: t('table.plant'),
       },
+
       {
          field: 'listPrice',
          flex: 0.4,
          minWidth: 150,
-         headerName: t('table.listPrice'),
+         headerName: t('table.listPrice') + ` (${valueCurrency})`,
          headerAlign: 'right',
          align: 'right',
          cellClassName: 'highlight-cell',
@@ -270,7 +324,7 @@ export default function MarginAnalysis() {
          field: 'manufacturingCost',
          flex: 0.7,
          minWidth: 150,
-         headerName: t('quotationMargin.manufacturingCost'),
+         headerName: t('quotationMargin.manufacturingCost') + ` (${valueCurrency})`,
          headerAlign: 'right',
          align: 'right',
       },
@@ -296,19 +350,28 @@ export default function MarginAnalysis() {
       },
    ];
 
-   const [marginFilter, setMarginFilter] = useState({
-      type: [{ value: 'None' }],
-      modelCode: [{ value: 'None' }],
-      series: [{ value: 'None' }],
-      orderNumber: [{ value: 'None' }],
-   });
+   const [marginFilter, setMarginFilter] = useState(initDataFilter);
 
    useEffect(() => {
-      setTypeValue({ value: marginFilter.type[0]?.value, error: false });
-      setModelCodeValue({ value: marginFilter.modelCode[0]?.value });
-      setSeries({ value: marginFilter.series[0]?.value, error: false });
-      setOrderNumberValue({ value: marginFilter.orderNumber[0]?.value });
-   }, [marginFilter]);
+      setMarginFilter(initDataFilter);
+   }, [initDataFilter]);
+
+   // useEffect(() => {
+   //    setTypeValue({
+   //       value: marginFilter?.type ? marginFilter?.type[0]?.value : 'None',
+   //       error: false,
+   //    });
+   //    setModelCodeValue({
+   //       value: marginFilter.modelCode ? marginFilter.modelCode[0]?.value : 'None',
+   //    });
+   //    setSeries({
+   //       value: marginFilter.series ? marginFilter.series[0]?.value : 'None',
+   //       error: false,
+   //    });
+   //    setOrderNumberValue({
+   //       value: marginFilter.orderNumber ? marginFilter.orderNumber[0]?.value : 'None',
+   //    });
+   // }, [marginFilter]);
 
    const regionOptions = [
       {
@@ -365,6 +428,12 @@ export default function MarginAnalysis() {
    const handleCloseCompareMargin = () => {
       setOpenCompareMargin(false);
    };
+
+   const setLoading = (status: boolean) => {
+      dispatch(marginAnalysisStore.actions.setLoadingPage(status));
+   };
+
+   console.log(targetMargin);
 
    return (
       <>
@@ -461,7 +530,7 @@ export default function MarginAnalysis() {
                      options={regionOptions}
                      label={t('filters.region')}
                      value={regionValue.value}
-                     onChange={(e, option) => handleChangeRegionOptions(option)}
+                     onChange={(e, option) => handleChangeRegionOptions(option.value)}
                      disableListWrap
                      primaryKeyOption="value"
                      renderOption={(prop, option) => `${option.value}`}
@@ -528,19 +597,6 @@ export default function MarginAnalysis() {
                )}
             </Grid>
 
-            <Grid container sx={{ marginTop: 1 }}>
-               <DataTable
-                  hideFooter
-                  disableColumnMenu
-                  tableHeight={250}
-                  rowHeight={50}
-                  rows={listDataAnalysis}
-                  columns={columns}
-                  getRowId={getRowId}
-                  sx={{ borderBottom: '1px solid #a8a8a8', borderTop: '1px solid #a8a8a8' }}
-               />
-            </Grid>
-
             <Grid container spacing={1} sx={{ marginTop: 1 }}>
                <MarginPercentageAOPRateBox
                   data={marginAnalysisSummary?.annually}
@@ -600,7 +656,7 @@ export default function MarginAnalysis() {
                            component="span"
                            sx={{ fontWeight: 'bold', marginRight: 1 }}
                         >
-                           {(targetMargin * 100).toLocaleString()}%
+                           {formatNumberPercentage(targetMargin * 100)}
                         </Typography>
                      </div>
                   </Paper>
@@ -610,7 +666,7 @@ export default function MarginAnalysis() {
                   data={marginAnalysisSummary?.annually}
                   valueCurrency={valueCurrency}
                />
-               <FullCostAOPRateBox
+               <FullCostAOPRateBoxMonthly
                   data={marginAnalysisSummary?.monthly}
                   valueCurrency={valueCurrency}
                />
@@ -639,6 +695,19 @@ export default function MarginAnalysis() {
 
                <ForUSPricingBox data={marginAnalysisSummary?.annually} />
                <ForUSPricingBox data={marginAnalysisSummary?.monthly} />
+            </Grid>
+
+            <Grid container sx={{ marginTop: 1 }}>
+               <DataTable
+                  hideFooter
+                  disableColumnMenu
+                  tableHeight={250}
+                  rowHeight={50}
+                  rows={listDataAnalysis}
+                  columns={columns}
+                  getRowId={getRowId}
+                  sx={{ borderBottom: '1px solid #a8a8a8', borderTop: '1px solid #a8a8a8' }}
+               />
             </Grid>
          </AppLayout>
          <CompareMarginDialog open={openCompareMargin} onClose={handleCloseCompareMargin} />
@@ -836,6 +905,118 @@ const FullCostAOPRateBox = (props) => {
    );
 };
 
+const FullCostAOPRateBoxMonthly = (props) => {
+   const { t } = useTranslation();
+   const { data, valueCurrency } = props;
+
+   return (
+      <Grid item xs={4}>
+         <Paper
+            elevation={2}
+            sx={{
+               padding: 2,
+               height: 'fit-content',
+            }}
+         >
+            <div className="space-between-element">
+               <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                  {t('quotationMargin.marignAnalysisMonthlyRate')}
+               </Typography>
+               <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                  {data?.marginAOPRate.toLocaleString()}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {data?.plant == 'HYM' ||
+                  data?.plant == 'Ruyi' ||
+                  data?.plant == 'Staxx' ||
+                  data?.plant == 'Maximal'
+                     ? `${t('quotationMargin.manufacturingCost')} (RMB)`
+                     : data?.plant == 'SN'
+                     ? `${t('quotationMargin.manufacturingCost')} (USD)`
+                     : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {data?.totalManufacturingCost.toLocaleString()}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {t('quotationMargin.costUplift')}{' '}
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {_.isNil(data?.costUplift) ? '' : `${(data?.costUplift * 100).toFixed(2)}%`}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {t('quotationMargin.addWarranty')}
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {_.isNil(data?.addWarranty) ? '' : `${(data?.addWarranty * 100).toFixed(2)}%`}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {t('quotationMargin.surcharge')}
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {_.isNil(data?.surcharge) ? '' : `${(data?.surcharge * 100).toFixed(2)}%`}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {t('quotationMargin.duty')} (AU BT Only)
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {_.isNil(data?.duty) ? '' : `${(data?.duty * 100).toFixed(2)}%`}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {t('quotationMargin.freight')} (AU Only)
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {data?.freight}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {t('quotationMargin.liIonIncluded')}
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {_.isNil(data?.liIonIncluded) ? '' : data?.liIonIncluded ? 'Yes' : 'No'}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {data?.fileUUID != null
+                     ? data?.plant == 'HYM' ||
+                       data?.plant == 'Ruyi' ||
+                       data?.plant == 'Staxx' ||
+                       data?.plant == 'Maximal'
+                        ? `${t('quotationMargin.totalCost')} (RMB)`
+                        : `${t('quotationMargin.totalCost')} (USD)`
+                     : `${t('quotationMargin.totalCost')} (${valueCurrency})`}
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {data?.totalCost.toLocaleString()}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                  {`${t('quotationMargin.fullCost')} ${valueCurrency} @AOP Rate`}
+               </Typography>
+               <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                  {data?.fullCostAOPRate.toLocaleString()}
+               </Typography>
+            </div>
+         </Paper>
+      </Grid>
+   );
+};
+
 const ForUSPricingBox = (props) => {
    const { t } = useTranslation();
    const { data } = props;
@@ -850,7 +1031,7 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.manufacturingCost')} (USD)
+                  {t('quotationMargin.manufacturingCost')} ({data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.manufacturingCostUSD.toLocaleString()}
@@ -858,7 +1039,7 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.addWarranty')} (USD)
+                  {t('quotationMargin.addWarranty')} ({data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.warrantyCost.toLocaleString()}
@@ -866,7 +1047,7 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.surcharge')} (USD)
+                  {t('quotationMargin.surcharge')} ({data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.surchargeCost.toLocaleString()}
@@ -874,7 +1055,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')} (USD)
+                  {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')} (
+                  {data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCostWithoutFreight.toLocaleString()}
@@ -882,7 +1064,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')} (USD)
+                  {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')} (
+                  {data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCostWithFreight.toLocaleString()}

@@ -18,7 +18,7 @@
       "@mui/material": "^5.14.6",
       "@mui/styled-engine-sc": "^5.14.6",
       "@mui/styles": "^5.14.6",
-      "@mui/x-data-grid-pro": "^6.12.0",
+      "@mui/x-data-grid-pro": "^7.3.2",
       "@mui/x-date-pickers": "^6.14.0",
       "@reduxjs/toolkit": "^1.9.5",
       "@rollbar/react": "^0.11.2",
@@ -67,6 +67,7 @@
       "styled-components": "^6.0.7",
       "typed-redux-saga": "^1.5.0",
       "typescript": "^5.2.2",
+      "uuid": "^9.0.1",
       "yup": "^1.2.0"
    },
    "devDependencies": {

@@ -74,7 +74,8 @@ export default function Shipment() {
    const [totalRow, setTotalRow] = useState(listTotalRow);
 
    const serverTimeZone = useSelector(shipmentStore.selectServerTimeZone);
-   const serverLatestUpdatedTime = useSelector(shipmentStore.selectLatestUpdatedTime);
+   const serverLastUpdatedTime = useSelector(shipmentStore.selectLastUpdatedTime);
+   const serverLastUpdatedBy = useSelector(shipmentStore.selectLastUpdatedBy);
 
    const [currency, setCurrency] = useState('USD');
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
@@ -469,9 +470,9 @@ export default function Shipment() {
 
    // show latest updated time
    const convertTimezone = () => {
-      if (serverLatestUpdatedTime && serverTimeZone) {
+      if (serverLastUpdatedTime && serverTimeZone) {
          setClientLatestUpdatedTime(
-            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+            convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
          );
       }
    };
@@ -872,8 +873,7 @@ export default function Shipment() {
                      }}
                      rowHeight={30}
                      rows={listOrder}
-                     rowBuffer={35}
-                     rowThreshold={25}
+                     rowBufferPx={35}
                      columns={columns}
                      getRowId={(params) => params.orderNo}
                      onCellClick={handleOnCellClick}
@@ -885,7 +885,8 @@ export default function Shipment() {
                   totalItems={tableState.totalItems}
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
-                  lastUpdated={clientLatestUpdatedTime}
+                  lastUpdatedAt={clientLatestUpdatedTime}
+                  lastUpdatedBy={serverLastUpdatedBy}
                />
                <AppBackDrop open={loadingTable} hightHeaderTable={'93px'} />
             </Paper>

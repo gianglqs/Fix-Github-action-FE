@@ -169,7 +169,20 @@ const components: Components = {
    MuiDataGrid: {
       styleOverrides: {
          root: {
-            border: 'none',
+            '& .MuiDataGrid-columnHeader--filledGroup  .MuiDataGrid-columnHeaderTitleContainerContent':
+               {
+                  display: '-webkit-box !important',
+                  WebkitBoxOrient: 'vertical',
+                  WebkitLineClamp: 2,
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+               },
+            '& .MuiDataGrid-columnHeader--filledGroup .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-columnHeaderTitleContainer ':
+               {
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+               },
             '& .MuiDataGrid-columnHeaders': {
                borderBottom: 'none',
                backgroundColor: secondaryColor.main,
@@ -208,12 +221,13 @@ const components: Components = {
             '& .MuiDataGrid-row:nth-child(even) .highlight-cell': {
                backgroundColor: 'rgba(232, 192, 86, 0.8)',
             },
-            '& .highlight-cell-FPA': {
+            '& .highlight-cell-FPA, .highlight-cell-adjusted': {
                backgroundColor: 'rgba(255, 204, 153, 0.6)',
             },
-            '& .MuiDataGrid-row:nth-child(even) .highlight-cell-FPA': {
-               backgroundColor: 'rgba(255, 204, 153, 0.8)',
-            },
+            '& .MuiDataGrid-row:nth-child(even) .highlight-cell-FPA , .MuiDataGrid-row:nth-child(even) .highlight-cell-adjusted ':
+               {
+                  backgroundColor: 'rgba(255, 204, 153, 0.8)',
+               },
             '& .highlight-cell-actual': {
                backgroundColor: 'rgba(0, 153, 76, 0.4)',
             },
@@ -229,12 +243,12 @@ const components: Components = {
                   width: 'auto',
                },
             },
-            '& .MuiDataGrid-columnHeaders .pricing-team': {
+            '& .MuiDataGrid-columnHeaders .pricing-team, .MuiDataGrid-columnHeaders .origin': {
                backgroundColor: 'rgba(232, 192, 86, 0.8)',
                borderRight: '1px solid white',
                borderLeft: '1px solid white',
             },
-            '& .MuiDataGrid-columnHeaders .FPA-team': {
+            '& .MuiDataGrid-columnHeaders .FPA-team, .MuiDataGrid-columnHeaders .adjusted': {
                backgroundColor: 'rgba(255, 204, 153, 0.8)',
                borderRight: '1px solid white',
                borderLeft: '1px solid white',
@@ -243,18 +257,6 @@ const components: Components = {
                backgroundColor: 'rgba(0, 153, 76, 0.6)',
                borderRight: '1px solid white',
                borderLeft: '1px solid white',
-            },
-         },
-      },
-   },
-   MuiTreeItem: {
-      styleOverrides: {
-         content: {
-            '&.Mui-focused': {
-               backgroundColor: 'white',
-            },
-            '&:hover': {
-               backgroundColor: 'white',
             },
          },
       },

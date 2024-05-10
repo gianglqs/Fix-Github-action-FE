@@ -73,7 +73,8 @@ export default function Booking() {
    const cacheDataFilter = useSelector(bookingStore.selectDataFilter);
    const listExchangeRate = useSelector(bookingStore.selectExchangeRateList);
    const serverTimeZone = useSelector(bookingStore.selectServerTimeZone);
-   const serverLatestUpdatedTime = useSelector(bookingStore.selectLatestUpdatedTime);
+   const serverLastUpdatedTime = useSelector(bookingStore.selectLastUpdatedTime);
+   const serverLastUpdatedBy = useSelector(bookingStore.selectLastUpdatedBy);
 
    const [loading, setLoading] = useState(false);
 
@@ -405,7 +406,7 @@ export default function Booking() {
          return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
       });
       convertTimezone();
-   }, [listBookingOrder, listTotalRow, currency, serverTimeZone, serverLatestUpdatedTime]);
+   }, [listBookingOrder, listTotalRow, currency, serverTimeZone, serverLastUpdatedTime]);
 
    // ===== show Product detail =======
    const [productDetailState, setProductDetailState] = useState({
@@ -463,9 +464,9 @@ export default function Booking() {
 
    // show latest updated time
    const convertTimezone = () => {
-      if (serverLatestUpdatedTime && serverTimeZone) {
+      if (serverLastUpdatedTime && serverTimeZone) {
          setClientLatestUpdatedTime(
-            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+            convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
          );
       }
    };
@@ -876,8 +877,7 @@ export default function Booking() {
                         toolbar: GridToolbar,
                      }}
                      rows={listOrder}
-                     rowBuffer={35}
-                     rowThreshold={25}
+                     rowBufferPx={35}
                      columns={columns}
                      getRowId={(params) => params.orderNo}
                      onCellClick={handleOnCellClick}
@@ -890,7 +890,8 @@ export default function Booking() {
                   totalItems={tableState.totalItems}
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
-                  lastUpdated={clientLatestUpdatedTime}
+                  lastUpdatedAt={clientLatestUpdatedTime}
+                  lastUpdatedBy={serverLastUpdatedBy}
                />
                <AppBackDrop open={loadingTable} hightHeaderTable={'93px'} />
             </Paper>

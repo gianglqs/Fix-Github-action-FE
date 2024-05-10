@@ -92,7 +92,8 @@ export default function Indicators() {
 
    const getDataForTable = useSelector(indicatorStore.selectIndicatorList);
    const serverTimeZone = useSelector(indicatorStore.selectServerTimeZone);
-   const serverLatestUpdatedTime = useSelector(indicatorStore.selectLatestUpdatedTime);
+   const serverLastUpdatedTime = useSelector(indicatorStore.selectLastUpdatedTime);
+   const serverLastUpdatedBy = useSelector(indicatorStore.selectLastUpdatedBy);
 
    // Select data line Chart Region in store
    // const dataForLineChartRegion = useSelector(indicatorStore.selectDataForLineChartRegion);
@@ -155,6 +156,14 @@ export default function Indicators() {
    }, [competitiveLandscapeData]);
 
    const [bubbleCountryInitFilter, setBubbleCountryInitFilter] = useState(initDataFilter.countries);
+
+   const [bubbleClassInitFilter, setBubbleClassInitFilter] = useState(initDataFilter.classes);
+
+   const [bubbleCategoryInitFilter, setBubbleCategoryInitFilter] = useState(
+      initDataFilter.categories
+   );
+
+   const [bubbleSerieInitFilter, setBubbleSerieInitFilter] = useState(initDataFilter.series);
 
    const handleFilterCompetitiveLandscape = async () => {
       if (
@@ -222,6 +231,75 @@ export default function Indicators() {
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    }, [swotDataFilter.regions]);
+
+   useEffect(() => {
+      const getClassByFilter = async () => {
+         const { data } = await indicatorApi.getClassByFilter(
+            swotDataFilter.countries,
+            swotDataFilter.categories,
+            swotDataFilter.series
+         );
+         return data;
+      };
+      getClassByFilter()
+         .then((response) => {
+            const classes = response.class;
+            setBubbleClassInitFilter(() =>
+               classes.map((value) => {
+                  return { value: value };
+               })
+            );
+         })
+         .catch((error) => {
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   }, [swotDataFilter.countries, swotDataFilter.categories, swotDataFilter.series]);
+
+   useEffect(() => {
+      const getCategoryByFilter = async () => {
+         const { data } = await indicatorApi.getCategoryByFilter(
+            swotDataFilter.countries,
+            swotDataFilter.classes,
+            swotDataFilter.series
+         );
+         return data;
+      };
+      getCategoryByFilter()
+         .then((response) => {
+            const categories = response.category;
+            setBubbleCategoryInitFilter(() =>
+               categories.map((value) => {
+                  return { value: value };
+               })
+            );
+         })
+         .catch((error) => {
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   }, [swotDataFilter.countries, swotDataFilter.classes, swotDataFilter.series]);
+
+   useEffect(() => {
+      const getSeriesByFilter = async () => {
+         const { data } = await indicatorApi.getSeriesByFilter(
+            swotDataFilter.countries,
+            swotDataFilter.classes,
+            swotDataFilter.categories
+         );
+         return data;
+      };
+      getSeriesByFilter()
+         .then((response) => {
+            const series = response.series;
+            setBubbleSerieInitFilter(() =>
+               series.map((value) => {
+                  return { value: value };
+               })
+            );
+         })
+         .catch((error) => {
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   }, [swotDataFilter.countries, swotDataFilter.classes, swotDataFilter.categories]);
 
    const handleChangeSwotFilter = (option, field) => {
       setSwotDataFilter((prev) =>
@@ -626,13 +704,13 @@ export default function Indicators() {
 
    useEffect(() => {
       convertTimezone();
-   }, [serverTimeZone, serverLatestUpdatedTime]);
+   }, [serverTimeZone, serverLastUpdatedTime]);
 
    // show latest updated time
    const convertTimezone = () => {
-      if (serverLatestUpdatedTime && serverTimeZone) {
+      if (serverLastUpdatedTime && serverTimeZone) {
          setClientLatestUpdatedTime(
-            convertServerTimeToClientTimeZone(serverLatestUpdatedTime, serverTimeZone)
+            convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
          );
       }
    };
@@ -972,8 +1050,7 @@ export default function Indicators() {
                      }}
                      rowHeight={35}
                      rows={getDataForTable}
-                     rowBuffer={35}
-                     rowThreshold={25}
+                     rowBufferPx={35}
                      columns={columns}
                      getRowId={(params) => params.id}
                   />
@@ -985,7 +1062,8 @@ export default function Indicators() {
                   totalItems={tableState.totalItems}
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
-                  lastUpdated={clientLatestUpdatedTime}
+                  lastUpdatedAt={clientLatestUpdatedTime}
+                  lastUpdatedBy={serverLastUpdatedBy}
                />
                <AppBackDrop open={loadingTable} hightHeaderTable={'102px'} />
             </Paper>
@@ -1093,7 +1171,7 @@ export default function Indicators() {
                         value={_.map(swotDataFilter.classes, (item) => {
                            return { value: item };
                         })}
-                        options={initDataFilter.classes}
+                        options={bubbleClassInitFilter}
                         label={t('filters.class')}
                         onChange={(e, option) => handleChangeSwotFilter(option, 'classes')}
                         disableListWrap
@@ -1111,7 +1189,7 @@ export default function Indicators() {
                         value={_.map(swotDataFilter.categories, (item) => {
                            return { value: item };
                         })}
-                        options={initDataFilter.categories}
+                        options={bubbleCategoryInitFilter}
                         label={t('filters.category')}
                         onChange={(e, option) => handleChangeSwotFilter(option, 'categories')}
                         disableListWrap
@@ -1129,7 +1207,7 @@ export default function Indicators() {
                         value={_.map(swotDataFilter.series, (item) => {
                            return { value: item };
                         })}
-                        options={initDataFilter.series}
+                        options={bubbleSerieInitFilter}
                         label={t('filters.series')}
                         onChange={(e, option) => handleChangeSwotFilter(option, 'series')}
                         limitTags={1}

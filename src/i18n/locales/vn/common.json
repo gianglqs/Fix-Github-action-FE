@@ -71,7 +71,7 @@
       "truckType": "Loại xe tải",
       "searchOrderById": "Tìm kiếm Đơn hàng theo ID",
       "searchProductByModel": "Tìm kiếm Sản Phẩm theo Mã",
-      "startingPricePerUnit": "Giá bán khởi điểm mỗi đơn vị",
+      "dealerNet": "Giá phân phối",
       "costOfGoodSold": "Giá vốn mỗi đơn vị",
       "marginPercentagePerUnit": "Lợi nhuận % mỗi đơn vị",
       "discountPercentagePerOneNewItem": "Giảm giá % mỗi đơn vị thêm vào",
@@ -99,7 +99,8 @@
    },
 
    "table": {
-      "lastUpdated": "Cập nhật lần cuối: ",
+      "lastUpdatedBy": "Cập nhật lần cuối bởi",
+      "lastUpdatedAt": "vào lúc",
       "rowsPerPage": "Số dòng mỗi trang: ",
 
       "order#": "Mã đơn hàng #",
@@ -132,7 +133,7 @@
       "originalMargin": "Lợi nhuận gốc",
       "originalMarginPercentage": "Lợi nhuận % gốc",
       "adjustedCost": "Giá điều chỉnh",
-      "adjustedFreight": "Chi phí vận chuyển điều chỉnh",
+      "adjustedFreight": "Chi phí vận chuyển",
       "adjustedFX": "Ngoại tệ điều chỉnh",
       "totalManualAdjCost": "Tổng giá điều chỉnh",
       "adjustedDealerNet": "Giá phân phối điều chỉnh",
