@@ -7,8 +7,9 @@ import marginAnalysisApi from '@/api/marginAnalysis.api';
 
 function* getLoadingPage() {
    try {
-      const cookies = parseCookies();
-      const requestId = cookies['quotation-margin/requestId'];
+      const { requestId } = yield* all({
+         requestId: select(commonStore.selectQuotationMarginRequestId),
+      });
 
       if (requestId) {
          yield put(marginAnalysisStore.actions.setLoadingPage(true));

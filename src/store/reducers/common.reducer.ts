@@ -17,6 +17,11 @@ export const initialState = {
       perPage: 100,
       totalItems: 0,
    } as any,
+   requestId: {
+      booking: undefined,
+      shipment: undefined,
+      quotationMargin: undefined,
+   },
 };
 
 const commonSlice = createSlice({
@@ -47,6 +52,16 @@ const commonSlice = createSlice({
             ...payload,
          };
       },
+
+      setBookingRequestId(state, action: PayloadAction<any>) {
+         state.requestId.booking = action.payload;
+      },
+      setShipmentRequestId(state, action: PayloadAction<any>) {
+         state.requestId.booking = action.payload;
+      },
+      setQuotationMarginRequestId(state, action: PayloadAction<any>) {
+         state.requestId.quotationMargin = action.payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -60,6 +75,18 @@ export const selectState = (state: RootReducerType) => state[name];
 
 export const selectMessageState = createSelector(selectState, (state) => state.messageState);
 export const selectTableState = createSelector(selectState, (state) => state.tableState);
+export const selectBookingRequestId = createSelector(
+   selectState,
+   (state) => state.requestId.booking
+);
+export const selectShipmentRequestId = createSelector(
+   selectState,
+   (state) => state.requestId.shipment
+);
+export const selectQuotationMarginRequestId = createSelector(
+   selectState,
+   (state) => state.requestId.quotationMargin
+);
 
 export const { actions } = commonSlice;
 

@@ -119,10 +119,7 @@ export default function MarginAnalysis() {
          setLoading(true);
 
          const requestId = uuidv4();
-         setCookie(null, 'quotation-margin/requestId', requestId, {
-            maxAge: 604800,
-            path: '/',
-         });
+         dispatch(commonStore.actions.setQuotationMarginRequestId(requestId));
 
          const { data } = await marginAnalysisApi.estimateMarginAnalystData(
             {
