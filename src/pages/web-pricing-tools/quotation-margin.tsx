@@ -14,14 +14,17 @@ import {
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import marginAnalysisApi from '@/api/marginAnalysis.api';
-import { useDispatch } from 'react-redux';
-import { commonStore } from '@/store/reducers';
+import { useDispatch, useSelector } from 'react-redux';
+import { commonStore, marginAnalysisStore } from '@/store/reducers';
 import { useDropzone } from 'react-dropzone';
 import { parseCookies, setCookie } from 'nookies';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
 import CompareMarginDialog from '@/components/Dialog/Module/MarginHistoryDialog/CompareMarginDialog';
+
+import { v4 as uuidv4 } from 'uuid';
+import { formatNumberPercentage } from '@/utils/formatCell';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -46,7 +49,10 @@ export default function MarginAnalysis() {
    const [listDataAnalysis, setListDataAnalysis] = useState([]);
    const [marginAnalysisSummary, setMarginAnalysisSummary] = useState(null);
    const [uploadedFile, setUploadedFile] = useState({ name: '' });
-   const [loading, setLoading] = useState(false);
+   const loading = useSelector(marginAnalysisStore.selectIsLoadingPage);
+   const initDataFilter = useSelector(marginAnalysisStore.selectInitDataFilter);
+   const dataFilter = useSelector(marginAnalysisStore.selectDataFilter);
+   const marginDataStore = useSelector(marginAnalysisStore.selectMarginData);
 
    const [typeValue, setTypeValue] = useState({ value: 'None', error: false });
    const handleTypeValue = (option) => {
@@ -67,13 +73,24 @@ export default function MarginAnalysis() {
 
    const [regionValue, setRegionValue] = useState({ value: 'Asia' });
    const handleChangeRegionOptions = (option) => {
-      setRegionValue({ value: option.value });
+      setRegionValue({ value: option });
    };
 
    const [modelCodeValue, setModelCodeValue] = useState({ value: 'None' });
    const handleChangeModelCodeValue = (option) => {
       setModelCodeValue({ value: option });
    };
+
+   useEffect(() => {
+      if (dataFilter) {
+         handleChangeModelCodeValue(dataFilter.modelCode == 'null' ? 'None' : dataFilter.modelCode);
+         handleSeriesValue(dataFilter.series);
+         handleChangeRegionOptions(dataFilter.region);
+         handleOrderNumber(dataFilter.orderNumber);
+         handleTypeValue(dataFilter.type);
+         setValueCurrency(dataFilter.currency);
+      }
+   }, [dataFilter]);
 
    const [targetMargin, setTargetMargin] = useState(0);
 
@@ -100,9 +117,19 @@ export default function MarginAnalysis() {
          };
 
          setLoading(true);
-         const { data } = await marginAnalysisApi.estimateMarginAnalystData({
-            ...transformData,
+
+         const requestId = uuidv4();
+         setCookie(null, 'quotation-margin/requestId', requestId, {
+            maxAge: 604800,
+            path: '/',
          });
+
+         const { data } = await marginAnalysisApi.estimateMarginAnalystData(
+            {
+               ...transformData,
+            },
+            requestId
+         );
 
          const analysisSummary = data?.MarginAnalystSummary;
          const marginAnalystData = data?.MarginAnalystData;
@@ -123,6 +150,25 @@ export default function MarginAnalysis() {
          setLoading(false);
       }
    };
+   useEffect(() => {
+      if (marginDataStore && Object.keys(marginDataStore).length !== 0) {
+         const clonedMarginAnalystData = JSON.parse(JSON.stringify(marginDataStore));
+
+         const analysisSummary = clonedMarginAnalystData?.MarginAnalystSummary;
+         const marginAnalystData = clonedMarginAnalystData?.MarginAnalystData;
+
+         marginAnalystData.forEach((margin) => {
+            margin.listPrice = margin.listPrice.toLocaleString();
+            margin.manufacturingCost = margin.manufacturingCost.toLocaleString();
+            margin.dealerNet = margin.dealerNet.toLocaleString();
+         });
+
+         setMarginAnalysisSummary(analysisSummary);
+         setListDataAnalysis(marginAnalystData);
+
+         setTargetMargin(Number(clonedMarginAnalystData?.TargetMargin));
+      }
+   }, [marginDataStore]);
 
    const handleOpenMarginFile = async (file) => {
       let formData = new FormData();
@@ -175,8 +221,15 @@ export default function MarginAnalysis() {
       formData.append('file', file);
       setLoading(true);
 
+      const requestId = uuidv4();
+      console.log(requestId);
+      setCookie(null, 'quotation-margin/requestId', requestId, {
+         maxAge: 604800,
+         path: '/',
+      });
+
       marginAnalysisApi
-         .importMacroFile(formData)
+         .importMacroFile(requestId, formData)
          .then((response) => {
             setLoading(false);
             dispatch(commonStore.actions.setSuccessMessage('Import successfully'));
@@ -287,19 +340,28 @@ export default function MarginAnalysis() {
       },
    ];
 
-   const [marginFilter, setMarginFilter] = useState({
-      type: [{ value: 'None' }],
-      modelCode: [{ value: 'None' }],
-      series: [{ value: 'None' }],
-      orderNumber: [{ value: 'None' }],
-   });
+   const [marginFilter, setMarginFilter] = useState(initDataFilter);
 
    useEffect(() => {
-      setTypeValue({ value: marginFilter.type[0]?.value, error: false });
-      setModelCodeValue({ value: marginFilter.modelCode[0]?.value });
-      setSeries({ value: marginFilter.series[0]?.value, error: false });
-      setOrderNumberValue({ value: marginFilter.orderNumber[0]?.value });
-   }, [marginFilter]);
+      setMarginFilter(initDataFilter);
+   }, [initDataFilter]);
+
+   // useEffect(() => {
+   //    setTypeValue({
+   //       value: marginFilter?.type ? marginFilter?.type[0]?.value : 'None',
+   //       error: false,
+   //    });
+   //    setModelCodeValue({
+   //       value: marginFilter.modelCode ? marginFilter.modelCode[0]?.value : 'None',
+   //    });
+   //    setSeries({
+   //       value: marginFilter.series ? marginFilter.series[0]?.value : 'None',
+   //       error: false,
+   //    });
+   //    setOrderNumberValue({
+   //       value: marginFilter.orderNumber ? marginFilter.orderNumber[0]?.value : 'None',
+   //    });
+   // }, [marginFilter]);
 
    const regionOptions = [
       {
@@ -356,6 +418,12 @@ export default function MarginAnalysis() {
    const handleCloseCompareMargin = () => {
       setOpenCompareMargin(false);
    };
+
+   const setLoading = (status: boolean) => {
+      dispatch(marginAnalysisStore.actions.setLoadingPage(status));
+   };
+
+   console.log(targetMargin);
 
    return (
       <>
@@ -452,7 +520,7 @@ export default function MarginAnalysis() {
                      options={regionOptions}
                      label={t('filters.region')}
                      value={regionValue.value}
-                     onChange={(e, option) => handleChangeRegionOptions(option)}
+                     onChange={(e, option) => handleChangeRegionOptions(option.value)}
                      disableListWrap
                      primaryKeyOption="value"
                      renderOption={(prop, option) => `${option.value}`}
@@ -578,7 +646,7 @@ export default function MarginAnalysis() {
                            component="span"
                            sx={{ fontWeight: 'bold', marginRight: 1 }}
                         >
-                           {(targetMargin * 100).toLocaleString()}%
+                           {formatNumberPercentage(targetMargin * 100)}
                         </Typography>
                      </div>
                   </Paper>

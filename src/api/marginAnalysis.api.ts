@@ -14,8 +14,8 @@ class MarginAnalysisApi extends HttpService<any> {
       });
    };
 
-   estimateMarginAnalystData = (data: any) => {
-      return this.post<any>(`estimateMarginAnalystData`, { ...data });
+   estimateMarginAnalystData = (data: any, requestId: any) => {
+      return this.post<any>(`estimateMarginAnalystData`, { ...data }, { requestId });
    };
    getEstimateMarginAnalystData = (data: any) => {
       return this.post<any>(`getEstimateMarginAnalystData`, { ...data });
@@ -25,8 +25,8 @@ class MarginAnalysisApi extends HttpService<any> {
       return this.importData<any>('marginData/readNOVOFile', data);
    };
 
-   importMacroFile = (data: any) => {
-      return this.importData<any>('importMacroFile', data);
+   importMacroFile = (requestId: string, data: any) => {
+      return this.importData<any>('importMacroFile', data, { requestId });
    };
 
    importPowerBiFile = (data: any) => {
@@ -45,8 +45,12 @@ class MarginAnalysisApi extends HttpService<any> {
    deleteMarginData = (data: any) => {
       return this.delete<any>('delete-margin-data', data);
    };
+
+   getPreviousDataView = () => {
+      return this.get<any>('get-previous-data-view-quotation-margin');
+   };
 }
 
-const marginAnalysisApi = new MarginAnalysisApi('bookingOrder');
+const marginAnalysisApi = new MarginAnalysisApi('QuotationMargin');
 
 export default marginAnalysisApi;
