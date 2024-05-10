@@ -207,6 +207,7 @@ export default function MarginAnalysis() {
       {
          field: 'quoteNumber',
          flex: 0.5,
+         minWidth: 150,
          headerName: 'Quote Number',
          headerAlign: 'center',
          align: 'center',
@@ -217,6 +218,7 @@ export default function MarginAnalysis() {
       {
          field: 'type',
          flex: 0.3,
+         minWidth: 150,
          headerName: '#',
          headerAlign: 'center',
          align: 'center',
@@ -227,11 +229,13 @@ export default function MarginAnalysis() {
       {
          field: 'series',
          flex: 0.4,
+         minWidth: 150,
          headerName: t('table.series'),
       },
       {
          field: 'modelCode',
          flex: 0.5,
+         minWidth: 150,
          headerName: t('table.models'),
          align: 'left',
          renderCell(params) {
@@ -241,6 +245,7 @@ export default function MarginAnalysis() {
       {
          field: 'optionCode',
          flex: 0.4,
+         minWidth: 150,
          headerName: t('table.partNumber'),
          renderCell(params) {
             return <span>{params.row.id.partNumber}</span>;
@@ -249,11 +254,13 @@ export default function MarginAnalysis() {
       {
          field: 'plant',
          flex: 0.3,
+         minWidth: 150,
          headerName: t('table.plant'),
       },
       {
          field: 'listPrice',
          flex: 0.4,
+         minWidth: 150,
          headerName: t('table.listPrice'),
          headerAlign: 'right',
          align: 'right',
@@ -262,6 +269,7 @@ export default function MarginAnalysis() {
       {
          field: 'manufacturingCost',
          flex: 0.7,
+         minWidth: 150,
          headerName: t('quotationMargin.manufacturingCost'),
          headerAlign: 'right',
          align: 'right',
@@ -269,6 +277,7 @@ export default function MarginAnalysis() {
       {
          field: 'dealerNet',
          flex: 0.4,
+         minWidth: 150,
          headerName: t('table.dealerNet'),
          headerAlign: 'right',
          align: 'right',
@@ -277,6 +286,7 @@ export default function MarginAnalysis() {
       {
          field: 'isSPED',
          flex: 0.6,
+         minWidth: 150,
          headerName: 'SPED',
          headerAlign: 'center',
          align: 'center',

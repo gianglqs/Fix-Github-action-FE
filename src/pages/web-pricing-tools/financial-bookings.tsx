@@ -167,16 +167,19 @@ export default function Booking() {
       {
          field: 'orderNo',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.order#'),
       },
       {
          field: 'quoteNumber',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.quoteNumber'),
       },
       {
          field: 'date',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.createAt'),
          renderCell(params) {
             return <span>{formatDate(params?.row?.date)}</span>;
@@ -185,6 +188,7 @@ export default function Booking() {
       {
          field: 'region',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.country?.region?.regionName}</span>;
@@ -193,6 +197,7 @@ export default function Booking() {
       {
          field: 'ctryCode',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.country'),
          renderCell(params) {
             return <span>{params.row.country?.countryName}</span>;
@@ -201,6 +206,7 @@ export default function Booking() {
       {
          field: 'dealerName',
          flex: 0.6,
+         minWidth: 150,
          headerName: t('table.dealerName'),
          renderCell(params) {
             return <span>{params.row.dealer?.name}</span>;
@@ -209,6 +215,7 @@ export default function Booking() {
       {
          field: 'Plant',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.plant'),
          renderCell(params) {
             return <span>{params.row.product?.plant}</span>;
@@ -217,6 +224,7 @@ export default function Booking() {
       {
          field: 'truckClass',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.class'),
          renderCell(params) {
             return <span>{params.row.product?.clazz?.clazzName}</span>;
@@ -225,6 +233,7 @@ export default function Booking() {
       {
          field: 'series',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.series'),
          renderCell(params) {
             return <span>{params.row.series}</span>;
@@ -233,6 +242,7 @@ export default function Booking() {
       {
          field: 'model',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.models'),
          renderCell(params) {
             return <span style={{ cursor: 'pointer' }}>{params.row.product.modelCode}</span>;
@@ -241,6 +251,7 @@ export default function Booking() {
       {
          field: 'quantity',
          flex: 0.5,
+         minWidth: 60,
          headerName: t('table.qty'),
          ...formatNumbericColumn,
       },
@@ -248,6 +259,7 @@ export default function Booking() {
       {
          field: 'dealerNet',
          flex: 0.6,
+         minWidth: 100,
          headerName: `${t('table.dealerNet')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -258,6 +270,7 @@ export default function Booking() {
       {
          field: 'dealerNetAfterSurcharge',
          flex: 0.7,
+         minWidth: 150,
          headerName: `${t('table.dealerNetAfterSurcharge')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -268,6 +281,7 @@ export default function Booking() {
       {
          field: 'totalCost',
          flex: 0.6,
+         minWidth: 110,
          headerName: `${t('table.totalCost')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -278,6 +292,7 @@ export default function Booking() {
       {
          field: 'marginAfterSurcharge',
          flex: 0.7,
+         minWidth: 130,
          headerName: `${t('table.marginAfterSurcharge')} ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -287,6 +302,7 @@ export default function Booking() {
       {
          field: 'marginPercentageAfterSurcharge',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.marginPercentageAfterSurcharge'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell',
@@ -301,6 +317,7 @@ export default function Booking() {
       {
          field: 'aopmarginPercentage',
          flex: 0.6,
+         minWidth: 120,
          headerName: t('table.aopMarginPercentage'),
          ...formatNumbericColumn,
          renderCell(params) {

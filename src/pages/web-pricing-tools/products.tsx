@@ -150,21 +150,25 @@ export default function Product() {
       {
          field: 'modelCode',
          flex: 0.4,
+         minWidth: 100,
          headerName: t('table.models'),
       },
       {
          field: 'series',
          flex: 0.3,
+         minWidth: 100,
          headerName: t('table.series'),
       },
       {
          field: 'brand',
          flex: 0.3,
+         minWidth: 100,
          headerName: t('table.brand'),
       },
       {
          field: 'clazz',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.class'),
          renderCell(params) {
             return <span>{params.row.clazz?.clazzName}</span>;
@@ -173,28 +177,33 @@ export default function Product() {
       {
          field: 'plant',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.plant'),
       },
       {
          field: 'segment',
          flex: 0.8,
+         minWidth: 150,
          headerName: t('table.segment'),
       },
 
       {
          field: 'family',
          flex: 0.6,
+         minWidth: 150,
          headerName: t('table.family'),
       },
 
       {
          field: 'truckType',
          flex: 0.6,
+         minWidth: 150,
          headerName: t('table.truckType'),
       },
       {
          field: 'description',
          flex: 1,
+         minWidth: 200,
          headerName: t('table.description'),
       },
 

@@ -53,6 +53,7 @@ export default function DataScraping() {
       {
          field: 'productName',
          flex: 0.8,
+         minWidth: 200,
          headerName: t('table.productName'),
          headerAlign: 'center',
          align: 'left',
@@ -60,6 +61,7 @@ export default function DataScraping() {
       {
          field: 'image',
          flex: 0.8,
+         minWidth: 200,
          headerName: t('table.image'),
          headerAlign: 'center',
          align: 'center',
@@ -81,6 +83,7 @@ export default function DataScraping() {
       {
          field: 'price',
          flex: 0.8,
+         minWidth: 200,
          headerName: t('table.price'),
          headerAlign: 'center',
          align: 'right',
@@ -91,6 +94,7 @@ export default function DataScraping() {
       {
          field: 'currency',
          flex: 0.8,
+         minWidth: 200,
          headerName: t('table.currency'),
          headerAlign: 'center',
          align: 'center',

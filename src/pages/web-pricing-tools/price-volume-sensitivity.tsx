@@ -179,6 +179,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'segment',
          flex: 0.6,
+         minWidth: 150,
          ...centerHeaderColumn,
          headerName: t('table.segment'),
          renderCell(params) {
@@ -188,6 +189,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'series',
          flex: 0.2,
+         minWidth: 100,
          ...centerHeaderColumn,
          headerName: `${t('table.series')}`,
 
@@ -200,6 +202,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'volume',
          flex: 0.2,
+         minWidth: 100,
          ...centerHeaderColumn,
          headerName: `${t('table.volume')}`,
          ...formatNumbericColumn,
@@ -208,6 +211,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'revenue',
          flex: 0.4,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.revenue')} ('000$)`,
 
          ...formatNumbericColumn,
@@ -218,6 +222,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'cogs',
          flex: 0.4,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.COGS')} ('000$)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -227,6 +232,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'margin',
          flex: 0.4,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.margin')} ('000$)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -236,6 +242,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'margin%',
          flex: 0.4,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.margin%')}`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -245,6 +252,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'discount',
          flex: 0.3,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.discount')}`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -255,6 +263,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newDealerNet(ASP)',
          flex: 0.4,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.newDealerNetASP')} $`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -265,6 +274,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'unitVolumeOffset',
          flex: 0.3,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.unitVolumeOffset')}`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -275,6 +285,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newVolume',
          flex: 0.3,
+         minWidth: 100,
          headerName:
             discountPercent !== 0
                ? `${t('priceVolumeSensitivity.volumnAfterDiscount')}`
@@ -288,6 +299,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newRevenue',
          flex: 0.4,
+         minWidth: 100,
          headerName:
             discountPercent !== 0
                ? `${t('priceVolumeSensitivity.RevenueAfterterDiscount')} ('000$)`
@@ -301,6 +313,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newCOGS',
          flex: 0.4,
+         minWidth: 100,
          headerName:
             discountPercent !== 0
                ? `${t('priceVolumeSensitivity.COGSAfterDiscount')} ('000$)`
@@ -314,6 +327,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newMargin',
          flex: 0.4,
+         minWidth: 100,
          headerName:
             discountPercent !== 0
                ? `${t('priceVolumeSensitivity.marginAfterDiscount')} ('000$)`
@@ -330,6 +344,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'segment',
          flex: 0.6,
+         minWidth: 100,
          ...centerHeaderColumn,
          headerName: t('table.segment'),
       },
@@ -337,6 +352,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'volume',
          flex: 0.3,
+         minWidth: 100,
          ...centerHeaderColumn,
          headerName: `${t('table.volume')}`,
          ...formatNumbericColumn,
@@ -345,6 +361,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'revenue',
          flex: 0.3,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.revenue')} ('000$)`,
 
          ...formatNumbericColumn,
@@ -355,6 +372,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'cogs',
          flex: 0.4,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.COGS')} ('000$)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -364,6 +382,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'margin',
          flex: 0.4,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.margin')} ('000$)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -373,6 +392,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'margin%',
          flex: 0.4,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.margin%')}`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -382,6 +402,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'discount',
          flex: 0.3,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.discount')}`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -392,6 +413,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newDealerNet(ASP)',
          flex: 0.4,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.newDealerNetASP')} $`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -402,6 +424,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'unitVolumeOffset',
          flex: 0.3,
+         minWidth: 100,
          headerName: `${t('priceVolumeSensitivity.unitVolumeOffset')}`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -412,6 +435,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newVolume',
          flex: 0.3,
+         minWidth: 100,
          headerName:
             discountPercent !== 0
                ? `${t('priceVolumeSensitivity.volumnAfterDiscount')}`
@@ -425,6 +449,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newRevenue',
          flex: 0.4,
+         minWidth: 100,
          headerName:
             discountPercent !== 0
                ? `${t('priceVolumeSensitivity.RevenueAfterterDiscount')} ('000$)`
@@ -438,6 +463,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newCOGS',
          flex: 0.4,
+         minWidth: 150,
          headerName:
             discountPercent !== 0
                ? `${t('priceVolumeSensitivity.COGSAfterDiscount')} ('000$)`
@@ -451,6 +477,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newMargin',
          flex: 0.4,
+         minWidth: 150,
          headerName:
             discountPercent !== 0
                ? `${t('priceVolumeSensitivity.marginAfterDiscount')} ('000$)`
@@ -464,6 +491,7 @@ export default function PriceVolumeSensitivity() {
       {
          field: 'newMargin%',
          flex: 0.4,
+         minWidth: 150,
          headerName:
             discountPercent !== 0
                ? `${t('priceVolumeSensitivity.marginAfterDiscount%')}`

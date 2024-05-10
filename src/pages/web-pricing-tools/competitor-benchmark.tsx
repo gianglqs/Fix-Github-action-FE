@@ -326,12 +326,14 @@ export default function Indicators() {
       {
          field: 'competitorName',
          flex: 0.8,
+         minWidth: 100,
          headerName: t('competitors.competitorName'),
       },
 
       {
          field: 'region',
          flex: 0.7,
+         minWidth: 60,
          headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.country.region.regionName}</span>;
@@ -340,11 +342,13 @@ export default function Indicators() {
       {
          field: 'plant',
          flex: 0.6,
+         minWidth: 60,
          headerName: t('table.plant'),
       },
       {
          field: 'clazz',
          flex: 1,
+         minWidth: 60,
          headerName: t('table.class'),
          renderCell(params) {
             return <span>{params.row.clazz?.clazzName}</span>;
@@ -353,12 +357,14 @@ export default function Indicators() {
       {
          field: 'series',
          flex: 0.6,
+         minWidth: 60,
          headerName: t('table.series'),
       },
 
       {
          field: 'actual',
          flex: 0.6,
+         minWidth: 100,
          headerName: `${currentYear - 1} Actual`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -368,6 +374,7 @@ export default function Indicators() {
       {
          field: 'aopf',
          flex: 0.6,
+         minWidth: 60,
          headerName: `${currentYear} AOPF`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -377,6 +384,7 @@ export default function Indicators() {
       {
          field: 'lrff',
          flex: 0.6,
+         minWidth: 60,
          headerName: `${currentYear + 1} LRFF`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -386,12 +394,14 @@ export default function Indicators() {
       {
          field: 'competitorLeadTime',
          flex: 0.8,
+         minWidth: 60,
          headerName: t('competitors.competitorLeadTime'),
          ...formatNumbericColumn,
       },
       {
          field: 'dealerStreetPricing',
          flex: 0.8,
+         minWidth: 140,
          headerName: `${t('competitors.dealerStreetPricing')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -401,6 +411,7 @@ export default function Indicators() {
       {
          field: 'dealerHandlingCost',
          flex: 0.8,
+         minWidth: 130,
          headerName: `${t('competitors.dealerHandlingCost')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -410,6 +421,7 @@ export default function Indicators() {
       {
          field: 'competitorPricing',
          flex: 1,
+         minWidth: 100,
          headerName: `${t('competitors.competitorPricing')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -419,6 +431,7 @@ export default function Indicators() {
       {
          field: 'dealerPricingPremiumPercentage',
          flex: 1,
+         minWidth: 100,
          headerName: `${t('competitors.dealerPricingPremium')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -429,6 +442,7 @@ export default function Indicators() {
       {
          field: 'dealerPremiumPercentage',
          flex: 1,
+         minWidth: 100,
          headerName: `${t('competitors.dealerPremium')}`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -438,6 +452,7 @@ export default function Indicators() {
       {
          field: 'averageDN',
          flex: 0.8,
+         minWidth: 100,
          headerName: `${t('competitors.averageDealerNet')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -448,6 +463,7 @@ export default function Indicators() {
       {
          field: 'variancePercentage',
          flex: 0.6,
+         minWidth: 100,
          headerName: `${t('competitors.variancePercentage')}`,
          ...formatNumbericColumn,
          renderCell(params) {

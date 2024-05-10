@@ -191,6 +191,7 @@ export default function Shipment() {
       {
          field: 'orderNo',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.order#'),
          renderCell(params) {
             return <span>{params.row.booking.orderNo}</span>;
@@ -199,6 +200,7 @@ export default function Shipment() {
       {
          field: 'series',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.series'),
          renderCell(params) {
             return <span>{params.row.booking.series}</span>;
@@ -207,6 +209,7 @@ export default function Shipment() {
       {
          field: 'Plant',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.plant'),
          renderCell(params) {
             return <span>{params.row.booking.product?.plant}</span>;
@@ -215,6 +218,7 @@ export default function Shipment() {
       {
          field: 'truckClass',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.class'),
          renderCell(params) {
             return <span>{params.row.booking.product?.clazz?.clazzName}</span>;
@@ -223,6 +227,7 @@ export default function Shipment() {
       {
          field: 'ctryCode',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.country'),
          renderCell(params) {
             return <span>{params.row.booking.country?.countryName}</span>;
@@ -231,6 +236,7 @@ export default function Shipment() {
       {
          field: 'region',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.booking.country?.region?.regionName}</span>;
@@ -239,6 +245,7 @@ export default function Shipment() {
       {
          field: 'date',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.createAt'),
          cellClassName: 'highlight-cell',
          headerClassName: 'pricing-team',
@@ -249,6 +256,7 @@ export default function Shipment() {
       {
          field: 'dealerNet',
          flex: 0.6,
+         minWidth: 100,
          headerName: `${t('table.dealerNet')}`,
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell',
@@ -261,6 +269,7 @@ export default function Shipment() {
       {
          field: 'marginPercentageAfterSurcharge',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.margin%'),
          cellClassName: 'highlight-cell',
          headerClassName: 'pricing-team',
@@ -278,6 +287,7 @@ export default function Shipment() {
       {
          field: 'FPA_dealerNet',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.dealerNet'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-FPA',
@@ -294,6 +304,7 @@ export default function Shipment() {
       {
          field: 'FPA_cost',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.cost'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-FPA',
@@ -310,6 +321,7 @@ export default function Shipment() {
       {
          field: 'FPA_margin',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.margin'),
          cellClassName: 'highlight-cell-FPA',
          headerClassName: 'FPA-team',
@@ -326,6 +338,7 @@ export default function Shipment() {
       {
          field: 'FPA_marginpercentage',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.margin%'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-FPA',
@@ -343,6 +356,7 @@ export default function Shipment() {
       {
          field: 'actual_dealerNet',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.dealerNet'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-actual',
@@ -359,6 +373,7 @@ export default function Shipment() {
       {
          field: 'actual_cost',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.cost'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-actual',
@@ -375,6 +390,7 @@ export default function Shipment() {
       {
          field: 'actual_margin',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.margin'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-actual',
@@ -391,6 +407,7 @@ export default function Shipment() {
       {
          field: 'actual_margin%',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.margin%'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-actual',
@@ -410,6 +427,7 @@ export default function Shipment() {
          field: 'remark',
          flex: 0.4,
          ...centerHeaderColumn,
+         minWidth: 80,
          headerName: t('table.remark'),
          renderCell(params) {
             return <span>{params.row.booking.comment}</span>;
@@ -810,7 +828,11 @@ export default function Shipment() {
                <Grid item xs={2.5}>
                   <Paper
                      elevation={2}
-                     sx={{ ...componentType, backgroundColor: 'rgba(0, 153, 76, 0.6)' }}
+                     sx={{
+                        ...componentType,
+
+                        backgroundColor: 'rgba(0, 153, 76, 0.6)',
+                     }}
                   >
                      <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                         Actual
