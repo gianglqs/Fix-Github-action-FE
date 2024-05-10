@@ -27,7 +27,12 @@ import {
    defaultValueFilterOrder,
    defaultValueCaculatorForAjustmentCost,
 } from '@/utils/defaultValues';
-import { DataGridPro, GridCellParams, GridToolbar,GridColumnGroupingModel } from '@mui/x-data-grid-pro';
+import {
+   DataGridPro,
+   GridCellParams,
+   GridToolbar,
+   GridColumnGroupingModel,
+} from '@mui/x-data-grid-pro';
 
 import CellColor, {
    CellPercentageColor,
@@ -186,7 +191,6 @@ export default function Adjustment() {
       handleChangePage(1);
    };
 
-
    const tableState = useSelector(commonStore.selectTableState);
 
    const columns = [
@@ -195,7 +199,7 @@ export default function Adjustment() {
          flex: 0.5,
          headerName: t('table.region'),
          renderCell(params) {
-            return <span  >{params.row.region}</span>;
+            return <span>{params.row.region}</span>;
          },
       },
 
@@ -388,8 +392,7 @@ export default function Adjustment() {
       {
          groupId: 'Original',
          headerName: 'Original',
-         headerClassName:'origin'
-         ,
+         headerClassName: 'origin',
          children: [
             { field: 'originalDN' },
             { field: 'originalMargin' },
@@ -399,12 +402,8 @@ export default function Adjustment() {
       {
          groupId: 'Adjusted',
          headerName: 'Adjusted',
-         headerClassName:'adjusted',
-         children: [
-            { field: 'newDN' },
-            { field: 'newMargin' },
-            { field: 'newMarginPercentage' },
-         ],
+         headerClassName: 'adjusted',
+         children: [{ field: 'newDN' }, { field: 'newMargin' }, { field: 'newMarginPercentage' }],
       },
    ];
    const totalColumns = [
@@ -1125,8 +1124,7 @@ export default function Adjustment() {
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: 'calc(100vh - 283px)' }}>
-               
-               <DataGridPro
+                  <DataGridPro
                      sx={{
                         '& .MuiDataGrid-cell': {
                            padding: 0,
@@ -1139,7 +1137,6 @@ export default function Adjustment() {
                            lineHeight: 1.2,
                         },
                      }}
-
                      hideFooter
                      disableColumnMenu
                      columnHeaderHeight={60}
@@ -1148,14 +1145,12 @@ export default function Adjustment() {
                         toolbar: GridToolbar,
                      }}
                      rows={listAdjustment}
-                     rowBuffer={35}
-                     rowThreshold={25}
+                     rowBufferPx={35}
                      columns={columns}
-                     columnGroupingModel = {columnGroupingModel}
+                     columnGroupingModel={columnGroupingModel}
                      getRowId={(params) => params.id}
                   />
                </Grid>
-             
 
                <DataTablePagination
                   page={tableState.pageNo}

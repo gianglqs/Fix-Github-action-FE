@@ -1034,8 +1034,7 @@ export default function Indicators() {
                      }}
                      rowHeight={35}
                      rows={getDataForTable}
-                     rowBuffer={35}
-                     rowThreshold={25}
+                     rowBufferPx={35}
                      columns={columns}
                      getRowId={(params) => params.id}
                   />

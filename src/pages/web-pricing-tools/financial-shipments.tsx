@@ -855,8 +855,7 @@ export default function Shipment() {
                      }}
                      rowHeight={30}
                      rows={listOrder}
-                     rowBuffer={35}
-                     rowThreshold={25}
+                     rowBufferPx={35}
                      columns={columns}
                      getRowId={(params) => params.orderNo}
                      onCellClick={handleOnCellClick}

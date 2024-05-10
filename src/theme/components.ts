@@ -169,21 +169,20 @@ const components: Components = {
    MuiDataGrid: {
       styleOverrides: {
          root: {
-            '& .MuiDataGrid-columnHeader--filledGroup  .MuiDataGrid-columnHeaderTitleContainerContent' : {
-               display: '-webkit-box !important', 
-               WebkitBoxOrient: 'vertical', 
-               WebkitLineClamp: 2, 
-               textOverflow: 'ellipsis', 
-               overflow: 'hidden'
-
-            }
-            ,
-            '& .MuiDataGrid-columnHeader--filledGroup .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-columnHeaderTitleContainer ' :{
-               display: 'flex',
-               justifyContent:'center',
-               alignItems:'center'
-
-            },
+            '& .MuiDataGrid-columnHeader--filledGroup  .MuiDataGrid-columnHeaderTitleContainerContent':
+               {
+                  display: '-webkit-box !important',
+                  WebkitBoxOrient: 'vertical',
+                  WebkitLineClamp: 2,
+                  textOverflow: 'ellipsis',
+                  overflow: 'hidden',
+               },
+            '& .MuiDataGrid-columnHeader--filledGroup .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-columnHeaderTitleContainer ':
+               {
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+               },
             '& .MuiDataGrid-columnHeaders': {
                borderBottom: 'none',
                backgroundColor: secondaryColor.main,
@@ -225,9 +224,10 @@ const components: Components = {
             '& .highlight-cell-FPA, .highlight-cell-adjusted': {
                backgroundColor: 'rgba(255, 204, 153, 0.6)',
             },
-            '& .MuiDataGrid-row:nth-child(even) .highlight-cell-FPA , .MuiDataGrid-row:nth-child(even) .highlight-cell-adjusted ': {
-               backgroundColor: 'rgba(255, 204, 153, 0.8)',
-            },
+            '& .MuiDataGrid-row:nth-child(even) .highlight-cell-FPA , .MuiDataGrid-row:nth-child(even) .highlight-cell-adjusted ':
+               {
+                  backgroundColor: 'rgba(255, 204, 153, 0.8)',
+               },
             '& .highlight-cell-actual': {
                backgroundColor: 'rgba(0, 153, 76, 0.4)',
             },
@@ -257,19 +257,6 @@ const components: Components = {
                backgroundColor: 'rgba(0, 153, 76, 0.6)',
                borderRight: '1px solid white',
                borderLeft: '1px solid white',
-            },
-            
-         },
-      },
-   },
-   MuiTreeItem: {
-      styleOverrides: {
-         content: {
-            '&.Mui-focused': {
-               backgroundColor: 'white',
-            },
-            '&:hover': {
-               backgroundColor: 'white',
             },
          },
       },

@@ -537,8 +537,7 @@ export default function VolumeDiscountAnalysis() {
                      }}
                      rowHeight={35}
                      rows={volumeDiscountData}
-                     rowBuffer={35}
-                     rowThreshold={25}
+                     rowBufferPx={35}
                      columns={columns}
                      getRowId={(params) => params.id}
                   />
