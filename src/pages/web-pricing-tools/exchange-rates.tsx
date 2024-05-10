@@ -158,64 +158,156 @@ export default function ExchangeRate() {
             fromRealTime: exchangeRateSource == 'Database' ? false : true,
          };
          setLoading(true);
-         exchangeRatesApi
-            .compareCurrency(request)
-            .then((response) => {
-               const data = response.data.compareCurrency;
 
-               // Setting Labels for chart
-               const labels = data[dataFilter.comparisonCurrencies.value[0]]
-                  .map((item) => {
-                     if (exchangeRateSource === 'Database') {
-                        return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
-                     } else {
-                        return `${item.date[2]} ${months[item.date[1]]} ${String(
-                           item.date[0]
-                        ).substring(2)}`;
-                     }
+         // const fd=Date.parse(request.fromDate);
+         const fd = new Date(request.fromDate);
+         const td = new Date(request.toDate);
+
+         // const td=Date.parse(request.toDate);
+
+         const monthDiff: number =
+            (td.getFullYear() - fd.getFullYear()) * 12 + (td.getMonth() - fd.getMonth());
+
+         console.log('month' + monthDiff);
+         const timeDiff: number = td.getTime() - fd.getTime();
+         const dayDiff: number = timeDiff / (1000 * 3600 * 24);
+         console.log('day:' + dayDiff);
+
+         if (request.fromRealTime == false) {
+            if (monthDiff <= 12) {
+               exchangeRatesApi
+                  .compareCurrency(request)
+                  .then((response) => {
+                     const data = response.data.compareCurrency;
+
+                     // Setting Labels for chart
+                     const labels = data[dataFilter.comparisonCurrencies.value[0]]
+                        .map((item) => {
+                           if (exchangeRateSource === 'Database') {
+                              return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
+                           } else {
+                              return `${item.date[2]} ${months[item.date[1]]} ${String(
+                                 item.date[0]
+                              ).substring(2)}`;
+                           }
+                        })
+                        .reverse();
+
+                     let datasets = [];
+                     dataFilter.comparisonCurrencies.value.forEach((item) => {
+                        datasets.push({
+                           label: item,
+                           data: data[item].reverse().map((obj) => obj.rate),
+                           borderColor: CURRENCY[item],
+                           backgroundColor: CURRENCY[item],
+                           pointStyle: 'circle',
+                           pointRadius: 5,
+                           pointHoverRadius: 10,
+                           yAxisID: item == 'JPY' ? 'y1' : 'y',
+                        });
+                     });
+
+                     const newChartData = {
+                        title: `${
+                           dataFilter.currentCurrency.value == 'CNY'
+                              ? 'RMB'
+                              : dataFilter.currentCurrency.value
+                        } to${_.map(dataFilter.comparisonCurrencies.value, (item) => ` ${item}`)}`,
+                        data: {
+                           labels: labels,
+                           datasets: datasets,
+                        },
+                        conclusion: {
+                           stable: data.stable,
+                           weakening: data.weakening,
+                           strengthening: data.strengthening,
+                        },
+                        lastUpdated: data.lastUpdated,
+                     };
+                     setChartData((prev) => [...prev, newChartData]);
                   })
-                  .reverse();
+                  .catch((error) => {
+                     dispatch(commonStore.actions.setErrorMessage(error.message));
+                  })
+                  .finally(() => setLoading(false));
+               isCompareClicked.current = !isCompareClicked.current;
+            } else {
+               setLoading(false);
+               dispatch(
+                  commonStore.actions.setErrorMessage(
+                     'Time exceeds 12 month, please choose a shorter range'
+                  )
+               );
+            }
+         } else {
+            if (dayDiff <= 30) {
+               exchangeRatesApi
+                  .compareCurrency(request)
+                  .then((response) => {
+                     const data = response.data.compareCurrency;
 
-               let datasets = [];
-               dataFilter.comparisonCurrencies.value.forEach((item) => {
-                  datasets.push({
-                     label: item,
-                     data: data[item].reverse().map((obj) => obj.rate),
-                     borderColor: CURRENCY[item],
-                     backgroundColor: CURRENCY[item],
-                     pointStyle: 'circle',
-                     pointRadius: 5,
-                     pointHoverRadius: 10,
-                     yAxisID: item == 'JPY' ? 'y1' : 'y',
-                  });
-               });
+                     // Setting Labels for chart
+                     const labels = data[dataFilter.comparisonCurrencies.value[0]]
+                        .map((item) => {
+                           if (exchangeRateSource === 'Database') {
+                              return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
+                           } else {
+                              return `${item.date[2]} ${months[item.date[1]]} ${String(
+                                 item.date[0]
+                              ).substring(2)}`;
+                           }
+                        })
+                        .reverse();
 
-               const newChartData = {
-                  title: `${
-                     dataFilter.currentCurrency.value == 'CNY'
-                        ? 'RMB'
-                        : dataFilter.currentCurrency.value
-                  } to${_.map(dataFilter.comparisonCurrencies.value, (item) => ` ${item}`)}`,
-                  data: {
-                     labels: labels,
-                     datasets: datasets,
-                  },
-                  conclusion: {
-                     stable: data.stable,
-                     weakening: data.weakening,
-                     strengthening: data.strengthening,
-                  },
-                  lastUpdated: data.lastUpdated,
-               };
-               setChartData((prev) => [...prev, newChartData]);
-            })
-            .catch((error) => {
-               dispatch(commonStore.actions.setErrorMessage(error.message));
-            })
-            .finally(() => setLoading(false));
-         isCompareClicked.current = !isCompareClicked.current;
+                     let datasets = [];
+                     dataFilter.comparisonCurrencies.value.forEach((item) => {
+                        datasets.push({
+                           label: item,
+                           data: data[item].reverse().map((obj) => obj.rate),
+                           borderColor: CURRENCY[item],
+                           backgroundColor: CURRENCY[item],
+                           pointStyle: 'circle',
+                           pointRadius: 5,
+                           pointHoverRadius: 10,
+                           yAxisID: item == 'JPY' ? 'y1' : 'y',
+                        });
+                     });
+
+                     const newChartData = {
+                        title: `${
+                           dataFilter.currentCurrency.value == 'CNY'
+                              ? 'RMB'
+                              : dataFilter.currentCurrency.value
+                        } to${_.map(dataFilter.comparisonCurrencies.value, (item) => ` ${item}`)}`,
+                        data: {
+                           labels: labels,
+                           datasets: datasets,
+                        },
+                        conclusion: {
+                           stable: data.stable,
+                           weakening: data.weakening,
+                           strengthening: data.strengthening,
+                        },
+                        lastUpdated: data.lastUpdated,
+                     };
+                     setChartData((prev) => [...prev, newChartData]);
+                  })
+                  .catch((error) => {
+                     dispatch(commonStore.actions.setErrorMessage(error.message));
+                  })
+                  .finally(() => setLoading(false));
+               isCompareClicked.current = !isCompareClicked.current;
+            } else {
+               setLoading(false);
+               dispatch(
+                  commonStore.actions.setErrorMessage(
+                     'Time exceeds 1 month, please choose a shorter range'
+                  )
+               );
+            }
+         }
       } catch (error) {
-         dispatch(commonStore.actions.setErrorMessage(error.message));
+         dispatch(commonStore.actions.setErrorMessage());
       }
    };
 
