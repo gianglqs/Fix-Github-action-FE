@@ -6,7 +6,7 @@ import { formatDate, formatNumber, formatNumberPercentage } from '@/utils/format
 import { useDispatch, useSelector } from 'react-redux';
 
 import ClearIcon from '@mui/icons-material/Clear';
-import { Backdrop, Button, CircularProgress, ListItem } from '@mui/material';
+import { Backdrop, Button, CircularProgress, ListItem, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { setCookie } from 'nookies';
@@ -45,6 +45,7 @@ import {
 } from '@mui/x-data-grid-pro';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
+import { componentType } from '@/theme/paperStyle';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -829,7 +830,6 @@ export default function Shipment() {
                   </Paper>
                </Grid>
             </Grid>
-
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
