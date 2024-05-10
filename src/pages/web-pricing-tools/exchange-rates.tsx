@@ -170,7 +170,7 @@ export default function ExchangeRate() {
 
          console.log('month' + monthDiff);
          const timeDiff: number = td.getTime() - fd.getTime();
-         const dayDiff: number = timeDiff / (1000 * 3600 * 24);
+         const dayDiff: number = timeDiff / (1000 * 3600 * 24) + 1;
          console.log('day:' + dayDiff);
 
          if (request.fromRealTime == false) {
