@@ -50,6 +50,8 @@ export default function MarginAnalysis() {
    const [uploadedFile, setUploadedFile] = useState({ name: '' });
    const loading = useSelector(marginAnalysisStore.selectIsLoadingPage);
    const initDataFilter = useSelector(marginAnalysisStore.selectInitDataFilter);
+   const dataFilter = useSelector(marginAnalysisStore.selectDataFilter);
+   const marginDataStore = useSelector(marginAnalysisStore.selectMarginData);
 
    const [typeValue, setTypeValue] = useState({ value: 'None', error: false });
    const handleTypeValue = (option) => {
@@ -70,13 +72,24 @@ export default function MarginAnalysis() {
 
    const [regionValue, setRegionValue] = useState({ value: 'Asia' });
    const handleChangeRegionOptions = (option) => {
-      setRegionValue({ value: option.value });
+      setRegionValue({ value: option });
    };
 
    const [modelCodeValue, setModelCodeValue] = useState({ value: 'None' });
    const handleChangeModelCodeValue = (option) => {
       setModelCodeValue({ value: option });
    };
+
+   useEffect(() => {
+      if (dataFilter) {
+         handleChangeModelCodeValue(dataFilter.modelCode == 'null' ? 'None' : dataFilter.modelCode);
+         handleSeriesValue(dataFilter.series);
+         handleChangeRegionOptions(dataFilter.region);
+         handleOrderNumber(dataFilter.orderNumber);
+         handleTypeValue(dataFilter.type);
+         setValueCurrency(dataFilter.currency);
+      }
+   }, [dataFilter]);
 
    const [targetMargin, setTargetMargin] = useState(0);
 
@@ -126,6 +139,24 @@ export default function MarginAnalysis() {
          setLoading(false);
       }
    };
+   useEffect(() => {
+      if (marginDataStore) {
+         console.log(marginDataStore);
+         const analysisSummary = marginDataStore?.MarginAnalystSummary;
+         const marginAnalystData = marginDataStore?.MarginAnalystData;
+
+         marginAnalystData.forEach((margin) => {
+            margin.listPrice = margin.listPrice.toLocaleString();
+            margin.manufacturingCost = margin.manufacturingCost.toLocaleString();
+            margin.dealerNet = margin.dealerNet.toLocaleString();
+         });
+
+         setMarginAnalysisSummary(analysisSummary);
+         setListDataAnalysis(marginAnalystData);
+
+         setTargetMargin(marginDataStore?.TargetMargin);
+      }
+   }, [marginDataStore]);
 
    const handleOpenMarginFile = async (file) => {
       let formData = new FormData();
@@ -302,22 +333,22 @@ export default function MarginAnalysis() {
       setMarginFilter(initDataFilter);
    }, [initDataFilter]);
 
-   useEffect(() => {
-      setTypeValue({
-         value: marginFilter?.type ? marginFilter?.type[0]?.value : 'None',
-         error: false,
-      });
-      setModelCodeValue({
-         value: marginFilter.modelCode ? marginFilter.modelCode[0]?.value : 'None',
-      });
-      setSeries({
-         value: marginFilter.series ? marginFilter.series[0]?.value : 'None',
-         error: false,
-      });
-      setOrderNumberValue({
-         value: marginFilter.orderNumber ? marginFilter.orderNumber[0]?.value : 'None',
-      });
-   }, [marginFilter]);
+   // useEffect(() => {
+   //    setTypeValue({
+   //       value: marginFilter?.type ? marginFilter?.type[0]?.value : 'None',
+   //       error: false,
+   //    });
+   //    setModelCodeValue({
+   //       value: marginFilter.modelCode ? marginFilter.modelCode[0]?.value : 'None',
+   //    });
+   //    setSeries({
+   //       value: marginFilter.series ? marginFilter.series[0]?.value : 'None',
+   //       error: false,
+   //    });
+   //    setOrderNumberValue({
+   //       value: marginFilter.orderNumber ? marginFilter.orderNumber[0]?.value : 'None',
+   //    });
+   // }, [marginFilter]);
 
    const regionOptions = [
       {
@@ -474,7 +505,7 @@ export default function MarginAnalysis() {
                      options={regionOptions}
                      label={t('filters.region')}
                      value={regionValue.value}
-                     onChange={(e, option) => handleChangeRegionOptions(option)}
+                     onChange={(e, option) => handleChangeRegionOptions(option.value)}
                      disableListWrap
                      primaryKeyOption="value"
                      renderOption={(prop, option) => `${option.value}`}

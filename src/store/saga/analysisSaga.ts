@@ -56,6 +56,41 @@ function* getDataViewPrevious() {
             type: dataConvert.typeFilters,
          })
       );
+
+      yield put(
+         marginAnalysisStore.actions.setDataFilter({
+            modelCode: dataConvert.modelCodeFilter,
+            series: dataConvert.seriesFilter,
+            orderNumber: dataConvert.orderNumberFilter,
+            type: dataConvert.typeFilter,
+            region: dataConvert.region,
+            currency: dataConvert.currency,
+         })
+      );
+      let cookies = parseCookies();
+      const transformData = {
+         marginData: {
+            id: {
+               modelCode: dataConvert.modelCodeFilter == 'None' ? '' : dataConvert.modelCodeFilter,
+               type: dataConvert.typeFilter == 'None' ? 0 : dataConvert.typeFilter,
+               currency: dataConvert.currency,
+            },
+            fileUUID: cookies['fileUUID'],
+            orderNumber:
+               dataConvert.orderNumberFilter == 'None' || dataConvert.orderNumberFilter == null
+                  ? ''
+                  : dataConvert.orderNumberFilter,
+            plant: 'SN',
+            series: dataConvert.seriesFilter,
+         },
+         region: dataConvert.region,
+      };
+
+      const marginData = yield call(marginAnalysisApi.estimateMarginAnalystData, {
+         ...transformData,
+      });
+      console.log(marginData);
+      yield put(marginAnalysisStore.actions.setMarginData(marginData.data));
    } catch (error) {
       console.log(error);
    }
