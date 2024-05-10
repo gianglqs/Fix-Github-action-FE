@@ -11,33 +11,34 @@ jobs:
       if: github.event_name == 'release' && github.event.release.target_commitish == 'qa-deploy'
       steps:
          - name: Checkout
-           uses: actions/checkout@v3
+           uses: actions/checkout@v4
          - name: Set up Docker Buildx
-           uses: docker/setup-buildx-action@v2
+           uses: docker/setup-buildx-action@v3
          - name: Docker meta
            id: meta
-           uses: docker/metadata-action@v4
+           uses: docker/metadata-action@v5
            with:
               images: ghcr.io/phoenix-software-development/hyster-yale-frontend
               flavor: latest=true
               tags: |
                  type=raw,value=qa-deploy-{{sha}}
          - name: Login to image repository
-           uses: docker/login-action@v2
+           uses: docker/login-action@v3
            with:
               registry: ghcr.io
               username: ${{ github.actor }}
               password: ${{ secrets.GHCR_TOKEN }}
          - name: Build
            id: docker_build
-           uses: docker/build-push-action@v4
+           uses: docker/build-push-action@v5
            with:
               context: ./
-              file: .github/actions/Dockerfile
+              file: docker/Dockerfile
               push: true
               tags: ${{ steps.meta.outputs.tags }}
               build-args: |
-                 "VERSION_TAG=${{ steps.meta.outputs.tags }}"
+                 IMAGE_TAG=qa-deploy-${{ github.sha }}
+                 RELEASE_TAG=${{ github.event.release.tag_name }}
 
    deploy:
       needs: [build-qa-image]
@@ -45,42 +46,100 @@ jobs:
       permissions:
          packages: read
       steps:
-         - name: Set up Docker Buildx
-           uses: docker/setup-buildx-action@v2
-
-         - name: Extract metadata (tags, labels) for Docker
-           id: meta
-           uses: docker/metadata-action@v4
-           with:
-              images: ghcr.io/phoenix-software-development/hyster-yale-frontend
-              flavor: latest=true
-              tags: |
-                 type=raw,value=qa-deploy-{{sha}}
-
          - name: Login to image repository
-           uses: docker/login-action@v2
+           uses: docker/login-action@v3
            with:
               registry: ghcr.io
               username: ${{ github.actor }}
               password: ${{ secrets.GHCR_TOKEN }}
 
+         - name: set env
+           shell: bash
+           run: |
+              CONFIG_FILE='/opt/hysteryale/last_version_success_release/hysteryale-fe.conf'
+
+              while IFS='=' read -r key value; do
+                export "$key"="$value"
+              done < $CONFIG_FILE
+
+              echo "LAST_SUCCESS_IMAGE_NAME=$IMAGE_ID" >> $GITHUB_ENV
+              echo "LAST_SUCCESS_CONTAINER_NAME=$CONTAINER_NAME" >> $GITHUB_ENV
+              echo "LAST_SUCCESS_RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
+
+              echo "TIMEZONE_HY=$(cat /etc/timezone)" >> $GITHUB_ENV
+              echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
+              echo 'WORK_DIR=/opt/hysteryale/hyster-yale-frontend' >> $GITHUB_ENV
+
+              echo "NEW_CONTAINER_NAME=hysteryale-fe_${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+              echo "NEW_RELEASE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+              echo "NEW_IMAGE_NAME=ghcr.io/phoenix-software-development/hyster-yale-frontend:latest" >> $GITHUB_ENV
+
          - name: Pull latest image
            shell: bash
            run: |
-              CONTAINER_NAME=hysteryale-fe
+              # pull image
+              docker pull $NEW_IMAGE_NAME
 
-               # delete old images
-              docker rmi -f ghcr.io/phoenix-software-development/hyster-yale-frontend:latest || true
+         - name: Checkout code to get file compose.yml
+           shell: bash
+           run: |
+              cd $WORK_DIR
+              git fetch
+              git checkout tags/$NEW_RELEASE_TAG
 
-               # pull 
-              docker pull ghcr.io/phoenix-software-development/hyster-yale-frontend:latest
+         - name: Stop old container is running
+           shell: bash
+           run: |
+              cd $WORK_DIR/docker
+              IMAGE_NAME=$LAST_SUCCESS_IMAGE_NAME CONTAINER_NAME=$LAST_SUCCESS_CONTAINER_NAME docker compose stop
 
-               # if container is running, stop it
-              if docker ps -a --format '{{.Names}}' | grep -Eq "^$CONTAINER_NAME$"; then
-                 docker stop $CONTAINER_NAME || true
-                 # remove image and containers old
-                 docker rm $CONTAINER_NAME  
+         - name: Run new Image
+           shell: bash
+           run: |
+              cd $WORK_DIR/docker
+              IMAGE_NAME=$NEW_IMAGE_NAME CONTAINER_NAME=$NEW_CONTAINER_NAME docker compose up -d
+
+         - name: Check successfully
+           shell: bash
+           run: |
+              sleep 30
+
+              if [[ $(netstat -tuln | grep 3005) == "" ]]
+              then
+                echo 'Build Failure'
+                docker logs $NEW_CONTAINER_NAME
+
+                cd $WORK_DIR/docker
+                echo 'Down docker compose failure'
+                IMAGE_NAME=$NEW_IMAGE_NAME CONTAINER_NAME=$NEW_CONTAINER_NAME docker compose down
+
+                echo 'checkout last success release tag'
+                git checkout tags/$LAST_SUCCESS_RELEASE_TAG
+
+                echo 'Up last success docker compose...'
+                IMAGE_NAME=$LAST_SUCCESS_IMAGE_NAME CONTAINER_NAME=$LAST_SUCCESS_CONTAINER_NAME docker compose up -d
+                echo 'Revert successfully.'
+
+                exit 1
               fi
 
-                # run
-              docker run -p 3005:3005 -d --name=hysteryale-fe --restart unless-stopped ghcr.io/phoenix-software-development/hyster-yale-frontend:latest
+              echo 'Build successfully'
+
+              IMAGE_ID=$(docker images --filter=reference="${NEW_IMAGE_NAME}" --format "{{.ID}}")
+
+              echo "IMAGE_ID=$IMAGE_ID" > $CONFIG_FILE
+              echo "CONTAINER_NAME=$NEW_CONTAINER_NAME" >> $CONFIG_FILE
+              echo "RELEASE_TAG=$NEW_RELEASE_TAG" >> $CONFIG_FILE
+
+         - name: Clean images and containers not used
+           shell: bash
+           run: |
+              echo 'erasing not used container...'
+              docker container prune -f
+              echo 'erased not used container.'
+
+              echo 'erasing not used images...'
+              docker image prune -af
+              echo 'erased not used images.'
+
+              exit 0

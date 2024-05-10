@@ -1,4 +1,4 @@
-import { styled, Paper, Grid } from '@mui/material';
+import { styled, Paper, Grid, Box, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import FormControlledTextField from '@/components/FormController/TextField';
 
@@ -20,6 +20,7 @@ import { AppFooter } from '@/components';
 import Image from 'next/image';
 import { GetServerSidePropsContext } from 'next';
 import { checkTokenBeforeLoadPageLogin } from '@/utils/checkTokenBeforeLoadPage';
+import { useEffect, useState } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('../public/logo.svg');
@@ -40,8 +41,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageLogin(context);
 }
 
-export default function LoginPage() {
+export default function LoginPage(props) {
    const router = useRouter();
+   const { imageTagFE, releaseTagFE } = props;
 
    const validationSchema = yup.object({
       email: yup.string().required('Email is required'),
@@ -102,12 +104,61 @@ export default function LoginPage() {
             dispatch(commonStore.actions.setErrorMessage('Error on signing in'));
          });
    });
+   const [backendVersion, setBackendVersion] = useState({ imageTag: '', releaseTag: '' });
+
+   useEffect(() => {
+      axios
+         .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}backend-version/version`)
+         .then((response) => {
+            setBackendVersion({
+               imageTag: response.data.imageTag,
+               releaseTag: response.data.releaseTag,
+            });
+         })
+         .catch((error) => {
+            console.log(error);
+         });
+   }, []);
 
    return (
       <>
          <NextHead>
             <title>HysterYale - Sign in</title>
          </NextHead>
+         <Box
+            sx={{
+               position: 'absolute',
+               right: '5px',
+               top: '10px',
+               border: '1px solid #b9d5ff99',
+               padding: '10px',
+            }}
+         >
+            <Typography sx={{ fontWeight: 900, color: '#e7a800' }}>SOFTWARE VERSION:</Typography>
+            <Box>
+               <Typography>Backend</Typography>
+               <ul style={{ paddingLeft: 15, margin: 0 }}>
+                  <li>
+                     <Typography>Image Tag: {backendVersion.imageTag}</Typography>
+                  </li>
+                  <li>
+                     <Typography>Release Tag: {backendVersion.releaseTag}</Typography>
+                  </li>
+               </ul>
+            </Box>
+
+            <Box>
+               <Typography>Frontend</Typography>
+               <ul style={{ paddingLeft: 15, margin: 0 }}>
+                  <li>
+                     <Typography>Image Tag: {imageTagFE}</Typography>
+                  </li>
+                  <li>
+                     <Typography>Release Tag: {releaseTagFE}</Typography>
+                  </li>
+               </ul>
+            </Box>
+         </Box>
          <StyledContainer className="center-element">
             {/* <CssBaseline /> */}
             <StyledFormContainer>

@@ -278,6 +278,11 @@ export default function MarginAnalysis() {
          },
       },
       {
+         field: 'series',
+         flex: 0.4,
+         headerName: t('table.series'),
+      },
+      {
          field: 'modelCode',
          flex: 0.5,
          headerName: t('table.models'),
@@ -295,19 +300,15 @@ export default function MarginAnalysis() {
          },
       },
       {
-         field: 'series',
-         flex: 0.4,
-         headerName: t('table.series'),
-      },
-      {
          field: 'plant',
          flex: 0.3,
          headerName: t('table.plant'),
       },
+
       {
          field: 'listPrice',
          flex: 0.4,
-         headerName: t('table.listPrice'),
+         headerName: t('table.listPrice') + ` (${valueCurrency})`,
          headerAlign: 'right',
          align: 'right',
          cellClassName: 'highlight-cell',
@@ -315,7 +316,7 @@ export default function MarginAnalysis() {
       {
          field: 'manufacturingCost',
          flex: 0.7,
-         headerName: t('quotationMargin.manufacturingCost'),
+         headerName: t('quotationMargin.manufacturingCost') + ` (${valueCurrency})`,
          headerAlign: 'right',
          align: 'right',
       },
@@ -584,19 +585,6 @@ export default function MarginAnalysis() {
                )}
             </Grid>
 
-            <Grid container sx={{ marginTop: 1 }}>
-               <DataTable
-                  hideFooter
-                  disableColumnMenu
-                  tableHeight={250}
-                  rowHeight={50}
-                  rows={listDataAnalysis}
-                  columns={columns}
-                  getRowId={getRowId}
-                  sx={{ borderBottom: '1px solid #a8a8a8', borderTop: '1px solid #a8a8a8' }}
-               />
-            </Grid>
-
             <Grid container spacing={1} sx={{ marginTop: 1 }}>
                <MarginPercentageAOPRateBox
                   data={marginAnalysisSummary?.annually}
@@ -656,7 +644,7 @@ export default function MarginAnalysis() {
                            component="span"
                            sx={{ fontWeight: 'bold', marginRight: 1 }}
                         >
-                           {formatNumberPercentage(targetMargin * 100)}
+                           {formatNumberPercentage((targetMargin * 100).toLocaleString())}
                         </Typography>
                      </div>
                   </Paper>
@@ -666,7 +654,7 @@ export default function MarginAnalysis() {
                   data={marginAnalysisSummary?.annually}
                   valueCurrency={valueCurrency}
                />
-               <FullCostAOPRateBox
+               <FullCostAOPRateBoxMonthly
                   data={marginAnalysisSummary?.monthly}
                   valueCurrency={valueCurrency}
                />
@@ -695,6 +683,19 @@ export default function MarginAnalysis() {
 
                <ForUSPricingBox data={marginAnalysisSummary?.annually} />
                <ForUSPricingBox data={marginAnalysisSummary?.monthly} />
+            </Grid>
+
+            <Grid container sx={{ marginTop: 1 }}>
+               <DataTable
+                  hideFooter
+                  disableColumnMenu
+                  tableHeight={250}
+                  rowHeight={50}
+                  rows={listDataAnalysis}
+                  columns={columns}
+                  getRowId={getRowId}
+                  sx={{ borderBottom: '1px solid #a8a8a8', borderTop: '1px solid #a8a8a8' }}
+               />
             </Grid>
          </AppLayout>
          <CompareMarginDialog open={openCompareMargin} onClose={handleCloseCompareMargin} />
@@ -892,6 +893,118 @@ const FullCostAOPRateBox = (props) => {
    );
 };
 
+const FullCostAOPRateBoxMonthly = (props) => {
+   const { t } = useTranslation();
+   const { data, valueCurrency } = props;
+
+   return (
+      <Grid item xs={4}>
+         <Paper
+            elevation={2}
+            sx={{
+               padding: 2,
+               height: 'fit-content',
+            }}
+         >
+            <div className="space-between-element">
+               <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                  {t('quotationMargin.marignAnalysisMonthlyRate')}
+               </Typography>
+               <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                  {data?.marginAOPRate.toLocaleString()}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {data?.plant == 'HYM' ||
+                  data?.plant == 'Ruyi' ||
+                  data?.plant == 'Staxx' ||
+                  data?.plant == 'Maximal'
+                     ? `${t('quotationMargin.manufacturingCost')} (RMB)`
+                     : data?.plant == 'SN'
+                     ? `${t('quotationMargin.manufacturingCost')} (USD)`
+                     : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {data?.totalManufacturingCost.toLocaleString()}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {t('quotationMargin.costUplift')}{' '}
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {_.isNil(data?.costUplift) ? '' : `${(data?.costUplift * 100).toFixed(2)}%`}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {t('quotationMargin.addWarranty')}
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {_.isNil(data?.addWarranty) ? '' : `${(data?.addWarranty * 100).toFixed(2)}%`}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {t('quotationMargin.surcharge')}
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {_.isNil(data?.surcharge) ? '' : `${(data?.surcharge * 100).toFixed(2)}%`}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {t('quotationMargin.duty')} (AU BT Only)
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {_.isNil(data?.duty) ? '' : `${(data?.duty * 100).toFixed(2)}%`}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {t('quotationMargin.freight')} (AU Only)
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {data?.freight}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {t('quotationMargin.liIonIncluded')}
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {_.isNil(data?.liIonIncluded) ? '' : data?.liIonIncluded ? 'Yes' : 'No'}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span">
+                  {data?.fileUUID != null
+                     ? data?.plant == 'HYM' ||
+                       data?.plant == 'Ruyi' ||
+                       data?.plant == 'Staxx' ||
+                       data?.plant == 'Maximal'
+                        ? `${t('quotationMargin.totalCost')} (RMB)`
+                        : `${t('quotationMargin.totalCost')} (USD)`
+                     : `${t('quotationMargin.totalCost')} (${valueCurrency})`}
+               </Typography>
+               <Typography variant="body1" component="span">
+                  {data?.totalCost.toLocaleString()}
+               </Typography>
+            </div>
+            <div className="space-between-element">
+               <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                  {`${t('quotationMargin.fullCost')} ${valueCurrency} @AOP Rate`}
+               </Typography>
+               <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                  {data?.fullCostAOPRate.toLocaleString()}
+               </Typography>
+            </div>
+         </Paper>
+      </Grid>
+   );
+};
+
 const ForUSPricingBox = (props) => {
    const { t } = useTranslation();
    const { data } = props;
@@ -906,7 +1019,7 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.manufacturingCost')} (USD)
+                  {t('quotationMargin.manufacturingCost')} ({data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.manufacturingCostUSD.toLocaleString()}
@@ -914,7 +1027,7 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.addWarranty')} (USD)
+                  {t('quotationMargin.addWarranty')} ({data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.warrantyCost.toLocaleString()}
@@ -922,7 +1035,7 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.surcharge')} (USD)
+                  {t('quotationMargin.surcharge')} ({data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.surchargeCost.toLocaleString()}
@@ -930,7 +1043,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')} (USD)
+                  {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')} (
+                  {data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCostWithoutFreight.toLocaleString()}
@@ -938,7 +1052,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')} (USD)
+                  {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')} (
+                  {data?.id?.currency})
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCostWithFreight.toLocaleString()}

@@ -737,8 +737,7 @@ export default function PriceVolumeSensitivity() {
                      }}
                      rowHeight={30}
                      rows={listOrder}
-                     rowBuffer={35}
-                     rowThreshold={25}
+                     rowBufferPx={35}
                      columns={showColumnSeries ? columns : columnsWithoutSeries}
                      getRowId={(params) => params.id}
                      onCellClick={handleOnCellClick}
