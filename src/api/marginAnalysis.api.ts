@@ -14,8 +14,8 @@ class MarginAnalysisApi extends HttpService<any> {
       });
    };
 
-   estimateMarginAnalystData = (data: any) => {
-      return this.post<any>(`estimateMarginAnalystData`, { ...data });
+   estimateMarginAnalystData = (data: any, requestId: any) => {
+      return this.post<any>(`estimateMarginAnalystData`, { ...data }, { requestId });
    };
    getEstimateMarginAnalystData = (data: any) => {
       return this.post<any>(`getEstimateMarginAnalystData`, { ...data });

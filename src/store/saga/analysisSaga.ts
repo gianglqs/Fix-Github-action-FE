@@ -12,12 +12,8 @@ function* getLoadingPage() {
 
       if (requestId) {
          yield put(marginAnalysisStore.actions.setLoadingPage(true));
-
          while (true) {
-            console.log('hehehe');
             const { data } = yield call(checkProcessingApi.checkProcessing, { requestId });
-
-            console.log('data day', data);
 
             if (data === '') break;
 
@@ -67,7 +63,8 @@ function* getDataViewPrevious() {
             currency: dataConvert.currency,
          })
       );
-      let cookies = parseCookies();
+      const cookies = parseCookies();
+      const requestId = cookies['quotation-margin/requestId'];
       const transformData = {
          marginData: {
             id: {
@@ -86,9 +83,13 @@ function* getDataViewPrevious() {
          region: dataConvert.region,
       };
 
-      const marginData = yield call(marginAnalysisApi.estimateMarginAnalystData, {
-         ...transformData,
-      });
+      const marginData = yield call(
+         marginAnalysisApi.estimateMarginAnalystData,
+         {
+            ...transformData,
+         },
+         'requestId'
+      );
       console.log(marginData);
       yield put(marginAnalysisStore.actions.setMarginData(marginData.data));
    } catch (error) {

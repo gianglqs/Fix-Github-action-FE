@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import CompareMarginDialog from '@/components/Dialog/Module/MarginHistoryDialog/CompareMarginDialog';
 
 import { v4 as uuidv4 } from 'uuid';
+import { formatNumberPercentage } from '@/utils/formatCell';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -116,9 +117,19 @@ export default function MarginAnalysis() {
          };
 
          setLoading(true);
-         const { data } = await marginAnalysisApi.estimateMarginAnalystData({
-            ...transformData,
+
+         const requestId = uuidv4();
+         setCookie(null, 'quotation-margin/requestId', requestId, {
+            maxAge: 604800,
+            path: '/',
          });
+
+         const { data } = await marginAnalysisApi.estimateMarginAnalystData(
+            {
+               ...transformData,
+            },
+            requestId
+         );
 
          const analysisSummary = data?.MarginAnalystSummary;
          const marginAnalystData = data?.MarginAnalystData;
@@ -140,10 +151,11 @@ export default function MarginAnalysis() {
       }
    };
    useEffect(() => {
-      if (marginDataStore) {
-         console.log(marginDataStore);
-         const analysisSummary = marginDataStore?.MarginAnalystSummary;
-         const marginAnalystData = marginDataStore?.MarginAnalystData;
+      if (marginDataStore && Object.keys(marginDataStore).length !== 0) {
+         const clonedMarginAnalystData = JSON.parse(JSON.stringify(marginDataStore));
+
+         const analysisSummary = clonedMarginAnalystData?.MarginAnalystSummary;
+         const marginAnalystData = clonedMarginAnalystData?.MarginAnalystData;
 
          marginAnalystData.forEach((margin) => {
             margin.listPrice = margin.listPrice.toLocaleString();
@@ -154,7 +166,7 @@ export default function MarginAnalysis() {
          setMarginAnalysisSummary(analysisSummary);
          setListDataAnalysis(marginAnalystData);
 
-         setTargetMargin(marginDataStore?.TargetMargin);
+         setTargetMargin(Number(clonedMarginAnalystData?.TargetMargin));
       }
    }, [marginDataStore]);
 
@@ -644,7 +656,7 @@ export default function MarginAnalysis() {
                            component="span"
                            sx={{ fontWeight: 'bold', marginRight: 1 }}
                         >
-                           {targetMargin * 100}%
+                           {formatNumberPercentage(targetMargin * 100)}
                         </Typography>
                      </div>
                   </Paper>
