@@ -41,7 +41,6 @@ export default function MarginAnalysis() {
       setUserRole(userRoleCookies);
    });
 
-   const [uploadedFile, setUploadedFile] = useState({ name: '' });
    const loading = useSelector(marginAnalysisStore.selectIsLoadingPage);
    const initDataFilter = useSelector(marginAnalysisStore.selectInitDataFilter);
    const dataFilter = useSelector(marginAnalysisStore.selectDataFilter);
@@ -361,8 +360,7 @@ export default function MarginAnalysis() {
             <Grid container spacing={1.1} display="flex" alignItems="center">
                <Grid item>
                   <UploadFileDropZone
-                     uploadedFile={uploadedFile}
-                     setUploadedFile={setUploadedFile}
+                     setUploadedFile={handleUpdateDataFilterStore}
                      handleUploadFile={handleOpenMarginFile}
                      buttonName={t('button.openFile')}
                      sx={{ width: '100%', height: 24 }}
@@ -467,7 +465,7 @@ export default function MarginAnalysis() {
 
                <Grid item>
                   <Typography fontSize={16}>
-                     {t('button.fileUploaded')}: {uploadedFile.name}
+                     {t('button.fileUploaded')}: {dataFilter.uploadedFile}
                   </Typography>
                </Grid>
                <Grid item sx={{ width: '10%' }} />
@@ -477,16 +475,14 @@ export default function MarginAnalysis() {
                      <Grid item spacing={1.1} display="flex" alignItems="center">
                         <Grid item>
                            <UploadFileDropZone
-                              uploadedFile={uploadedFile}
-                              setUploadedFile={setUploadedFile}
+                              setUploadedFile={handleUpdateDataFilterStore}
                               handleUploadFile={handleImportMacroFile}
                               buttonName="Import Macro File"
                               sx={{ width: '100%', height: 24 }}
                            />
 
                            <UploadFileDropZone
-                              uploadedFile={uploadedFile}
-                              setUploadedFile={setUploadedFile}
+                              setUploadedFile={handleUpdateDataFilterStore}
                               handleUploadFile={handleImportPowerBi}
                               buttonName="Import PowerBi File"
                               sx={{ width: '100%', height: 24, marginTop: 1 }}
@@ -985,7 +981,7 @@ function UploadFileDropZone(props) {
          reader.onerror = () => console.log('file reading has failed');
          reader.onload = () => {
             // Do whatever you want with the file contents
-            props.setUploadedFile(file);
+            props.setUploadedFile('uploadedFile', file.name);
          };
          reader.readAsArrayBuffer(file);
          props.handleUploadFile(file);
