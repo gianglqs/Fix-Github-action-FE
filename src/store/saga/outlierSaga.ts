@@ -14,6 +14,10 @@ function* fetchOutlier() {
          defaultValueFilterOutlier: select(outlierStore.selectDefaultValueFilterOutlier),
       });
 
+      const { isBookingData } = yield* all({
+         isBookingData: select(outlierStore.selectDataSource),
+      });
+
       const cookies = parseCookies();
       const jsonDataFilter = cookies['outlierFilter'];
       let dataFilter;
@@ -29,6 +33,7 @@ function* fetchOutlier() {
       const { data } = yield* call(outlierApi.getOutlier, dataFilter, {
          pageNo: tableState.pageNo,
          perPage: tableState.perPage,
+         isBookingData,
       });
 
       const dataOutlier = JSON.parse(String(data)).listOutlier;

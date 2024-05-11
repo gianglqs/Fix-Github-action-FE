@@ -6,7 +6,7 @@ import { outlierStore, commonStore } from '@/store/reducers';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Button, Typography } from '@mui/material';
+import { Button, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material';
 
 import { AppAutocomplete, AppDateField, AppLayout, DataTablePagination } from '@/components';
 
@@ -71,6 +71,7 @@ export default function Outlier() {
    const serverTimeZone = useSelector(outlierStore.selectServerTimeZone);
    const serverLastUpdatedTime = useSelector(outlierStore.selectLastUpdatedTime);
    const serverLastUpdatedBy = useSelector(outlierStore.selectLastUpdatedBy);
+   const isBookingData = useSelector(outlierStore.selectDataSource);
 
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
@@ -351,7 +352,7 @@ export default function Outlier() {
       try {
          let {
             data: { chartOutliersData },
-         } = await outlierApi.getOutliersForChart(dataFilter);
+         } = await outlierApi.getOutliersForChart(dataFilter, isBookingData);
 
          chartOutliersData = chartOutliersData.filter((item) => item[0]?.region != null);
 
@@ -397,6 +398,12 @@ export default function Outlier() {
    useEffect(() => {
       convertTimezone();
    }, [serverLastUpdatedTime, serverTimeZone]);
+
+   const handleChangeDataSource = (e) => {
+      dispatch(outlierStore.actions.setDataSource(e.target.value));
+      dispatch(outlierStore.sagaGetList());
+      getOutliersDataForChart();
+   };
 
    return (
       <>
@@ -640,6 +647,39 @@ export default function Outlier() {
                   >
                      {t('button.clear')}
                   </Button>
+               </Grid>
+
+               <Grid item>
+                  <RadioGroup
+                     row
+                     value={isBookingData}
+                     onChange={handleChangeDataSource}
+                     aria-labelledby="demo-row-radio-buttons-group-label"
+                     name="row-radio-buttons-group"
+                     sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginLeft: 1,
+                        height: '90%',
+                     }}
+                  >
+                     <FormControlLabel
+                        sx={{
+                           height: '80%',
+                        }}
+                        value={true}
+                        control={<Radio />}
+                        label="Booking"
+                     />
+                     <FormControlLabel
+                        sx={{
+                           height: '80%',
+                        }}
+                        value={false}
+                        control={<Radio />}
+                        label="Shipment"
+                     />
+                  </RadioGroup>
                </Grid>
             </Grid>
             <Grid
