@@ -1,30 +1,30 @@
-import { AppAutocomplete, AppLayout, AppTextField, DataTable } from '@/components';
+import { AppAutocomplete, AppLayout, DataTable } from '@/components';
 
 import _ from 'lodash';
 
-import Grid from '@mui/material/Grid';
+import marginAnalysisApi from '@/api/marginAnalysis.api';
+import CompareMarginDialog from '@/components/Dialog/Module/MarginHistoryDialog/CompareMarginDialog';
+import { commonStore, marginAnalysisStore } from '@/store/reducers';
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import {
    Button,
+   CircularProgress,
    FormControlLabel,
    Paper,
    Radio,
    RadioGroup,
    Typography,
-   CircularProgress,
 } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
-import marginAnalysisApi from '@/api/marginAnalysis.api';
-import { useDispatch, useSelector } from 'react-redux';
-import { commonStore, marginAnalysisStore } from '@/store/reducers';
-import { useDropzone } from 'react-dropzone';
-import { parseCookies, setCookie } from 'nookies';
-import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import Grid from '@mui/material/Grid';
 import { GetServerSidePropsContext } from 'next';
+import { parseCookies } from 'nookies';
+import { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
-import CompareMarginDialog from '@/components/Dialog/Module/MarginHistoryDialog/CompareMarginDialog';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { v4 as uuidv4 } from 'uuid';
 import { formatNumberPercentage } from '@/utils/formatCell';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -41,60 +41,12 @@ export default function MarginAnalysis() {
       setUserRole(userRoleCookies);
    });
 
-   // const [valueCurrency, setValueCurrency] = useState('USD');
-   // const handleChange = (event) => {
-   //    setValueCurrency(event.target.value);
-   // };
-
-   // const [listDataAnalysis, setListDataAnalysis] = useState([]);
-   // const [marginAnalysisSummary, setMarginAnalysisSummary] = useState(null);
    const [uploadedFile, setUploadedFile] = useState({ name: '' });
    const loading = useSelector(marginAnalysisStore.selectIsLoadingPage);
    const initDataFilter = useSelector(marginAnalysisStore.selectInitDataFilter);
    const dataFilter = useSelector(marginAnalysisStore.selectDataFilter);
-   //const marginDataStore = useSelector(marginAnalysisStore.selectMarginData);
    const fileUUID = useSelector(marginAnalysisStore.selectFileUUID);
    const marginCalculateData = useSelector(marginAnalysisStore.selectMarginData);
-
-   // const [typeValue, setTypeValue] = useState({ value: 'None', error: false });
-   // const handleTypeValue = (option) => {
-   //    setTypeValue({ value: option, error: false });
-   //    if (option != 'None') setOrderNumberValue({ value: 'None' });
-   // };
-
-   // const [orderNumberValue, setOrderNumberValue] = useState({ value: 'None' });
-   // const handleOrderNumber = (option) => {
-   //    setOrderNumberValue({ value: option });
-   //    if (option != 'None') setTypeValue({ value: 'None', error: false });
-   // };
-
-   // const [series, setSeries] = useState({ value: '', error: false });
-   // const handleSeriesValue = (option) => {
-   //    setSeries({ value: option, error: false });
-   // };
-
-   // const [regionValue, setRegionValue] = useState({ value: 'Asia' });
-   // const handleChangeRegionOptions = (option) => {
-   //    setRegionValue({ value: option });
-   // };
-
-   // const [modelCodeValue, setModelCodeValue] = useState({ value: 'None' });
-   // const handleChangeModelCodeValue = (option) => {
-   //    setModelCodeValue({ value: option });
-   // };
-
-   // useEffect(() => {
-   //    if (dataFilter) {
-   //       handleChangeModelCodeValue(dataFilter.modelCode == 'null' ? 'None' : dataFilter.modelCode);
-   //       handleSeriesValue(dataFilter.series);
-   //       handleChangeRegionOptions(dataFilter.region);
-   //       handleOrderNumber(dataFilter.orderNumber);
-   //       handleTypeValue(dataFilter.type);
-   //       setValueCurrency(dataFilter.currency);
-   //    }
-   // }, [dataFilter]);
-
-   // const [targetMargin, setTargetMargin] = useState(0);
 
    const handleUpdateDataFilterStore = (field: string, data: any) => {
       const newDataFilter = { ...dataFilter };
@@ -104,11 +56,6 @@ export default function MarginAnalysis() {
 
    const handleCalculateMargin = async () => {
       try {
-         // if (series.value == 'None') {
-         //    setSeries({ value: 'None', error: true });
-         //    return;
-         // }
-
          if (!dataFilter.series) {
             dispatch(commonStore.actions.setErrorMessage('Series is not selected'));
             return;
@@ -150,11 +97,6 @@ export default function MarginAnalysis() {
             margin.dealerNet = margin.dealerNet.toLocaleString();
          });
 
-         // setMarginAnalysisSummary(analysisSummary);
-         // setListDataAnalysis(marginAnalystData);
-
-         // setTargetMargin(data?.TargetMargin);
-
          const marginData = {
             targetMargin: data?.TargetMargin,
             listDataAnalysis: marginAnalystData,
@@ -170,26 +112,6 @@ export default function MarginAnalysis() {
          setLoading(false);
       }
    };
-
-   // useEffect(() => {
-   //    if (marginDataStore && Object.keys(marginDataStore).length !== 0) {
-   //       const clonedMarginAnalystData = JSON.parse(JSON.stringify(marginDataStore));
-
-   //       const analysisSummary = clonedMarginAnalystData?.MarginAnalystSummary;
-   //       const marginAnalystData = clonedMarginAnalystData?.MarginAnalystData;
-
-   //       marginAnalystData.forEach((margin) => {
-   //          margin.listPrice = margin.listPrice.toLocaleString();
-   //          margin.manufacturingCost = margin.manufacturingCost.toLocaleString();
-   //          margin.dealerNet = margin.dealerNet.toLocaleString();
-   //       });
-
-   //       setMarginAnalysisSummary(analysisSummary);
-   //       setListDataAnalysis(marginAnalystData);
-
-   //       setTargetMargin(Number(clonedMarginAnalystData?.TargetMargin));
-   //    }
-   // }, [marginDataStore]);
 
    const handleOpenMarginFile = async (file) => {
       let formData = new FormData();
@@ -363,44 +285,6 @@ export default function MarginAnalysis() {
          },
       },
    ];
-
-   // const [marginFilter, setMarginFilter] = useState(initDataFilter);
-
-   // useEffect(() => {
-   //    setMarginFilter(initDataFilter);
-   // }, [initDataFilter]);
-
-   // useEffect(() => {
-   //    setTypeValue({
-   //       value: marginFilter?.type ? marginFilter?.type[0]?.value : 'None',
-   //       error: false,
-   //    });
-   //    setModelCodeValue({
-   //       value: marginFilter.modelCode ? marginFilter.modelCode[0]?.value : 'None',
-   //    });
-   //    setSeries({
-   //       value: marginFilter.series ? marginFilter.series[0]?.value : 'None',
-   //       error: false,
-   //    });
-   //    setOrderNumberValue({
-   //       value: marginFilter.orderNumber ? marginFilter.orderNumber[0]?.value : 'None',
-   //    });
-   // }, [marginFilter]);
-
-   // const regionOptions = [
-   //    {
-   //       value: 'Asia',
-   //    },
-   //    {
-   //       value: 'Pacific',
-   //    },
-   //    {
-   //       value: 'India Sub Continent',
-   //    },
-   //    {
-   //       value: 'China',
-   //    },
-   // ];
 
    const getRowId = (row) => {
       const id = row.id;
@@ -641,7 +525,6 @@ export default function MarginAnalysis() {
                            {t('filters.region')}
                         </Typography>
                         <Typography variant="body1" component="span" sx={{ marginRight: 1 }}>
-                           {/* {regionValue.value} */}
                            {dataFilter.region}
                         </Typography>
                      </div>
@@ -650,7 +533,6 @@ export default function MarginAnalysis() {
                            {t('filters.series')}
                         </Typography>
                         <Typography variant="body1" component="span" sx={{ marginRight: 1 }}>
-                           {/* {series.value} */}
                            {dataFilter.series}
                         </Typography>
                      </div>

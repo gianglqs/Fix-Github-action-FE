@@ -31,7 +31,6 @@ function* getLoadingPage() {
 
          yield put(marginAnalysisStore.actions.setLoadingPage(false));
          yield put(marginAnalysisStore.actions.setRequestId(undefined));
-         // revoke request id
       }
    } catch (error) {
       console.log(error);
@@ -40,26 +39,6 @@ function* getLoadingPage() {
 
 function* getDataViewPrevious() {
    try {
-      // const { data } = yield call(marginAnalysisApi.getPreviousDataView);
-      // const dataConvert = JSON.parse(String(data));
-      // yield put(
-      //    commonStore.actions.setInitDataFilterQuotationMargin({
-      //       modelCode: dataConvert.modelCodeFilters,
-      //       series: dataConvert.seriesFilters,
-      //       orderNumber: dataConvert.orderNumberFilters,
-      //       type: dataConvert.typeFilters,
-      //    })
-      // );
-      // yield put(
-      //    commonStore.actions.setDataFilterQuotationMargin({
-      //       modelCode: dataConvert.modelCodeFilter,
-      //       series: dataConvert.seriesFilter,
-      //       orderNumber: dataConvert.orderNumberFilter,
-      //       type: dataConvert.typeFilter,
-      //       region: dataConvert.region,
-      //       currency: dataConvert.currency,
-      //    })
-      // );
       const { fileUUID } = yield* all({
          fileUUID: select(marginAnalysisStore.selectFileUUID),
       });
@@ -89,7 +68,6 @@ function* getDataViewPrevious() {
          },
          'requestId'
       );
-      console.log(data);
       yield put(marginAnalysisStore.actions.setMarginData(data));
    } catch (error) {
       console.log(error);
