@@ -7,7 +7,7 @@ import { commonStore, marginAnalysisStore } from '../reducers';
 function* getLoadingPage() {
    try {
       const { requestId } = yield* all({
-         requestId: select(commonStore.selectRequestIdQuotationMargin),
+         requestId: select(marginAnalysisStore.selectRequestId),
       });
 
       if (requestId) {
@@ -30,7 +30,7 @@ function* getLoadingPage() {
          }
 
          yield put(marginAnalysisStore.actions.setLoadingPage(false));
-         yield put(commonStore.actions.setRequestIdQuotationMargin(undefined));
+         yield put(marginAnalysisStore.actions.setRequestId(undefined));
          // revoke request id
       }
    } catch (error) {
@@ -61,11 +61,11 @@ function* getDataViewPrevious() {
       //    })
       // );
       const { fileUUID } = yield* all({
-         fileUUID: select(commonStore.selectFileUUIDQuotationMargin),
+         fileUUID: select(marginAnalysisStore.selectFileUUID),
       });
 
       const { dataFilter } = yield* all({
-         dataFilter: select(commonStore.selectDataFilterQuotationMargin),
+         dataFilter: select(marginAnalysisStore.selectDataFilter),
       });
 
       const transformData = {
@@ -82,15 +82,15 @@ function* getDataViewPrevious() {
          },
          region: dataFilter.region,
       };
-      const marginData = yield call(
+      const { data } = yield call(
          marginAnalysisApi.estimateMarginAnalystData,
          {
             ...transformData,
          },
          'requestId'
       );
-      console.log(marginData);
-      yield put(marginAnalysisStore.actions.setMarginData(marginData.data));
+      console.log(data);
+      yield put(marginAnalysisStore.actions.setMarginData(data));
    } catch (error) {
       console.log(error);
    }

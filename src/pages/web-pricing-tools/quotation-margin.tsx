@@ -50,11 +50,11 @@ export default function MarginAnalysis() {
    // const [marginAnalysisSummary, setMarginAnalysisSummary] = useState(null);
    const [uploadedFile, setUploadedFile] = useState({ name: '' });
    const loading = useSelector(marginAnalysisStore.selectIsLoadingPage);
-   const initDataFilter = useSelector(commonStore.selectInitDataFilterQuotationMargin);
-   const dataFilter = useSelector(commonStore.selectDataFilterQuotationMargin);
+   const initDataFilter = useSelector(marginAnalysisStore.selectInitDataFilter);
+   const dataFilter = useSelector(marginAnalysisStore.selectDataFilter);
    //const marginDataStore = useSelector(marginAnalysisStore.selectMarginData);
-   const fileUUID = useSelector(commonStore.selectFileUUIDQuotationMargin);
-   const marginCalculateData = useSelector(commonStore.selectDataOnPageQuotationMargin);
+   const fileUUID = useSelector(marginAnalysisStore.selectFileUUID);
+   const marginCalculateData = useSelector(marginAnalysisStore.selectMarginData);
 
    // const [typeValue, setTypeValue] = useState({ value: 'None', error: false });
    // const handleTypeValue = (option) => {
@@ -99,7 +99,7 @@ export default function MarginAnalysis() {
    const handleUpdateDataFilterStore = (field: string, data: any) => {
       const newDataFilter = { ...dataFilter };
       newDataFilter[field] = data;
-      dispatch(commonStore.actions.setDataFilterQuotationMargin(newDataFilter));
+      dispatch(marginAnalysisStore.actions.setDataFilter(newDataFilter));
    };
 
    const handleCalculateMargin = async () => {
@@ -132,7 +132,7 @@ export default function MarginAnalysis() {
          setLoading(true);
 
          const requestId = uuidv4();
-         dispatch(commonStore.actions.setRequestIdQuotationMargin(requestId));
+         dispatch(marginAnalysisStore.actions.setRequestId(requestId));
 
          const { data } = await marginAnalysisApi.estimateMarginAnalystData(
             {
@@ -161,8 +161,8 @@ export default function MarginAnalysis() {
             marginAnalysisSummary: analysisSummary,
          };
 
-         dispatch(commonStore.actions.setDataOnPageQuotationMargin(marginData));
-         dispatch(commonStore.actions.setRequestIdQuotationMargin(undefined));
+         dispatch(marginAnalysisStore.actions.setMarginData(marginData));
+         dispatch(marginAnalysisStore.actions.setRequestId(undefined));
 
          setLoading(false);
       } catch (error) {
@@ -201,7 +201,7 @@ export default function MarginAnalysis() {
          .then((response) => {
             setLoading(false);
 
-            dispatch(commonStore.actions.setFileUUIDQuotationMargin(response.data.fileUUID));
+            dispatch(marginAnalysisStore.actions.setFileUUID(response.data.fileUUID));
 
             const types = response.data.marginFilters.types;
             const modelCodes = response.data.marginFilters.modelCodes;
@@ -231,7 +231,7 @@ export default function MarginAnalysis() {
             newInitDataFilter.series = series;
             newInitDataFilter.orderNumber = orderNumbers;
 
-            dispatch(commonStore.actions.setInitDataFilterQuotationMargin(newInitDataFilter));
+            dispatch(marginAnalysisStore.actions.setInitDataFilter(newInitDataFilter));
             console.log(types[0].value);
             if (types.length !== 0) handleUpdateDataFilterStore('type', types[0].value);
          })
@@ -250,7 +250,7 @@ export default function MarginAnalysis() {
       setLoading(true);
 
       const requestId = uuidv4();
-      dispatch(commonStore.actions.setRequestIdQuotationMargin(requestId));
+      dispatch(marginAnalysisStore.actions.setRequestId(requestId));
 
       marginAnalysisApi
          .importMacroFile(requestId, formData)
@@ -449,7 +449,7 @@ export default function MarginAnalysis() {
 
    return (
       <>
-         <AppLayout entity="margin_analysis">
+         <AppLayout entity="not-refresh-data">
             {loading ? (
                <div
                   style={{
