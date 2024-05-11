@@ -1,14 +1,13 @@
-import { takeEvery, put, delay } from 'redux-saga/effects';
-import { commonStore, marginAnalysisStore } from '../reducers';
-import { all, call, select } from 'typed-redux-saga';
 import checkProcessingApi from '@/api/checkProcessing.api';
-import { destroyCookie, parseCookies } from 'nookies';
 import marginAnalysisApi from '@/api/marginAnalysis.api';
+import { delay, put, takeEvery } from 'redux-saga/effects';
+import { all, call, select } from 'typed-redux-saga';
+import { commonStore, marginAnalysisStore } from '../reducers';
 
 function* getLoadingPage() {
    try {
       const { requestId } = yield* all({
-         requestId: select(commonStore.selectQuotationMarginRequestId),
+         requestId: select(commonStore.selectRequestIdQuotationMargin),
       });
 
       if (requestId) {
@@ -27,12 +26,11 @@ function* getLoadingPage() {
                break;
             }
 
-            yield delay(5000);
+            yield delay(2000);
          }
 
          yield put(marginAnalysisStore.actions.setLoadingPage(false));
-         destroyCookie(null, 'quotation-margin/requestId', { path: '/' });
-
+         yield put(commonStore.actions.setRequestIdQuotationMargin(undefined));
          // revoke request id
       }
    } catch (error) {
@@ -42,48 +40,48 @@ function* getLoadingPage() {
 
 function* getDataViewPrevious() {
    try {
-      const { data } = yield call(marginAnalysisApi.getPreviousDataView);
-      const dataConvert = JSON.parse(String(data));
+      // const { data } = yield call(marginAnalysisApi.getPreviousDataView);
+      // const dataConvert = JSON.parse(String(data));
+      // yield put(
+      //    commonStore.actions.setInitDataFilterQuotationMargin({
+      //       modelCode: dataConvert.modelCodeFilters,
+      //       series: dataConvert.seriesFilters,
+      //       orderNumber: dataConvert.orderNumberFilters,
+      //       type: dataConvert.typeFilters,
+      //    })
+      // );
+      // yield put(
+      //    commonStore.actions.setDataFilterQuotationMargin({
+      //       modelCode: dataConvert.modelCodeFilter,
+      //       series: dataConvert.seriesFilter,
+      //       orderNumber: dataConvert.orderNumberFilter,
+      //       type: dataConvert.typeFilter,
+      //       region: dataConvert.region,
+      //       currency: dataConvert.currency,
+      //    })
+      // );
+      const { fileUUID } = yield* all({
+         fileUUID: select(commonStore.selectFileUUIDQuotationMargin),
+      });
 
-      yield put(
-         marginAnalysisStore.actions.setInitDataFilter({
-            modelCode: dataConvert.modelCodeFilters,
-            series: dataConvert.seriesFilters,
-            orderNumber: dataConvert.orderNumberFilters,
-            type: dataConvert.typeFilters,
-         })
-      );
+      const { dataFilter } = yield* all({
+         dataFilter: select(commonStore.selectDataFilterQuotationMargin),
+      });
 
-      yield put(
-         marginAnalysisStore.actions.setDataFilter({
-            modelCode: dataConvert.modelCodeFilter,
-            series: dataConvert.seriesFilter,
-            orderNumber: dataConvert.orderNumberFilter,
-            type: dataConvert.typeFilter,
-            region: dataConvert.region,
-            currency: dataConvert.currency,
-         })
-      );
-      const cookies = parseCookies();
-      const requestId = cookies['quotation-margin/requestId'];
       const transformData = {
          marginData: {
             id: {
-               modelCode: dataConvert.modelCodeFilter == 'None' ? '' : dataConvert.modelCodeFilter,
-               type: dataConvert.typeFilter == 'None' ? 0 : dataConvert.typeFilter,
-               currency: dataConvert.currency,
+               modelCode: dataFilter.modelCode ? dataFilter.modelCode : '',
+               type: dataFilter.type ? dataFilter.type : 0,
+               currency: dataFilter.currency,
             },
-            fileUUID: cookies['fileUUID'],
-            orderNumber:
-               dataConvert.orderNumberFilter == 'None' || dataConvert.orderNumberFilter == null
-                  ? ''
-                  : dataConvert.orderNumberFilter,
+            fileUUID: fileUUID,
+            orderNumber: dataFilter.orderNumber ? dataFilter.orderNumber : '',
             plant: 'SN',
-            series: dataConvert.seriesFilter,
+            series: dataFilter.series,
          },
-         region: dataConvert.region,
+         region: dataFilter.region,
       };
-
       const marginData = yield call(
          marginAnalysisApi.estimateMarginAnalystData,
          {
@@ -106,4 +104,4 @@ function* fetchDataViewPrevious() {
    yield takeEvery(marginAnalysisStore.sagaGetList, getDataViewPrevious);
 }
 
-export { fetchLoadingQuotationMarginPage, fetchDataViewPrevious };
+export { fetchDataViewPrevious, fetchLoadingQuotationMarginPage };

@@ -22,6 +22,33 @@ export const initialState = {
       shipment: undefined,
       quotationMargin: undefined,
    },
+   dataFilter: {
+      quotationMargin: { region: 'Asia', currency: 'USD' } as any,
+   },
+   initDataFilter: {
+      quotationMargin: {
+         region: [
+            {
+               value: 'Asia',
+            },
+            {
+               value: 'Pacific',
+            },
+            {
+               value: 'India Sub Continent',
+            },
+            {
+               value: 'China',
+            },
+         ],
+      } as any,
+   },
+   fileUUID: {
+      quotationMargin: {} as any,
+   },
+   dataOnPage: {
+      quotationMargin: { listDataAnalysis: [] } as any,
+   },
 };
 
 const commonSlice = createSlice({
@@ -53,14 +80,30 @@ const commonSlice = createSlice({
          };
       },
 
-      setBookingRequestId(state, action: PayloadAction<any>) {
+      setRequestIdBooking(state, action: PayloadAction<any>) {
          state.requestId.booking = action.payload;
       },
-      setShipmentRequestId(state, action: PayloadAction<any>) {
+      setRequestIdShipment(state, action: PayloadAction<any>) {
          state.requestId.booking = action.payload;
       },
-      setQuotationMarginRequestId(state, action: PayloadAction<any>) {
+      setRequestIdQuotationMargin(state, action: PayloadAction<any>) {
          state.requestId.quotationMargin = action.payload;
+      },
+
+      setDataFilterQuotationMargin(state, action: PayloadAction<any>) {
+         state.dataFilter.quotationMargin = action.payload;
+      },
+
+      setInitDataFilterQuotationMargin(state, action: PayloadAction<any>) {
+         state.initDataFilter.quotationMargin = action.payload;
+      },
+
+      setFileUUIDQuotationMargin(state, action: PayloadAction<any>) {
+         state.fileUUID.quotationMargin = action.payload;
+      },
+
+      setDataOnPageQuotationMargin(state, action: PayloadAction<any>) {
+         state.dataOnPage.quotationMargin = action.payload;
       },
    },
    extraReducers: {
@@ -75,17 +118,37 @@ export const selectState = (state: RootReducerType) => state[name];
 
 export const selectMessageState = createSelector(selectState, (state) => state.messageState);
 export const selectTableState = createSelector(selectState, (state) => state.tableState);
-export const selectBookingRequestId = createSelector(
+export const selectRequestIdBooking = createSelector(
    selectState,
    (state) => state.requestId.booking
 );
-export const selectShipmentRequestId = createSelector(
+export const selectRequestIdShipment = createSelector(
    selectState,
    (state) => state.requestId.shipment
 );
-export const selectQuotationMarginRequestId = createSelector(
+export const selectRequestIdQuotationMargin = createSelector(
    selectState,
    (state) => state.requestId.quotationMargin
+);
+
+export const selectDataFilterQuotationMargin = createSelector(
+   selectState,
+   (state) => state.dataFilter.quotationMargin
+);
+
+export const selectInitDataFilterQuotationMargin = createSelector(
+   selectState,
+   (state) => state.initDataFilter.quotationMargin
+);
+
+export const selectFileUUIDQuotationMargin = createSelector(
+   selectState,
+   (state) => state.fileUUID.quotationMargin
+);
+
+export const selectDataOnPageQuotationMargin = createSelector(
+   selectState,
+   (state) => state.dataOnPage.quotationMargin
 );
 
 export const { actions } = commonSlice;

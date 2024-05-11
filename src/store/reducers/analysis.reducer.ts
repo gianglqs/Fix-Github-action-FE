@@ -10,7 +10,7 @@ export const initialState = {
    dealerList: [] as any[],
    isLoadingPage: false as boolean,
    initDataFilter: {} as any,
-   fileUUID: '' as string,
+   fileUUID: undefined,
    dataFilter: {} as any,
    marginData: {} as any,
 };
