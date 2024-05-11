@@ -202,7 +202,8 @@
       "margin": "利润",
       "partNumber": "零件编号",
       "totalCost": "总成本",
-      "dealerNet": "经销商净价"
+      "dealerNet": "经销商净价",
+      "marginPercentageMonthlyRate": "Margin % @ Monthly Rate"
    },
 
    "exchangeRates": {

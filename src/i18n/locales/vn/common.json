@@ -202,7 +202,8 @@
       "margin": "Lợi nhuận $",
       "partNumber": "Mã bộ phận",
       "totalCost": "Tổng giá",
-      "dealerNet": "Giá phân phối"
+      "dealerNet": "Giá phân phối",
+      "marginPercentageMonthlyRate": "Margin % @ Monthly Rate"
    },
 
    "exchangeRates": {
