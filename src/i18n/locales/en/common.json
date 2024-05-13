@@ -212,7 +212,8 @@
       "margin": "Margin $",
       "partNumber": "Part Number",
       "totalCost": "Total Cost",
-      "dealerNet": "Dealer Net"
+      "dealerNet": "Dealer Net",
+      "marginPercentageMonthlyRate": "Margin % @ Monthly Rate"
    },
 
    "exchangeRates": {

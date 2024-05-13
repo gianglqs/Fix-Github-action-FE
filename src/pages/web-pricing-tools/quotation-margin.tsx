@@ -505,6 +505,7 @@ export default function MarginAnalysis() {
                <MarginPercentageAOPRateBox
                   data={marginCalculateData.marginAnalysisSummary?.annually}
                   valueCurrency={dataFilter.currency}
+                  isAOPBox={true}
                />
                <MarginPercentageAOPRateBox
                   data={marginCalculateData.marginAnalysisSummary?.monthly}
@@ -627,7 +628,7 @@ export default function MarginAnalysis() {
 
 const MarginPercentageAOPRateBox = (props) => {
    const { t } = useTranslation();
-   const { data, valueCurrency } = props;
+   const { data, valueCurrency, isAOPBox } = props;
    return (
       <Grid item xs={4}>
          <Paper elevation={3} sx={{ padding: 2, height: 'fit-content' }}>
@@ -686,7 +687,9 @@ const MarginPercentageAOPRateBox = (props) => {
                   component="span"
                   sx={{ fontWeight: 'bold', marginLeft: 1 }}
                >
-                  {t('quotationMargin.marginPercentageAOPRate')}{' '}
+                  {isAOPBox
+                     ? t('quotationMargin.marginPercentageAOPRate')
+                     : t('quotationMargin.marginPercentageMonthlyRate')}{' '}
                </Typography>
                <Typography
                   variant="body1"
