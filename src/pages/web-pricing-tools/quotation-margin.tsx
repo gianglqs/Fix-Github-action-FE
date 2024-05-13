@@ -1,30 +1,30 @@
-import { AppAutocomplete, AppLayout, AppTextField, DataTable } from '@/components';
+import { AppAutocomplete, AppLayout, DataTable } from '@/components';
 
 import _ from 'lodash';
 
-import Grid from '@mui/material/Grid';
+import marginAnalysisApi from '@/api/marginAnalysis.api';
+import CompareMarginDialog from '@/components/Dialog/Module/MarginHistoryDialog/CompareMarginDialog';
+import { commonStore, marginAnalysisStore } from '@/store/reducers';
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import {
    Button,
+   CircularProgress,
    FormControlLabel,
    Paper,
    Radio,
    RadioGroup,
    Typography,
-   CircularProgress,
 } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
-import marginAnalysisApi from '@/api/marginAnalysis.api';
-import { useDispatch, useSelector } from 'react-redux';
-import { commonStore, marginAnalysisStore } from '@/store/reducers';
-import { useDropzone } from 'react-dropzone';
-import { parseCookies, setCookie } from 'nookies';
-import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import Grid from '@mui/material/Grid';
 import { GetServerSidePropsContext } from 'next';
+import { parseCookies } from 'nookies';
+import { useCallback, useEffect, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
-import CompareMarginDialog from '@/components/Dialog/Module/MarginHistoryDialog/CompareMarginDialog';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { v4 as uuidv4 } from 'uuid';
 import { formatNumberPercentage } from '@/utils/formatCell';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -41,88 +41,44 @@ export default function MarginAnalysis() {
       setUserRole(userRoleCookies);
    });
 
-   const [valueCurrency, setValueCurrency] = useState('USD');
-   const handleChange = (event) => {
-      setValueCurrency(event.target.value);
-   };
-
-   const [listDataAnalysis, setListDataAnalysis] = useState([]);
-   const [marginAnalysisSummary, setMarginAnalysisSummary] = useState(null);
-   const [uploadedFile, setUploadedFile] = useState({ name: '' });
    const loading = useSelector(marginAnalysisStore.selectIsLoadingPage);
    const initDataFilter = useSelector(marginAnalysisStore.selectInitDataFilter);
    const dataFilter = useSelector(marginAnalysisStore.selectDataFilter);
-   const marginDataStore = useSelector(marginAnalysisStore.selectMarginData);
+   const fileUUID = useSelector(marginAnalysisStore.selectFileUUID);
+   const marginCalculateData = useSelector(marginAnalysisStore.selectMarginData);
 
-   const [typeValue, setTypeValue] = useState({ value: 'None', error: false });
-   const handleTypeValue = (option) => {
-      setTypeValue({ value: option, error: false });
-      if (option != 'None') setOrderNumberValue({ value: 'None' });
+   const handleUpdateDataFilterStore = (field: string, data: any) => {
+      const newDataFilter = { ...dataFilter };
+      newDataFilter[field] = data;
+      dispatch(marginAnalysisStore.actions.setDataFilter(newDataFilter));
    };
-
-   const [orderNumberValue, setOrderNumberValue] = useState({ value: 'None' });
-   const handleOrderNumber = (option) => {
-      setOrderNumberValue({ value: option });
-      if (option != 'None') setTypeValue({ value: 'None', error: false });
-   };
-
-   const [series, setSeries] = useState({ value: '', error: false });
-   const handleSeriesValue = (option) => {
-      setSeries({ value: option, error: false });
-   };
-
-   const [regionValue, setRegionValue] = useState({ value: 'Asia' });
-   const handleChangeRegionOptions = (option) => {
-      setRegionValue({ value: option });
-   };
-
-   const [modelCodeValue, setModelCodeValue] = useState({ value: 'None' });
-   const handleChangeModelCodeValue = (option) => {
-      setModelCodeValue({ value: option });
-   };
-
-   useEffect(() => {
-      if (dataFilter) {
-         handleChangeModelCodeValue(dataFilter.modelCode == 'null' ? 'None' : dataFilter.modelCode);
-         handleSeriesValue(dataFilter.series);
-         handleChangeRegionOptions(dataFilter.region);
-         handleOrderNumber(dataFilter.orderNumber);
-         handleTypeValue(dataFilter.type);
-         setValueCurrency(dataFilter.currency);
-      }
-   }, [dataFilter]);
-
-   const [targetMargin, setTargetMargin] = useState(0);
 
    const handleCalculateMargin = async () => {
       try {
-         if (series.value == 'None') {
-            setSeries({ value: 'None', error: true });
+         if (!dataFilter.series) {
+            dispatch(commonStore.actions.setErrorMessage('Series is not selected'));
             return;
          }
 
          const transformData = {
             marginData: {
                id: {
-                  modelCode: modelCodeValue.value == 'None' ? '' : modelCodeValue.value,
-                  type: typeValue.value == 'None' ? 0 : typeValue.value,
-                  currency: valueCurrency,
+                  modelCode: dataFilter.modelCode ? '' : dataFilter.modelCode,
+                  type: !dataFilter.type ? 0 : dataFilter.type,
+                  currency: dataFilter.currency,
                },
-               fileUUID: cookies['fileUUID'],
-               orderNumber: orderNumberValue.value == 'None' ? '' : orderNumberValue.value,
+               fileUUID: fileUUID,
+               orderNumber: !dataFilter.orderNumber ? '' : dataFilter.orderNumber,
                plant: 'SN',
-               series: series.value,
+               series: dataFilter.series,
             },
-            region: regionValue.value,
+            region: dataFilter.region,
          };
 
          setLoading(true);
 
          const requestId = uuidv4();
-         setCookie(null, 'quotation-margin/requestId', requestId, {
-            maxAge: 604800,
-            path: '/',
-         });
+         dispatch(marginAnalysisStore.actions.setRequestId(requestId));
 
          const { data } = await marginAnalysisApi.estimateMarginAnalystData(
             {
@@ -140,35 +96,21 @@ export default function MarginAnalysis() {
             margin.dealerNet = margin.dealerNet.toLocaleString();
          });
 
-         setMarginAnalysisSummary(analysisSummary);
-         setListDataAnalysis(marginAnalystData);
+         const marginData = {
+            targetMargin: data?.TargetMargin,
+            listDataAnalysis: marginAnalystData,
+            marginAnalysisSummary: analysisSummary,
+         };
 
-         setTargetMargin(data?.TargetMargin);
+         dispatch(marginAnalysisStore.actions.setMarginData(marginData));
+         dispatch(marginAnalysisStore.actions.setRequestId(undefined));
+
          setLoading(false);
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error.message));
          setLoading(false);
       }
    };
-   useEffect(() => {
-      if (marginDataStore && Object.keys(marginDataStore).length !== 0) {
-         const clonedMarginAnalystData = JSON.parse(JSON.stringify(marginDataStore));
-
-         const analysisSummary = clonedMarginAnalystData?.MarginAnalystSummary;
-         const marginAnalystData = clonedMarginAnalystData?.MarginAnalystData;
-
-         marginAnalystData.forEach((margin) => {
-            margin.listPrice = margin.listPrice.toLocaleString();
-            margin.manufacturingCost = margin.manufacturingCost.toLocaleString();
-            margin.dealerNet = margin.dealerNet.toLocaleString();
-         });
-
-         setMarginAnalysisSummary(analysisSummary);
-         setListDataAnalysis(marginAnalystData);
-
-         setTargetMargin(Number(clonedMarginAnalystData?.TargetMargin));
-      }
-   }, [marginDataStore]);
 
    const handleOpenMarginFile = async (file) => {
       let formData = new FormData();
@@ -179,7 +121,8 @@ export default function MarginAnalysis() {
          .checkFilePlant(formData)
          .then((response) => {
             setLoading(false);
-            setCookie(null, 'fileUUID', response.data.fileUUID);
+
+            dispatch(marginAnalysisStore.actions.setFileUUID(response.data.fileUUID));
 
             const types = response.data.marginFilters.types;
             const modelCodes = response.data.marginFilters.modelCodes;
@@ -203,12 +146,15 @@ export default function MarginAnalysis() {
             series.sort((a, b) => sortCharacter(a, b));
             orderNumbers.sort((a, b) => sortCharacter(a, b));
 
-            setMarginFilter({
-               type: [{ value: 'None' }, ...types],
-               modelCode: [{ value: 'None' }, ...modelCodes],
-               series: series,
-               orderNumber: [{ value: 'None' }, ...orderNumbers],
-            });
+            const newInitDataFilter = { ...initDataFilter };
+            newInitDataFilter.type = types;
+            newInitDataFilter.modelCode = modelCodes;
+            newInitDataFilter.series = series;
+            newInitDataFilter.orderNumber = orderNumbers;
+
+            dispatch(marginAnalysisStore.actions.setInitDataFilter(newInitDataFilter));
+            console.log(types[0].value);
+            if (types.length !== 0) handleUpdateDataFilterStore('type', types[0].value);
          })
          .catch((error) => {
             setLoading(false);
@@ -216,17 +162,16 @@ export default function MarginAnalysis() {
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
+
+   console.log(dataFilter);
+
    const handleImportMacroFile = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
       setLoading(true);
 
       const requestId = uuidv4();
-      console.log(requestId);
-      setCookie(null, 'quotation-margin/requestId', requestId, {
-         maxAge: 604800,
-         path: '/',
-      });
+      dispatch(marginAnalysisStore.actions.setRequestId(requestId));
 
       marginAnalysisApi
          .importMacroFile(requestId, formData)
@@ -314,8 +259,7 @@ export default function MarginAnalysis() {
       {
          field: 'listPrice',
          flex: 0.4,
-         minWidth: 150,
-         headerName: t('table.listPrice') + ` (${valueCurrency})`,
+         headerName: t('table.listPrice') + ` (${dataFilter.currency})`,
          headerAlign: 'right',
          align: 'right',
          cellClassName: 'highlight-cell',
@@ -323,8 +267,7 @@ export default function MarginAnalysis() {
       {
          field: 'manufacturingCost',
          flex: 0.7,
-         minWidth: 150,
-         headerName: t('quotationMargin.manufacturingCost') + ` (${valueCurrency})`,
+         headerName: t('quotationMargin.manufacturingCost') + ` (${dataFilter.currency})`,
          headerAlign: 'right',
          align: 'right',
       },
@@ -350,44 +293,6 @@ export default function MarginAnalysis() {
       },
    ];
 
-   const [marginFilter, setMarginFilter] = useState(initDataFilter);
-
-   useEffect(() => {
-      setMarginFilter(initDataFilter);
-   }, [initDataFilter]);
-
-   // useEffect(() => {
-   //    setTypeValue({
-   //       value: marginFilter?.type ? marginFilter?.type[0]?.value : 'None',
-   //       error: false,
-   //    });
-   //    setModelCodeValue({
-   //       value: marginFilter.modelCode ? marginFilter.modelCode[0]?.value : 'None',
-   //    });
-   //    setSeries({
-   //       value: marginFilter.series ? marginFilter.series[0]?.value : 'None',
-   //       error: false,
-   //    });
-   //    setOrderNumberValue({
-   //       value: marginFilter.orderNumber ? marginFilter.orderNumber[0]?.value : 'None',
-   //    });
-   // }, [marginFilter]);
-
-   const regionOptions = [
-      {
-         value: 'Asia',
-      },
-      {
-         value: 'Pacific',
-      },
-      {
-         value: 'India Sub Continent',
-      },
-      {
-         value: 'China',
-      },
-   ];
-
    const getRowId = (row) => {
       const id = row.id;
       const quoteNumber = String(id.quoteNumber);
@@ -399,12 +304,12 @@ export default function MarginAnalysis() {
    };
 
    const handleSaveData = async () => {
-      if (marginAnalysisSummary == null) {
+      if (marginCalculateData.marginAnalysisSummary == null) {
          dispatch(commonStore.actions.setErrorMessage('No data to save!'));
       } else {
          const transformedData = {
-            annually: marginAnalysisSummary.annually,
-            monthly: marginAnalysisSummary.monthly,
+            annually: marginCalculateData.marginAnalysisSummary.annually,
+            monthly: marginCalculateData.marginAnalysisSummary.monthly,
          };
          await marginAnalysisApi
             .saveMarginData(transformedData)
@@ -433,11 +338,9 @@ export default function MarginAnalysis() {
       dispatch(marginAnalysisStore.actions.setLoadingPage(status));
    };
 
-   console.log(targetMargin);
-
    return (
       <>
-         <AppLayout entity="margin_analysis">
+         <AppLayout entity="not-refresh-data">
             {loading ? (
                <div
                   style={{
@@ -465,8 +368,7 @@ export default function MarginAnalysis() {
             <Grid container spacing={1.1} display="flex" alignItems="center">
                <Grid item>
                   <UploadFileDropZone
-                     uploadedFile={uploadedFile}
-                     setUploadedFile={setUploadedFile}
+                     setUploadedFile={handleUpdateDataFilterStore}
                      handleUploadFile={handleOpenMarginFile}
                      buttonName={t('button.openFile')}
                      sx={{ width: '100%', height: 24 }}
@@ -474,10 +376,12 @@ export default function MarginAnalysis() {
                </Grid>
                <Grid item sx={{ width: '10%', minWidth: 140 }} xs={1}>
                   <AppAutocomplete
-                     options={marginFilter.modelCode}
+                     options={initDataFilter.modelCode}
                      label={t('filters.models')}
-                     value={modelCodeValue}
-                     onChange={(e, option) => handleChangeModelCodeValue(option.value)}
+                     value={dataFilter.modelCode}
+                     onChange={(e, option) =>
+                        handleUpdateDataFilterStore('modelCode', option.value)
+                     }
                      disableListWrap
                      primaryKeyOption="value"
                      renderOption={(prop, option) => `${option.value}`}
@@ -486,25 +390,27 @@ export default function MarginAnalysis() {
                </Grid>
                <Grid item sx={{ width: '10%', minWidth: 100 }} xs={0.5}>
                   <AppAutocomplete
-                     options={marginFilter.series}
+                     options={initDataFilter.series}
                      label={t('filters.series')}
-                     value={series}
-                     onChange={(e, option) => handleSeriesValue(option.value)}
+                     value={dataFilter.series}
+                     onChange={(e, option) => handleUpdateDataFilterStore('series', option.value)}
                      disableListWrap
                      primaryKeyOption="value"
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
                      required
-                     error={series.error}
-                     helperText={'Please choose a Series to continue'}
+                     // error={series.error}
+                     // helperText={'Please choose a Series to continue'}
                   />
                </Grid>
                <Grid item sx={{ width: '10%', minWidth: 140 }} xs={1}>
                   <AppAutocomplete
-                     options={marginFilter.orderNumber}
+                     options={initDataFilter.orderNumber}
                      label={t('filters.order#')}
-                     value={orderNumberValue}
-                     onChange={(e, option) => handleOrderNumber(option.value)}
+                     value={dataFilter.orderNumber}
+                     onChange={(e, option) =>
+                        handleUpdateDataFilterStore('orderNumber', option.value)
+                     }
                      disableListWrap
                      primaryKeyOption="value"
                      renderOption={(prop, option) => `${option.value}`}
@@ -514,10 +420,10 @@ export default function MarginAnalysis() {
                <Grid item>{t('or')}</Grid>
                <Grid item sx={{ width: '10%', minWidth: 50 }} xs={0.5}>
                   <AppAutocomplete
-                     options={marginFilter.type}
+                     options={initDataFilter.type}
                      label="#"
-                     value={typeValue}
-                     onChange={(e, option) => handleTypeValue(option.value)}
+                     value={dataFilter.type}
+                     onChange={(e, option) => handleUpdateDataFilterStore('type', option.value)}
                      disableListWrap
                      primaryKeyOption="value"
                      renderOption={(prop, option) => `${option.value}`}
@@ -527,10 +433,10 @@ export default function MarginAnalysis() {
 
                <Grid item sx={{ width: '10%', minWidth: 100 }} xs={0.8}>
                   <AppAutocomplete
-                     options={regionOptions}
+                     options={initDataFilter.region}
                      label={t('filters.region')}
-                     value={regionValue.value}
-                     onChange={(e, option) => handleChangeRegionOptions(option.value)}
+                     value={dataFilter.region}
+                     onChange={(e, option) => handleUpdateDataFilterStore('region', option.value)}
                      disableListWrap
                      primaryKeyOption="value"
                      renderOption={(prop, option) => `${option.value}`}
@@ -541,8 +447,8 @@ export default function MarginAnalysis() {
                <Grid item>
                   <RadioGroup
                      row
-                     value={valueCurrency}
-                     onChange={handleChange}
+                     value={dataFilter.currency}
+                     onChange={(e) => handleUpdateDataFilterStore('currency', e.target.value)}
                      aria-labelledby="demo-row-radio-buttons-group-label"
                      name="row-radio-buttons-group"
                      sx={{
@@ -567,7 +473,7 @@ export default function MarginAnalysis() {
 
                <Grid item>
                   <Typography fontSize={16}>
-                     {t('button.fileUploaded')}: {uploadedFile.name}
+                     {t('button.fileUploaded')}: {dataFilter.uploadedFile}
                   </Typography>
                </Grid>
                <Grid item sx={{ width: '10%' }} />
@@ -577,16 +483,14 @@ export default function MarginAnalysis() {
                      <Grid item spacing={1.1} display="flex" alignItems="center">
                         <Grid item>
                            <UploadFileDropZone
-                              uploadedFile={uploadedFile}
-                              setUploadedFile={setUploadedFile}
+                              setUploadedFile={handleUpdateDataFilterStore}
                               handleUploadFile={handleImportMacroFile}
                               buttonName="Import Macro File"
                               sx={{ width: '100%', height: 24 }}
                            />
 
                            <UploadFileDropZone
-                              uploadedFile={uploadedFile}
-                              setUploadedFile={setUploadedFile}
+                              setUploadedFile={handleUpdateDataFilterStore}
                               handleUploadFile={handleImportPowerBi}
                               buttonName="Import PowerBi File"
                               sx={{ width: '100%', height: 24, marginTop: 1 }}
@@ -599,12 +503,12 @@ export default function MarginAnalysis() {
 
             <Grid container spacing={1} sx={{ marginTop: 1 }}>
                <MarginPercentageAOPRateBox
-                  data={marginAnalysisSummary?.annually}
-                  valueCurrency={valueCurrency}
+                  data={marginCalculateData.marginAnalysisSummary?.annually}
+                  valueCurrency={dataFilter.currency}
                />
                <MarginPercentageAOPRateBox
-                  data={marginAnalysisSummary?.monthly}
-                  valueCurrency={valueCurrency}
+                  data={marginCalculateData.marginAnalysisSummary?.monthly}
+                  valueCurrency={dataFilter.currency}
                />
                <Grid item xs={4}>
                   <Paper elevation={3} sx={{ padding: 2, height: 'fit-content', minWidth: 300 }}>
@@ -625,7 +529,7 @@ export default function MarginAnalysis() {
                            {t('filters.region')}
                         </Typography>
                         <Typography variant="body1" component="span" sx={{ marginRight: 1 }}>
-                           {regionValue.value}
+                           {dataFilter.region}
                         </Typography>
                      </div>
                      <div className="space-between-element">
@@ -633,7 +537,7 @@ export default function MarginAnalysis() {
                            {t('filters.series')}
                         </Typography>
                         <Typography variant="body1" component="span" sx={{ marginRight: 1 }}>
-                           {series.value}
+                           {dataFilter.series}
                         </Typography>
                      </div>
                      <div
@@ -656,19 +560,19 @@ export default function MarginAnalysis() {
                            component="span"
                            sx={{ fontWeight: 'bold', marginRight: 1 }}
                         >
-                           {formatNumberPercentage(targetMargin * 100)}
+                           {formatNumberPercentage(marginCalculateData.targetMargin * 100)}
                         </Typography>
                      </div>
                   </Paper>
                </Grid>
 
                <FullCostAOPRateBox
-                  data={marginAnalysisSummary?.annually}
-                  valueCurrency={valueCurrency}
+                  data={marginCalculateData.marginAnalysisSummary?.annually}
+                  valueCurrency={dataFilter.currency}
                />
                <FullCostAOPRateBoxMonthly
-                  data={marginAnalysisSummary?.monthly}
-                  valueCurrency={valueCurrency}
+                  data={marginCalculateData.marginAnalysisSummary?.monthly}
+                  valueCurrency={dataFilter.currency}
                />
 
                <Grid item xs={4}>
@@ -694,11 +598,11 @@ export default function MarginAnalysis() {
                </Grid>
 
                <ForUSPricingBox
-                  data={marginAnalysisSummary?.annually}
+                  data={marginCalculateData.marginAnalysisSummary?.annually}
                   title={'For US Pricing @ AOP rate'}
                />
                <ForUSPricingBox
-                  data={marginAnalysisSummary?.monthly}
+                  data={marginCalculateData.marginAnalysisSummary?.monthly}
                   title={'For US Pricing @ Monthly rate'}
                />
             </Grid>
@@ -709,7 +613,7 @@ export default function MarginAnalysis() {
                   disableColumnMenu
                   tableHeight={250}
                   rowHeight={50}
-                  rows={listDataAnalysis}
+                  rows={marginCalculateData.listDataAnalysis}
                   columns={columns}
                   getRowId={getRowId}
                   sx={{ borderBottom: '1px solid #a8a8a8', borderTop: '1px solid #a8a8a8' }}
@@ -828,8 +732,8 @@ const FullCostAOPRateBox = (props) => {
                   data?.plant == 'Maximal'
                      ? `${t('quotationMargin.manufacturingCost')} (RMB)`
                      : data?.plant == 'SN'
-                     ? `${t('quotationMargin.manufacturingCost')} (USD)`
-                     : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
+                       ? `${t('quotationMargin.manufacturingCost')} (USD)`
+                       : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalManufacturingCost.toLocaleString()}
@@ -940,8 +844,8 @@ const FullCostAOPRateBoxMonthly = (props) => {
                   data?.plant == 'Maximal'
                      ? `${t('quotationMargin.manufacturingCost')} (RMB)`
                      : data?.plant == 'SN'
-                     ? `${t('quotationMargin.manufacturingCost')} (USD)`
-                     : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
+                       ? `${t('quotationMargin.manufacturingCost')} (USD)`
+                       : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalManufacturingCost.toLocaleString()}
@@ -1091,7 +995,7 @@ function UploadFileDropZone(props) {
          reader.onerror = () => console.log('file reading has failed');
          reader.onload = () => {
             // Do whatever you want with the file contents
-            props.setUploadedFile(file);
+            props.setUploadedFile('uploadedFile', file.name);
          };
          reader.readAsArrayBuffer(file);
          props.handleUploadFile(file);

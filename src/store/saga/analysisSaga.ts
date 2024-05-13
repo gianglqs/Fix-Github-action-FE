@@ -1,14 +1,14 @@
-import { takeEvery, put, delay } from 'redux-saga/effects';
-import { commonStore, marginAnalysisStore } from '../reducers';
-import { all, call, select } from 'typed-redux-saga';
 import checkProcessingApi from '@/api/checkProcessing.api';
-import { destroyCookie, parseCookies } from 'nookies';
 import marginAnalysisApi from '@/api/marginAnalysis.api';
+import { delay, put, takeEvery } from 'redux-saga/effects';
+import { all, call, select } from 'typed-redux-saga';
+import { commonStore, marginAnalysisStore } from '../reducers';
 
 function* getLoadingPage() {
    try {
-      const cookies = parseCookies();
-      const requestId = cookies['quotation-margin/requestId'];
+      const { requestId } = yield* all({
+         requestId: select(marginAnalysisStore.selectRequestId),
+      });
 
       if (requestId) {
          yield put(marginAnalysisStore.actions.setLoadingPage(true));
@@ -26,13 +26,11 @@ function* getLoadingPage() {
                break;
             }
 
-            yield delay(5000);
+            yield delay(2000);
          }
 
          yield put(marginAnalysisStore.actions.setLoadingPage(false));
-         destroyCookie(null, 'quotation-margin/requestId', { path: '/' });
-
-         // revoke request id
+         yield put(marginAnalysisStore.actions.setRequestId(undefined));
       }
    } catch (error) {
       console.log(error);
@@ -41,57 +39,36 @@ function* getLoadingPage() {
 
 function* getDataViewPrevious() {
    try {
-      const { data } = yield call(marginAnalysisApi.getPreviousDataView);
-      const dataConvert = JSON.parse(String(data));
+      const { fileUUID } = yield* all({
+         fileUUID: select(marginAnalysisStore.selectFileUUID),
+      });
 
-      yield put(
-         marginAnalysisStore.actions.setInitDataFilter({
-            modelCode: dataConvert.modelCodeFilters,
-            series: dataConvert.seriesFilters,
-            orderNumber: dataConvert.orderNumberFilters,
-            type: dataConvert.typeFilters,
-         })
-      );
+      const { dataFilter } = yield* all({
+         dataFilter: select(marginAnalysisStore.selectDataFilter),
+      });
 
-      yield put(
-         marginAnalysisStore.actions.setDataFilter({
-            modelCode: dataConvert.modelCodeFilter,
-            series: dataConvert.seriesFilter,
-            orderNumber: dataConvert.orderNumberFilter,
-            type: dataConvert.typeFilter,
-            region: dataConvert.region,
-            currency: dataConvert.currency,
-         })
-      );
-      const cookies = parseCookies();
-      const requestId = cookies['quotation-margin/requestId'];
       const transformData = {
          marginData: {
             id: {
-               modelCode: dataConvert.modelCodeFilter == 'None' ? '' : dataConvert.modelCodeFilter,
-               type: dataConvert.typeFilter == 'None' ? 0 : dataConvert.typeFilter,
-               currency: dataConvert.currency,
+               modelCode: dataFilter.modelCode ? dataFilter.modelCode : '',
+               type: dataFilter.type ? dataFilter.type : 0,
+               currency: dataFilter.currency,
             },
-            fileUUID: cookies['fileUUID'],
-            orderNumber:
-               dataConvert.orderNumberFilter == 'None' || dataConvert.orderNumberFilter == null
-                  ? ''
-                  : dataConvert.orderNumberFilter,
+            fileUUID: fileUUID,
+            orderNumber: dataFilter.orderNumber ? dataFilter.orderNumber : '',
             plant: 'SN',
-            series: dataConvert.seriesFilter,
+            series: dataFilter.series,
          },
-         region: dataConvert.region,
+         region: dataFilter.region,
       };
-
-      const marginData = yield call(
+      const { data } = yield call(
          marginAnalysisApi.estimateMarginAnalystData,
          {
             ...transformData,
          },
          'requestId'
       );
-      console.log(marginData);
-      yield put(marginAnalysisStore.actions.setMarginData(marginData.data));
+      yield put(marginAnalysisStore.actions.setMarginData(data));
    } catch (error) {
       console.log(error);
    }
@@ -105,4 +82,4 @@ function* fetchDataViewPrevious() {
    yield takeEvery(marginAnalysisStore.sagaGetList, getDataViewPrevious);
 }
 
-export { fetchLoadingQuotationMarginPage, fetchDataViewPrevious };
+export { fetchDataViewPrevious, fetchLoadingQuotationMarginPage };

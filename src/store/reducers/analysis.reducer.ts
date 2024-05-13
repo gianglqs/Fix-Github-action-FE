@@ -6,24 +6,35 @@ export const name = 'margin_analysis';
 export const resetState = createAction(`${name}/RESET_STATE`);
 
 export const initialState = {
-   marginAnalystData: [] as any[],
-   dealerList: [] as any[],
+   marginAnalystData: { listDataAnalysis: [] } as any,
    isLoadingPage: false as boolean,
-   initDataFilter: {} as any,
-   fileUUID: '' as string,
-   dataFilter: {} as any,
-   marginData: {} as any,
+   initDataFilter: {
+      region: [
+         {
+            value: 'Asia',
+         },
+         {
+            value: 'Pacific',
+         },
+         {
+            value: 'India Sub Continent',
+         },
+         {
+            value: 'China',
+         },
+      ],
+   } as any,
+   fileUUID: undefined,
+   dataFilter: { region: 'Asia', currency: 'USD' } as any,
+   requestId: undefined,
 };
 
 const marginAnalysisSlice = createSlice({
    name,
    initialState,
    reducers: {
-      setMarginAnalystData(state, { payload }: PayloadAction<any[]>) {
+      setMarginData(state, { payload }: PayloadAction<any>) {
          state.marginAnalystData = payload;
-      },
-      setDealerList(state, { payload }: PayloadAction<any[]>) {
-         state.dealerList = payload;
       },
 
       setLoadingPage(state, { payload }: PayloadAction<any>) {
@@ -36,11 +47,13 @@ const marginAnalysisSlice = createSlice({
       setDataFilter(state, { payload }: PayloadAction<any>) {
          state.dataFilter = payload;
       },
-      setMarginData(state, { payload }: PayloadAction<any>) {
-         state.marginData = payload;
-      },
+
       setFileUUID(state, { payload }: PayloadAction<any>) {
          state.fileUUID = payload;
+      },
+
+      setRequestId(state, { payload }: PayloadAction<any>) {
+         state.requestId = payload;
       },
    },
    extraReducers: {
@@ -53,18 +66,13 @@ const marginAnalysisSlice = createSlice({
 export const sagaGetList = createAction(`${name}/GET_LIST`);
 // Selectors
 export const selectState = (state: RootReducerType) => state[name];
-export const selectMarginAnalystData = createSelector(
-   selectState,
-   (state) => state.marginAnalystData
-);
+export const selectMarginData = createSelector(selectState, (state) => state.marginAnalystData);
 
 export const selectIsLoadingPage = createSelector(selectState, (state) => state.isLoadingPage);
-
-export const selectDealerList = createSelector(selectState, (state) => state.dealerList);
 export const selectInitDataFilter = createSelector(selectState, (state) => state.initDataFilter);
 export const selectDataFilter = createSelector(selectState, (state) => state.dataFilter);
 export const selectFileUUID = createSelector(selectState, (state) => state.fileUUID);
-export const selectMarginData = createSelector(selectState, (state) => state.marginData);
+export const selectRequestId = createSelector(selectState, (state) => state.requestId);
 
 export const { actions } = marginAnalysisSlice;
 
