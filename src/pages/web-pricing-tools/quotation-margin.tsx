@@ -683,8 +683,14 @@ export default function MarginAnalysis() {
                   </Grid>
                </Grid>
 
-               <ForUSPricingBox data={marginAnalysisSummary?.annually} />
-               <ForUSPricingBox data={marginAnalysisSummary?.monthly} />
+               <ForUSPricingBox
+                  data={marginAnalysisSummary?.annually}
+                  title={'For US Pricing @ AOP rate'}
+               />
+               <ForUSPricingBox
+                  data={marginAnalysisSummary?.monthly}
+                  title={'For US Pricing @ Monthly rate'}
+               />
             </Grid>
 
             <Grid container sx={{ marginTop: 1 }}>
@@ -1009,14 +1015,14 @@ const FullCostAOPRateBoxMonthly = (props) => {
 
 const ForUSPricingBox = (props) => {
    const { t } = useTranslation();
-   const { data } = props;
+   const { data, title } = props;
 
    return (
       <Grid item xs={4}>
          <Paper elevation={3} sx={{ padding: 2, height: 'fit-content' }}>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  For US Pricing @ AOP rate
+                  {title}
                </Typography>
             </div>
             <div className="space-between-element">
