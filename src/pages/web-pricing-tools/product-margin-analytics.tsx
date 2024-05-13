@@ -6,7 +6,7 @@ import { outlierStore, commonStore } from '@/store/reducers';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Button, Typography } from '@mui/material';
+import { Button, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material';
 
 import { AppAutocomplete, AppDateField, AppLayout, DataTablePagination } from '@/components';
 
@@ -71,6 +71,7 @@ export default function Outlier() {
    const serverTimeZone = useSelector(outlierStore.selectServerTimeZone);
    const serverLastUpdatedTime = useSelector(outlierStore.selectLastUpdatedTime);
    const serverLastUpdatedBy = useSelector(outlierStore.selectLastUpdatedBy);
+   const isBookingData = useSelector(outlierStore.selectDataSource);
 
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
@@ -136,6 +137,7 @@ export default function Outlier() {
       {
          field: 'region',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.country.region.regionName}</span>;
@@ -144,6 +146,7 @@ export default function Outlier() {
       {
          field: 'Plant',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.plant'),
          renderCell(params) {
             return <span>{params.row.product?.plant}</span>;
@@ -152,6 +155,7 @@ export default function Outlier() {
       {
          field: 'truckClass',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.class'),
          renderCell(params) {
             return <span>{params.row.product?.clazz.clazzName}</span>;
@@ -160,6 +164,7 @@ export default function Outlier() {
       {
          field: 'series',
          flex: 0.4,
+         minWidth: 100,
          headerName: t('table.series'),
          renderCell(params) {
             return <span>{params.row.series}</span>;
@@ -168,6 +173,7 @@ export default function Outlier() {
       {
          field: 'model',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.models'),
          renderCell(params) {
             return <span>{params.row.product.modelCode}</span>;
@@ -176,12 +182,14 @@ export default function Outlier() {
       {
          field: 'quantity',
          flex: 0.3,
+         minWidth: 100,
          headerName: t('table.qty'),
          ...formatNumbericColumn,
       },
       {
          field: 'totalCost',
          flex: 0.8,
+         minWidth: 150,
          headerName: `${t('table.totalCost')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -191,6 +199,7 @@ export default function Outlier() {
       {
          field: 'dealerNet',
          flex: 0.8,
+         minWidth: 100,
          headerName: `${t('table.dealerNet')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -200,6 +209,7 @@ export default function Outlier() {
       {
          field: 'dealerNetAfterSurCharge',
          flex: 0.8,
+         minWidth: 100,
          headerName: `${t('table.dealerNetAfterSurcharge')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -209,6 +219,7 @@ export default function Outlier() {
       {
          field: 'marginAfterSurCharge',
          flex: 0.7,
+         minWidth: 150,
          headerName: `${t('table.marginAfterSurcharge')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -219,6 +230,7 @@ export default function Outlier() {
       {
          field: 'marginPercentageAfterSurCharge',
          flex: 0.6,
+         minWidth: 150,
          headerName: t('table.marginPercentageAfterSurcharge'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -351,7 +363,7 @@ export default function Outlier() {
       try {
          let {
             data: { chartOutliersData },
-         } = await outlierApi.getOutliersForChart(dataFilter);
+         } = await outlierApi.getOutliersForChart(dataFilter, isBookingData);
 
          chartOutliersData = chartOutliersData.filter((item) => item[0]?.region != null);
 
@@ -397,6 +409,12 @@ export default function Outlier() {
    useEffect(() => {
       convertTimezone();
    }, [serverLastUpdatedTime, serverTimeZone]);
+
+   const handleChangeDataSource = (e) => {
+      dispatch(outlierStore.actions.setDataSource(e.target.value));
+      dispatch(outlierStore.sagaGetList());
+      getOutliersDataForChart();
+   };
 
    return (
       <>
@@ -640,6 +658,39 @@ export default function Outlier() {
                   >
                      {t('button.clear')}
                   </Button>
+               </Grid>
+
+               <Grid item>
+                  <RadioGroup
+                     row
+                     value={isBookingData}
+                     onChange={handleChangeDataSource}
+                     aria-labelledby="demo-row-radio-buttons-group-label"
+                     name="row-radio-buttons-group"
+                     sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginLeft: 1,
+                        height: '90%',
+                     }}
+                  >
+                     <FormControlLabel
+                        sx={{
+                           height: '80%',
+                        }}
+                        value={true}
+                        control={<Radio />}
+                        label="Booking"
+                     />
+                     <FormControlLabel
+                        sx={{
+                           height: '80%',
+                        }}
+                        value={false}
+                        control={<Radio />}
+                        label="Shipment"
+                     />
+                  </RadioGroup>
                </Grid>
             </Grid>
             <Grid

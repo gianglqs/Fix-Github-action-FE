@@ -146,6 +146,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'volume',
          flex: 0.8,
+         minWidth: 100,
          headerName: '',
          renderCell(params) {
             return <span>{params?.row != null ? `Price of ${params?.row.volume}` : ''}</span>;
@@ -158,6 +159,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'discountAdded',
          flex: 0.8,
+         minWidth: 100,
          headerName: t('volumeDiscount.discountAdded'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -171,6 +173,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'totalDiscount',
          flex: 0.8,
+         minWidth: 100,
          headerName: t('volumeDiscount.totalDiscount'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -183,6 +186,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'pricePerUnit',
          flex: 0.8,
+         minWidth: 100,
          headerName: t('volumeDiscount.pricePerUnit'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -195,6 +199,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'totalPrice',
          flex: 0.8,
+         minWidth: 100,
          headerName: t('volumeDiscount.totalPrice'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -207,6 +212,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'costOfGoodSold',
          flex: 0.8,
+         minWidth: 100,
          headerName: t('volumeDiscount.costOfGoodSold'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -220,6 +226,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'standardMargin',
          flex: 0.8,
+         minWidth: 100,
          headerName: t('volumeDiscount.standardMargin'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -240,6 +247,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'standardMarginPercentage',
          flex: 0.8,
+         minWidth: 100,
          headerName: `${t('volumeDiscount.standardMargin')} %`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -254,6 +262,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'averageStandardMargin',
          flex: 0.8,
+         minWidth: 100,
          headerName: t('volumeDiscount.averageStandardMargin'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -266,6 +275,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'expectedUnitSales',
          flex: 0.8,
+         minWidth: 100,
          headerName: t('volumeDiscount.expectedUnitSales'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -278,6 +288,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'revenue',
          flex: 0.8,
+         minWidth: 100,
          headerName: t('volumeDiscount.revenue'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -290,6 +301,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'standardMarginOnUnitSales',
          flex: 0.8,
+         minWidth: 100,
          headerName: `${t('volumeDiscount.standardMargin')} (EUS)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -302,6 +314,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'ocos',
          flex: 0.8,
+         minWidth: 100,
          headerName: t('volumeDiscount.ocos'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -314,6 +327,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'adjustedStandardMargin',
          flex: 0.8,
+         minWidth: 100,
          headerName: t('volumeDiscount.adjustedStandardMargin'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -334,6 +348,7 @@ export default function VolumeDiscountAnalysis() {
       {
          field: 'adjustedStandardMarginPercentage',
          flex: 0.8,
+         minWidth: 100,
          headerName: `${t('volumeDiscount.adjustedStandardMargin')} %`,
          ...formatNumbericColumn,
          renderCell(params) {

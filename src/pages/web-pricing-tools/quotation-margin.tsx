@@ -205,6 +205,7 @@ export default function MarginAnalysis() {
       {
          field: 'quoteNumber',
          flex: 0.5,
+         minWidth: 150,
          headerName: 'Quote Number',
          headerAlign: 'center',
          align: 'center',
@@ -215,6 +216,7 @@ export default function MarginAnalysis() {
       {
          field: 'type',
          flex: 0.3,
+         minWidth: 150,
          headerName: '#',
          headerAlign: 'center',
          align: 'center',
@@ -225,11 +227,13 @@ export default function MarginAnalysis() {
       {
          field: 'series',
          flex: 0.4,
+         minWidth: 150,
          headerName: t('table.series'),
       },
       {
          field: 'modelCode',
          flex: 0.5,
+         minWidth: 150,
          headerName: t('table.models'),
          align: 'left',
          renderCell(params) {
@@ -239,6 +243,7 @@ export default function MarginAnalysis() {
       {
          field: 'optionCode',
          flex: 0.4,
+         minWidth: 150,
          headerName: t('table.partNumber'),
          renderCell(params) {
             return <span>{params.row.id.partNumber}</span>;
@@ -247,6 +252,7 @@ export default function MarginAnalysis() {
       {
          field: 'plant',
          flex: 0.3,
+         minWidth: 150,
          headerName: t('table.plant'),
       },
 
@@ -268,6 +274,7 @@ export default function MarginAnalysis() {
       {
          field: 'dealerNet',
          flex: 0.4,
+         minWidth: 150,
          headerName: t('table.dealerNet'),
          headerAlign: 'right',
          align: 'right',
@@ -276,6 +283,7 @@ export default function MarginAnalysis() {
       {
          field: 'isSPED',
          flex: 0.6,
+         minWidth: 150,
          headerName: 'SPED',
          headerAlign: 'center',
          align: 'center',
@@ -589,8 +597,14 @@ export default function MarginAnalysis() {
                   </Grid>
                </Grid>
 
-               <ForUSPricingBox data={marginCalculateData.marginAnalysisSummary?.annually} />
-               <ForUSPricingBox data={marginCalculateData.marginAnalysisSummary?.monthly} />
+               <ForUSPricingBox
+                  data={marginCalculateData.marginAnalysisSummary?.annually}
+                  title={'For US Pricing @ AOP rate'}
+               />
+               <ForUSPricingBox
+                  data={marginCalculateData.marginAnalysisSummary?.monthly}
+                  title={'For US Pricing @ Monthly rate'}
+               />
             </Grid>
 
             <Grid container sx={{ marginTop: 1 }}>
@@ -718,8 +732,8 @@ const FullCostAOPRateBox = (props) => {
                   data?.plant == 'Maximal'
                      ? `${t('quotationMargin.manufacturingCost')} (RMB)`
                      : data?.plant == 'SN'
-                     ? `${t('quotationMargin.manufacturingCost')} (USD)`
-                     : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
+                       ? `${t('quotationMargin.manufacturingCost')} (USD)`
+                       : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalManufacturingCost.toLocaleString()}
@@ -830,8 +844,8 @@ const FullCostAOPRateBoxMonthly = (props) => {
                   data?.plant == 'Maximal'
                      ? `${t('quotationMargin.manufacturingCost')} (RMB)`
                      : data?.plant == 'SN'
-                     ? `${t('quotationMargin.manufacturingCost')} (USD)`
-                     : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
+                       ? `${t('quotationMargin.manufacturingCost')} (USD)`
+                       : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalManufacturingCost.toLocaleString()}
@@ -915,14 +929,14 @@ const FullCostAOPRateBoxMonthly = (props) => {
 
 const ForUSPricingBox = (props) => {
    const { t } = useTranslation();
-   const { data } = props;
+   const { data, title } = props;
 
    return (
       <Grid item xs={4}>
          <Paper elevation={3} sx={{ padding: 2, height: 'fit-content' }}>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  For US Pricing @ AOP rate
+                  {title}
                </Typography>
             </div>
             <div className="space-between-element">

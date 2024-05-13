@@ -197,6 +197,7 @@ export default function Adjustment() {
       {
          field: 'region',
          flex: 0.5,
+         minWidth: 60,
          headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.region}</span>;
@@ -206,6 +207,7 @@ export default function Adjustment() {
       {
          field: 'Plant',
          flex: 0.5,
+         minWidth: 60,
          headerName: t('table.plant'),
          renderCell(params) {
             return <CellText value={params.row.plant} />;
@@ -214,6 +216,7 @@ export default function Adjustment() {
       {
          field: 'truckClass',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.class'),
          renderCell(params) {
             return <CellText value={params.row.clazz} />;
@@ -222,6 +225,7 @@ export default function Adjustment() {
       {
          field: 'series',
          flex: 0.5,
+         minWidth: 60,
          headerName: t('table.series'),
          renderCell(params) {
             return <CellText value={params.row.metaSeries} />;
@@ -230,6 +234,7 @@ export default function Adjustment() {
       {
          field: 'model',
          flex: 0.6,
+         minWidth: 70,
          headerName: t('table.models'),
          renderCell(params) {
             return <CellText value={params.row.model} />;
@@ -238,6 +243,7 @@ export default function Adjustment() {
       {
          field: 'noOfOrder',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.numberOfOrders'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -249,6 +255,7 @@ export default function Adjustment() {
       {
          field: 'additionalVolume',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.additionalUnits'),
          ...formatNumbericColumn,
          renderCell(params) {
@@ -263,6 +270,7 @@ export default function Adjustment() {
       {
          field: 'manualAdjCost',
          flex: 0.8,
+         minWidth: 100,
          headerName: `${t('table.adjustedCost')} ('000 USD)`,
          ...formatNumbericColumn,
          backgroundColor: costAdjColor,
@@ -273,6 +281,7 @@ export default function Adjustment() {
       {
          field: 'manualAdjFreight',
          flex: 0.8,
+         minWidth: 100,
          headerName: `${t('table.adjustedFreight')} ('000 USD)`,
          ...formatNumbericColumn,
          padding: 0,
@@ -286,6 +295,7 @@ export default function Adjustment() {
       {
          field: 'manualAdjFX',
          flex: 0.7,
+         minWidth: 100,
          headerName: `${t('table.adjustedFX')} %`,
          ...formatNumbericColumn,
          backgroundColor: fxAdjColor,
@@ -302,6 +312,7 @@ export default function Adjustment() {
       {
          field: 'totalManualAdjCost',
          flex: 0.6,
+         minWidth: 150,
          headerName: `${t('table.totalManualAdjCost')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -314,6 +325,7 @@ export default function Adjustment() {
       {
          field: 'originalDN',
          flex: 0.7,
+         minWidth: 100,
          headerName: `${t('table.originalDealerNet')} ('000 USD)`,
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell',
@@ -325,6 +337,8 @@ export default function Adjustment() {
       {
          field: 'originalMargin',
          flex: 0.7,
+
+         minWidth: 150,
          cellClassName: 'highlight-cell',
          headerClassName: 'origin',
          headerName: `${t('table.originalMargin')} ('000 USD)`,
@@ -337,6 +351,7 @@ export default function Adjustment() {
       {
          field: 'originalMarginPercentage',
          flex: 0.7,
+         minWidth: 100,
          cellClassName: 'highlight-cell',
          headerClassName: 'origin',
          headerName: t('table.originalMarginPercentage'),
@@ -352,6 +367,7 @@ export default function Adjustment() {
       {
          field: 'newDN',
          flex: 0.6,
+         minWidth: 100,
          cellClassName: 'highlight-cell-adjusted',
          headerClassName: 'adjusted',
          headerName: `${t('table.adjustedDealerNet')} ('000 USD)`,
@@ -363,6 +379,7 @@ export default function Adjustment() {
       {
          field: 'newMargin',
          flex: 0.6,
+         minWidth: 100,
          cellClassName: 'highlight-cell-adjusted',
          headerClassName: 'adjusted',
          headerName: `${t('table.newMargin')}`,
@@ -374,6 +391,7 @@ export default function Adjustment() {
       {
          field: 'newMarginPercentage',
          flex: 0.6,
+         minWidth: 100,
          cellClassName: 'highlight-cell-adjusted',
          headerClassName: 'adjusted',
          headerName: `${t('table.newMarginPercentage')}`,
@@ -410,6 +428,7 @@ export default function Adjustment() {
       {
          field: 'region',
          flex: 0.5,
+         minWidth: 100,
          headerName: 'Region',
          renderCell(params) {
             return <span>Total</span>;
@@ -419,6 +438,7 @@ export default function Adjustment() {
       {
          field: 'Plant',
          flex: 0.5,
+         minWidth: 100,
          headerName: 'Plant',
          renderCell(params) {
             return <span></span>;
@@ -427,6 +447,7 @@ export default function Adjustment() {
       {
          field: 'truckClass',
          flex: 0.3,
+         minWidth: 100,
          headerName: 'Class',
          renderCell(params) {
             return <span>{params.row.clazz}</span>;
@@ -435,6 +456,7 @@ export default function Adjustment() {
       {
          field: 'series',
          flex: 0.6,
+         minWidth: 100,
          headerName: 'Series',
          renderCell(params) {
             return <span>{params.row.metaSeries}</span>;
@@ -443,6 +465,7 @@ export default function Adjustment() {
       {
          field: 'model',
          flex: 0.6,
+         minWidth: 100,
          headerName: 'Models',
          renderCell(params) {
             return <span>{params.row.model}</span>;
@@ -451,12 +474,14 @@ export default function Adjustment() {
       {
          field: 'noOfOrder',
          flex: 0.5,
+         minWidth: 100,
          headerName: 'No of Orders',
          ...formatNumbericColumn,
       },
       {
          field: 'additionalVolume',
          flex: 0.5,
+         minWidth: 100,
          headerName: 'Additional Volume at BEP For Discount',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -466,6 +491,7 @@ export default function Adjustment() {
       {
          field: 'manualAdjCost',
          flex: 0.8,
+         minWidth: 100,
          headerName: 'Adjusted Cost',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -475,6 +501,7 @@ export default function Adjustment() {
       {
          field: 'manualAdjFreight',
          flex: 0.8,
+         minWidth: 100,
          headerName: 'Adjusted Freight',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -484,6 +511,7 @@ export default function Adjustment() {
       {
          field: 'manualAdjFX',
          flex: 0.7,
+         minWidth: 100,
          headerName: 'Adjusted FX',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -494,6 +522,7 @@ export default function Adjustment() {
       {
          field: 'totalManualAdjCost',
          flex: 0.6,
+         minWidth: 100,
          headerName: 'Total Manual Adj Cost',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -504,6 +533,7 @@ export default function Adjustment() {
       {
          field: 'originalDN',
          flex: 0.7,
+         minWidth: 100,
          headerName: 'Original DN',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -513,6 +543,7 @@ export default function Adjustment() {
       {
          field: 'originalMargin',
          flex: 0.7,
+         minWidth: 100,
          headerName: 'Original Margin $',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -522,6 +553,7 @@ export default function Adjustment() {
       {
          field: 'originalMarginPercentage',
          flex: 0.7,
+         minWidth: 100,
          headerName: 'Original Margin %',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -534,6 +566,7 @@ export default function Adjustment() {
       {
          field: 'newDN',
          flex: 0.6,
+         minWidth: 100,
          headerName: 'Adjusted Dealer Net',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -543,6 +576,7 @@ export default function Adjustment() {
       {
          field: 'newMargin',
          flex: 0.6,
+         minWidth: 100,
          headerName: 'New margin $ (USD) After manual Adj',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -552,6 +586,7 @@ export default function Adjustment() {
       {
          field: 'newMarginPercentage',
          flex: 0.6,
+         minWidth: 100,
          headerName: 'New margin % After manual Adj',
          ...formatNumbericColumn,
          renderCell(params) {
