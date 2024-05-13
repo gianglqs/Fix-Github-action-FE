@@ -136,6 +136,7 @@ export default function Outlier() {
       {
          field: 'region',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.country.region.regionName}</span>;
@@ -144,6 +145,7 @@ export default function Outlier() {
       {
          field: 'Plant',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.plant'),
          renderCell(params) {
             return <span>{params.row.product?.plant}</span>;
@@ -152,6 +154,7 @@ export default function Outlier() {
       {
          field: 'truckClass',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.class'),
          renderCell(params) {
             return <span>{params.row.product?.clazz.clazzName}</span>;
@@ -160,6 +163,7 @@ export default function Outlier() {
       {
          field: 'series',
          flex: 0.4,
+         minWidth: 100,
          headerName: t('table.series'),
          renderCell(params) {
             return <span>{params.row.series}</span>;
@@ -168,6 +172,7 @@ export default function Outlier() {
       {
          field: 'model',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.models'),
          renderCell(params) {
             return <span>{params.row.product.modelCode}</span>;
@@ -176,12 +181,14 @@ export default function Outlier() {
       {
          field: 'quantity',
          flex: 0.3,
+         minWidth: 100,
          headerName: t('table.qty'),
          ...formatNumbericColumn,
       },
       {
          field: 'totalCost',
          flex: 0.8,
+         minWidth: 150,
          headerName: `${t('table.totalCost')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -191,6 +198,7 @@ export default function Outlier() {
       {
          field: 'dealerNet',
          flex: 0.8,
+         minWidth: 100,
          headerName: `${t('table.dealerNet')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -200,6 +208,7 @@ export default function Outlier() {
       {
          field: 'dealerNetAfterSurCharge',
          flex: 0.8,
+         minWidth: 100,
          headerName: `${t('table.dealerNetAfterSurcharge')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -209,6 +218,7 @@ export default function Outlier() {
       {
          field: 'marginAfterSurCharge',
          flex: 0.7,
+         minWidth: 150,
          headerName: `${t('table.marginAfterSurcharge')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -219,6 +229,7 @@ export default function Outlier() {
       {
          field: 'marginPercentageAfterSurCharge',
          flex: 0.6,
+         minWidth: 150,
          headerName: t('table.marginPercentageAfterSurcharge'),
          ...formatNumbericColumn,
          renderCell(params) {

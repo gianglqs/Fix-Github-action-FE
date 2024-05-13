@@ -6,7 +6,7 @@ import { formatDate, formatNumber, formatNumberPercentage } from '@/utils/format
 import { useDispatch, useSelector } from 'react-redux';
 
 import ClearIcon from '@mui/icons-material/Clear';
-import { Backdrop, Button, CircularProgress, ListItem } from '@mui/material';
+import { Backdrop, Button, CircularProgress, ListItem, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { setCookie } from 'nookies';
@@ -45,6 +45,7 @@ import {
 } from '@mui/x-data-grid-pro';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
+import { componentType } from '@/theme/paperStyle';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -180,6 +181,7 @@ export default function Shipment() {
       {
          field: 'orderNo',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.order#'),
          renderCell(params) {
             return <span>{params.row.booking.orderNo}</span>;
@@ -188,6 +190,7 @@ export default function Shipment() {
       {
          field: 'series',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.series'),
          renderCell(params) {
             return <span>{params.row.booking.series}</span>;
@@ -196,6 +199,7 @@ export default function Shipment() {
       {
          field: 'Plant',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.plant'),
          renderCell(params) {
             return <span>{params.row.booking.product?.plant}</span>;
@@ -204,6 +208,7 @@ export default function Shipment() {
       {
          field: 'truckClass',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.class'),
          renderCell(params) {
             return <span>{params.row.booking.product?.clazz?.clazzName}</span>;
@@ -212,6 +217,7 @@ export default function Shipment() {
       {
          field: 'ctryCode',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.country'),
          renderCell(params) {
             return <span>{params.row.booking.country?.countryName}</span>;
@@ -220,6 +226,7 @@ export default function Shipment() {
       {
          field: 'region',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.region'),
          renderCell(params) {
             return <span>{params.row.booking.country?.region?.regionName}</span>;
@@ -228,6 +235,7 @@ export default function Shipment() {
       {
          field: 'date',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.createAt'),
          cellClassName: 'highlight-cell',
          headerClassName: 'pricing-team',
@@ -238,6 +246,7 @@ export default function Shipment() {
       {
          field: 'dealerNet',
          flex: 0.6,
+         minWidth: 100,
          headerName: `${t('table.dealerNet')}`,
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell',
@@ -250,6 +259,7 @@ export default function Shipment() {
       {
          field: 'marginPercentageAfterSurcharge',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.margin%'),
          cellClassName: 'highlight-cell',
          headerClassName: 'pricing-team',
@@ -267,6 +277,7 @@ export default function Shipment() {
       {
          field: 'FPA_dealerNet',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.dealerNet'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-FPA',
@@ -283,6 +294,7 @@ export default function Shipment() {
       {
          field: 'FPA_cost',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.cost'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-FPA',
@@ -299,6 +311,7 @@ export default function Shipment() {
       {
          field: 'FPA_margin',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.margin'),
          cellClassName: 'highlight-cell-FPA',
          headerClassName: 'FPA-team',
@@ -315,6 +328,7 @@ export default function Shipment() {
       {
          field: 'FPA_marginpercentage',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.margin%'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-FPA',
@@ -332,6 +346,7 @@ export default function Shipment() {
       {
          field: 'actual_dealerNet',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.dealerNet'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-actual',
@@ -348,6 +363,7 @@ export default function Shipment() {
       {
          field: 'actual_cost',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.cost'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-actual',
@@ -364,6 +380,7 @@ export default function Shipment() {
       {
          field: 'actual_margin',
          flex: 0.6,
+         minWidth: 100,
          headerName: t('table.margin'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-actual',
@@ -380,6 +397,7 @@ export default function Shipment() {
       {
          field: 'actual_margin%',
          flex: 0.5,
+         minWidth: 100,
          headerName: t('table.margin%'),
          ...formatNumbericColumn,
          cellClassName: 'highlight-cell-actual',
@@ -399,6 +417,7 @@ export default function Shipment() {
          field: 'remark',
          flex: 0.4,
          ...centerHeaderColumn,
+         minWidth: 80,
          headerName: t('table.remark'),
          renderCell(params) {
             return <span>{params.row.booking.comment}</span>;
@@ -771,6 +790,46 @@ export default function Shipment() {
                   </Grid>
                </Grid>
             )}
+            <Grid
+               container
+               spacing={1}
+               sx={{ marginTop: 1, display: 'flex', justifyContent: 'center' }}
+            >
+               <Grid item xs={2.5}>
+                  <Paper
+                     elevation={2}
+                     sx={{ ...componentType, backgroundColor: 'rgba(232, 192, 86, 0.8)' }}
+                  >
+                     <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                        Pricing Team Booking Margin
+                     </Typography>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.5}>
+                  <Paper
+                     elevation={2}
+                     sx={{ ...componentType, backgroundColor: 'rgba(255, 204, 153, 0.8)' }}
+                  >
+                     <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                        FP&A Team Est. Billing Margin
+                     </Typography>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.5}>
+                  <Paper
+                     elevation={2}
+                     sx={{
+                        ...componentType,
+
+                        backgroundColor: 'rgba(0, 153, 76, 0.6)',
+                     }}
+                  >
+                     <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                        Actual
+                     </Typography>
+                  </Paper>
+               </Grid>
+            </Grid>
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
