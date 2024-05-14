@@ -72,6 +72,7 @@ export default function Booking() {
    const initDataFilter = useSelector(bookingStore.selectInitDataFilter);
    const cacheDataFilter = useSelector(bookingStore.selectDataFilter);
    const listExchangeRate = useSelector(bookingStore.selectExchangeRateList);
+   const listNearestExchangeRate = useSelector(bookingStore.selectNearestExchangeRateList);
    const serverTimeZone = useSelector(bookingStore.selectServerTimeZone);
    const serverLastUpdatedTime = useSelector(bookingStore.selectLastUpdatedTime);
    const serverLastUpdatedBy = useSelector(bookingStore.selectLastUpdatedBy);
@@ -399,11 +400,21 @@ export default function Booking() {
       setTotalRow(listTotalRow);
 
       setListOrder((prev) => {
-         return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
+         return convertCurrencyOfDataBookingOrder(
+            prev,
+            currency,
+            listExchangeRate,
+            listNearestExchangeRate
+         );
       });
 
       setTotalRow((prev) => {
-         return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
+         return convertCurrencyOfDataBookingOrder(
+            prev,
+            currency,
+            listExchangeRate,
+            listNearestExchangeRate
+         );
       });
       convertTimezone();
    }, [listBookingOrder, listTotalRow, currency, serverTimeZone, serverLastUpdatedTime]);

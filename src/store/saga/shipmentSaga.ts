@@ -32,6 +32,7 @@ function* fetchShipment() {
       const dataShipment = JSON.parse(String(data)).listShipment;
       const dataTotalRow = JSON.parse(String(data)).total;
       const dataExchangeRate = JSON.parse(String(data)).listExchangeRate;
+      const dataNearestExchangeRate = JSON.parse(String(data)).listNearestExchangeRate;
       const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
       const dataLastUpdatedTime = JSON.parse(String(data)).lastUpdatedTime;
       const dataLastUpdatedBy = JSON.parse(String(data)).lastUpdatedBy;
@@ -43,6 +44,7 @@ function* fetchShipment() {
       yield put(shipmentStore.actions.setServerTimeZone(dataServerTimeZone));
       yield put(shipmentStore.actions.setLastUpdatedTime(dataLastUpdatedTime));
       yield put(shipmentStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
+      yield put(shipmentStore.actions.setNearestExchangeRateList(dataNearestExchangeRate));
 
       yield put(
          commonStore.actions.setTableState({

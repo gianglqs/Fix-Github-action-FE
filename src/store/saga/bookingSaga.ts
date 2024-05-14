@@ -33,6 +33,7 @@ function* fetchBooking() {
       const dataBooking = JSON.parse(String(data)).listBookingOrder;
       const dataTotalRow = JSON.parse(String(data)).total;
       const dataExchangeRate = JSON.parse(String(data)).listExchangeRate;
+      const dataNearestExchangeRate = JSON.parse(String(data)).listNearestExchangeRate;
       const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
       const dataLastUpdatedTime = JSON.parse(String(data)).lastUpdatedTime;
       const dataLastUpdatedBy = JSON.parse(String(data)).lastUpdatedBy;
@@ -45,6 +46,7 @@ function* fetchBooking() {
       yield put(bookingStore.actions.setServerTimeZone(dataServerTimeZone));
       yield put(bookingStore.actions.setLastUpdatedTime(dataLastUpdatedTime));
       yield put(bookingStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
+      yield put(bookingStore.actions.setNearestExchangeRateList(dataNearestExchangeRate));
 
       yield put(
          commonStore.actions.setTableState({
