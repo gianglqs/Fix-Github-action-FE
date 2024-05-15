@@ -161,6 +161,9 @@ export default function Shipment() {
          flex: 0.5,
          minWidth: 80,
          headerName: t('table.order#'),
+         renderCell(params) {
+            return <span>{params.row.id.orderNo}</span>;
+         },
       },
       {
          field: 'quoteNumber',
@@ -219,7 +222,7 @@ export default function Shipment() {
          minWidth: 100,
          headerName: t('table.dealerName'),
          renderCell(params) {
-            return <span>{params.row.dealer?.name}</span>;
+            return <span>{params.row.id.dealer?.name}</span>;
          },
       },
       {
@@ -886,7 +889,7 @@ export default function Shipment() {
                      rows={listOrder}
                      rowBufferPx={35}
                      columns={columns}
-                     getRowId={(params) => params.orderNo}
+                     getRowId={(params) => params.id.orderNo + params.id.dealer.name}
                      onCellClick={handleOnCellClick}
                   />
                </Grid>
