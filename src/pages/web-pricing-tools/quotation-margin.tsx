@@ -46,10 +46,22 @@ export default function MarginAnalysis() {
    const dataFilter = useSelector(marginAnalysisStore.selectDataFilter);
    const fileUUID = useSelector(marginAnalysisStore.selectFileUUID);
    const marginCalculateData = useSelector(marginAnalysisStore.selectMarginData);
+   const fileName = useSelector(marginAnalysisStore.selectFileName);
+   const calculatedCurrency = useSelector(marginAnalysisStore.selectCurrency);
 
    const handleUpdateDataFilterStore = (field: string, data: any) => {
       const newDataFilter = { ...dataFilter };
+
       newDataFilter[field] = data;
+      if (field == 'orderNumber') {
+         // newDataFilter.type = null;
+         delete newDataFilter.type;
+      }
+      if (field == 'type') {
+         // newDataFilter.orderNumber = null;
+         delete newDataFilter.orderNumber;
+      }
+
       dispatch(marginAnalysisStore.actions.setDataFilter(newDataFilter));
    };
 
@@ -104,6 +116,9 @@ export default function MarginAnalysis() {
 
          dispatch(marginAnalysisStore.actions.setMarginData(marginData));
          dispatch(marginAnalysisStore.actions.setRequestId(undefined));
+         dispatch(
+            marginAnalysisStore.actions.setCurrency(data.MarginAnalystSummary.annually.id.currency)
+         );
 
          setLoading(false);
       } catch (error) {
@@ -116,6 +131,8 @@ export default function MarginAnalysis() {
       let formData = new FormData();
       formData.append('file', file);
       setLoading(true);
+
+      dispatch(marginAnalysisStore.actions.resetFilter());
 
       marginAnalysisApi
          .checkFilePlant(formData)
@@ -150,11 +167,10 @@ export default function MarginAnalysis() {
             newInitDataFilter.type = types;
             newInitDataFilter.modelCode = modelCodes;
             newInitDataFilter.series = series;
-            newInitDataFilter.orderNumber = orderNumbers;
+            newInitDataFilter.orderNumber = types;
 
             dispatch(marginAnalysisStore.actions.setInitDataFilter(newInitDataFilter));
-            console.log(types[0].value);
-            if (types.length !== 0) handleUpdateDataFilterStore('type', types[0].value);
+            // if (types.length !== 0) handleUpdateDataFilterStore('type', types[0].value);
          })
          .catch((error) => {
             setLoading(false);
@@ -162,8 +178,6 @@ export default function MarginAnalysis() {
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
-
-   console.log(dataFilter);
 
    const handleImportMacroFile = async (file) => {
       let formData = new FormData();
@@ -259,7 +273,7 @@ export default function MarginAnalysis() {
       {
          field: 'listPrice',
          flex: 0.4,
-         headerName: t('table.listPrice') + ` (${dataFilter.currency})`,
+         headerName: t('table.listPrice') + ` (${calculatedCurrency})`,
          headerAlign: 'right',
          align: 'right',
          cellClassName: 'highlight-cell',
@@ -267,7 +281,7 @@ export default function MarginAnalysis() {
       {
          field: 'manufacturingCost',
          flex: 0.7,
-         headerName: t('quotationMargin.manufacturingCost') + ` (${dataFilter.currency})`,
+         headerName: t('quotationMargin.manufacturingCost'), //+ ` (${dataFilter.currency})`,
          headerAlign: 'right',
          align: 'right',
       },
@@ -322,6 +336,8 @@ export default function MarginAnalysis() {
       }
    };
 
+   console.log(initDataFilter.type, dataFilter);
+
    const handleViewHistory = () => {
       handleOpenCompareMargin();
    };
@@ -336,6 +352,10 @@ export default function MarginAnalysis() {
 
    const setLoading = (status: boolean) => {
       dispatch(marginAnalysisStore.actions.setLoadingPage(status));
+   };
+
+   const setFileName = (fileName: string) => {
+      dispatch(marginAnalysisStore.actions.setFileName(fileName));
    };
 
    return (
@@ -368,10 +388,10 @@ export default function MarginAnalysis() {
             <Grid container spacing={1.1} display="flex" alignItems="center">
                <Grid item>
                   <UploadFileDropZone
-                     setUploadedFile={handleUpdateDataFilterStore}
                      handleUploadFile={handleOpenMarginFile}
                      buttonName={t('button.openFile')}
                      sx={{ width: '100%', height: 24 }}
+                     setFileName={setFileName}
                   />
                </Grid>
                <Grid item sx={{ width: '10%', minWidth: 140 }} xs={1}>
@@ -473,7 +493,7 @@ export default function MarginAnalysis() {
 
                <Grid item>
                   <Typography fontSize={16}>
-                     {t('button.fileUploaded')}: {dataFilter.uploadedFile}
+                     {t('button.fileUploaded')}: {fileName}
                   </Typography>
                </Grid>
                <Grid item sx={{ width: '10%' }} />
@@ -483,14 +503,14 @@ export default function MarginAnalysis() {
                      <Grid item spacing={1.1} display="flex" alignItems="center">
                         <Grid item>
                            <UploadFileDropZone
-                              setUploadedFile={handleUpdateDataFilterStore}
+                              setFileName={setFileName}
                               handleUploadFile={handleImportMacroFile}
                               buttonName="Import Macro File"
                               sx={{ width: '100%', height: 24 }}
                            />
 
                            <UploadFileDropZone
-                              setUploadedFile={handleUpdateDataFilterStore}
+                              setFileName={setFileName}
                               handleUploadFile={handleImportPowerBi}
                               buttonName="Import PowerBi File"
                               sx={{ width: '100%', height: 24, marginTop: 1 }}
@@ -504,12 +524,12 @@ export default function MarginAnalysis() {
             <Grid container spacing={1} sx={{ marginTop: 1 }}>
                <MarginPercentageAOPRateBox
                   data={marginCalculateData.marginAnalysisSummary?.annually}
-                  valueCurrency={dataFilter.currency}
+                  valueCurrency={calculatedCurrency}
                   isAOPBox={true}
                />
                <MarginPercentageAOPRateBox
                   data={marginCalculateData.marginAnalysisSummary?.monthly}
-                  valueCurrency={dataFilter.currency}
+                  valueCurrency={calculatedCurrency}
                />
                <Grid item xs={4}>
                   <Paper elevation={3} sx={{ padding: 2, height: 'fit-content', minWidth: 300 }}>
@@ -569,11 +589,11 @@ export default function MarginAnalysis() {
 
                <FullCostAOPRateBox
                   data={marginCalculateData.marginAnalysisSummary?.annually}
-                  valueCurrency={dataFilter.currency}
+                  valueCurrency={calculatedCurrency}
                />
                <FullCostAOPRateBoxMonthly
                   data={marginCalculateData.marginAnalysisSummary?.monthly}
-                  valueCurrency={dataFilter.currency}
+                  valueCurrency={calculatedCurrency}
                />
 
                <Grid item xs={4}>
@@ -998,7 +1018,7 @@ function UploadFileDropZone(props) {
          reader.onerror = () => console.log('file reading has failed');
          reader.onload = () => {
             // Do whatever you want with the file contents
-            props.setUploadedFile('uploadedFile', file.name);
+            props.setFileName(file.name);
          };
          reader.readAsArrayBuffer(file);
          props.handleUploadFile(file);

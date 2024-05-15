@@ -88,3 +88,5 @@ export const defaultValueFilterResidualValue = {
 export const defaultValueFilterImportTracking = {
    date: '',
 } as ImportTrackingDataFilter;
+
+export const defaultDataFilterQuotationMargin = { region: 'Asia', currency: 'USD' };
