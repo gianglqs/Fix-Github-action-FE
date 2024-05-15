@@ -1,7 +1,8 @@
 export const convertCurrencyOfDataBookingOrder = (
    listOrder: Array<any>,
    targetCurrency: string,
-   listExchangeRate: Array<any>
+   listExchangeRate: Array<any>,
+   listNearestExchangeRate: Array<any>
 ) => {
    const result = listOrder.map((element) => {
       const updatedElement = { ...element };
@@ -9,7 +10,13 @@ export const convertCurrencyOfDataBookingOrder = (
       // if current currency of order <> target currency -> exchange
       if (element.currency && element.currency?.currency !== targetCurrency) {
          // get exchange rate value
-         const rate = getExchangeRate(listExchangeRate, element.currency.currency, targetCurrency);
+         const rate = getExchangeRate(
+            listExchangeRate,
+            listNearestExchangeRate,
+            element.currency.currency,
+            targetCurrency,
+            element.date
+         );
 
          updatedElement.dealerNet = Number(element.dealerNet) * Number(rate);
 
@@ -30,12 +37,29 @@ export const convertCurrencyOfDataBookingOrder = (
    return result;
 };
 
-const getExchangeRate = (listExchangeRate: Array<any>, from: string, to: string) => {
+const getExchangeRate = (
+   listExchangeRate: Array<any>,
+   listNearestExchangeRate: Array<any>,
+   from: string,
+   to: string,
+   date: any
+) => {
    const foundElement = listExchangeRate.find((element) => {
-      return element.from.currency === from && element.to.currency === to;
+      return (
+         date &&
+         element.from.currency === from &&
+         element.to.currency === to &&
+         date[1] === element.date[1] &&
+         date[0] === element.date[0]
+      );
    });
 
    if (foundElement) {
       return foundElement.rate;
+   } else {
+      const nearestEchangeRate = listNearestExchangeRate.find((element) => {
+         return element.from.currency === from && element.to.currency === to;
+      });
+      return nearestEchangeRate.rate;
    }
 };

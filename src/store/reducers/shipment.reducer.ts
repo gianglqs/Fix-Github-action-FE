@@ -12,6 +12,7 @@ export const initialState = {
    initDataFilter: {} as any,
    defaultValueFilterOrder: defaultValueFilterOrder as any,
    exchangeRateList: [] as any[],
+   nearestExchangeRateList: [] as any[],
    dataFilter: {} as any,
    serverTimeZone: '' as any,
    lastUpdatedTime: '' as any,
@@ -27,6 +28,9 @@ const shipmentSlice = createSlice({
       },
       setExchangeRateList(state, { payload }: PayloadAction<any[]>) {
          state.exchangeRateList = payload;
+      },
+      setNearestExchangeRateList(state, { payload }: PayloadAction<any[]>) {
+         state.nearestExchangeRateList = payload;
       },
       setTotalRow(state, { payload }: PayloadAction<any[]>) {
          state.totalRow = payload;
@@ -70,6 +74,10 @@ export const selectInitDataFilter = createSelector(selectState, (state) => state
 export const selectExchangeRateList = createSelector(
    selectState,
    (state) => state.exchangeRateList
+);
+export const selectNearestExchangeRateList = createSelector(
+   selectState,
+   (state) => state.nearestExchangeRateList
 );
 export const selectDefaultValueFilterOrder = createSelector(
    selectState,

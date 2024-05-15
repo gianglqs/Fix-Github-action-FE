@@ -80,6 +80,7 @@ export default function Shipment() {
    const [currency, setCurrency] = useState('USD');
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
    const listExchangeRate = useSelector(shipmentStore.selectExchangeRateList);
+   const listNearestExchangeRate = useSelector(shipmentStore.selectNearestExchangeRateList);
 
    //  const [uploadedFile, setUploadedFile] = useState({ name: '' });
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
@@ -409,11 +410,21 @@ export default function Shipment() {
       setTotalRow(listTotalRow);
 
       setListOrder((prev) => {
-         return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
+         return convertCurrencyOfDataBookingOrder(
+            prev,
+            currency,
+            listExchangeRate,
+            listNearestExchangeRate
+         );
       });
 
       setTotalRow((prev) => {
-         return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
+         return convertCurrencyOfDataBookingOrder(
+            prev,
+            currency,
+            listExchangeRate,
+            listNearestExchangeRate
+         );
       });
       convertTimezone();
    }, [listShipment, listTotalRow, currency]);
