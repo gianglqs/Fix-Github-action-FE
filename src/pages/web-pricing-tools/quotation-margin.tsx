@@ -50,16 +50,14 @@ export default function MarginAnalysis() {
    const calculatedCurrency = useSelector(marginAnalysisStore.selectCurrency);
 
    const handleUpdateDataFilterStore = (field: string, data: any) => {
-      const newDataFilter = { ...dataFilter };
+      const newDataFilter = JSON.parse(JSON.stringify(dataFilter));
 
       newDataFilter[field] = data;
       if (field == 'orderNumber') {
-         // newDataFilter.type = null;
-         delete newDataFilter.type;
+         newDataFilter.type = null;
       }
       if (field == 'type') {
-         // newDataFilter.orderNumber = null;
-         delete newDataFilter.orderNumber;
+         newDataFilter.orderNumber = null;
       }
 
       dispatch(marginAnalysisStore.actions.setDataFilter(newDataFilter));
@@ -167,7 +165,7 @@ export default function MarginAnalysis() {
             newInitDataFilter.type = types;
             newInitDataFilter.modelCode = modelCodes;
             newInitDataFilter.series = series;
-            newInitDataFilter.orderNumber = types;
+            newInitDataFilter.orderNumber = orderNumbers;
 
             dispatch(marginAnalysisStore.actions.setInitDataFilter(newInitDataFilter));
             // if (types.length !== 0) handleUpdateDataFilterStore('type', types[0].value);
@@ -273,7 +271,7 @@ export default function MarginAnalysis() {
       {
          field: 'listPrice',
          flex: 0.4,
-         headerName: t('table.listPrice') + ` (${calculatedCurrency})`,
+         headerName: t('table.listPrice') + ` (${calculatedCurrency || ''})`,
          headerAlign: 'right',
          align: 'right',
          cellClassName: 'highlight-cell',
@@ -335,8 +333,6 @@ export default function MarginAnalysis() {
             });
       }
    };
-
-   console.log(initDataFilter.type, dataFilter);
 
    const handleViewHistory = () => {
       handleOpenCompareMargin();
@@ -425,9 +421,9 @@ export default function MarginAnalysis() {
                </Grid>
                <Grid item sx={{ width: '10%', minWidth: 140 }} xs={1}>
                   <AppAutocomplete
-                     options={initDataFilter.orderNumber}
+                     options={initDataFilter?.orderNumber}
                      label={t('filters.order#')}
-                     value={dataFilter.orderNumber}
+                     value={dataFilter?.orderNumber}
                      onChange={(e, option) =>
                         handleUpdateDataFilterStore('orderNumber', option.value)
                      }
@@ -440,9 +436,9 @@ export default function MarginAnalysis() {
                <Grid item>{t('or')}</Grid>
                <Grid item sx={{ width: '10%', minWidth: 50 }} xs={0.5}>
                   <AppAutocomplete
-                     options={initDataFilter.type}
+                     options={initDataFilter?.type}
                      label="#"
-                     value={dataFilter.type}
+                     value={dataFilter?.type}
                      onChange={(e, option) => handleUpdateDataFilterStore('type', option.value)}
                      disableListWrap
                      primaryKeyOption="value"
