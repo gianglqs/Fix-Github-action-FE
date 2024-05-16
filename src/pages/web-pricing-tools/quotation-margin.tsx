@@ -654,7 +654,8 @@ const MarginPercentageAOPRateBox = (props) => {
                   variant="body1"
                   component="span"
                >
-                  {`${t('quotationMargin.totalListPrice')} (${valueCurrency})`}
+                  {`${t('quotationMargin.totalListPrice')} `}
+                  {valueCurrency ? `(${valueCurrency})` : ''}
                </Typography>
                <Typography
                   sx={{ fontWeight: 'bold', marginRight: 1 }}
@@ -676,7 +677,7 @@ const MarginPercentageAOPRateBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span" sx={{ marginLeft: 1 }}>
-                  {`${t('quotationMargin.dealerNet')} (${valueCurrency})`}
+                  {`${t('quotationMargin.dealerNet')}`} {valueCurrency ? `(${valueCurrency})` : ''}
                </Typography>
                <Typography variant="body1" component="span" sx={{ marginRight: 1 }}>
                   {data?.dealerNet.toLocaleString()}
@@ -752,7 +753,7 @@ const FullCostAOPRateBox = (props) => {
                      ? `${t('quotationMargin.manufacturingCost')} (RMB)`
                      : data?.plant == 'SN'
                        ? `${t('quotationMargin.manufacturingCost')} (USD)`
-                       : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
+                       : `${t('quotationMargin.manufacturingCost')}`}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalManufacturingCost.toLocaleString()}
@@ -815,7 +816,7 @@ const FullCostAOPRateBox = (props) => {
                        data?.plant == 'Maximal'
                         ? `${t('quotationMargin.totalCost')} (RMB)`
                         : `${t('quotationMargin.totalCost')} (USD)`
-                     : `${t('quotationMargin.totalCost')} (${valueCurrency})`}
+                     : `${t('quotationMargin.totalCost')}`}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCost.toLocaleString()}
@@ -823,7 +824,7 @@ const FullCostAOPRateBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency} @AOP Rate`}
+                  {`${t('quotationMargin.fullCost')} ${valueCurrency || ''} @AOP Rate`}
                </Typography>
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                   {data?.fullCostAOPRate.toLocaleString()}
@@ -864,7 +865,7 @@ const FullCostAOPRateBoxMonthly = (props) => {
                      ? `${t('quotationMargin.manufacturingCost')} (RMB)`
                      : data?.plant == 'SN'
                        ? `${t('quotationMargin.manufacturingCost')} (USD)`
-                       : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
+                       : `${t('quotationMargin.manufacturingCost')}`}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalManufacturingCost.toLocaleString()}
@@ -927,7 +928,7 @@ const FullCostAOPRateBoxMonthly = (props) => {
                        data?.plant == 'Maximal'
                         ? `${t('quotationMargin.totalCost')} (RMB)`
                         : `${t('quotationMargin.totalCost')} (USD)`
-                     : `${t('quotationMargin.totalCost')} (${valueCurrency})`}
+                     : `${t('quotationMargin.totalCost')}`}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCost.toLocaleString()}
@@ -935,7 +936,7 @@ const FullCostAOPRateBoxMonthly = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency} @AOP Rate`}
+                  {`${t('quotationMargin.fullCost')} ${valueCurrency || ''} @AOP Rate`}
                </Typography>
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                   {data?.fullCostAOPRate.toLocaleString()}
@@ -960,7 +961,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.manufacturingCost')} ({data?.id?.currency})
+                  {t('quotationMargin.manufacturingCost')}
+                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.manufacturingCostUSD.toLocaleString()}
@@ -968,7 +970,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.addWarranty')} ({data?.id?.currency})
+                  {t('quotationMargin.addWarranty')}
+                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.warrantyCost.toLocaleString()}
@@ -976,7 +979,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.surcharge')} ({data?.id?.currency})
+                  {t('quotationMargin.surcharge')}
+                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.surchargeCost.toLocaleString()}
@@ -984,8 +988,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')} (
-                  {data?.id?.currency})
+                  {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')}
+                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCostWithoutFreight.toLocaleString()}
@@ -993,8 +997,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')} (
-                  {data?.id?.currency})
+                  {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')}
+                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCostWithFreight.toLocaleString()}

@@ -525,7 +525,7 @@ const FullCostAOPRateBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency} @AOP Rate`}
+                  {`${t('quotationMargin.fullCost')} ${valueCurrency || ''} @AOP Rate`}
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>
