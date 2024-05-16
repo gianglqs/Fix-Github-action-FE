@@ -423,7 +423,7 @@ export default function MarginAnalysis() {
                   <AppAutocomplete
                      options={initDataFilter?.orderNumber}
                      label={t('filters.order#')}
-                     value={dataFilter?.orderNumber}
+                     value={dataFilter.orderNumber}
                      onChange={(e, option) =>
                         handleUpdateDataFilterStore('orderNumber', option.value)
                      }
@@ -438,7 +438,7 @@ export default function MarginAnalysis() {
                   <AppAutocomplete
                      options={initDataFilter?.type}
                      label="#"
-                     value={dataFilter?.type}
+                     value={dataFilter.type}
                      onChange={(e, option) => handleUpdateDataFilterStore('type', option.value)}
                      disableListWrap
                      primaryKeyOption="value"

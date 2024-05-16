@@ -94,4 +94,6 @@ export const defaultDataFilterQuotationMargin = {
    currency: 'USD',
    orderNumber: null,
    type: null,
+   modelCode: null,
+   series: null,
 };
