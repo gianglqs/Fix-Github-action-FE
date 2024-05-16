@@ -177,7 +177,7 @@ export default function Shipment() {
          minWidth: 100,
          headerName: t('table.createAt'),
          renderCell(params) {
-            return <span>{formatDate(params.row.date)}</span>;
+            return <span>{formatDate(params.row.id.date)}</span>;
          },
       },
       {
