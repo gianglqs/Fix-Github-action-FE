@@ -118,8 +118,9 @@ export default function ExchangeRate() {
    const handleUploadExchangeRate = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
+      setLoading(true);
 
-      exchangeRatesApi
+      await exchangeRatesApi
          .uploadExchangeRate(formData)
          .then(() => {
             dispatch(commonStore.actions.setSuccessMessage('Upload Exchange Rate successfully'));
@@ -128,6 +129,7 @@ export default function ExchangeRate() {
             console.log(error);
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
+      setLoading(false);
    };
 
    const handleCompareCurrency = async () => {
@@ -467,8 +469,8 @@ export default function ExchangeRate() {
                      {userRole === 'ADMIN' && (
                         <Grid item sx={{ width: '45%', minWidth: 90 }}>
                            <UploadFileDropZone
-                              uploadedFile={uploadedFile}
-                              setUploadedFile={setUploadedFile}
+                              // uploadedFile={uploadedFile}
+                              // setUploadedFile={setUploadedFile}
                               handleUploadFile={handleUploadExchangeRate}
                               buttonName={t('button.uploadFile')}
                               sx={{ width: '100%', height: 24 }}
@@ -603,18 +605,29 @@ export default function ExchangeRate() {
 }
 
 function UploadFileDropZone(props) {
+   const [loading, setLoading] = useState(false);
+
+   // useEffect(() => {
+   //    // loading === true ? setLoading(false) : setLoading(true);
+   // }, []);
+
    const onDrop = useCallback((acceptedFiles) => {
       acceptedFiles.forEach((file) => {
          const reader = new FileReader();
 
-         reader.onabort = () => console.log('file reading was aborted');
-         reader.onerror = () => console.log('file reading has failed');
-         reader.onload = () => {
-            // Do whatever you want with the file contents
-            props.setUploadedFile(file);
+         reader.onabort = () => {
+            console.log('file reading was aborted');
          };
+         reader.onerror = () => {
+            console.log('file reading has failed');
+         };
+         // reader.onload = () => {
+         //    props.setUploadedFile(file);
+         // };
+
          reader.readAsArrayBuffer(file);
          props.handleUploadFile(file);
+         setLoading(false);
       });
    }, []);
 
@@ -641,6 +654,30 @@ function UploadFileDropZone(props) {
 
    return (
       <div {...getRootProps()}>
+         {loading ? (
+            <div
+               style={{
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(0,0,0, 0.3)',
+                  position: 'absolute',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  zIndex: 1001,
+               }}
+            >
+               <CircularProgress
+                  color="info"
+                  size={60}
+                  sx={{
+                     position: 'relative',
+                  }}
+               />
+            </div>
+         ) : null}
          <input {...getInputProps()} />
          <Button type="button" onClick={open} variant="contained" sx={props.sx}>
             {props.buttonName}
