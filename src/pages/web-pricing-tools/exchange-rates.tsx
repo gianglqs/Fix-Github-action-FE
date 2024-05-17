@@ -605,12 +605,6 @@ export default function ExchangeRate() {
 }
 
 function UploadFileDropZone(props) {
-   const [loading, setLoading] = useState(false);
-
-   // useEffect(() => {
-   //    // loading === true ? setLoading(false) : setLoading(true);
-   // }, []);
-
    const onDrop = useCallback((acceptedFiles) => {
       acceptedFiles.forEach((file) => {
          const reader = new FileReader();
@@ -627,7 +621,6 @@ function UploadFileDropZone(props) {
 
          reader.readAsArrayBuffer(file);
          props.handleUploadFile(file);
-         setLoading(false);
       });
    }, []);
 
@@ -654,30 +647,6 @@ function UploadFileDropZone(props) {
 
    return (
       <div {...getRootProps()}>
-         {loading ? (
-            <div
-               style={{
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundColor: 'rgba(0,0,0, 0.3)',
-                  position: 'absolute',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  zIndex: 1001,
-               }}
-            >
-               <CircularProgress
-                  color="info"
-                  size={60}
-                  sx={{
-                     position: 'relative',
-                  }}
-               />
-            </div>
-         ) : null}
          <input {...getInputProps()} />
          <Button type="button" onClick={open} variant="contained" sx={props.sx}>
             {props.buttonName}
