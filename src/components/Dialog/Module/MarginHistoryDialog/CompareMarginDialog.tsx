@@ -236,7 +236,8 @@ const MarginPercentageAOPRateBox = (props) => {
                   variant="body1"
                   component="span"
                >
-                  {`${t('quotationMargin.totalListPrice')} (${valueCurrency})`}
+                  {`${t('quotationMargin.totalListPrice')} `}
+                  {valueCurrency ? `(${valueCurrency})` : ''}
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>
@@ -276,7 +277,8 @@ const MarginPercentageAOPRateBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span" sx={{ marginLeft: 1 }}>
-                  {`${t('quotationMargin.dealerNet')} (${valueCurrency})`}
+                  {`${t('quotationMargin.dealerNet')} `}
+                  {valueCurrency ? `(${valueCurrency})` : ''}
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>
@@ -378,8 +380,9 @@ const FullCostAOPRateBox = (props) => {
                   data.annually?.plant == 'Maximal'
                      ? `${t('quotationMargin.manufacturingCost')} (RMB)`
                      : data.annually?.plant == 'SN'
-                     ? `${t('quotationMargin.manufacturingCost')} (USD)`
-                     : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
+                       ? `${t('quotationMargin.manufacturingCost')} (USD)`
+                       : `${t('quotationMargin.manufacturingCost')} `}
+                  {valueCurrency ? `(${valueCurrency})` : ''}
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>
@@ -487,15 +490,15 @@ const FullCostAOPRateBox = (props) => {
                      {_.isNil(data.annually?.liIonIncluded)
                         ? ''
                         : data.annually?.liIonIncluded
-                        ? 'Yes'
-                        : 'No'}
+                          ? 'Yes'
+                          : 'No'}
                   </Typography>
                   <Typography variant="body1" component="span">
                      {_.isNil(data.monthly?.liIonIncluded)
                         ? ''
                         : data.monthly?.liIonIncluded
-                        ? 'Yes'
-                        : 'No'}
+                          ? 'Yes'
+                          : 'No'}
                   </Typography>
                </div>
             </div>
@@ -508,7 +511,7 @@ const FullCostAOPRateBox = (props) => {
                        data.annually?.plant == 'Maximal'
                         ? `${t('quotationMargin.totalCost')} (RMB)`
                         : `${t('quotationMargin.totalCost')} (USD)`
-                     : `${t('quotationMargin.totalCost')} (${valueCurrency})`}
+                     : `${t('quotationMargin.totalCost')}`}
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>
@@ -522,7 +525,7 @@ const FullCostAOPRateBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency} @AOP Rate`}
+                  {`${t('quotationMargin.fullCost')} ${valueCurrency || ''} @AOP Rate`}
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>

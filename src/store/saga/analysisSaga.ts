@@ -69,6 +69,10 @@ function* getDataViewPrevious() {
          'requestId'
       );
       yield put(marginAnalysisStore.actions.setMarginData(data));
+      console.log(data);
+      yield put(
+         marginAnalysisStore.actions.setCurrency(data.MarginAnalystSummary.annually.id.currency)
+      );
    } catch (error) {
       console.log(error);
    }

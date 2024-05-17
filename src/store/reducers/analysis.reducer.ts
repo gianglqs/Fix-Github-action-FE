@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, createSelector, createAction } from '@reduxjs/toolkit';
 
 import type { RootReducerType } from './rootReducer';
+import { defaultDataFilterQuotationMargin } from '@/utils/defaultValues';
 
 export const name = 'margin_analysis';
 export const resetState = createAction(`${name}/RESET_STATE`);
@@ -25,8 +26,10 @@ export const initialState = {
       ],
    } as any,
    fileUUID: undefined,
-   dataFilter: { region: 'Asia', currency: 'USD' } as any,
+   fileName: undefined,
+   dataFilter: defaultDataFilterQuotationMargin as any,
    requestId: undefined,
+   currency: undefined,
 };
 
 const marginAnalysisSlice = createSlice({
@@ -52,8 +55,20 @@ const marginAnalysisSlice = createSlice({
          state.fileUUID = payload;
       },
 
+      setFileName(state, { payload }: PayloadAction<any>) {
+         state.fileName = payload;
+      },
+
       setRequestId(state, { payload }: PayloadAction<any>) {
          state.requestId = payload;
+      },
+
+      setCurrency(state, { payload }: PayloadAction<any>) {
+         state.currency = payload;
+      },
+
+      resetFilter(state) {
+         state.dataFilter = defaultDataFilterQuotationMargin;
       },
    },
    extraReducers: {
@@ -72,7 +87,9 @@ export const selectIsLoadingPage = createSelector(selectState, (state) => state.
 export const selectInitDataFilter = createSelector(selectState, (state) => state.initDataFilter);
 export const selectDataFilter = createSelector(selectState, (state) => state.dataFilter);
 export const selectFileUUID = createSelector(selectState, (state) => state.fileUUID);
+export const selectFileName = createSelector(selectState, (state) => state.fileName);
 export const selectRequestId = createSelector(selectState, (state) => state.requestId);
+export const selectCurrency = createSelector(selectState, (state) => state.currency);
 
 export const { actions } = marginAnalysisSlice;
 
