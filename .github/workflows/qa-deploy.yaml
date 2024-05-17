@@ -56,15 +56,15 @@ jobs:
          - name: set env
            shell: bash
            run: |
-              CONFIG_FILE='/opt/hysteryale/last_version_success_release/hysteryale-fe.conf'
+              CONFIG_FILE='/opt/hysteryale/config/docker_container.conf'
 
               while IFS='=' read -r key value; do
                 export "$key"="$value"
               done < $CONFIG_FILE
 
-              echo "LAST_SUCCESS_IMAGE_NAME=$IMAGE_ID" >> $GITHUB_ENV
-              echo "LAST_SUCCESS_CONTAINER_NAME=$CONTAINER_NAME" >> $GITHUB_ENV
-              echo "LAST_SUCCESS_RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_ENV
+              echo "LAST_SUCCESS_IMAGE_NAME=$fe-image_id" >> $GITHUB_ENV
+              echo "LAST_SUCCESS_CONTAINER_NAME=$fe-container_name" >> $GITHUB_ENV
+              echo "LAST_SUCCESS_RELEASE_TAG=$fe-release_tag" >> $GITHUB_ENV
 
               echo "TIMEZONE_HY=$(cat /etc/timezone)" >> $GITHUB_ENV
               echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
@@ -127,9 +127,9 @@ jobs:
 
               IMAGE_ID=$(docker images --filter=reference="${NEW_IMAGE_NAME}" --format "{{.ID}}")
 
-              echo "IMAGE_ID=$IMAGE_ID" > $CONFIG_FILE
-              echo "CONTAINER_NAME=$NEW_CONTAINER_NAME" >> $CONFIG_FILE
-              echo "RELEASE_TAG=$NEW_RELEASE_TAG" >> $CONFIG_FILE
+              sed -i "s/be-image_id=.*/fe-image_id=$IMAGE_ID/" $CONFIG_FILE
+              sed -i "s/be-container_name=.*/fe-container_name=$NEW_CONTAINER_NAME/" $CONFIG_FILE
+              sed -i "s/be-release_tag=.*/fe-release_tag=$NEW_RELEASE_TAG/" $CONFIG_FILE
 
          - name: Clean images and containers not used
            shell: bash
