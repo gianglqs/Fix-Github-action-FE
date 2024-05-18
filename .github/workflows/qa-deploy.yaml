@@ -127,9 +127,9 @@ jobs:
 
               IMAGE_ID=$(docker images --filter=reference="${NEW_IMAGE_NAME}" --format "{{.ID}}")
 
-              sed -i "s/be-image_id=.*/fe-image_id=$IMAGE_ID/" $CONFIG_FILE
-              sed -i "s/be-container_name=.*/fe-container_name=$NEW_CONTAINER_NAME/" $CONFIG_FILE
-              sed -i "s/be-release_tag=.*/fe-release_tag=$NEW_RELEASE_TAG/" $CONFIG_FILE
+              sed -i "s/fe-image_id=.*/fe-image_id=$IMAGE_ID/" $CONFIG_FILE
+              sed -i "s/fe-container_name=.*/fe-container_name=$NEW_CONTAINER_NAME/" $CONFIG_FILE
+              sed -i "s/fe-release_tag=.*/fe-release_tag=$NEW_RELEASE_TAG/" $CONFIG_FILE
 
          - name: Clean images and containers not used
            shell: bash
