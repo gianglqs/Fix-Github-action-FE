@@ -62,9 +62,9 @@ jobs:
                 export "$key"="$value"
               done < $CONFIG_FILE
 
-              echo "LAST_SUCCESS_IMAGE_NAME=$fe-image_id" >> $GITHUB_ENV
-              echo "LAST_SUCCESS_CONTAINER_NAME=$fe-container_name" >> $GITHUB_ENV
-              echo "LAST_SUCCESS_RELEASE_TAG=$fe-release_tag" >> $GITHUB_ENV
+              echo "LAST_SUCCESS_IMAGE_NAME=$fe_image_id" >> $GITHUB_ENV
+              echo "LAST_SUCCESS_CONTAINER_NAME=$fe_container_name" >> $GITHUB_ENV
+              echo "LAST_SUCCESS_RELEASE_TAG=$fe_release_tag" >> $GITHUB_ENV
 
               echo "TIMEZONE_HY=$(cat /etc/timezone)" >> $GITHUB_ENV
               echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
@@ -127,9 +127,9 @@ jobs:
 
               IMAGE_ID=$(docker images --filter=reference="${NEW_IMAGE_NAME}" --format "{{.ID}}")
 
-              sed -i "s/fe-image_id=.*/fe-image_id=$IMAGE_ID/" $CONFIG_FILE
-              sed -i "s/fe-container_name=.*/fe-container_name=$NEW_CONTAINER_NAME/" $CONFIG_FILE
-              sed -i "s/fe-release_tag=.*/fe-release_tag=$NEW_RELEASE_TAG/" $CONFIG_FILE
+              sed -i "s/fe_image_id=.*/fe_image_id=$IMAGE_ID/" $CONFIG_FILE
+              sed -i "s/fe_container_name=.*/fe_container_name=$NEW_CONTAINER_NAME/" $CONFIG_FILE
+              sed -i "s/fe_release_tag=.*/fe_release_tag=$NEW_RELEASE_TAG/" $CONFIG_FILE
 
          - name: Clean images and containers not used
            shell: bash
