@@ -163,8 +163,6 @@ export default function MarginAnalysis() {
          });
    };
 
-   console.log(dataFilter);
-
    const handleImportMacroFile = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
@@ -807,7 +805,7 @@ const FullCostAOPRateBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency} @AOP Rate`}
+                  {`${t('quotationMargin.fullCost')} ${valueCurrency} @ AOP Rate`}
                </Typography>
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                   {data?.fullCostAOPRate.toLocaleString()}
@@ -919,7 +917,7 @@ const FullCostAOPRateBoxMonthly = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency} @AOP Rate`}
+                  {`${t('quotationMargin.fullCost')} ${valueCurrency} @ Monthly Rate`}
                </Typography>
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                   {data?.fullCostAOPRate.toLocaleString()}
