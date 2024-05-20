@@ -46,10 +46,20 @@ export default function MarginAnalysis() {
    const dataFilter = useSelector(marginAnalysisStore.selectDataFilter);
    const fileUUID = useSelector(marginAnalysisStore.selectFileUUID);
    const marginCalculateData = useSelector(marginAnalysisStore.selectMarginData);
+   const fileName = useSelector(marginAnalysisStore.selectFileName);
+   const calculatedCurrency = useSelector(marginAnalysisStore.selectCurrency);
 
    const handleUpdateDataFilterStore = (field: string, data: any) => {
-      const newDataFilter = { ...dataFilter };
+      const newDataFilter = JSON.parse(JSON.stringify(dataFilter));
+
       newDataFilter[field] = data;
+      if (field == 'orderNumber') {
+         newDataFilter.type = null;
+      }
+      if (field == 'type') {
+         newDataFilter.orderNumber = null;
+      }
+
       dispatch(marginAnalysisStore.actions.setDataFilter(newDataFilter));
    };
 
@@ -104,6 +114,9 @@ export default function MarginAnalysis() {
 
          dispatch(marginAnalysisStore.actions.setMarginData(marginData));
          dispatch(marginAnalysisStore.actions.setRequestId(undefined));
+         dispatch(
+            marginAnalysisStore.actions.setCurrency(data.MarginAnalystSummary.annually.id.currency)
+         );
 
          setLoading(false);
       } catch (error) {
@@ -116,6 +129,8 @@ export default function MarginAnalysis() {
       let formData = new FormData();
       formData.append('file', file);
       setLoading(true);
+
+      dispatch(marginAnalysisStore.actions.resetFilter());
 
       marginAnalysisApi
          .checkFilePlant(formData)
@@ -153,8 +168,7 @@ export default function MarginAnalysis() {
             newInitDataFilter.orderNumber = orderNumbers;
 
             dispatch(marginAnalysisStore.actions.setInitDataFilter(newInitDataFilter));
-            console.log(types[0].value);
-            if (types.length !== 0) handleUpdateDataFilterStore('type', types[0].value);
+            // if (types.length !== 0) handleUpdateDataFilterStore('type', types[0].value);
          })
          .catch((error) => {
             setLoading(false);
@@ -257,7 +271,7 @@ export default function MarginAnalysis() {
       {
          field: 'listPrice',
          flex: 0.4,
-         headerName: t('table.listPrice') + ` (${dataFilter.currency})`,
+         headerName: t('table.listPrice') + ` (${calculatedCurrency || ''})`,
          headerAlign: 'right',
          align: 'right',
          cellClassName: 'highlight-cell',
@@ -265,7 +279,7 @@ export default function MarginAnalysis() {
       {
          field: 'manufacturingCost',
          flex: 0.7,
-         headerName: t('quotationMargin.manufacturingCost') + ` (${dataFilter.currency})`,
+         headerName: t('quotationMargin.manufacturingCost'), //+ ` (${dataFilter.currency})`,
          headerAlign: 'right',
          align: 'right',
       },
@@ -336,6 +350,10 @@ export default function MarginAnalysis() {
       dispatch(marginAnalysisStore.actions.setLoadingPage(status));
    };
 
+   const setFileName = (fileName: string) => {
+      dispatch(marginAnalysisStore.actions.setFileName(fileName));
+   };
+
    return (
       <>
          <AppLayout entity="not-refresh-data">
@@ -366,10 +384,10 @@ export default function MarginAnalysis() {
             <Grid container spacing={1.1} display="flex" alignItems="center">
                <Grid item>
                   <UploadFileDropZone
-                     setUploadedFile={handleUpdateDataFilterStore}
                      handleUploadFile={handleOpenMarginFile}
                      buttonName={t('button.openFile')}
                      sx={{ width: '100%', height: 24 }}
+                     setFileName={setFileName}
                   />
                </Grid>
                <Grid item sx={{ width: '10%', minWidth: 140 }} xs={1}>
@@ -403,7 +421,7 @@ export default function MarginAnalysis() {
                </Grid>
                <Grid item sx={{ width: '10%', minWidth: 140 }} xs={1}>
                   <AppAutocomplete
-                     options={initDataFilter.orderNumber}
+                     options={initDataFilter?.orderNumber}
                      label={t('filters.order#')}
                      value={dataFilter.orderNumber}
                      onChange={(e, option) =>
@@ -418,7 +436,7 @@ export default function MarginAnalysis() {
                <Grid item>{t('or')}</Grid>
                <Grid item sx={{ width: '10%', minWidth: 50 }} xs={0.5}>
                   <AppAutocomplete
-                     options={initDataFilter.type}
+                     options={initDataFilter?.type}
                      label="#"
                      value={dataFilter.type}
                      onChange={(e, option) => handleUpdateDataFilterStore('type', option.value)}
@@ -471,7 +489,7 @@ export default function MarginAnalysis() {
 
                <Grid item>
                   <Typography fontSize={16}>
-                     {t('button.fileUploaded')}: {dataFilter.uploadedFile}
+                     {t('button.fileUploaded')}: {fileName}
                   </Typography>
                </Grid>
                <Grid item sx={{ width: '10%' }} />
@@ -481,14 +499,14 @@ export default function MarginAnalysis() {
                      <Grid item spacing={1.1} display="flex" alignItems="center">
                         <Grid item>
                            <UploadFileDropZone
-                              setUploadedFile={handleUpdateDataFilterStore}
+                              setFileName={setFileName}
                               handleUploadFile={handleImportMacroFile}
                               buttonName="Import Macro File"
                               sx={{ width: '100%', height: 24 }}
                            />
 
                            <UploadFileDropZone
-                              setUploadedFile={handleUpdateDataFilterStore}
+                              setFileName={setFileName}
                               handleUploadFile={handleImportPowerBi}
                               buttonName="Import PowerBi File"
                               sx={{ width: '100%', height: 24, marginTop: 1 }}
@@ -502,12 +520,12 @@ export default function MarginAnalysis() {
             <Grid container spacing={1} sx={{ marginTop: 1 }}>
                <MarginPercentageAOPRateBox
                   data={marginCalculateData.marginAnalysisSummary?.annually}
-                  valueCurrency={dataFilter.currency}
+                  valueCurrency={calculatedCurrency}
                   isAOPBox={true}
                />
                <MarginPercentageAOPRateBox
                   data={marginCalculateData.marginAnalysisSummary?.monthly}
-                  valueCurrency={dataFilter.currency}
+                  valueCurrency={calculatedCurrency}
                />
                <Grid item xs={4}>
                   <Paper elevation={3} sx={{ padding: 2, height: 'fit-content', minWidth: 300 }}>
@@ -567,11 +585,11 @@ export default function MarginAnalysis() {
 
                <FullCostAOPRateBox
                   data={marginCalculateData.marginAnalysisSummary?.annually}
-                  valueCurrency={dataFilter.currency}
+                  valueCurrency={calculatedCurrency}
                />
                <FullCostAOPRateBoxMonthly
                   data={marginCalculateData.marginAnalysisSummary?.monthly}
-                  valueCurrency={dataFilter.currency}
+                  valueCurrency={calculatedCurrency}
                />
 
                <Grid item xs={4}>
@@ -636,7 +654,8 @@ const MarginPercentageAOPRateBox = (props) => {
                   variant="body1"
                   component="span"
                >
-                  {`${t('quotationMargin.totalListPrice')} (${valueCurrency})`}
+                  {`${t('quotationMargin.totalListPrice')} `}
+                  {valueCurrency ? `(${valueCurrency})` : ''}
                </Typography>
                <Typography
                   sx={{ fontWeight: 'bold', marginRight: 1 }}
@@ -658,7 +677,7 @@ const MarginPercentageAOPRateBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span" sx={{ marginLeft: 1 }}>
-                  {`${t('quotationMargin.dealerNet')} (${valueCurrency})`}
+                  {`${t('quotationMargin.dealerNet')}`} {valueCurrency ? `(${valueCurrency})` : ''}
                </Typography>
                <Typography variant="body1" component="span" sx={{ marginRight: 1 }}>
                   {data?.dealerNet.toLocaleString()}
@@ -734,7 +753,7 @@ const FullCostAOPRateBox = (props) => {
                      ? `${t('quotationMargin.manufacturingCost')} (RMB)`
                      : data?.plant == 'SN'
                        ? `${t('quotationMargin.manufacturingCost')} (USD)`
-                       : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
+                       : `${t('quotationMargin.manufacturingCost')}`}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalManufacturingCost.toLocaleString()}
@@ -797,7 +816,7 @@ const FullCostAOPRateBox = (props) => {
                        data?.plant == 'Maximal'
                         ? `${t('quotationMargin.totalCost')} (RMB)`
                         : `${t('quotationMargin.totalCost')} (USD)`
-                     : `${t('quotationMargin.totalCost')} (${valueCurrency})`}
+                     : `${t('quotationMargin.totalCost')}`}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCost.toLocaleString()}
@@ -805,7 +824,7 @@ const FullCostAOPRateBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency} @ AOP Rate`}
+                  {`${t('quotationMargin.fullCost')} ${valueCurrency || ''} @ AOP Rate`}
                </Typography>
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                   {data?.fullCostAOPRate.toLocaleString()}
@@ -846,7 +865,7 @@ const FullCostAOPRateBoxMonthly = (props) => {
                      ? `${t('quotationMargin.manufacturingCost')} (RMB)`
                      : data?.plant == 'SN'
                        ? `${t('quotationMargin.manufacturingCost')} (USD)`
-                       : `${t('quotationMargin.manufacturingCost')} (${valueCurrency})`}
+                       : `${t('quotationMargin.manufacturingCost')}`}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalManufacturingCost.toLocaleString()}
@@ -909,7 +928,7 @@ const FullCostAOPRateBoxMonthly = (props) => {
                        data?.plant == 'Maximal'
                         ? `${t('quotationMargin.totalCost')} (RMB)`
                         : `${t('quotationMargin.totalCost')} (USD)`
-                     : `${t('quotationMargin.totalCost')} (${valueCurrency})`}
+                     : `${t('quotationMargin.totalCost')}`}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCost.toLocaleString()}
@@ -917,7 +936,7 @@ const FullCostAOPRateBoxMonthly = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency} @ Monthly Rate`}
+                  {`${t('quotationMargin.fullCost')} ${valueCurrency || ''} @ Monthly Rate`}
                </Typography>
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                   {data?.fullCostAOPRate.toLocaleString()}
@@ -942,7 +961,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.manufacturingCost')} ({data?.id?.currency})
+                  {t('quotationMargin.manufacturingCost')}
+                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.manufacturingCostUSD.toLocaleString()}
@@ -950,7 +970,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.addWarranty')} ({data?.id?.currency})
+                  {t('quotationMargin.addWarranty')}
+                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.warrantyCost.toLocaleString()}
@@ -958,7 +979,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.surcharge')} ({data?.id?.currency})
+                  {t('quotationMargin.surcharge')}
+                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.surchargeCost.toLocaleString()}
@@ -966,8 +988,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')} (
-                  {data?.id?.currency})
+                  {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')}
+                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCostWithoutFreight.toLocaleString()}
@@ -975,8 +997,8 @@ const ForUSPricingBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span">
-                  {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')} (
-                  {data?.id?.currency})
+                  {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')}
+                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCostWithFreight.toLocaleString()}
@@ -996,7 +1018,7 @@ function UploadFileDropZone(props) {
          reader.onerror = () => console.log('file reading has failed');
          reader.onload = () => {
             // Do whatever you want with the file contents
-            props.setUploadedFile('uploadedFile', file.name);
+            props.setFileName(file.name);
          };
          reader.readAsArrayBuffer(file);
          props.handleUploadFile(file);

@@ -530,13 +530,13 @@ export default function Shipment() {
       setListOrder(listShipment);
       setTotalRow(listTotalRow);
 
-      setListOrder((prev) => {
-         return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
-      });
+      // setListOrder((prev) => {
+      //    return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
+      // });
 
-      setTotalRow((prev) => {
-         return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
-      });
+      // setTotalRow((prev) => {
+      //    return convertCurrencyOfDataBookingOrder(prev, currency, listExchangeRate);
+      // });
       convertTimezone();
    }, [listShipment, listTotalRow, currency]);
 
