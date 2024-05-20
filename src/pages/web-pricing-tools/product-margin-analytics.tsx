@@ -424,18 +424,6 @@ export default function Outlier() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.totalCost')} ('000)
-                        </Typography>
-                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           $ {formatNumber(listTotalRow[0]?.totalCost)}
-                        </Typography>
-                     </div>
-                  </Paper>
-               </Grid>
-               <Grid item xs={2.4}>
-                  <Paper elevation={2} sx={paperStyle}>
-                     <div className="space-between-element">
-                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {t('table.dealerNet')}('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
@@ -452,6 +440,18 @@ export default function Outlier() {
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.dealerNetAfterSurcharge)}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={2.4}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {t('table.totalCost')} ('000)
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           $ {formatNumber(listTotalRow[0]?.totalCost)}
                         </Typography>
                      </div>
                   </Paper>
