@@ -889,7 +889,9 @@ export default function Shipment() {
                      rows={listOrder}
                      rowBufferPx={35}
                      columns={columns}
-                     getRowId={(params) => params.id.orderNo + params.id.dealer.name}
+                     getRowId={(params) =>
+                        params.id.orderNo + params.id.dealer.name + params.id.date
+                     }
                      onCellClick={handleOnCellClick}
                   />
                </Grid>
