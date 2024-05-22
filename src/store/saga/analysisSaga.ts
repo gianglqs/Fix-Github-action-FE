@@ -58,6 +58,7 @@ function* getDataViewPrevious() {
             orderNumber: dataFilter.orderNumber ? dataFilter.orderNumber : '',
             plant: 'SN',
             series: dataFilter.series,
+            modelCode: dataFilter.modelCode,
          },
          region: dataFilter.region,
       };
