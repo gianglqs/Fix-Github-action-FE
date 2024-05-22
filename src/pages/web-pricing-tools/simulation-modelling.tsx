@@ -73,6 +73,7 @@ export default function Adjustment() {
    const cacheDataFilter = useSelector(adjustmentStore.selectDataFilter);
    const cacheDataCalculator = useSelector(adjustmentStore.selectDataAdjustment);
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
+
    const [dataCalculator, setDataCalculator] = useState(cacheDataCalculator);
    const currentPage = useSelector(commonStore.selectTableState).pageNo;
 
@@ -359,7 +360,10 @@ export default function Adjustment() {
 
          renderCell(params) {
             return (
-               <CellColor color={''} value={params?.row.originalMarginPercentage * 100}></CellColor>
+               <CellColor
+                  color={''}
+                  value={params?.row.originalMarginPercentage * 100000}
+               ></CellColor>
             );
          },
       },
@@ -382,7 +386,7 @@ export default function Adjustment() {
          minWidth: 100,
          cellClassName: 'highlight-cell-adjusted',
          headerClassName: 'adjusted',
-         headerName: `${t('table.newMargin')}`,
+         headerName: `${t('table.newMargin')}('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <CellColor color={totalColor} value={params?.row.newMargin}></CellColor>;
@@ -422,176 +426,6 @@ export default function Adjustment() {
          headerName: 'Adjusted',
          headerClassName: 'adjusted',
          children: [{ field: 'newDN' }, { field: 'newMargin' }, { field: 'newMarginPercentage' }],
-      },
-   ];
-   const totalColumns = [
-      {
-         field: 'region',
-         flex: 0.5,
-         minWidth: 100,
-         headerName: 'Region',
-         renderCell(params) {
-            return <span>Total</span>;
-         },
-      },
-
-      {
-         field: 'Plant',
-         flex: 0.5,
-         minWidth: 100,
-         headerName: 'Plant',
-         renderCell(params) {
-            return <span></span>;
-         },
-      },
-      {
-         field: 'truckClass',
-         flex: 0.3,
-         minWidth: 100,
-         headerName: 'Class',
-         renderCell(params) {
-            return <span>{params.row.clazz}</span>;
-         },
-      },
-      {
-         field: 'series',
-         flex: 0.6,
-         minWidth: 100,
-         headerName: 'Series',
-         renderCell(params) {
-            return <span>{params.row.metaSeries}</span>;
-         },
-      },
-      {
-         field: 'model',
-         flex: 0.6,
-         minWidth: 100,
-         headerName: 'Models',
-         renderCell(params) {
-            return <span>{params.row.model}</span>;
-         },
-      },
-      {
-         field: 'noOfOrder',
-         flex: 0.5,
-         minWidth: 100,
-         headerName: 'No of Orders',
-         ...formatNumbericColumn,
-      },
-      {
-         field: 'additionalVolume',
-         flex: 0.5,
-         minWidth: 100,
-         headerName: 'Additional Volume at BEP For Discount',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{params?.row.additionalVolume}</span>;
-         },
-      },
-      {
-         field: 'manualAdjCost',
-         flex: 0.8,
-         minWidth: 100,
-         headerName: 'Adjusted Cost',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.manualAdjCost)}</span>;
-         },
-      },
-      {
-         field: 'manualAdjFreight',
-         flex: 0.8,
-         minWidth: 100,
-         headerName: 'Adjusted Freight',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.manualAdjFreight)}</span>;
-         },
-      },
-      {
-         field: 'manualAdjFX',
-         flex: 0.7,
-         minWidth: 100,
-         headerName: 'Adjusted FX',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumberPercentage(params?.row.manualAdjFX)}</span>;
-         },
-      },
-
-      {
-         field: 'totalManualAdjCost',
-         flex: 0.6,
-         minWidth: 100,
-         headerName: 'Total Manual Adj Cost',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.totalManualAdjCost)}</span>;
-         },
-      },
-
-      {
-         field: 'originalDN',
-         flex: 0.7,
-         minWidth: 100,
-         headerName: 'Original DN',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.originalDN)}</span>;
-         },
-      },
-      {
-         field: 'originalMargin',
-         flex: 0.7,
-         minWidth: 100,
-         headerName: 'Original Margin $',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.originalMargin)}</span>;
-         },
-      },
-      {
-         field: 'originalMarginPercentage',
-         flex: 0.7,
-         minWidth: 100,
-         headerName: 'Original Margin %',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return (
-               <span>{formatNumberPercentage(params?.row.originalMarginPercentage * 100)}</span>
-            );
-         },
-      },
-
-      {
-         field: 'newDN',
-         flex: 0.6,
-         minWidth: 100,
-         headerName: 'Adjusted Dealer Net',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.newDN)}</span>;
-         },
-      },
-      {
-         field: 'newMargin',
-         flex: 0.6,
-         minWidth: 100,
-         headerName: 'New margin $ (USD) After manual Adj',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.newMargin)}</span>;
-         },
-      },
-      {
-         field: 'newMarginPercentage',
-         flex: 0.6,
-         minWidth: 100,
-         headerName: 'New margin % After manual Adj',
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumberPercentage(params?.row.newMarginPercentage * 100)}</span>;
-         },
       },
    ];
 
@@ -717,6 +551,7 @@ export default function Adjustment() {
    useEffect(() => {
       convertTimezone();
    }, [serverLastUpdatedTime, serverTimeZone]);
+
    return (
       <>
          <AppLayout entity="adjustment">

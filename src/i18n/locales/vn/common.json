@@ -134,6 +134,7 @@
       "originalMarginPercentage": "Lợi nhuận % gốc",
       "adjustedCost": "Giá điều chỉnh",
       "adjustedFreight": "Chi phí vận chuyển",
+      "averageSellingPrice": "Giá bán trung bình",
       "adjustedFX": "Ngoại tệ điều chỉnh",
       "totalManualAdjCost": "Tổng giá điều chỉnh",
       "adjustedDealerNet": "Giá phân phối điều chỉnh",
@@ -184,9 +185,11 @@
    "quotationMargin": {
       "totalListPrice": "Tổng giá niêm yết",
       "blendedDiscountPercentage": "Chiết khấu % kết hợp",
-      "marginPercentageAOPRate": "Margin % @ AOP Rate",
-      "marginAnalysisAOPRate": "Margin Analysis @ AOP Rate",
-      "marignAnalysisMonthlyRate": "Margin Analysis @ Monthly Rate",
+      "marginPercentageAOPRate": "Lợi nhuận % @ AOP Rate",
+      "marginPercentageAOPRateInDialog": "Lợi nhuận % ",
+      "marginAnalysisAOPRate": "Phân tích lợi nhuận",
+      "fullCost": "Toàn bộ chi phí",
+      "marignAnalysisMonthlyRate": "Phân tích lợi nhuận @ Monthly Rate",
       "costUplift": "Chi phí tăng thêm",
       "manufacturingCost": "Chi phí sản xuất",
       "addWarranty": "Chi phí Bảo hành",
@@ -194,8 +197,11 @@
       "duty": "Thuế vụ",
       "freight": "Chi phí vận chuyển",
       "liIonIncluded": "Bao gồm pin Li-Ion B hoặc C",
-      "fullCost": "Full Cost",
-      "forUSPricing": "For US Pricing @ AOP Rate",
+      "AOPExchangeRate": "Tỷ giá AOP",
+      "AOPrate": "Tỷ giá AOP",
+      "monthlyRate": "Tỷ giá hàng tháng",
+      "monthlyExchangeRate": "Tỷ giá hối đoái hàng tháng",
+      "forUSPricing": "Giá cho US",
       "excludingFreight": "KHÔNG bao gồm Vận chuyển",
       "withFreight": "bao gồm Vận chuyển",
       "targetMarginPercentage": "Mục tiêu lợi nhuận %",
@@ -203,7 +209,7 @@
       "partNumber": "Mã bộ phận",
       "totalCost": "Tổng giá",
       "dealerNet": "Giá phân phối",
-      "marginPercentageMonthlyRate": "Margin % @ Monthly Rate"
+      "marginPercentageMonthlyRate": "Lợi nhuận % @ Monthly Rate"
    },
 
    "exchangeRates": {
