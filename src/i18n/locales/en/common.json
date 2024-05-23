@@ -2,6 +2,7 @@
    "navBar": {
       "dashboard": "Dashboard",
       "competitors": "Competitors",
+      "manageIndicator": "Manage Competitors",
       "users": "Users",
       "historicalImporting": "Historical Importing",
       "importTracking": "Import Tracking"

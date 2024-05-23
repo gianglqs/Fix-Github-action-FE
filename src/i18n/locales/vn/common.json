@@ -2,6 +2,7 @@
    "navBar": {
       "dashboard": "Bảng thống kê",
       "competitors": "Đối thủ cạnh tranh",
+      "manageIndicator": "Quản lý đối thủ cạnh tranh",
       "users": "Người dùng",
       "historicalImporting": "Lịch sử nhập dữ liệu",
       "importTracking": "Theo dõi nhập dữ liệu"
