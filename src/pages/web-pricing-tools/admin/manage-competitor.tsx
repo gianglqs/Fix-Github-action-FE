@@ -1,7 +1,15 @@
 import { AccountCircle } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Button, Popover } from '@mui/material';
+import {
+   Button,
+   Dialog,
+   DialogActions,
+   DialogContent,
+   DialogContentText,
+   DialogTitle,
+   Popover,
+} from '@mui/material';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
@@ -32,6 +40,7 @@ import Image from 'next/image';
 import { destroyCookie, parseCookies, setCookie } from 'nookies';
 
 import DialogEditDataIndicator from '@/components/Dialog/Module/EditDataIndicator';
+import { ReplayOutlined as ReloadIcon } from '@mui/icons-material';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('@/public/logo.svg');
@@ -42,11 +51,11 @@ interface AppBarProps extends MuiAppBarProps {
    open?: boolean;
 }
 
-import { BASE_URL } from '@/Path/backend';
 import indicatorApi from '@/api/indicators.api';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { defaultValueFilterIndicator } from '@/utils/defaultValues';
 import { formatNumber, formatNumberPercentage } from '@/utils/formatCell';
+import { formatDate } from '@/utils/formatDateInput';
 import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
 import { produce } from 'immer';
 import _ from 'lodash';
@@ -171,16 +180,30 @@ export default function ImportTracking() {
       });
    };
 
-   const [dataEditCompetitor, setDataEditCompetitor] = useState({});
-   const [openEditCompetitor, setOpenEditCompetitor] = useState({ open: false, isCreate: false });
+   const [dataEditCompetitor, setDataEditCompetitor] = useState({ id: null });
+   const [openEditCompetitor, setOpenEditCompetitor] = useState({});
 
    const handleOpenEditIndicatorDialog = (row: any) => {
       indicatorApi
          .getCompetitorById(row.row.id)
          .then((res) => {
             const data = JSON.parse(String(res.data));
+            data.updateDate = formatDate(new Date(data.updateDate));
             setDataEditCompetitor(data);
-            setOpenEditCompetitor({ open: true, isCreate: false });
+            setOpenEditCompetitor({ open: true, isCreate: false, setOpenConfirmDeleteDialog });
+         })
+         .catch((error) => {
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   };
+
+   const handleDeleteCompetitor = () => {
+      indicatorApi
+         .deleteCompetitor(dataEditCompetitor.id)
+         .then((res) => {
+            dispatch(commonStore.actions.setSuccessMessage(res.data.message));
+            dispatch(indicatorStore.sagaGetList());
+            handleCloseEditCompetitorDialog();
          })
          .catch((error) => {
             dispatch(commonStore.actions.setErrorMessage(error.message));
@@ -188,7 +211,7 @@ export default function ImportTracking() {
    };
 
    const handleOpenCreateIndicatorDialog = () => {
-      setDataEditCompetitor({});
+      setDataEditCompetitor({ id: null });
       setOpenEditCompetitor({ open: true, isCreate: true });
    };
 
@@ -381,7 +404,7 @@ export default function ImportTracking() {
    ];
 
    const handleReload = () => {
-      dispatch(importTrackingStore.sagaGetList());
+      dispatch(indicatorStore.sagaGetList());
    };
 
    const handleChangeDataFilter = (option, field) => {
@@ -419,6 +442,12 @@ export default function ImportTracking() {
 
    const handleClearAllFilterTable = () => {
       setDataFilter(defaultValueFilterIndicator);
+   };
+
+   const [openConfirmDeleteDialog, setOpenConfirmDeleteDialog] = useState(false);
+
+   const handleCloseConfirmDeleteDialog = () => {
+      setOpenConfirmDeleteDialog(false);
    };
 
    return (
@@ -528,7 +557,29 @@ export default function ImportTracking() {
                }}
             >
                <Toolbar />
-               <Grid container spacing={1} marginTop={1}>
+               <Grid container spacing={1} marginTop={1} sx={{ padding: '0 20px' }}>
+                  <Grid
+                     container
+                     xs={12}
+                     sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}
+                  >
+                     <Button
+                        variant="contained"
+                        style={{ marginLeft: 5 }}
+                        onClick={handleReload}
+                        color="primary"
+                     >
+                        <ReloadIcon />
+                        {t('user.reload')}
+                     </Button>
+                     <Button
+                        variant="contained"
+                        onClick={handleOpenCreateIndicatorDialog}
+                        sx={{ minWidth: 100 }}
+                     >
+                        {t('button.create')}
+                     </Button>
+                  </Grid>
                   <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                      <AppAutocomplete
                         value={_.map(dataFilter.regions, (item) => {
@@ -693,7 +744,7 @@ export default function ImportTracking() {
                         onClick={handleFilterIndicator}
                         sx={{ width: '100%', height: 24 }}
                      >
-                        {t('button.clear')}
+                        {t('button.filter')}
                      </Button>
                   </Grid>
                   <Grid item xs={1}>
@@ -705,20 +756,10 @@ export default function ImportTracking() {
                         {t('button.clear')}
                      </Button>
                   </Grid>
-
-                  <Grid item xs={1}>
-                     <Button
-                        variant="contained"
-                        onClick={handleOpenCreateIndicatorDialog}
-                        sx={{ width: '100%', height: 24 }}
-                     >
-                        {t('button.create')}
-                     </Button>
-                  </Grid>
                </Grid>
 
                <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
-                  <Grid container sx={{ height: 'calc(100vh - 225px)', minHeight: '200px' }}>
+                  <Grid container sx={{ height: 'calc(100vh - 255px)', minHeight: '200px' }}>
                      <DataGridPro
                         sx={{
                            '& .MuiDataGrid-columnHeaderTitle': {
@@ -763,6 +804,45 @@ export default function ImportTracking() {
             onClose={handleCloseEditCompetitorDialog}
          />
          <DialogChangePassword {...changePasswordState} onClose={handleCloseChangePasswordDialog} />
+         <ConfirmDeleteDialog
+            open={openConfirmDeleteDialog}
+            onClose={handleCloseConfirmDeleteDialog}
+            handleDelete={handleDeleteCompetitor}
+         />
       </>
    );
 }
+
+const ConfirmDeleteDialog = (props) => {
+   const { open, onClose, handleDelete } = props;
+
+   const handleAgree = () => {
+      handleDelete();
+      onClose();
+   };
+
+   return (
+      <Dialog
+         open={open}
+         onClose={onClose}
+         aria-labelledby="alert-dialog-title"
+         aria-describedby="alert-dialog-description"
+      >
+         <DialogTitle id="alert-dialog-title">
+            {'Do you want to delete Competitor record'}
+         </DialogTitle>
+         <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+               If you click OK, this item will be permanently deleted and cannot be restored. Are
+               you sure you want to proceed?
+            </DialogContentText>
+         </DialogContent>
+         <DialogActions>
+            <Button onClick={onClose}>Disagree</Button>
+            <Button onClick={handleAgree} autoFocus>
+               Agree
+            </Button>
+         </DialogActions>
+      </Dialog>
+   );
+};
