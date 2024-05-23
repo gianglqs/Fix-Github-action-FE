@@ -102,6 +102,14 @@ class IndicatorApi extends HttpService<any> {
          category,
       });
    };
+
+   getCompetitorById = (id: number) => {
+      return this.get<any>('get-competitor-by-id', { id });
+   };
+
+   updateCompetitor = (competitor: any) => {
+      return this.put<any>('update-competitor', competitor);
+   };
 }
 
 const indicatorApi = new IndicatorApi('indicator');

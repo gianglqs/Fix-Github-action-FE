@@ -100,7 +100,8 @@
       "fromExchangeRateApi": "From exchangerate-api.com",
       "scrape": "Scrape",
       "save": "Save",
-      "close": "Close"
+      "close": "Close",
+      "create": "Create"
    },
 
    "table": {
@@ -189,7 +190,22 @@
       "lowPrice": "Low Price",
       "highLeadTime": "High Lead Time",
       "lowLeadTime": "Low Lead Time",
-      "competitorLegendColor": "Competitor Legend Color"
+      "competitorLegendColor": "Competitor Legend Color",
+      "edit": "Edit",
+      "region": "Region",
+      "plant": "Plant",
+      "class": "Class",
+      "series": "Series",
+      "actual": "Actual",
+      "aopf": "AOPF",
+      "lrff": "LRFF",
+      "dealerNet": "Dealer Net",
+      "battery": "Battery",
+      "tonnage": "Tonnage",
+      "origin": "Origin",
+      "tableTitle": "Table Title",
+      "marketShare": "Market Share",
+      "updateDate": "Update Date"
    },
 
    "quotationMargin": {

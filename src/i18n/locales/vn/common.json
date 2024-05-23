@@ -179,7 +179,8 @@
       "lowPrice": "Chi phí thấp",
       "highLeadTime": "High Lead Time",
       "lowLeadTime": "Low Lead Time",
-      "competitorLegendColor": "Màu sắc biểu đồ đối thủ"
+      "competitorLegendColor": "Màu sắc biểu đồ đối thủ",
+      "edit": "Chỉnh sửa"
    },
 
    "quotationMargin": {

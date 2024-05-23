@@ -179,7 +179,8 @@
       "lowPrice": "最低价格",
       "highLeadTime": "最长交货时间",
       "lowLeadTime": "最短交货时间",
-      "competitorLegendColor": "竞争对手图例颜色"
+      "competitorLegendColor": "竞争对手图例颜色",
+      "edit": "编辑"
    },
 
    "quotationMargin": {

@@ -1,4 +1,4 @@
-import { AccountCircle, ReplayOutlined as ReloadIcon } from '@mui/icons-material';
+import { AccountCircle } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Button, Popover } from '@mui/material';
@@ -16,20 +16,22 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import { useEffect, useMemo, useState } from 'react';
 
-import { importTrackingStore, indicatorStore } from '@/store/reducers';
+import { commonStore, importTrackingStore, indicatorStore } from '@/store/reducers';
 import { createAction } from '@reduxjs/toolkit';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { formatNumbericColumn } from '@/utils/columnProperties';
+import { formatNumbericColumn, iconColumn } from '@/utils/columnProperties';
 
-import { AppFooter, DataTable } from '@/components';
+import { AppAutocomplete, AppFooter, DataTablePagination, EditIcon } from '@/components';
 import { NavBar } from '@/components/App/NavBar';
 import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/ChangePasswordDialog';
 import { checkTokenBeforeLoadPageAdmin } from '@/utils/checkTokenBeforeLoadPage';
 import { bindPopover, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
 import Image from 'next/image';
-import { destroyCookie, parseCookies } from 'nookies';
+import { destroyCookie, parseCookies, setCookie } from 'nookies';
+
+import DialogEditDataIndicator from '@/components/Dialog/Module/EditDataIndicator';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('@/public/logo.svg');
@@ -41,9 +43,12 @@ interface AppBarProps extends MuiAppBarProps {
 }
 
 import { BASE_URL } from '@/Path/backend';
-import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
+import indicatorApi from '@/api/indicators.api';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { defaultValueFilterIndicator } from '@/utils/defaultValues';
 import { formatNumber, formatNumberPercentage } from '@/utils/formatCell';
-import { formatDate } from '@/utils/formatDateInput';
+import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
+import { produce } from 'immer';
 import _ from 'lodash';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
@@ -100,7 +105,7 @@ export default function ImportTracking() {
    const { t } = useTranslation();
 
    const [open, setOpen] = useState(true);
-   const entityApp = 'importTRacjubg';
+   const entityApp = 'indicator';
    const getListAction = useMemo(() => createAction(`${entityApp}/GET_LIST`), [entityApp]);
    //   const resetStateAction = useMemo(() => createAction(`${entityApp}/RESET_STATE`), [entityApp]);
    const router = useRouter();
@@ -109,10 +114,12 @@ export default function ImportTracking() {
    const cookies = parseCookies();
    const [userName, setUserName] = useState('');
    const serverTimeZone = useSelector(importTrackingStore.selectServerTimeZone);
-
-   const initDataFilter = useSelector(importTrackingStore.selectDataFilter);
-   const [dataFilter, setDataFilter] = useState(initDataFilter);
+   const tableState = useSelector(commonStore.selectTableState);
+   const initDataFilter = useSelector(indicatorStore.selectInitDataFilter);
+   const cacheDataFilter = useSelector(indicatorStore.selectDataFilter);
    const getDataForTable = useSelector(indicatorStore.selectIndicatorList);
+   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
+   const [loadingTable, setLoadingTable] = useState(false);
 
    useEffect(() => {
       setUserName(cookies['name']);
@@ -164,6 +171,31 @@ export default function ImportTracking() {
       });
    };
 
+   const [dataEditCompetitor, setDataEditCompetitor] = useState({});
+   const [openEditCompetitor, setOpenEditCompetitor] = useState({ open: false, isCreate: false });
+
+   const handleOpenEditIndicatorDialog = (row: any) => {
+      indicatorApi
+         .getCompetitorById(row.row.id)
+         .then((res) => {
+            const data = JSON.parse(String(res.data));
+            setDataEditCompetitor(data);
+            setOpenEditCompetitor({ open: true, isCreate: false });
+         })
+         .catch((error) => {
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   };
+
+   const handleOpenCreateIndicatorDialog = () => {
+      setDataEditCompetitor({});
+      setOpenEditCompetitor({ open: true, isCreate: true });
+   };
+
+   const handleCloseEditCompetitorDialog = () => {
+      setOpenEditCompetitor({ open: false, isCreate: false });
+   };
+
    const handleLogOut = () => {
       try {
          popupState.close();
@@ -176,13 +208,23 @@ export default function ImportTracking() {
       }
    };
 
+   const handleChangePage = (pageNo: number) => {
+      dispatch(commonStore.actions.setTableState({ pageNo }));
+      dispatch(indicatorStore.sagaGetList());
+   };
+
+   const handleChangePerPage = (perPage: number) => {
+      dispatch(commonStore.actions.setTableState({ perPage }));
+      handleChangePage(1);
+   };
+
    const currentYear = new Date().getFullYear();
 
    const columns = [
       {
          field: 'competitorName',
          flex: 0.8,
-         minWidth: 100,
+         minWidth: 150,
          headerName: t('competitors.competitorName'),
       },
 
@@ -197,8 +239,8 @@ export default function ImportTracking() {
       },
       {
          field: 'plant',
-         flex: 0.6,
-         minWidth: 60,
+         flex: 0.7,
+         minWidth: 100,
          headerName: t('table.plant'),
       },
       {
@@ -326,56 +368,58 @@ export default function ImportTracking() {
             return <span>{formatNumberPercentage(params.row.variancePercentage * 100)}</span>;
          },
       },
+      {
+         field: 'edit',
+         flex: 0.3,
+         minWidth: 60,
+         ...iconColumn,
+         headerName: `${t('competitors.edit')}`,
+         renderCell(params) {
+            return <EditIcon onClick={() => handleOpenEditIndicatorDialog(params)} />;
+         },
+      },
    ];
 
    const handleReload = () => {
       dispatch(importTrackingStore.sagaGetList());
    };
 
-   const handleDownloadFileImported = (fileName: string, path: string) => {
-      const fileURL = BASE_URL + path;
-
-      fetch(fileURL, { method: 'GET' })
-         .then((response) => response.blob())
-         .then((blob) => {
-            // Create blob link to download
-            const url = window.URL.createObjectURL(new Blob([blob]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', fileName);
-
-            // Append to html link element page
-            document.body.appendChild(link);
-
-            // Start download
-            link.click();
-
-            // Clean up and remove the link
-            link.parentNode.removeChild(link);
+   const handleChangeDataFilter = (option, field) => {
+      setDataFilter((prev) =>
+         produce(prev, (draft) => {
+            if (_.includes(['chineseBrand', 'marginPercentage'], field)) {
+               draft[field] = option.value;
+            } else {
+               draft[field] = option.map(({ value }) => value);
+            }
          })
-         .catch((e) => {
-            console.log(e);
-         });
-   };
-
-   const handleChangeDataFilter = (date) => {
-      const dateString = formatDate(date);
-
-      setDataFilter({ date: dateString });
+      );
    };
 
    useEffect(() => {
       const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
-         if (dataFilter.date) {
-            dispatch(importTrackingStore.actions.setDataFilter(dataFilter));
-            dispatch(importTrackingStore.sagaGetList());
+         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
+            setCookie(null, 'indicatorTableFilter', JSON.stringify(dataFilter), {
+               maxAge: 604800,
+               path: '/',
+            });
+            handleFilterIndicator();
          }
-      }, 700);
-
+      }, 500);
       debouncedHandleWhenChangeDataFilter();
 
       return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
+
+   const handleFilterIndicator = () => {
+      setLoadingTable(true);
+      dispatch(indicatorStore.actions.setDefaultValueFilterIndicator(dataFilter));
+      handleChangePage(1);
+   };
+
+   const handleClearAllFilterTable = () => {
+      setDataFilter(defaultValueFilterIndicator);
+   };
 
    return (
       <>
@@ -484,48 +528,241 @@ export default function ImportTracking() {
                }}
             >
                <Toolbar />
-               <Grid container justifyContent="flex-end" sx={{ padding: 1 }}>
-                  <Button
-                     variant="contained"
-                     style={{ marginLeft: 5 }}
-                     onClick={handleReload}
-                     color="primary"
-                  >
-                     <ReloadIcon />
-                     {t('user.reload')}
-                  </Button>
+               <Grid container spacing={1} marginTop={1}>
+                  <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+                     <AppAutocomplete
+                        value={_.map(dataFilter.regions, (item) => {
+                           return { value: item };
+                        })}
+                        options={initDataFilter.regions}
+                        label={t('filters.region')}
+                        onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
+                        limitTags={2}
+                        disableListWrap
+                        primaryKeyOption="value"
+                        multiple
+                        disableCloseOnSelect
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+                  <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+                     <AppAutocomplete
+                        value={_.map(dataFilter.dealers, (item) => {
+                           return { value: item };
+                        })}
+                        options={initDataFilter.dealers}
+                        label={t('filters.dealerName')}
+                        sx={{ height: 25, zIndex: 10 }}
+                        onChange={(e, option) => handleChangeDataFilter(option, 'dealers')}
+                        limitTags={1}
+                        disableListWrap
+                        primaryKeyOption="value"
+                        multiple
+                        disableCloseOnSelect
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+                  <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+                     <AppAutocomplete
+                        value={_.map(dataFilter.plants, (item) => {
+                           return { value: item };
+                        })}
+                        options={initDataFilter.plants}
+                        label={t('filters.plant')}
+                        sx={{ height: 25, zIndex: 10 }}
+                        onChange={(e, option) => handleChangeDataFilter(option, 'plants')}
+                        limitTags={1}
+                        disableListWrap
+                        primaryKeyOption="value"
+                        multiple
+                        disableCloseOnSelect
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+                  <Grid item xs={2}>
+                     <AppAutocomplete
+                        value={_.map(dataFilter.metaSeries, (item) => {
+                           return { value: item };
+                        })}
+                        options={initDataFilter.metaSeries}
+                        label={t('filters.metaSeries')}
+                        sx={{ height: 25, zIndex: 10 }}
+                        onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
+                        limitTags={1}
+                        disableListWrap
+                        primaryKeyOption="value"
+                        multiple
+                        disableCloseOnSelect
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+
+                  <Grid item xs={2}>
+                     <AppAutocomplete
+                        value={_.map(dataFilter.classes, (item) => {
+                           return { value: item };
+                        })}
+                        options={initDataFilter.classes}
+                        label={t('filters.class')}
+                        sx={{ height: 25, zIndex: 10 }}
+                        onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
+                        limitTags={1}
+                        disableListWrap
+                        primaryKeyOption="value"
+                        multiple
+                        disableCloseOnSelect
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+                  <Grid item xs={2}>
+                     <AppAutocomplete
+                        value={_.map(dataFilter.models, (item) => {
+                           return { value: item };
+                        })}
+                        options={initDataFilter.models}
+                        label={t('filters.models')}
+                        sx={{ height: 25, zIndex: 10 }}
+                        onChange={(e, option) => handleChangeDataFilter(option, 'models')}
+                        limitTags={1}
+                        disableListWrap
+                        primaryKeyOption="value"
+                        multiple
+                        disableCloseOnSelect
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+
+                  <Grid item xs={2}>
+                     <AppAutocomplete
+                        value={
+                           dataFilter.chineseBrand !== undefined
+                              ? {
+                                   value: `${dataFilter.chineseBrand}`,
+                                }
+                              : { value: '' }
+                        }
+                        options={initDataFilter.chineseBrands}
+                        label={t('filters.chineseBrand')}
+                        onChange={
+                           (e, option) =>
+                              handleChangeDataFilter(_.isNil(option) ? '' : option, 'chineseBrand')
+                           //   handleChangeDataFilter(option, 'chineseBrand')
+                        }
+                        disableClearable={false}
+                        primaryKeyOption="value"
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+
+                  <Grid item xs={2}>
+                     <AppAutocomplete
+                        value={
+                           dataFilter.marginPercentage !== undefined
+                              ? {
+                                   value: `${dataFilter.marginPercentage}`,
+                                }
+                              : { value: '' }
+                        }
+                        options={initDataFilter.marginPercentageGrouping}
+                        label={t('filters.marginPercentage')}
+                        primaryKeyOption="value"
+                        onChange={
+                           (e, option) =>
+                              handleChangeDataFilter(
+                                 _.isNil(option) ? '' : option,
+                                 'marginPercentage'
+                              )
+                           // handleChangeDataFilter(option, 'aopMarginPercentageGroup')
+                        }
+                        disableClearable={false}
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+
+                  <Grid item xs={1}>
+                     <Button
+                        variant="contained"
+                        onClick={handleFilterIndicator}
+                        sx={{ width: '100%', height: 24 }}
+                     >
+                        {t('button.clear')}
+                     </Button>
+                  </Grid>
+                  <Grid item xs={1}>
+                     <Button
+                        variant="contained"
+                        onClick={handleClearAllFilterTable}
+                        sx={{ width: '100%', height: 24 }}
+                     >
+                        {t('button.clear')}
+                     </Button>
+                  </Grid>
+
+                  <Grid item xs={1}>
+                     <Button
+                        variant="contained"
+                        onClick={handleOpenCreateIndicatorDialog}
+                        sx={{ width: '100%', height: 24 }}
+                     >
+                        {t('button.create')}
+                     </Button>
+                  </Grid>
                </Grid>
 
-               <Paper elevation={1} sx={{ marginTop: 2 }}>
-                  <Grid container>
-                     <DataTable
+               <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
+                  <Grid container sx={{ height: 'calc(100vh - 225px)', minHeight: '200px' }}>
+                     <DataGridPro
                         sx={{
                            '& .MuiDataGrid-columnHeaderTitle': {
                               textOverflow: 'clip',
                               whiteSpace: 'break-spaces',
                               lineHeight: 1.2,
                            },
-                           height: 'calc(100vh - 195px)',
                         }}
-                        columnHeaderHeight={65}
+                        columnHeaderHeight={100}
                         hideFooter
                         disableColumnMenu
-                        rowHeight={60}
+                        slots={{
+                           toolbar: GridToolbar,
+                        }}
+                        rowHeight={35}
                         rows={getDataForTable}
-                        rowBuffer={35}
-                        rowThreshold={25}
+                        rowBufferPx={35}
                         columns={columns}
-                        getRowId={(params) => params.fileType}
+                        getRowId={(params) => params.id}
                      />
                   </Grid>
 
-                  <AppFooter />
+                  <DataTablePagination
+                     page={tableState.pageNo}
+                     perPage={tableState.perPage}
+                     totalItems={tableState.totalItems}
+                     onChangePage={handleChangePage}
+                     onChangePerPage={handleChangePerPage}
+                     // lastUpdatedAt={clientLatestUpdatedTime}
+                     // lastUpdatedBy={serverLastUpdatedBy}
+                  />
                </Paper>
+
+               <AppFooter />
             </Box>
          </Box>
 
+         <DialogEditDataIndicator
+            data={dataEditCompetitor}
+            setData={setDataEditCompetitor}
+            {...openEditCompetitor}
+            onClose={handleCloseEditCompetitorDialog}
+         />
          <DialogChangePassword {...changePasswordState} onClose={handleCloseChangePasswordDialog} />
-         <LogImportFailureDialog />
       </>
    );
 }
