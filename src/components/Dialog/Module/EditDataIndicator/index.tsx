@@ -1,12 +1,11 @@
 import indicatorApi from '@/api/indicators.api';
 import { AppAutocomplete, AppTextField } from '@/components/App';
 import { commonStore, indicatorStore } from '@/store/reducers';
-import { Box, Button, Dialog, Grid, TextField, Typography } from '@mui/material';
+import { Button, Dialog, Grid, TextField, Typography } from '@mui/material';
 import { t } from 'i18next';
 import { produce } from 'immer';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import _ from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
 
 const EditDataIndicator: React.FC<any> = (props) => {
    const { open, onClose, data, setData, isCreate } = props;
@@ -17,17 +16,22 @@ const EditDataIndicator: React.FC<any> = (props) => {
    const handleChangeDataFilter = (option, path) => {
       setData((prev) =>
          produce(prev, (draft) => {
-            const keys = path.split('.');
-            let temp = draft;
+            if (_.includes(['chineseBrand'], path)) {
+               if (option === 'Chinese Brand') draft[path] = true;
+               else draft[path] = false;
+            } else {
+               const keys = path.split('.');
+               let temp = draft;
 
-            for (let i = 0; i < keys.length - 1; i++) {
-               if (!temp[keys[i]]) {
-                  temp[keys[i]] = {};
+               for (let i = 0; i < keys.length - 1; i++) {
+                  if (!temp[keys[i]]) {
+                     temp[keys[i]] = {};
+                  }
+                  temp = temp[keys[i]];
                }
-               temp = temp[keys[i]];
-            }
 
-            temp[keys[keys.length - 1]] = option;
+               temp[keys[keys.length - 1]] = option;
+            }
          })
       );
    };
@@ -43,7 +47,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
          });
    };
 
-   console.log(data.clazz);
+   console.log(data);
 
    return (
       <Dialog
@@ -90,6 +94,24 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      onChange={(e, option) =>
                         handleChangeDataFilter(option.value, 'country.countryName')
                      }
+                     limitTags={2}
+                     disableListWrap
+                     primaryKeyOption="value"
+                     disableCloseOnSelect
+                     renderOption={(prop, option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value}`}
+                  />
+               </Grid>
+               <Grid item xs={2}>
+                  <AppAutocomplete
+                     value={
+                        data.chineseBrand
+                           ? { value: 'Chinese Brands' }
+                           : { value: 'None Chinese Brand' }
+                     }
+                     options={initDataFilter.chineseBrands}
+                     label={t('filters.chineseBrand')}
+                     onChange={(e, option) => handleChangeDataFilter(option.value, 'chineseBrand')}
                      limitTags={2}
                      disableListWrap
                      primaryKeyOption="value"
