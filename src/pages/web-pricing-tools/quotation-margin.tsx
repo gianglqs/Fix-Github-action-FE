@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { formatNumberPercentage } from '@/utils/formatCell';
 import { v4 as uuidv4 } from 'uuid';
+import { log } from 'console';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -73,7 +74,7 @@ export default function MarginAnalysis() {
          const transformData = {
             marginData: {
                id: {
-                  modelCode: dataFilter.modelCode ? '' : dataFilter.modelCode,
+                  modelCode: dataFilter.modelCode,
                   type: !dataFilter.type ? 0 : dataFilter.type,
                   currency: dataFilter.currency,
                },
@@ -81,6 +82,7 @@ export default function MarginAnalysis() {
                orderNumber: !dataFilter.orderNumber ? '' : dataFilter.orderNumber,
                plant: 'SN',
                series: dataFilter.series,
+               modelCode: dataFilter.modelCode,
             },
             region: dataFilter.region,
          };
@@ -96,6 +98,7 @@ export default function MarginAnalysis() {
             },
             requestId
          );
+         console.log(data);
 
          const analysisSummary = data?.MarginAnalystSummary;
          const marginAnalystData = data?.MarginAnalystData;
@@ -114,9 +117,6 @@ export default function MarginAnalysis() {
 
          dispatch(marginAnalysisStore.actions.setMarginData(marginData));
          dispatch(marginAnalysisStore.actions.setRequestId(undefined));
-         dispatch(
-            marginAnalysisStore.actions.setCurrency(data.MarginAnalystSummary.annually.id.currency)
-         );
 
          setLoading(false);
       } catch (error) {
