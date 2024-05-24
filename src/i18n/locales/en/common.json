@@ -205,7 +205,8 @@
       "origin": "Origin",
       "tableTitle": "Table Title",
       "marketShare": "Market Share",
-      "updateDate": "Update Date"
+      "updateDate": "Update Date",
+      "model": "Model"
    },
 
    "quotationMargin": {

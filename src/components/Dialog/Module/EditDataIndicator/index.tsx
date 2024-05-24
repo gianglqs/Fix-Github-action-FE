@@ -1,14 +1,16 @@
 import indicatorApi from '@/api/indicators.api';
-import { AppAutocomplete, AppTextField } from '@/components/App';
+import { AppAutocomplete, AppNumberField, AppTextField } from '@/components/App';
 import { commonStore, indicatorStore } from '@/store/reducers';
 import { Button, Dialog, Grid, TextField, Typography } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
+import { parseISO } from 'date-fns';
 import { t } from 'i18next';
 import { produce } from 'immer';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 
 const EditDataIndicator: React.FC<any> = (props) => {
-   const { open, onClose, data, setData, isCreate } = props;
+   const { open, onClose, data, setData, isCreate, setOpenConfirmDeleteDialog } = props;
    const dispatch = useDispatch();
 
    const initDataFilter = useSelector(indicatorStore.selectInitDataFilter);
@@ -41,10 +43,15 @@ const EditDataIndicator: React.FC<any> = (props) => {
          .updateCompetitor(data)
          .then((res) => {
             dispatch(commonStore.actions.setSuccessMessage(res.data.message));
+            dispatch(indicatorStore.sagaGetList());
          })
          .catch((error) => {
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
+   };
+
+   const handleOpenConfirmDeleteDialog = () => {
+      setOpenConfirmDeleteDialog(true);
    };
 
    console.log(data);
@@ -62,13 +69,18 @@ const EditDataIndicator: React.FC<any> = (props) => {
             {isCreate ? 'Create' : 'Edit'} Competitor
          </Typography>
 
-         <Grid sx={{ display: 'flex', justifyContent: 'flex-end', marginRight: 5 }}>
+         <Grid sx={{ display: 'flex', justifyContent: 'flex-end', marginRight: 5, gap: 2 }}>
+            {!isCreate && (
+               <Button variant="outlined" onClick={handleOpenConfirmDeleteDialog} color="error">
+                  Delete
+               </Button>
+            )}
             <Button variant="outlined" onClick={handleUpdateCompetitor}>
                {isCreate ? 'Create' : 'Update'}
             </Button>
          </Grid>
 
-         <Grid container sx={{ padding: '40px' }}>
+         <Grid container sx={{ padding: '20px 40px' }}>
             <Grid spacing={3} container>
                <Grid item xs={2.5}>
                   <AppTextField
@@ -166,7 +178,6 @@ const EditDataIndicator: React.FC<any> = (props) => {
                </Grid>
                <Grid item xs={3}>
                   <AppTextField
-                     id="outlined-read-only-input"
                      label={t('competitors.battery')}
                      onChange={(e) => handleChangeDataFilter(e.target.value, 'battery')}
                      value={data?.battery}
@@ -174,7 +185,13 @@ const EditDataIndicator: React.FC<any> = (props) => {
                </Grid>
                <Grid item xs={3}>
                   <AppTextField
-                     id="outlined-read-only-input"
+                     label={t('competitors.model')}
+                     onChange={(e) => handleChangeDataFilter(e.target.value, 'model')}
+                     value={data?.model}
+                  />
+               </Grid>
+               <Grid item xs={3}>
+                  <AppTextField
                      label={t('competitors.origin')}
                      onChange={(e) => handleChangeDataFilter(e.target.value, 'origin')}
                      value={data?.origin}
@@ -182,95 +199,87 @@ const EditDataIndicator: React.FC<any> = (props) => {
                </Grid>
                <Grid item xs={1.5}>
                   <TextField
-                     id="outlined-read-only-input"
                      label={t('competitors.series')}
                      onChange={(e) => handleChangeDataFilter(e.target.value, 'series')}
                      value={data?.series}
                   />
                </Grid>
+
                <Grid item xs={2}>
-                  <TextField
-                     id="outlined-read-only-input"
-                     label={t('competitors.actual')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'actual')}
+                  <AppNumberField
                      value={data?.actual}
+                     onChange={(e) => handleChangeDataFilter(e.value, 'actual')}
+                     label={t('competitors.actual')}
                   />
                </Grid>
                <Grid item xs={2}>
-                  <TextField
-                     id="outlined-read-only-input"
+                  <AppNumberField
                      label={t('competitors.aopf')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'aopf')}
+                     onChange={(e) => handleChangeDataFilter(e.value, 'aopf')}
                      value={data?.aopf}
                   />
                </Grid>
                <Grid item xs={2}>
-                  <TextField
-                     id="outlined-read-only-input"
+                  <AppNumberField
                      label={t('competitors.lrff')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'lrff')}
+                     onChange={(e) => handleChangeDataFilter(e.value, 'lrff')}
                      value={data?.lrff}
                   />
                </Grid>
                <Grid item xs={3}>
-                  <AppTextField
-                     id="outlined-read-only-input"
+                  <AppNumberField
                      label={t('competitors.competitorLeadTime')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'competitorLeadTime')}
+                     onChange={(e) => handleChangeDataFilter(e.value, 'competitorLeadTime')}
                      value={data?.competitorLeadTime}
                   />
                </Grid>
 
                <Grid item xs={3}>
-                  <AppTextField
-                     id="outlined-read-only-input"
+                  <AppNumberField
                      label={t('competitors.competitorPricing')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'competitorPricing')}
+                     onChange={(e) => handleChangeDataFilter(e.value, 'competitorPricing')}
                      value={data?.competitorPricing}
                   />
                </Grid>
                <Grid item xs={3}>
-                  <AppTextField
-                     id="outlined-read-only-input"
+                  <AppNumberField
                      label={t('competitors.dealerPricingPremium')}
-                     onChange={(e) =>
-                        handleChangeDataFilter(e.target.value, 'dealerPremiumPercentage')
-                     }
+                     onChange={(e) => handleChangeDataFilter(e.value, 'dealerPremiumPercentage')}
                      value={data?.dealerPremiumPercentage}
                   />
                </Grid>
                <Grid item xs={3}>
-                  <AppTextField
-                     id="outlined-read-only-input"
+                  <AppNumberField
                      label={t('competitors.dealerNet')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'dealerNet')}
+                     onChange={(e) => handleChangeDataFilter(e.value, 'dealerNet')}
                      value={data?.dealerNet}
                   />
                </Grid>
 
                <Grid item xs={3}>
-                  <AppTextField
-                     id="outlined-read-only-input"
+                  <AppNumberField
                      label={t('competitors.tonnage')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'tonnage')}
+                     onChange={(e) => handleChangeDataFilter(e.value, 'tonnage')}
                      value={data?.tonnage}
                   />
                </Grid>
 
                <Grid item xs={3}>
-                  <AppTextField
-                     id="outlined-read-only-input"
+                  <AppNumberField
                      label={t('competitors.marketShare')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'marketShare')}
+                     onChange={(e) => handleChangeDataFilter(e.value, 'marketShare')}
                      value={data?.marketShare}
                   />
                </Grid>
-               <Grid item xs={3}>
-                  <AppTextField
-                     id="outlined-read-only-input"
+
+               <Grid item xs={2}>
+                  <DatePicker
+                     views={['day', 'month', 'year']}
                      label={t('competitors.updateDate')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'updateDate')}
-                     value={data?.updateDate}
+                     onChange={(value) => handleChangeDataFilter(value, 'updateDate')}
+                     value={parseISO(data?.updateDate)}
+                     maxDate={parseISO(new Date().toISOString().slice(0, 10))}
+                     format="dd-MM-yyyy"
                   />
                </Grid>
             </Grid>
