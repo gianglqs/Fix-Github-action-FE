@@ -121,12 +121,6 @@ export default function MarginAnalysis() {
          dispatch(
             marginAnalysisStore.actions.setCurrency(data.MarginAnalystSummary.annually.id.currency)
          );
-         dispatch(
-            marginAnalysisStore.actions.setModelCode(
-               data.MarginAnalystSummary.annually.id.modelCode
-            )
-         );
-
 
          setLoading(false);
       } catch (error) {
