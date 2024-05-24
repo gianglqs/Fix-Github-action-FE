@@ -66,17 +66,17 @@ const EditDataIndicator: React.FC<any> = (props) => {
          PaperProps={{ sx: { borderRadius: '10px' } }}
       >
          <Typography variant="h5" sx={{ marginTop: 2, marginLeft: 4 }}>
-            {isCreate ? 'Create' : 'Edit'} Competitor
+            {isCreate ? t('button.create') : t('competitors.edit')} {t('competitors.competitor')}
          </Typography>
 
          <Grid sx={{ display: 'flex', justifyContent: 'flex-end', marginRight: 5, gap: 2 }}>
             {!isCreate && (
                <Button variant="outlined" onClick={handleOpenConfirmDeleteDialog} color="error">
-                  Delete
+                  {t('button.delete')}
                </Button>
             )}
             <Button variant="outlined" onClick={handleUpdateCompetitor}>
-               {isCreate ? 'Create' : 'Update'}
+               {isCreate ? t('button.create') : t('button.update')}
             </Button>
          </Grid>
 

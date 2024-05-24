@@ -96,7 +96,10 @@
       "fromExchangeRateApi": "来自 exchangerate-api.com",
       "scrape": "抓取",
       "save": "保存",
-      "close": "关闭"
+      "close": "关闭",
+      "update": "更多的",
+      "delete": "擦除",
+      "add": "更多的"
    },
 
    "table": {
@@ -180,7 +183,23 @@
       "highLeadTime": "最长交货时间",
       "lowLeadTime": "最短交货时间",
       "competitorLegendColor": "竞争对手图例颜色",
-      "edit": "编辑"
+      "edit": "编辑",
+      "region": "地区",
+      "plant": "植物",
+      "class": "潘禄",
+      "series": "Series",
+      "actual": "实际的",
+      "aopf": "AOPF",
+      "lrff": "LRFF",
+      "dealerNet": "价格",
+      "battery": "电池",
+      "tonnage": "有效载荷",
+      "origin": "来源",
+      "tableTitle": "表标题",
+      "marketShare": "市场份额",
+      "updateDate": "更新时间",
+      "model": "样本",
+      "competitor": "竞争者"
    },
 
    "quotationMargin": {

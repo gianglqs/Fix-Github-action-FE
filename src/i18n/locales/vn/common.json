@@ -96,7 +96,10 @@
       "fromExchangeRateApi": "Từ exchangerate-api.com",
       "scrape": "Thu nhập",
       "save": "Lưu",
-      "close": "Đóng"
+      "close": "Đóng",
+      "update": "Cập nhập",
+      "delete": "Xóa",
+      "add": "Thêm"
    },
 
    "table": {
@@ -180,7 +183,23 @@
       "highLeadTime": "High Lead Time",
       "lowLeadTime": "Low Lead Time",
       "competitorLegendColor": "Màu sắc biểu đồ đối thủ",
-      "edit": "Chỉnh sửa"
+      "edit": "Chỉnh sửa",
+      "region": "Khu vực",
+      "plant": "Nhà máy",
+      "class": "Phân lớp",
+      "series": "Series",
+      "actual": "Thực tế",
+      "aopf": "AOPF",
+      "lrff": "LRFF",
+      "dealerNet": "Giá bán",
+      "battery": "Battery",
+      "tonnage": "Trọng tải",
+      "origin": "Nguồn gốc",
+      "tableTitle": "Tiêu đề bảng",
+      "marketShare": "Thị phần",
+      "updateDate": "Thời gian cập nhập",
+      "model": "Mẫu",
+      "competitor": "Đối thủ cạnh tranh"
    },
 
    "quotationMargin": {
