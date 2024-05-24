@@ -19,7 +19,7 @@ export default function MarginHistoryDialog(props) {
       {
          field: 'type',
          flex: 0.5,
-         headerName: 'Type',
+         headerName: '#',
       },
       {
          field: 'modelCode',

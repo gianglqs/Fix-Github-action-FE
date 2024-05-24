@@ -262,7 +262,7 @@ export default function Booking() {
          field: 'dealerNet',
          flex: 0.6,
          minWidth: 100,
-         headerName: `${t('table.dealerNet')} ('000 ${currency})`,
+         headerName: `${t('table.listPrice')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -273,7 +273,7 @@ export default function Booking() {
          field: 'dealerNetAfterSurcharge',
          flex: 0.7,
          minWidth: 150,
-         headerName: `${t('table.dealerNetAfterSurcharge')} ('000 ${currency})`,
+         headerName: `${t('table.dealerNet')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -495,7 +495,7 @@ export default function Booking() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.dealerNet')} ('000 {currency})
+                           {t('table.listPrice')} ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.dealerNet)}
@@ -507,7 +507,7 @@ export default function Booking() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.dealerNetAfterSurcharge')} ('000 {currency})
+                           {t('table.dealerNet')} ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumber(totalRow[0]?.dealerNetAfterSurcharge)}

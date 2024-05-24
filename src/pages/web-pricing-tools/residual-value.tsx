@@ -322,6 +322,17 @@ export default function ResidualValue() {
                   />
                </Grid>
 
+               <Grid item xs={2}>
+                  <AppNumberField
+                     value={dataFilter.price}
+                     onChange={(e) => handleChangeDataFilter(Number(e.value), 'price')}
+                     name="freightAdj"
+                     label={`${t('table.averageSellingPrice')} ('000 USD)`}
+                     placeholder="Average Selling Price ('000 USD)"
+                     prefix="$"
+                  />
+               </Grid>
+
                <Grid item xs={1} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
                      value={

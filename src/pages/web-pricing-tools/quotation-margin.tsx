@@ -78,6 +78,7 @@ export default function MarginAnalysis() {
                   type: !dataFilter.type ? 0 : dataFilter.type,
                   currency: dataFilter.currency,
                },
+
                fileUUID: fileUUID,
                orderNumber: !dataFilter.orderNumber ? '' : dataFilter.orderNumber,
                plant: 'SN',
@@ -117,6 +118,15 @@ export default function MarginAnalysis() {
 
          dispatch(marginAnalysisStore.actions.setMarginData(marginData));
          dispatch(marginAnalysisStore.actions.setRequestId(undefined));
+         dispatch(
+            marginAnalysisStore.actions.setCurrency(data.MarginAnalystSummary.annually.id.currency)
+         );
+         dispatch(
+            marginAnalysisStore.actions.setModelCode(
+               data.MarginAnalystSummary.annually.id.modelCode
+            )
+         );
+
 
          setLoading(false);
       } catch (error) {
@@ -616,11 +626,11 @@ export default function MarginAnalysis() {
 
                <ForUSPricingBox
                   data={marginCalculateData.marginAnalysisSummary?.annually}
-                  title={'For US Pricing @ AOP rate'}
+                  title={t('quotationMargin.forUSPricing')}
                />
                <ForUSPricingBox
                   data={marginCalculateData.marginAnalysisSummary?.monthly}
-                  title={'For US Pricing @ Monthly rate'}
+                  title={t('quotationMargin.forUSPricing')}
                />
             </Grid>
 
@@ -824,7 +834,7 @@ const FullCostAOPRateBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency || ''} @ AOP Rate`}
+                  {`${t('quotationMargin.AOPExchangeRate')} ${valueCurrency || ''}`}
                </Typography>
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                   {data?.fullCostAOPRate.toLocaleString()}
@@ -936,7 +946,7 @@ const FullCostAOPRateBoxMonthly = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency || ''} @ Monthly Rate`}
+                  {`${t('quotationMargin.monthlyExchangeRate')} ${valueCurrency || ''}`}
                </Typography>
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                   {data?.fullCostAOPRate.toLocaleString()}
