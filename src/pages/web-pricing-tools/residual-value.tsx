@@ -219,55 +219,20 @@ export default function ResidualValue() {
                <p style={{ fontWeight: 900, fontSize: 16, margin: 0 }}>
                   {residualValue.id.hours} hours
                </p>
-               <Typography>
-                  {dataFilter.price !== 0
-                     ? `$  ${formatNumberTwoPercentDigit(
-                          residualValue.residualValuePercent * dataFilter.price
-                       )}`
-                     : `${formatNumberTwoPercentDigit(residualValue.residualValuePercent)}%`}
-               </Typography>
+               <Typography>{`$  ${formatNumberTwoPercentDigit(residualValue.price)}`}</Typography>
             </Box>
          );
       });
    };
 
-   const handleChangeYear = (year: any) => {
-      setDataFilter((prev) => ({ ...prev, year }));
-      switch (year) {
-         case 2:
-            selectResidualValueByHours('24');
-            break;
-         case 3:
-            selectResidualValueByHours('36');
-            break;
-         case 4:
-            selectResidualValueByHours('48');
-            break;
-         case 5:
-            selectResidualValueByHours('60');
-            break;
-         case 6:
-            selectResidualValueByHours('72');
-            break;
-         case 7:
-            selectResidualValueByHours('84');
-            break;
-         case 8:
-            selectResidualValueByHours('96');
-            break;
-         case 9:
-            selectResidualValueByHours('10');
-            break;
-         case 10:
-            selectResidualValueByHours('12');
-      }
+   const handleChangeYear = (years: any) => {
+      setDataFilter((prev) => ({ ...prev, years }));
+      selectResidualValueByYears(years);
    };
 
-   const selectResidualValueByHours = (startHours: string) => {
+   const selectResidualValueByYears = (years: string) => {
       setSelectedResidualValue(
-         listResidualValue.filter((residualValue) =>
-            String(residualValue.id.hours).startsWith(startHours)
-         )
+         listResidualValue.filter((residualValue) => residualValue.id.yearOfUse == years)
       );
    };
 
@@ -356,16 +321,7 @@ export default function ResidualValue() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2}>
-                  <AppNumberField
-                     value={dataFilter.price}
-                     onChange={(e) => handleChangeDataFilter(Number(e.value), 'price')}
-                     name="freightAdj"
-                     label={`${t('table.adjustedFreight')} ('000 USD)`}
-                     placeholder="Average Selling Price ('000 USD)"
-                     prefix="$"
-                  />
-               </Grid>
+
                <Grid item xs={1} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
                      value={
