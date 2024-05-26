@@ -7,6 +7,7 @@ import { FormControllerErrorMessage, GenerateCodeIcon } from '@/components';
 import clsx from 'clsx';
 
 import type { AppTextFieldProps } from './type';
+import _ from 'lodash';
 
 const AppTextField: React.FC<AppTextFieldProps> = (props) => {
    const {
@@ -20,6 +21,7 @@ const AppTextField: React.FC<AppTextFieldProps> = (props) => {
       onGenerateCode,
       isFocus,
       value,
+      onChange,
       ...textFieldProps
    } = props;
 
@@ -30,11 +32,36 @@ const AppTextField: React.FC<AppTextFieldProps> = (props) => {
 
    const openTooltip = useMemo(() => isFocusing && error, [error, isFocusing]);
 
+   const [textValue, setTextValue] = useState(value || '');
+
+   useEffect(() => {
+      setTextValue(value);
+   }, [value]);
+
    useEffect(() => {
       if (focusRef.current) {
          focusRef.current.focus();
       }
    }, []);
+
+   const debouceHandleOnChange = useCallback(
+      _.debounce((event, value) => {
+         onChange(event);
+      }, 700),
+      [onChange]
+   );
+
+   const handleOnChange = (event) => {
+      const newValue = event.target.value;
+      setTextValue(newValue);
+      debouceHandleOnChange(event, newValue);
+   };
+
+   useEffect(() => {
+      return () => {
+         debouceHandleOnChange.cancel();
+      };
+   }, [debouceHandleOnChange]);
 
    const onHoverField = () => {
       setIsFocusing(true);
@@ -66,11 +93,12 @@ const AppTextField: React.FC<AppTextFieldProps> = (props) => {
    return (
       <FormControllerErrorMessage title={helperText} open={openTooltip}>
          <TextField
-            value={value}
+            value={textValue}
             disabled={disabled}
             error={error}
             onMouseOver={onHoverField}
             onMouseLeave={onLeavingField}
+            onChange={handleOnChange}
             inputRef={isFocus && focusRef}
             InputProps={{
                readOnly: disabled,
