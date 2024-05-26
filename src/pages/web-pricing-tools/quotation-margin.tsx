@@ -217,6 +217,17 @@ export default function MarginAnalysis() {
          });
    };
 
+   const getCurrencyForManufacturingCost = (data: any) => {
+      return data?.fileUUID != null
+         ? data?.plant == 'HYM' ||
+           data?.plant == 'Ruyi' ||
+           data?.plant == 'Staxx' ||
+           data?.plant == 'Maximal'
+            ? `${t('quotationMargin.totalCost')} (RMB)`
+            : `${t('quotationMargin.totalCost')} (USD)`
+         : `${t('quotationMargin.totalCost')}`;
+   };
+
    const columns = [
       {
          field: 'quoteNumber',
@@ -283,7 +294,7 @@ export default function MarginAnalysis() {
       {
          field: 'manufacturingCost',
          flex: 0.7,
-         headerName: t('quotationMargin.manufacturingCost'), //+ ` (${dataFilter.currency})`,
+         headerName: `${getCurrencyForManufacturingCost(marginCalculateData.marginAnalysisSummary?.monthly)}`, //+ ` (${dataFilter.currency})`,
          headerAlign: 'right',
          align: 'right',
       },
@@ -357,6 +368,7 @@ export default function MarginAnalysis() {
    const setFileName = (fileName: string) => {
       dispatch(marginAnalysisStore.actions.setFileName(fileName));
    };
+console.log()
 
    return (
       <>
