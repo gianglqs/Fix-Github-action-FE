@@ -1,13 +1,121 @@
 import indicatorApi from '@/api/indicators.api';
 import { AppAutocomplete, AppNumberField, AppTextField } from '@/components/App';
 import { commonStore, indicatorStore } from '@/store/reducers';
-import { Button, Dialog, Grid, TextField, Typography } from '@mui/material';
+import { Button, Dialog, Grid, TextField, Typography, styled } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { parseISO } from 'date-fns';
 import { t } from 'i18next';
 import { produce } from 'immer';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
+
+const StyledAutoComplete = styled(AppAutocomplete)(() => ({
+   '& .MuiTextField-root': {
+      maxHeight: 38,
+   },
+   '& .MuiAutocomplete-tag': {
+      marginLeft: 5,
+   },
+   '& .MuiInputBase-root': {
+      height: 38,
+      backgroundColor: '#f5f7fa',
+      border: '1px solid #eef1f6',
+      borderRadius: 5,
+   },
+   '& .MuiOutlinedInput-notchedOutline': {
+      border: '1px solid #eef1f6',
+      borderRadius: 5,
+   },
+   '& .MuiOutlinedInput-input': {
+      boxSizing: 'inherit',
+   },
+   '& input': {
+      height: 38,
+      fontSize: 14,
+   },
+   '& .MuiInputLabel-root': {
+      transform: 'translate(14px, 1px) scale(1)',
+      position: 'absolute',
+      top: 10,
+   },
+   '& .MuiInputLabel-shrink': {
+      transform: 'translate(15px, -18px) scale(0.8)',
+      fontSize: 14,
+      backgroundColor: '#f5f7fa',
+      padding: '0 7px 0 5px',
+      borderRadius: 999,
+   },
+}));
+
+const StyleAppTextField = styled(AppTextField)(() => ({
+   '& .MuiTextField-root': {
+      maxHeight: 38,
+   },
+   '& .MuiAutocomplete-tag': {
+      marginLeft: 5,
+   },
+   '& .MuiInputBase-root': {
+      height: 38,
+      backgroundColor: '#f5f7fa',
+      border: '1px solid #eef1f6',
+      borderRadius: 5,
+   },
+   '& .MuiOutlinedInput-notchedOutline': {
+      border: '1px solid #eef1f6',
+      borderRadius: 5,
+   },
+   '& input': {
+      height: 38,
+      fontSize: 14,
+   },
+   '& .MuiInputLabel-root': {
+      transform: 'translate(14px, 1px) scale(1)',
+      position: 'absolute',
+      top: 10,
+   },
+   '& .MuiInputLabel-shrink': {
+      transform: 'translate(15px, -18px) scale(0.8)',
+      fontSize: 14,
+      backgroundColor: '#f5f7fa',
+      padding: '0 7px 0 5px',
+      borderRadius: 999,
+   },
+}));
+
+const StyleAppNumerField = styled(AppNumberField)(() => ({
+   '& .MuiTextField-root': {
+      maxHeight: 38,
+   },
+   '& .MuiAutocomplete-tag': {
+      marginLeft: 5,
+   },
+   '& .MuiInputBase-root': {
+      height: 38,
+      backgroundColor: '#f5f7fa',
+      border: '1px solid #eef1f6',
+      borderRadius: 5,
+   },
+   '& .MuiOutlinedInput-notchedOutline': {
+      border: '1px solid #eef1f6',
+      borderRadius: 5,
+   },
+   '& input': {
+      height: 38,
+      fontSize: 14,
+   },
+   '& .MuiInputLabel-root': {
+      transform: 'translate(14px, 1px) scale(1)',
+      position: 'absolute',
+      top: 10,
+   },
+   '& .MuiInputLabel-shrink': {
+      transform: 'translate(15px, -18px) scale(0.8)',
+      fontSize: 14,
+      backgroundColor: '#f5f7fa',
+      padding: '0 7px 0 5px',
+      borderRadius: 999,
+   },
+}));
 
 const EditDataIndicator: React.FC<any> = (props) => {
    const { open, onClose, data, setData, isCreate, setOpenConfirmDeleteDialog } = props;
@@ -63,7 +171,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
          draggable
          fullWidth={true}
          maxWidth="lg"
-         PaperProps={{ sx: { borderRadius: '10px' } }}
+         PaperProps={{ sx: { borderRadius: '4px', paddingBottom: 3 } }}
       >
          <Typography variant="h5" sx={{ marginTop: 2, marginLeft: 4 }}>
             {isCreate ? t('button.create') : t('competitors.edit')} {t('competitors.competitor')}
@@ -71,19 +179,24 @@ const EditDataIndicator: React.FC<any> = (props) => {
 
          <Grid sx={{ display: 'flex', justifyContent: 'flex-end', marginRight: 5, gap: 2 }}>
             {!isCreate && (
-               <Button variant="outlined" onClick={handleOpenConfirmDeleteDialog} color="error">
+               <Button
+                  variant="outlined"
+                  sx={{ fontSize: 15 }}
+                  onClick={handleOpenConfirmDeleteDialog}
+                  color="error"
+               >
                   {t('button.delete')}
                </Button>
             )}
-            <Button variant="outlined" onClick={handleUpdateCompetitor}>
+            <Button variant="outlined" sx={{ fontSize: 15 }} onClick={handleUpdateCompetitor}>
                {isCreate ? t('button.create') : t('button.update')}
             </Button>
          </Grid>
 
          <Grid container sx={{ padding: '20px 40px' }}>
             <Grid spacing={3} container>
-               <Grid item xs={2.5}>
-                  <AppTextField
+               <Grid item xs={3}>
+                  <StyleAppTextField
                      id="outlined-read-only-input"
                      label={t('competitors.competitorName')}
                      value={data?.competitorName}
@@ -91,15 +204,44 @@ const EditDataIndicator: React.FC<any> = (props) => {
                   />
                </Grid>
                <Grid item xs={3}>
-                  <AppTextField
+                  <StyleAppTextField
                      id="outlined-read-only-input"
                      label={t('competitors.tableTitle')}
                      onChange={(e) => handleChangeDataFilter(e.target.value, 'tableTitle')}
                      value={data?.tableTitle}
                   />
                </Grid>
-               <Grid item xs={2.5}>
-                  <AppAutocomplete
+
+               <Grid item xs={3}>
+                  <StyleAppTextField
+                     label={t('competitors.battery')}
+                     onChange={(e) => handleChangeDataFilter(e.target.value, 'battery')}
+                     value={data?.battery}
+                  />
+               </Grid>
+               <Grid item xs={3}>
+                  <StyleAppTextField
+                     label={t('competitors.model')}
+                     onChange={(e) => handleChangeDataFilter(e.target.value, 'model')}
+                     value={data?.model}
+                  />
+               </Grid>
+               <Grid item xs={3}>
+                  <StyleAppTextField
+                     label={t('competitors.origin')}
+                     onChange={(e) => handleChangeDataFilter(e.target.value, 'origin')}
+                     value={data?.origin}
+                  />
+               </Grid>
+               <Grid item xs={3}>
+                  <StyleAppTextField
+                     label={t('competitors.series')}
+                     onChange={(e) => handleChangeDataFilter(e.target.value, 'series')}
+                     value={data?.series}
+                  />
+               </Grid>
+               <Grid item xs={3}>
+                  <StyledAutoComplete
                      value={data?.country?.countryName}
                      options={initDataFilter.countries}
                      label={t('filters.country')}
@@ -114,8 +256,8 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2}>
-                  <AppAutocomplete
+               <Grid item xs={3}>
+                  <StyledAutoComplete
                      value={
                         data.chineseBrand
                            ? { value: 'Chinese Brands' }
@@ -132,8 +274,8 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2}>
-                  <AppAutocomplete
+               <Grid item xs={3}>
+                  <StyledAutoComplete
                      value={data?.plant}
                      options={initDataFilter.plants}
                      label={t('filters.plant')}
@@ -146,8 +288,8 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2}>
-                  <AppAutocomplete
+               <Grid item xs={3}>
+                  <StyledAutoComplete
                      value={data?.clazz?.clazzName}
                      options={initDataFilter.classes}
                      label={t('filters.class')}
@@ -162,8 +304,8 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2.5}>
-                  <AppAutocomplete
+               <Grid item xs={3}>
+                  <StyledAutoComplete
                      value={data?.category}
                      options={initDataFilter.categories}
                      label={t('filters.category')}
@@ -176,58 +318,30 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={3}>
-                  <AppTextField
-                     label={t('competitors.battery')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'battery')}
-                     value={data?.battery}
-                  />
-               </Grid>
-               <Grid item xs={3}>
-                  <AppTextField
-                     label={t('competitors.model')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'model')}
-                     value={data?.model}
-                  />
-               </Grid>
-               <Grid item xs={3}>
-                  <AppTextField
-                     label={t('competitors.origin')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'origin')}
-                     value={data?.origin}
-                  />
-               </Grid>
-               <Grid item xs={1.5}>
-                  <TextField
-                     label={t('competitors.series')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'series')}
-                     value={data?.series}
-                  />
-               </Grid>
 
-               <Grid item xs={2}>
-                  <AppNumberField
+               <Grid item xs={3}>
+                  <StyleAppNumerField
                      value={data?.actual}
                      onChange={(e) => handleChangeDataFilter(e.value, 'actual')}
                      label={t('competitors.actual')}
                   />
                </Grid>
-               <Grid item xs={2}>
-                  <AppNumberField
+               <Grid item xs={3}>
+                  <StyleAppNumerField
                      label={t('competitors.aopf')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'aopf')}
                      value={data?.aopf}
                   />
                </Grid>
-               <Grid item xs={2}>
-                  <AppNumberField
+               <Grid item xs={3}>
+                  <StyleAppNumerField
                      label={t('competitors.lrff')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'lrff')}
                      value={data?.lrff}
                   />
                </Grid>
                <Grid item xs={3}>
-                  <AppNumberField
+                  <StyleAppNumerField
                      label={t('competitors.competitorLeadTime')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'competitorLeadTime')}
                      value={data?.competitorLeadTime}
@@ -235,21 +349,21 @@ const EditDataIndicator: React.FC<any> = (props) => {
                </Grid>
 
                <Grid item xs={3}>
-                  <AppNumberField
+                  <StyleAppNumerField
                      label={t('competitors.competitorPricing')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'competitorPricing')}
                      value={data?.competitorPricing}
                   />
                </Grid>
                <Grid item xs={3}>
-                  <AppNumberField
+                  <StyleAppNumerField
                      label={t('competitors.dealerPricingPremium')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'dealerPremiumPercentage')}
                      value={data?.dealerPremiumPercentage}
                   />
                </Grid>
                <Grid item xs={3}>
-                  <AppNumberField
+                  <StyleAppNumerField
                      label={t('competitors.dealerNet')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'dealerNet')}
                      value={data?.dealerNet}
@@ -257,7 +371,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                </Grid>
 
                <Grid item xs={3}>
-                  <AppNumberField
+                  <StyleAppNumerField
                      label={t('competitors.tonnage')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'tonnage')}
                      value={data?.tonnage}
@@ -265,21 +379,10 @@ const EditDataIndicator: React.FC<any> = (props) => {
                </Grid>
 
                <Grid item xs={3}>
-                  <AppNumberField
+                  <StyleAppNumerField
                      label={t('competitors.marketShare')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'marketShare')}
                      value={data?.marketShare}
-                  />
-               </Grid>
-
-               <Grid item xs={2}>
-                  <DatePicker
-                     views={['day', 'month', 'year']}
-                     label={t('competitors.updateDate')}
-                     onChange={(value) => handleChangeDataFilter(value, 'updateDate')}
-                     value={parseISO(data?.updateDate)}
-                     maxDate={parseISO(new Date().toISOString().slice(0, 10))}
-                     format="dd-MM-yyyy"
                   />
                </Grid>
             </Grid>
