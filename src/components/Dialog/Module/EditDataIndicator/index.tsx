@@ -162,8 +162,6 @@ const EditDataIndicator: React.FC<any> = (props) => {
       setOpenConfirmDeleteDialog(true);
    };
 
-   console.log(data);
-
    return (
       <Dialog
          open={open}
