@@ -360,14 +360,13 @@ export default function Adjustment() {
 
          renderCell(params) {
             return (
-               <CellColor
+               <CellPercentageColor
                   color={''}
-                  value={params?.row.originalMarginPercentage * 100000}
-               ></CellColor>
+                  value={params?.row.originalMarginPercentage * 100}
+               ></CellPercentageColor>
             );
          },
       },
-
       {
          field: 'newDN',
          flex: 0.6,
