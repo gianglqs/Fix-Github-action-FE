@@ -691,13 +691,7 @@ export default function ImportTracking() {
 
                   <Grid item xs={2}>
                      <AppAutocomplete
-                        value={
-                           dataFilter.chineseBrand !== undefined
-                              ? {
-                                   value: `${dataFilter.chineseBrand}`,
-                                }
-                              : { value: '' }
-                        }
+                        value={dataFilter.chineseBrand}
                         options={initDataFilter.chineseBrands}
                         label={t('filters.chineseBrand')}
                         onChange={
@@ -714,13 +708,7 @@ export default function ImportTracking() {
 
                   <Grid item xs={2}>
                      <AppAutocomplete
-                        value={
-                           dataFilter.marginPercentage !== undefined
-                              ? {
-                                   value: `${dataFilter.marginPercentage}`,
-                                }
-                              : { value: '' }
-                        }
+                        value={dataFilter.marginPercentage}
                         options={initDataFilter.marginPercentageGrouping}
                         label={t('filters.marginPercentage')}
                         primaryKeyOption="value"

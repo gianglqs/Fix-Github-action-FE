@@ -1,24 +1,48 @@
-import { forwardRef } from 'react';
+import { forwardRef, useCallback, useEffect, useState } from 'react';
 
-import { AppTextField } from '@/components';
-
-import type { AppNumberFieldProps } from './type';
+import { TextField } from '@mui/material';
+import _ from 'lodash';
 import { NumericFormat } from 'react-number-format';
-import { truncate } from 'fs';
+import type { AppNumberFieldProps } from './type';
 
 const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) => {
-   const { onChange, ...numberFieldProps } = props;
+   const { onChange, value, ...numberFieldProps } = props;
 
+   const [numberValue, setNumberValue] = useState(value || 0);
+
+   useEffect(() => {
+      setNumberValue(value);
+   }, [value]);
+
+   const debouceHandleOnChange = useCallback(
+      _.debounce((event) => {
+         onChange(event);
+      }, 700),
+      [onChange]
+   );
+
+   useEffect(() => {
+      return () => {
+         debouceHandleOnChange.cancel();
+      };
+   }, [debouceHandleOnChange]);
+
+   const handleOnChange = (event) => {
+      const newValue = event.value;
+      setNumberValue(newValue);
+      debouceHandleOnChange(event);
+   };
    return (
       <NumericFormat
          {...(numberFieldProps as any)}
-         customInput={AppTextField}
-         onValueChange={onChange}
+         customInput={TextField}
+         onValueChange={handleOnChange}
          ref={ref as any}
          allowNegative={true}
          format="#### #### #### ####"
          fixedDecimalScale={false}
-         decimalScale={2}
+         decimalScale={10}
+         value={numberValue}
       />
    );
 });
