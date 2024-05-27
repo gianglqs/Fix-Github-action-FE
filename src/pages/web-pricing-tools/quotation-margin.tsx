@@ -223,9 +223,9 @@ export default function MarginAnalysis() {
            data?.plant == 'Ruyi' ||
            data?.plant == 'Staxx' ||
            data?.plant == 'Maximal'
-            ? `${t('quotationMargin.totalCost')} (RMB)`
-            : `${t('quotationMargin.totalCost')} (USD)`
-         : `${t('quotationMargin.totalCost')}`;
+            ? `${t('quotationMargin.manufacturingCost')} (RMB)`
+            : `${t('quotationMargin.manufacturingCost')} (USD)`
+         : `${t('quotationMargin.manufacturingCost')}`;
    };
 
    const columns = [
@@ -368,7 +368,7 @@ export default function MarginAnalysis() {
    const setFileName = (fileName: string) => {
       dispatch(marginAnalysisStore.actions.setFileName(fileName));
    };
-console.log()
+   console.log();
 
    return (
       <>
