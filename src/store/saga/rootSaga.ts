@@ -1,6 +1,6 @@
 import { fork } from 'redux-saga/effects';
 import userSaga from './userSaga';
-import bookingSaga from './bookingSaga';
+import { fetchBooking, switchCurrencyBooking } from './bookingSaga';
 import { fetchLoadingQuotationMarginPage, fetchDataViewPrevious } from './analysisSaga';
 import indicatorSaga from './indicatorSaga';
 import shipmentSaga from './shipmentSaga';
@@ -25,7 +25,8 @@ import { fetchImportTracking } from './importTrackingSaga';
 
 function* rootSaga() {
    yield fork(userSaga);
-   yield fork(bookingSaga);
+   yield fork(fetchBooking);
+   yield fork(switchCurrencyBooking);
    yield fork(fetchLoadingQuotationMarginPage);
    yield fork(fetchDataViewPrevious);
    yield fork(indicatorSaga);

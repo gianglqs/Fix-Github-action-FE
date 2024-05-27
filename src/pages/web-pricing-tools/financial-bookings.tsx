@@ -1,16 +1,13 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 
-import { formatNumbericColumn } from '@/utils/columnProperties';
-import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
-import { useDispatch, useSelector } from 'react-redux';
 import { bookingStore, commonStore, importFailureStore } from '@/store/reducers';
+import { formatNumbericColumn } from '@/utils/columnProperties';
+import { formatDate, formatNumber, formatNumberPercentage } from '@/utils/formatCell';
 import { useDropzone } from 'react-dropzone';
-import moment from 'moment-timezone';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { destroyCookie, parseCookies, setCookie } from 'nookies';
+import { setCookie } from 'nookies';
 
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import {
    Backdrop,
    Button,
@@ -21,6 +18,8 @@ import {
    RadioGroup,
    Typography,
 } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 
 import {
    AppAutocomplete,
@@ -30,30 +29,28 @@ import {
    DataTablePagination,
 } from '@/components';
 
-import _ from 'lodash';
 import { produce } from 'immer';
+import _ from 'lodash';
 
 import { defaultValueFilterOrder } from '@/utils/defaultValues';
-import { DataGridPro, GridCellParams, GridToolbar } from '@mui/x-data-grid-pro';
+import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
 
-import ClearIcon from '@mui/icons-material/Clear';
-import React from 'react';
-import { When } from 'react-if';
+import bookingApi from '@/api/booking.api';
 import { UserInfoContext } from '@/provider/UserInfoContext';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
-import bookingApi from '@/api/booking.api';
+import ClearIcon from '@mui/icons-material/Clear';
+import { When } from 'react-if';
 
-import { GetServerSidePropsContext } from 'next';
-import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
-import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
-import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import AppBackDrop from '@/components/App/BackDrop';
+import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
+import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
+import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
+import { paperStyle } from '@/theme/paperStyle';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
-import { paperStyle } from '@/theme/paperStyle';
-import { useTranslation } from 'react-i18next';
-import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
 import { extractTextInParentheses } from '@/utils/getString';
+import { GetServerSidePropsContext } from 'next';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -71,11 +68,11 @@ export default function Booking() {
    const listTotalRow = useSelector(bookingStore.selectTotalRow);
    const initDataFilter = useSelector(bookingStore.selectInitDataFilter);
    const cacheDataFilter = useSelector(bookingStore.selectDataFilter);
-   const listExchangeRate = useSelector(bookingStore.selectExchangeRateList);
-   const listNearestExchangeRate = useSelector(bookingStore.selectNearestExchangeRateList);
+
    const serverTimeZone = useSelector(bookingStore.selectServerTimeZone);
    const serverLastUpdatedTime = useSelector(bookingStore.selectLastUpdatedTime);
    const serverLastUpdatedBy = useSelector(bookingStore.selectLastUpdatedBy);
+   const currency = useSelector(bookingStore.selectCurrency);
 
    const [loading, setLoading] = useState(false);
 
@@ -86,8 +83,6 @@ export default function Booking() {
    const [listOrder, setListOrder] = useState(listBookingOrder);
 
    const [totalRow, setTotalRow] = useState(listTotalRow);
-
-   const [currency, setCurrency] = useState('USD');
 
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
@@ -387,35 +382,12 @@ export default function Booking() {
       setUploadedFile(updateUploaded);
    };
 
-   // ======= CONVERT CURRENCY ========
-
-   const handleChange = (event) => {
-      setCurrency(event.target.value);
-   };
-
    useEffect(() => {
       setUserRoleState(userRole);
 
       setListOrder(listBookingOrder);
       setTotalRow(listTotalRow);
 
-      setListOrder((prev) => {
-         return convertCurrencyOfDataBookingOrder(
-            prev,
-            currency,
-            listExchangeRate,
-            listNearestExchangeRate
-         );
-      });
-
-      setTotalRow((prev) => {
-         return convertCurrencyOfDataBookingOrder(
-            prev,
-            currency,
-            listExchangeRate,
-            listNearestExchangeRate
-         );
-      });
       convertTimezone();
    }, [listBookingOrder, listTotalRow, currency, serverTimeZone, serverLastUpdatedTime]);
 
@@ -487,6 +459,9 @@ export default function Booking() {
       setDataFilter(defaultValueFilterOrder);
    };
 
+   const handleSwitchCurrency = () => {
+      dispatch(bookingStore.actionSwitchCurrency());
+   };
    return (
       <>
          <AppLayout entity="booking">
@@ -776,7 +751,7 @@ export default function Booking() {
                   <RadioGroup
                      row
                      value={currency}
-                     onChange={handleChange}
+                     onChange={handleSwitchCurrency}
                      aria-labelledby="demo-row-radio-buttons-group-label"
                      name="row-radio-buttons-group"
                      sx={{
