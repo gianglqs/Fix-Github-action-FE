@@ -147,14 +147,17 @@ const EditDataIndicator: React.FC<any> = (props) => {
    };
 
    const handleUpdateCompetitor = () => {
+      dispatch(indicatorStore.actions.setLoadingPage(true));
       indicatorApi
-         .updateCompetitor(data)
+         .updateCompetitor(isCreate, data)
          .then((res) => {
             dispatch(commonStore.actions.setSuccessMessage(res.data.message));
             dispatch(indicatorStore.sagaGetList());
+            dispatch(indicatorStore.actions.setLoadingPage(false));
          })
          .catch((error) => {
             dispatch(commonStore.actions.setErrorMessage(error.message));
+            dispatch(indicatorStore.actions.setLoadingPage(false));
          });
    };
 
@@ -169,7 +172,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
          draggable
          fullWidth={true}
          maxWidth="lg"
-         PaperProps={{ sx: { borderRadius: '4px', paddingBottom: 3 } }}
+         PaperProps={{ sx: { borderRadius: '4px', paddingBottom: 3, zIndex: 10 } }}
       >
          <Typography variant="h5" sx={{ marginTop: 2, marginLeft: 4 }}>
             {isCreate ? t('button.create') : t('competitors.edit')} {t('competitors.competitor')}

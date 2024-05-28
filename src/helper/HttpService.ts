@@ -188,11 +188,12 @@ class HttpService<GetList = any> {
 
    put = <T = any>(
       endpoint: string,
+      params = {} as Record<string, any>,
       data = {} as Record<string, any>,
       context: GetServerSidePropsContext = null
    ) => {
       this.saveToken(context);
-      return this.instance.put<T>(endpoint, data);
+      return this.instance.put<T>(endpoint, data, { params });
    };
 
    updateFile = <T = any>(
