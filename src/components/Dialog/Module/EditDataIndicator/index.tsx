@@ -1,5 +1,6 @@
 import indicatorApi from '@/api/indicators.api';
 import { AppAutocomplete, AppNumberField, AppTextField } from '@/components/App';
+import AutoCompleteHasCreateNew from '@/components/App/AutocompleteWithCreateNew';
 import { commonStore, indicatorStore } from '@/store/reducers';
 import { Button, Dialog, Grid, TextField, Typography, styled } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
@@ -117,6 +118,44 @@ const StyleAppNumerField = styled(AppNumberField)(() => ({
    },
 }));
 
+const StyledAutoCompleteHasCreateNew = styled(AutoCompleteHasCreateNew)(() => ({
+   '& .MuiTextField-root': {
+      maxHeight: 38,
+   },
+   '& .MuiAutocomplete-tag': {
+      marginLeft: 5,
+   },
+   '& .MuiInputBase-root': {
+      height: 38,
+      backgroundColor: '#f5f7fa',
+      border: '1px solid #eef1f6',
+      borderRadius: 5,
+   },
+   '& .MuiOutlinedInput-notchedOutline': {
+      border: '1px solid #eef1f6',
+      borderRadius: 5,
+   },
+   '& .MuiOutlinedInput-input': {
+      boxSizing: 'inherit',
+   },
+   '& input': {
+      height: 38,
+      fontSize: 14,
+   },
+   '& .MuiInputLabel-root': {
+      transform: 'translate(14px, 1px) scale(1)',
+      position: 'absolute',
+      top: 10,
+   },
+   '& .MuiInputLabel-shrink': {
+      transform: 'translate(15px, -18px) scale(0.8)',
+      fontSize: 14,
+      backgroundColor: '#f5f7fa',
+      padding: '0 7px 0 5px',
+      borderRadius: 999,
+   },
+}));
+
 const EditDataIndicator: React.FC<any> = (props) => {
    const { open, onClose, data, setData, isCreate, setOpenConfirmDeleteDialog } = props;
    const dispatch = useDispatch();
@@ -164,6 +203,8 @@ const EditDataIndicator: React.FC<any> = (props) => {
    const handleOpenConfirmDeleteDialog = () => {
       setOpenConfirmDeleteDialog(true);
    };
+
+   console.log(data);
 
    return (
       <Dialog
@@ -354,6 +395,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      label={t('competitors.competitorPricing')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'competitorPricing')}
                      value={data?.competitorPricing}
+                     prefix="$ "
                   />
                </Grid>
                <Grid item xs={3}>
@@ -361,6 +403,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      label={t('competitors.dealerPricingPremium')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'dealerPremiumPercentage')}
                      value={data?.dealerPremiumPercentage}
+                     prefix="$ "
                   />
                </Grid>
                <Grid item xs={3}>
@@ -368,6 +411,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      label={t('competitors.dealerNet')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'dealerNet')}
                      value={data?.dealerNet}
+                     prefix="$ "
                   />
                </Grid>
 
@@ -384,6 +428,22 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      label={t('competitors.marketShare')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'marketShare')}
                      value={data?.marketShare}
+                     suffix="%"
+                  />
+               </Grid>
+               <Grid item xs={3}>
+                  <StyledAutoCompleteHasCreateNew
+                     value={data?.category}
+                     options={initDataFilter.categories}
+                     label={t('filters.category')}
+                     onChange={(e, option) => handleChangeDataFilter(option.value, 'category')}
+                     limitTags={2}
+                     disableListWrap
+                     primaryKeyOption="value"
+                     disableCloseOnSelect
+                     disableClearable={false}
+                     renderOption={(prop, option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
             </Grid>
