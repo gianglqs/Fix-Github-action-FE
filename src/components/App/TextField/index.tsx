@@ -47,7 +47,7 @@ const AppTextField: React.FC<AppTextFieldProps> = (props) => {
    const debouceHandleOnChange = useCallback(
       _.debounce((event, value) => {
          onChange(event);
-      }, 700),
+      }, 400),
       [onChange]
    );
 

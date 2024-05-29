@@ -225,9 +225,9 @@ export default function ResidualValue() {
       });
    };
 
-   const handleChangeYear = (years: any) => {
-      setDataFilter((prev) => ({ ...prev, years }));
-      selectResidualValueByYears(years);
+   const handleChangeYear = (year: any) => {
+      setDataFilter((prev) => ({ ...prev, year }));
+      selectResidualValueByYears(year);
    };
 
    const selectResidualValueByYears = (years: string) => {
@@ -327,8 +327,8 @@ export default function ResidualValue() {
                      value={dataFilter.price}
                      onChange={(e) => handleChangeDataFilter(Number(e.value), 'price')}
                      name="freightAdj"
-                     label={`${t('table.averageSellingPrice')} ('000 USD)`}
-                     placeholder="Average Selling Price ('000 USD)"
+                     label={`${t('table.averageSellingPrice')}`}
+                     placeholder={`${t('table.averageSellingPrice')}`}
                      prefix="$"
                   />
                </Grid>

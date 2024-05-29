@@ -398,7 +398,6 @@ const FullCostAOPRateBox = (props) => {
                      : data.annually?.plant == 'SN'
                        ? `${t('quotationMargin.manufacturingCost')} (USD)`
                        : `${t('quotationMargin.manufacturingCost')} `}
-                  {valueCurrency ? `(${valueCurrency})` : ''}
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>

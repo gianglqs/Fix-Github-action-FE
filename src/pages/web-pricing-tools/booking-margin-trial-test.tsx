@@ -790,46 +790,6 @@ export default function Shipment() {
                   </Grid>
                </Grid>
             )}
-            <Grid
-               container
-               spacing={1}
-               sx={{ marginTop: 1, display: 'flex', justifyContent: 'center' }}
-            >
-               <Grid item xs={2.5}>
-                  <Paper
-                     elevation={2}
-                     sx={{ ...componentType, backgroundColor: 'rgba(232, 192, 86, 0.8)' }}
-                  >
-                     <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                        Pricing Team Booking Margin
-                     </Typography>
-                  </Paper>
-               </Grid>
-               <Grid item xs={2.5}>
-                  <Paper
-                     elevation={2}
-                     sx={{ ...componentType, backgroundColor: 'rgba(255, 204, 153, 0.8)' }}
-                  >
-                     <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                        FP&A Team Est. Billing Margin
-                     </Typography>
-                  </Paper>
-               </Grid>
-               <Grid item xs={2.5}>
-                  <Paper
-                     elevation={2}
-                     sx={{
-                        ...componentType,
-
-                        backgroundColor: 'rgba(0, 153, 76, 0.6)',
-                     }}
-                  >
-                     <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                        Actual
-                     </Typography>
-                  </Paper>
-               </Grid>
-            </Grid>
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
