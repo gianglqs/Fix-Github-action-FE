@@ -327,8 +327,8 @@ export default function ResidualValue() {
                      value={dataFilter.price}
                      onChange={(e) => handleChangeDataFilter(Number(e.value), 'price')}
                      name="freightAdj"
-                     label={`${t('table.averageSellingPrice')} ('000 USD)`}
-                     placeholder="Average Selling Price ('000 USD)"
+                     label={`${t('table.averageSellingPrice')}`}
+                     placeholder="Average Selling Price"
                      prefix="$"
                   />
                </Grid>
