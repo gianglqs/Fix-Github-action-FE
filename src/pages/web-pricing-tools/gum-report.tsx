@@ -5,7 +5,6 @@ import { Grid } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { GridColumnGroupingModel } from '@mui/x-data-grid-pro';
 import { CellText } from '@/components/DataTable/CellColor';
-import AppAutocomplete from '@/components/App/Autocomplete';
 import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
 //hooks
 import React, { useEffect, useState } from 'react';
@@ -17,36 +16,32 @@ import { GetServerSidePropsContext } from 'next';
 import { GridColDef } from '@mui/x-data-grid-pro';
 //store
 import { gumStore } from '@/store/reducers';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 //libs
 import _ from 'lodash';
 //other
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { formatNumbericColumn } from '@/utils/columnProperties';
-export  function NumericCell({value,type,fix=1}) {
-  if (value == null || typeof value != 'number') return <span></span>
-  if(value<0) {
-   return (
-      <span>
-      {type == 'NUMERIC' && value && `(${-value.toFixed(fix)})`}
-      {type == 'PERCENTAGE' &&
-         value &&
-         `(${-(value*100).toFixed(fix)}%)`}
-    </span>
-    )
-  }
-  return (
-    <span>
-    {type == 'NUMERIC' && value && value.toFixed(fix)}
-    {type == 'PERCENTAGE' &&
-       value &&
-       `${(value*100).toFixed(fix)}%`}
- </span>
-  )
-}
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
+}
+export function NumericCell({ value, type, fix = 1 }) {
+   if (value == null || typeof value != 'number') return <span></span>;
+   if (value < 0) {
+      return (
+         <span>
+            {type == 'NUMERIC' && value && `(${-value.toFixed(fix)})`}
+            {type == 'PERCENTAGE' && value && `(${-(value * 100).toFixed(fix)}%)`}
+         </span>
+      );
+   }
+   return (
+      <span>
+         {type == 'NUMERIC' && value && value.toFixed(fix)}
+         {type == 'PERCENTAGE' && value && `${(value * 100).toFixed(fix)}%`}
+      </span>
+   );
 }
 interface StatsTableProps {
    rows: any[];
@@ -75,19 +70,18 @@ export default function GumReport() {
    const [segments, setSegments] = useState([]);
    const [regions, setRegions] = useState([]);
    //const [gumStats, setGumStats] = useState({});
-   const gumStats = useSelector(gumStore.selectStatsData)
+   const gumStats = useSelector(gumStore.selectStatsData);
    const dispatch = useDispatch();
-  const [filter,setFilter] = useState({})
    //handle change when filter by month
    const handleChangeDataFilter = (newMonth) => {
       const date = new Date(newMonth);
       const month = date.getMonth() + 1;
       const year = date.getFullYear();
-      dispatch(gumStore.actions.setDataFilter({month, year}));
+      dispatch(gumStore.actions.setDataFilter({ month, year }));
       dispatch(gumStore.sagaGetList());
    };
    useEffect(() => {
-      dispatch(gumStore.actions.setDataFilter({month:3, year: 2023}));
+      dispatch(gumStore.actions.setDataFilter({ month: 3, year: 2023 }));
       dispatch(gumStore.sagaGetList());
       gumApi.getGumColums().then((rst) => {
          console.log(rst);
@@ -95,7 +89,6 @@ export default function GumReport() {
          setSegments(segments);
          setRegions(regions.filter((region) => region != 'China'));
       });
-
    }, []);
 
    //columns format
@@ -122,9 +115,7 @@ export default function GumReport() {
          sortable: false,
          ...formatNumbericColumn,
          renderCell(params) {
-            return (
-              <NumericCell value ={params.row[region]} type ={type} fix ={fix} />
-            );
+            return <NumericCell value={params.row[region]} type={type} fix={fix} />;
          },
          minWidth: 100,
       })),
@@ -135,9 +126,7 @@ export default function GumReport() {
          ...formatNumbericColumn,
          renderCell(params) {
             const total = params.row['total'];
-            return (
-              <NumericCell value ={total} type ={type} fix ={fix} />
-            );
+            return <NumericCell value={total} type={type} fix={fix} />;
          },
          minWidth: 100,
       },
@@ -145,65 +134,64 @@ export default function GumReport() {
 
    const tablesFormat = [
       {
-         title: 'Est. Bookings Revenue $M - At AOP 2024 Conditions',
+         title: t('gumReport.bookingRevenue'),
          datafield: 'bookings-revenue',
          format: {
             type: 'NUMERIC',
          },
       },
       {
-         title: 'Est. Actual Bookings Adj Revenue $M - Price and Cost adjusted',
+         title: t('gumReport.actualBookingRevenue'),
          datafield: 'actual-bookings-adj-revenue',
          format: {
             type: 'NUMERIC',
          },
       },
       {
-         title: 'Fav/(Unfav) Bkgs Adj Revenue $M',
+         title: t('gumReport.bkgsAdjRevenue'),
          datafield: 'fav-unfav-bkgs-adj-revenue',
          format: {
             type: 'NUMERIC',
          },
       },
       {
-         title: 'Est. Bookings Std Margin $M - At AOP 2024 Conditions',
+         title: t('gumReport.bookingStdMargin'),
          datafield: 'booking-std-margin',
          format: {
             type: 'NUMERIC',
          },
       },
       {
-         title: 'Est. Actual Bookings Adj Margin $M - Price and Cost adjusted',
+         title: t('gumReport.actualBookingAdjMargin'),
          datafield: 'actual-bookings-adj-margin',
          format: {
             type: 'NUMERIC',
          },
       },
       {
-         title: 'Fav/(Unfav) Bkgs Adj Margin $M',
+         title: t('gumReport.bkgsAdjMargin'),
          datafield: 'fav-unfav-bkgs-adj-margin',
          format: {
             type: 'NUMERIC',
             fix: 1,
          },
-      }
-      ,
+      },
       {
-         title: 'Est. Actual Bkings Std Margin % - At AOP 2024 Conditions',
+         title: t('gumReport.actualBkingStdMargin'),
          datafield: 'actual-bkings-std-margin',
          format: {
-          type: 'PERCENTAGE',
+            type: 'PERCENTAGE',
          },
       },
       {
-         title: 'Est. Actual Bkings Adj Margin % - Price and Cost adjusted',
+         title: t('gumReport.actualBkingAdjMargin'),
          datafield: 'actual-bkings-adj-margin',
          format: {
             type: 'PERCENTAGE',
          },
       },
       {
-         title: 'Apr- YTD Actual Bookings',
+         title: t('gumReport.YTDActualBooking'),
          datafield: 'YTD-actual-bookings',
          format: {
             type: 'NUMERIC',
@@ -228,10 +216,10 @@ export default function GumReport() {
          const row = { id: i, segment: segments[i] };
          regions.forEach((region) => {
             row[region] = gumStats?.[region]?.[segment]?.[datafield] ?? 0;
-            row['total'] = gumStats?.['total']?.[segment]?.[datafield]?? 0;
-            totalRow[region] = gumStats?.[region]?.totalClasses?.[datafield]??0;
+            row['total'] = gumStats?.['total']?.[segment]?.[datafield] ?? 0;
+            totalRow[region] = gumStats?.[region]?.totalClasses?.[datafield] ?? 0;
          });
-         totalRow['total'] = gumStats?.['total']?.totalClass?.[datafield] ??0;
+         totalRow['total'] = gumStats?.['total']?.totalClass?.[datafield] ?? 0;
          rows.push(row);
       });
       rows.push(totalRow);
@@ -249,11 +237,11 @@ export default function GumReport() {
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <DatePicker
                      onMonthChange={handleChangeDataFilter}
-                     defaultValue={new Date(2023,3)}
+                     defaultValue={new Date(2023, 3)}
                      maxDate={new Date()}
                      minDate={new Date('2020-03-01')}
                      views={['year', 'month']}
-                     label="Basic date picker"
+                     label={t('filters.monthYear')}
                   />
                </Grid>
             </Grid>

@@ -259,7 +259,17 @@
       "marginAfterDiscount": "Margin After Discount",
       "marginAfterDiscount%": "% Margin After Discount"
    },
-
+   "gumReport": {
+      "bookingRevenue": "Doanh thu đặt hàng ước tính (triệu đô la Mỹ)",
+      "actualBookingRevenue": "Est. Actual Bookings Adj Revenue $M - Price and Cost adjusted",
+      "bkgsAdjRevenue": "Fav/(Unfav) Bkgs Adj Revenue $M",
+      "bookingStdMargin": "Est. Bookings Std Margin $M",
+      "actualBookingAdjMargin": "Est. Actual Bookings Adj Margin $M - Price and Cost adjusted",
+      "bkgsAdjMargin": "Fav/(Unfav) Bkgs Adj Margin $M",
+      "actualBkingStdMargin": "Est. Actual Bkings Std Margin %",
+      "actualBkingAdjMargin": "Est. Actual Bkings Adj Margin % - Price and Cost adjusted",
+      "YTDActualBooking": "YTD Actual Bookings"
+   },
    "yes": "Yes",
    "no": "No",
    "or": "OR",
