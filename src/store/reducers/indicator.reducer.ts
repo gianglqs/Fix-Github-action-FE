@@ -25,6 +25,7 @@ export const initialState = {
    serverTimeZone: '' as any,
    lastUpdatedTime: '' as any,
    lastUpdatedBy: '' as any,
+   loadingPage: false as boolean,
 };
 
 const indicatorSlice = createSlice({
@@ -69,6 +70,9 @@ const indicatorSlice = createSlice({
       },
       setLastUpdatedBy(state, { payload }: PayloadAction<any[]>) {
          state.lastUpdatedBy = payload;
+      },
+      setLoadingPage(state, { payload }: PayloadAction<boolean>) {
+         state.loadingPage = payload;
       },
    },
    extraReducers: {
@@ -115,5 +119,6 @@ export const selectServerTimeZone = createSelector(selectState, (state) => state
 export const selectLastUpdatedTime = createSelector(selectState, (state) => state.lastUpdatedTime);
 
 export const selectLastUpdatedBy = createSelector(selectState, (state) => state.lastUpdatedBy);
+export const selectLoadingPage = createSelector(selectState, (state) => state.loadingPage);
 
 export default indicatorSlice;

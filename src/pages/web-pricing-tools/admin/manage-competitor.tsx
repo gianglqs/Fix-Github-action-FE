@@ -2,7 +2,9 @@ import { AccountCircle } from '@mui/icons-material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MenuIcon from '@mui/icons-material/Menu';
 import {
+   Backdrop,
    Button,
+   CircularProgress,
    Dialog,
    DialogActions,
    DialogContent,
@@ -129,6 +131,7 @@ export default function ImportTracking() {
    const getDataForTable = useSelector(indicatorStore.selectIndicatorList);
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
    const [loadingTable, setLoadingTable] = useState(false);
+   const loadingPage = useSelector(indicatorStore.selectLoadingPage);
 
    useEffect(() => {
       setUserName(cookies['name']);
@@ -797,6 +800,12 @@ export default function ImportTracking() {
             onClose={handleCloseConfirmDeleteDialog}
             handleDelete={handleDeleteCompetitor}
          />
+         <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 999 }}
+            open={loadingPage}
+         >
+            <CircularProgress color="inherit" />
+         </Backdrop>
       </>
    );
 }

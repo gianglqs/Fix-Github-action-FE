@@ -107,8 +107,8 @@ class IndicatorApi extends HttpService<any> {
       return this.get<any>('get-competitor-by-id', { id });
    };
 
-   updateCompetitor = (competitor: any) => {
-      return this.put<any>('create-update-competitor', competitor);
+   updateCompetitor = (isCreate: boolean, competitor: any) => {
+      return this.put<any>('create-update-competitor', { isCreate }, competitor);
    };
 
    deleteCompetitor = (id: any) => {
