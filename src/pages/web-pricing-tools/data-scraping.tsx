@@ -38,7 +38,7 @@ export default function DataScraping() {
             setProductList(products);
          })
          .catch((error) => {
-            dispatch(commonStore.actions.setErrorMessage('Error on scraping data'));
+            dispatch(commonStore.actions.setErrorMessage('Technical issue on our end. We apologize for the inconvenience. Please try again later or contact our support team for assistance.'));
          })
          .finally(() => {
             setLoading(false);

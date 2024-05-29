@@ -514,7 +514,7 @@ export default function Shipment() {
          setLoading(true);
          handleUploadFile(uploadedFile[0]);
       } else {
-         dispatch(commonStore.actions.setErrorMessage('No file choosed'));
+         dispatch(commonStore.actions.setErrorMessage(t('commonErrorMessage.selectAFileToUpload')));
       }
    };
 

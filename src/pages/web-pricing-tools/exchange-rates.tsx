@@ -123,7 +123,7 @@ export default function ExchangeRate() {
       await exchangeRatesApi
          .uploadExchangeRate(formData)
          .then(() => {
-            dispatch(commonStore.actions.setSuccessMessage('Upload Exchange Rate successfully'));
+            dispatch(commonStore.actions.setSuccessMessage('Uploaded successfully'));
          })
          .catch((error) => {
             console.log(error);

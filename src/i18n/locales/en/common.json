@@ -287,6 +287,11 @@
       "marginAfterDiscount%": "% Margin After Discount"
    },
 
+   "commonErrorMessage": {
+      "selectAFileToUpload": "Please select a file to upload.",
+      "uploadSelectOnlyOneFileAtATime": "Please select only one file at a time."     
+   },
+
    "yes": "Yes",
    "no": "No",
    "or": "OR",
