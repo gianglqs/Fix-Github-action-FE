@@ -78,6 +78,7 @@ export default function MarginAnalysis() {
                   type: !dataFilter.type ? 0 : dataFilter.type,
                   currency: dataFilter.currency,
                },
+
                fileUUID: fileUUID,
                orderNumber: !dataFilter.orderNumber ? '' : dataFilter.orderNumber,
                plant: 'SN',
@@ -117,6 +118,9 @@ export default function MarginAnalysis() {
 
          dispatch(marginAnalysisStore.actions.setMarginData(marginData));
          dispatch(marginAnalysisStore.actions.setRequestId(undefined));
+         dispatch(
+            marginAnalysisStore.actions.setCurrency(data.MarginAnalystSummary.annually.id.currency)
+         );
 
          setLoading(false);
       } catch (error) {
@@ -213,6 +217,17 @@ export default function MarginAnalysis() {
          });
    };
 
+   const getCurrencyForManufacturingCost = (data: any) => {
+      return data?.fileUUID != null
+         ? data?.plant == 'HYM' ||
+           data?.plant == 'Ruyi' ||
+           data?.plant == 'Staxx' ||
+           data?.plant == 'Maximal'
+            ? `${t('quotationMargin.manufacturingCost')} (RMB)`
+            : `${t('quotationMargin.manufacturingCost')} (USD)`
+         : `${t('quotationMargin.manufacturingCost')}`;
+   };
+
    const columns = [
       {
          field: 'quoteNumber',
@@ -279,7 +294,7 @@ export default function MarginAnalysis() {
       {
          field: 'manufacturingCost',
          flex: 0.7,
-         headerName: t('quotationMargin.manufacturingCost'), //+ ` (${dataFilter.currency})`,
+         headerName: `${getCurrencyForManufacturingCost(marginCalculateData.marginAnalysisSummary?.monthly)}`, //+ ` (${dataFilter.currency})`,
          headerAlign: 'right',
          align: 'right',
       },
@@ -353,6 +368,7 @@ export default function MarginAnalysis() {
    const setFileName = (fileName: string) => {
       dispatch(marginAnalysisStore.actions.setFileName(fileName));
    };
+   console.log();
 
    return (
       <>
@@ -616,11 +632,11 @@ export default function MarginAnalysis() {
 
                <ForUSPricingBox
                   data={marginCalculateData.marginAnalysisSummary?.annually}
-                  title={'For US Pricing @ AOP rate'}
+                  title={t('quotationMargin.forUSPricing')}
                />
                <ForUSPricingBox
                   data={marginCalculateData.marginAnalysisSummary?.monthly}
-                  title={'For US Pricing @ Monthly rate'}
+                  title={t('quotationMargin.forUSPricing')}
                />
             </Grid>
 
@@ -824,7 +840,7 @@ const FullCostAOPRateBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency || ''} @ AOP Rate`}
+                  {`${t('quotationMargin.AOPExchangeRate')} ${valueCurrency || ''}`}
                </Typography>
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                   {data?.fullCostAOPRate.toLocaleString()}
@@ -936,7 +952,7 @@ const FullCostAOPRateBoxMonthly = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency || ''} @ Monthly Rate`}
+                  {`${t('quotationMargin.monthlyExchangeRate')} ${valueCurrency || ''}`}
                </Typography>
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                   {data?.fullCostAOPRate.toLocaleString()}

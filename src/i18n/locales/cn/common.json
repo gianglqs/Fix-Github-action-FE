@@ -2,6 +2,7 @@
    "navBar": {
       "dashboard": "仪表板",
       "competitors": "竞争对手",
+      "manageIndicator": "管理竞争对手",
       "users": "用户",
       "historicalImporting": "历史导入",
       "importTracking": "进口追踪"
@@ -95,7 +96,10 @@
       "fromExchangeRateApi": "来自 exchangerate-api.com",
       "scrape": "抓取",
       "save": "保存",
-      "close": "关闭"
+      "close": "关闭",
+      "update": "更多的",
+      "delete": "擦除",
+      "add": "更多的"
    },
 
    "table": {
@@ -134,6 +138,7 @@
       "originalMarginPercentage": "原始利润率",
       "adjustedCost": "调整后成本",
       "adjustedFreight": "运费",
+      "averageSellingPrice": "平均售价",
       "adjustedFX": "调整汇率",
       "totalManualAdjCost": "总手动调整成本",
       "adjustedDealerNet": "调整后经销商净价",
@@ -178,14 +183,33 @@
       "lowPrice": "最低价格",
       "highLeadTime": "最长交货时间",
       "lowLeadTime": "最短交货时间",
-      "competitorLegendColor": "竞争对手图例颜色"
+      "competitorLegendColor": "竞争对手图例颜色",
+      "edit": "编辑",
+      "region": "地区",
+      "plant": "植物",
+      "class": "潘禄",
+      "series": "Series",
+      "actual": "实际的",
+      "aopf": "AOPF",
+      "lrff": "LRFF",
+      "dealerNet": "价格",
+      "battery": "电池",
+      "tonnage": "有效载荷",
+      "origin": "来源",
+      "tableTitle": "表标题",
+      "marketShare": "市场份额",
+      "updateDate": "更新时间",
+      "model": "样本",
+      "competitor": "竞争者"
    },
 
    "quotationMargin": {
       "totalListPrice": "总列表价格",
       "blendedDiscountPercentage": "混合折扣率 %",
       "marginPercentageAOPRate": "AOP利润率 @利率",
-      "marginAnalysisAOPRate": "利润分析 @ AOP利润率",
+      "marginPercentageAOPRateInDialog": "利润 %",
+      "marginAnalysisAOPRate": "利润分析",
+      "fullCost": "全部费用",
       "marignAnalysisMonthlyRate": "利润分析 @ 月利率",
       "costUplift": "成本提升",
       "manufacturingCost": "制造成本",
@@ -194,8 +218,11 @@
       "duty": "关税",
       "freight": "运费",
       "liIonIncluded": "包括 Li-Ion B 或 C",
-      "fullCost": "全成本",
-      "forUSPricing": "用于美国定价 @ AOP利润率",
+      "AOPExchangeRate": "AOP 汇率 ",
+      "AOPrate": "AOP 汇率",
+      "monthlyRate": "每月汇率",
+      "monthlyExchangeRate": "每月汇率",
+      "forUSPricing": "对于美国定价",
       "excludingFreight": "不包括运费",
       "withFreight": "包括运费",
       "targetMarginPercentage": "目标利润率",

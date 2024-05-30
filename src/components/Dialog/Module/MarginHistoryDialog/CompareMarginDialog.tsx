@@ -27,6 +27,7 @@ export default function CompareMarginDialog(props) {
 
    const loadHistoryMargin = async () => {
       const { data } = await marginAnalysisApi.listHistoryMargin({});
+
       setOpenHistory({
          open: true,
          data: data?.historicalMargin,
@@ -161,6 +162,7 @@ export default function CompareMarginDialog(props) {
 
 const MarginInformationBox = (props) => {
    const { data } = props;
+
    const { t } = useTranslation();
 
    return (
@@ -177,7 +179,7 @@ const MarginInformationBox = (props) => {
 
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  Type
+                  #
                </Typography>
                <Typography variant="body1" component="span">
                   {data.annually?.id.type}
@@ -230,6 +232,20 @@ const MarginPercentageAOPRateBox = (props) => {
    return (
       <Grid item xs={6}>
          <Paper elevation={3} sx={{ padding: 2, height: 'fit-content' }}>
+            <Grid
+               item
+               xs={6}
+               className="space-between-element"
+               sx={{ display: 'flex', marginLeft: '260px', marginBottom: '7px' }}
+            >
+               <Typography sx={{ fontWeight: 'bold' }} variant="body1">
+                  {t('quotationMargin.AOPrate')}
+               </Typography>
+               <Typography sx={{ fontWeight: 'bold' }} variant="body1">
+                  {t('quotationMargin.monthlyRate')}
+               </Typography>
+            </Grid>
+
             <div className="space-between-element">
                <Typography
                   sx={{ fontWeight: 'bold', marginLeft: 1 }}
@@ -317,7 +333,7 @@ const MarginPercentageAOPRateBox = (props) => {
                   component="span"
                   sx={{ fontWeight: 'bold', marginLeft: 1 }}
                >
-                  {t('quotationMargin.marginPercentageAOPRate')}{' '}
+                  {t('quotationMargin.marginPercentageAOPRateInDialog')}{' '}
                </Typography>
                <div className="space-between-element" style={{ width: '50%' }}>
                   <Typography
@@ -382,7 +398,6 @@ const FullCostAOPRateBox = (props) => {
                      : data.annually?.plant == 'SN'
                        ? `${t('quotationMargin.manufacturingCost')} (USD)`
                        : `${t('quotationMargin.manufacturingCost')} `}
-                  {valueCurrency ? `(${valueCurrency})` : ''}
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>
@@ -525,7 +540,7 @@ const FullCostAOPRateBox = (props) => {
             </div>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  {`${t('quotationMargin.fullCost')} ${valueCurrency || ''} @AOP Rate`}
+                  {`${t('quotationMargin.fullCost')} ${valueCurrency || ''}`}
                </Typography>
 
                <div className="space-between-element" style={{ width: '50%' }}>
@@ -551,7 +566,7 @@ const ForUSPricingBox = (props) => {
          <Paper elevation={3} sx={{ padding: 2, height: 'fit-content' }}>
             <div className="space-between-element">
                <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                  For US Pricing @ AOP rate
+                  {t('quotationMargin.forUSPricing')}
                </Typography>
             </div>
             <div className="space-between-element">

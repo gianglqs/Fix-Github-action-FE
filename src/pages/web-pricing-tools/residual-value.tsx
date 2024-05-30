@@ -225,9 +225,9 @@ export default function ResidualValue() {
       });
    };
 
-   const handleChangeYear = (years: any) => {
-      setDataFilter((prev) => ({ ...prev, years }));
-      selectResidualValueByYears(years);
+   const handleChangeYear = (year: any) => {
+      setDataFilter((prev) => ({ ...prev, year }));
+      selectResidualValueByYears(year);
    };
 
    const selectResidualValueByYears = (years: string) => {
@@ -319,6 +319,17 @@ export default function ResidualValue() {
                      disableCloseOnSelect
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
+                  />
+               </Grid>
+
+               <Grid item xs={2}>
+                  <AppNumberField
+                     value={dataFilter.price}
+                     onChange={(e) => handleChangeDataFilter(Number(e.value), 'price')}
+                     name="freightAdj"
+                     label={`${t('table.averageSellingPrice')}`}
+                     placeholder={`${t('table.averageSellingPrice')}`}
+                     prefix="$"
                   />
                </Grid>
 

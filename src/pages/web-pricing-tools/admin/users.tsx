@@ -22,7 +22,7 @@ import { commonStore, userStore } from '@/store/reducers';
 import { createAction } from '@reduxjs/toolkit';
 import { useRouter } from 'next/router';
 
-import { iconColumn } from '@/utils/columnProperties';
+import { centerColumn, iconColumn } from '@/utils/columnProperties';
 import dashboardApi from '@/api/dashboard.api';
 
 import { AppFooter, AppSearchBar, DataTable, DataTablePagination, EditIcon } from '@/components';
@@ -49,6 +49,7 @@ interface AppBarProps extends MuiAppBarProps {
 import { GetServerSidePropsContext } from 'next';
 import { formatDate } from '@/utils/formatCell';
 import { useTranslation } from 'react-i18next';
+import { DataGridPro } from '@mui/x-data-grid-pro';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageAdmin(context);
@@ -277,8 +278,6 @@ export default function Dashboard() {
          field: 'role',
          flex: 0.4,
          headerName: t('user.role'),
-         headerAlign: 'center',
-         align: 'center',
          renderCell(params) {
             return <span>{params.row.role.roleName}</span>;
          },
@@ -287,8 +286,7 @@ export default function Dashboard() {
          field: 'lastLogin',
          flex: 0.4,
          headerName: t('user.lastLogin'),
-         headerAlign: 'center',
-         align: 'center',
+         ...centerColumn,
          renderCell(params) {
             return <span>{formatDate(params?.row?.lastLogin)}</span>;
          },
@@ -298,8 +296,7 @@ export default function Dashboard() {
          field: 'active',
          flex: 0.4,
          headerName: t('user.status'),
-         headerAlign: 'center',
-         align: 'center',
+         ...centerColumn,
          renderCell(params) {
             return (
                <Button
@@ -320,8 +317,7 @@ export default function Dashboard() {
          field: 'id',
          headerName: t('user.edit'),
          flex: 0.4,
-         headerAlign: 'center',
-         align: 'center',
+         ...centerColumn,
          renderCell(params) {
             return <EditIcon onClick={() => handleOpenUpdateUserDialog(params.row.id)} />;
          },
@@ -454,8 +450,8 @@ export default function Dashboard() {
                   <AppSearchBar onSearch={handleSearch} placeholder={t('search')}></AppSearchBar>
                </Grid>
                <Paper elevation={1} sx={{ marginTop: 2 }}>
-                  <Grid container sx={{ height: 'calc(100vh - 275px)', minHeight: '200px' }}>
-                     <DataTable
+                  <Grid container sx={{ height: 'calc(100vh - 255px)', minHeight: '200px' }}>
+                     <DataGridPro
                         sx={{
                            '& .MuiDataGrid-columnHeaderTitle': {
                               textOverflow: 'clip',
@@ -468,8 +464,6 @@ export default function Dashboard() {
                         disableColumnMenu
                         rowHeight={50}
                         rows={listUser}
-                        rowBuffer={35}
-                        rowThreshold={25}
                         columns={columns}
                         getRowId={(params) => params.id}
                      />

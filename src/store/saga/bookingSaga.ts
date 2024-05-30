@@ -4,7 +4,7 @@ import { select, call, all } from 'typed-redux-saga';
 import bookingApi from '@/api/booking.api';
 import { parseCookies } from 'nookies';
 
-function* fetchBooking() {
+function* getDataBooking() {
    try {
       const { defaultValueFilterOrder } = yield* all({
          defaultValueFilterOrder: select(bookingStore.selectDefaultValueFilterBooking),
@@ -23,41 +23,56 @@ function* fetchBooking() {
          tableState: select(commonStore.selectTableState),
       });
 
-      const { data } = yield* call(bookingApi.getListData, dataFilter, {
+      const currency = yield* select(bookingStore.selectCurrency);
+
+      const res = yield* call(bookingApi.getListData, dataFilter, {
          pageNo: tableState.pageNo,
          perPage: tableState.perPage,
+         currency,
       });
 
       const initDataFilter = yield* call(bookingApi.getInitDataFilter);
 
-      const dataBooking = JSON.parse(String(data)).listBookingOrder;
-      const dataTotalRow = JSON.parse(String(data)).total;
-      const dataExchangeRate = JSON.parse(String(data)).listExchangeRate;
-      const dataNearestExchangeRate = JSON.parse(String(data)).listNearestExchangeRate;
-      const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
-      const dataLastUpdatedTime = JSON.parse(String(data)).lastUpdatedTime;
-      const dataLastUpdatedBy = JSON.parse(String(data)).lastUpdatedBy;
+      const data = JSON.parse(String(res.data));
+
+      const dataBooking = data.data.listBookingOrder;
+      const dataTotalRow = data.data.total;
+      const dataServerTimeZone = data.data.serverTimeZone;
+      const dataLastUpdatedAt = data.data.lastUpdatedTime;
+      const dataLastUpdatedBy = data.data.lastUpdatedBy;
+      const totalItems = data.data.totalItems;
 
       yield put(bookingStore.actions.setDataFilter(dataFilter));
       yield put(bookingStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
       yield put(bookingStore.actions.setBookingList(dataBooking));
       yield put(bookingStore.actions.setTotalRow(dataTotalRow));
-      yield put(bookingStore.actions.setExchangeRateList(dataExchangeRate));
       yield put(bookingStore.actions.setServerTimeZone(dataServerTimeZone));
-      yield put(bookingStore.actions.setLastUpdatedTime(dataLastUpdatedTime));
+      yield put(bookingStore.actions.setLastUpdatedTime(dataLastUpdatedAt));
       yield put(bookingStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
-      yield put(bookingStore.actions.setNearestExchangeRateList(dataNearestExchangeRate));
 
-      yield put(
-         commonStore.actions.setTableState({
-            totalItems: JSON.parse(String(data)).totalItems,
-         })
-      );
+      yield put(commonStore.actions.setTableState({ totalItems }));
    } catch (error) {}
 }
 
-function* dashboardSaga() {
-   yield takeEvery(bookingStore.sagaGetList, fetchBooking);
+function* switchCurrency() {
+   try {
+      let { currency } = yield* all({
+         currency: select(bookingStore.selectCurrency),
+      });
+      currency = currency === 'USD' ? 'AUD' : 'USD';
+      yield put(bookingStore.actions.setCurrency(currency));
+      yield* getDataBooking();
+   } catch (error) {
+      yield put(commonStore.actions.setErrorMessage(error.message));
+   }
 }
 
-export default dashboardSaga;
+function* switchCurrencyBooking() {
+   yield takeEvery(bookingStore.actionSwitchCurrency, switchCurrency);
+}
+
+function* fetchBooking() {
+   yield takeEvery(bookingStore.sagaGetList, getDataBooking);
+}
+
+export { switchCurrencyBooking, fetchBooking };

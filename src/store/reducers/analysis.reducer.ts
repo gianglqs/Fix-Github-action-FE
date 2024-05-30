@@ -7,7 +7,7 @@ export const name = 'margin_analysis';
 export const resetState = createAction(`${name}/RESET_STATE`);
 
 export const initialState = {
-   marginAnalystData: { listDataAnalysis: [] } as any,
+   marginAnalystData: { listDataAnalysis: [], marginAnalysisSummary: {} } as any,
    isLoadingPage: false as boolean,
    initDataFilter: {
       region: [
