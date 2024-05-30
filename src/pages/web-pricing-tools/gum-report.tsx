@@ -69,7 +69,6 @@ export default function GumReport() {
    const { t } = useTranslation();
    const [segments, setSegments] = useState([]);
    const [regions, setRegions] = useState([]);
-   //const [gumStats, setGumStats] = useState({});
    const gumStats = useSelector(gumStore.selectStatsData);
    const dispatch = useDispatch();
    //handle change when filter by month
@@ -81,9 +80,9 @@ export default function GumReport() {
       dispatch(gumStore.sagaGetList());
    };
    useEffect(() => {
-      dispatch(gumStore.actions.setDataFilter({ month: 3, year: 2023 }));
+      dispatch(gumStore.actions.setDataFilter({ month: 4, year: 2023 }));
       dispatch(gumStore.sagaGetList());
-      gumApi.getGumColums().then((rst) => {
+      gumApi.getGroupingCriteria().then((rst) => {
          console.log(rst);
          const { regions, segments } = rst?.data || {};
          setSegments(segments);
@@ -94,7 +93,7 @@ export default function GumReport() {
    //columns format
    const columns = ({
       type,
-      fix = 1,
+      fix = 2,
    }: {
       type: string;
       fix?: number;
@@ -181,6 +180,7 @@ export default function GumReport() {
          datafield: 'actual-bkings-std-margin',
          format: {
             type: 'PERCENTAGE',
+            displayBlankAsNull: true,
          },
       },
       {
@@ -188,6 +188,7 @@ export default function GumReport() {
          datafield: 'actual-bkings-adj-margin',
          format: {
             type: 'PERCENTAGE',
+            displayBlankAsNull: true,
          },
       },
       {
@@ -196,6 +197,7 @@ export default function GumReport() {
          format: {
             type: 'NUMERIC',
             fix: 0,
+            displayBlankAsNull: true,
          },
       },
    ];
@@ -209,17 +211,18 @@ export default function GumReport() {
       },
    ]);
    // extract rows of all table from response data
-   const rowsList = tablesFormat.map(({ datafield }) => {
+   const rowsList = tablesFormat.map(({ datafield ,format}) => {
       const rows = [];
       const totalRow = { id: segments.length, segment: 'Total Classes' };
+      const nullValue = !format.displayBlankAsNull && 0;
       segments.forEach((segment, i) => {
          const row = { id: i, segment: segments[i] };
          regions.forEach((region) => {
-            row[region] = gumStats?.[region]?.[segment]?.[datafield] ?? 0;
-            row['total'] = gumStats?.['total']?.[segment]?.[datafield] ?? 0;
-            totalRow[region] = gumStats?.[region]?.totalClasses?.[datafield] ?? 0;
+            row[region] = gumStats?.[region]?.[segment]?.[datafield] ??nullValue ;
+            row['total'] = gumStats?.['total']?.[segment]?.[datafield] ?? nullValue;
+            totalRow[region] = gumStats?.[region]?.totalClasses?.[datafield] ?? nullValue;
          });
-         totalRow['total'] = gumStats?.['total']?.totalClass?.[datafield] ?? 0;
+         totalRow['total'] = gumStats?.['total']?.totalClass?.[datafield] ?? nullValue;
          rows.push(row);
       });
       rows.push(totalRow);
