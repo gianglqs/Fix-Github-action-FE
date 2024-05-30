@@ -173,8 +173,10 @@ export default function Indicators() {
          setLoadingSwot(true);
       }
       try {
-         if (swotDataFilter.regions == '') {
+         console.log(swotDataFilter.regions);
+         if (!swotDataFilter.regions ) {
             setRegionError({ error: true });
+            setLoadingSwot(false);
             return;
          }
 
@@ -187,7 +189,6 @@ export default function Indicators() {
             categories: swotDataFilter.categories,
             series: swotDataFilter.series,
          });
-
          const datasets = competitiveLandscape.map((item) => {
             return {
                label: `${item.color.groupName}`,
