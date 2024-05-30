@@ -2,9 +2,7 @@ import indicatorApi from '@/api/indicators.api';
 import { AppAutocomplete, AppNumberField, AppTextField } from '@/components/App';
 import AutoCompleteHasCreateNew from '@/components/App/AutocompleteWithCreateNew';
 import { commonStore, indicatorStore } from '@/store/reducers';
-import { Button, Dialog, Grid, TextField, Typography, styled } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
-import { parseISO } from 'date-fns';
+import { Button, Dialog, Grid, Typography, styled } from '@mui/material';
 import { t } from 'i18next';
 import { produce } from 'immer';
 import _ from 'lodash';
@@ -204,8 +202,6 @@ const EditDataIndicator: React.FC<any> = (props) => {
       setOpenConfirmDeleteDialog(true);
    };
 
-   console.log(data);
-
    return (
       <Dialog
          open={open}
@@ -317,15 +313,13 @@ const EditDataIndicator: React.FC<any> = (props) => {
                   />
                </Grid>
                <Grid item xs={3}>
-                  <StyledAutoComplete
+                  <StyledAutoCompleteHasCreateNew
                      value={data?.plant}
                      options={initDataFilter.plants}
                      label={t('filters.plant')}
                      onChange={(e, option) => handleChangeDataFilter(option.value, 'plant')}
-                     limitTags={2}
-                     disableListWrap
                      primaryKeyOption="value"
-                     disableCloseOnSelect
+                     disableClearable={false}
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
@@ -347,15 +341,13 @@ const EditDataIndicator: React.FC<any> = (props) => {
                   />
                </Grid>
                <Grid item xs={3}>
-                  <StyledAutoComplete
+                  <StyledAutoCompleteHasCreateNew
                      value={data?.category}
                      options={initDataFilter.categories}
                      label={t('filters.category')}
                      onChange={(e, option) => handleChangeDataFilter(option.value, 'category')}
-                     limitTags={2}
-                     disableListWrap
                      primaryKeyOption="value"
-                     disableCloseOnSelect
+                     disableClearable={false}
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
@@ -429,21 +421,6 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      onChange={(e) => handleChangeDataFilter(e.value, 'marketShare')}
                      value={data?.marketShare}
                      suffix="%"
-                  />
-               </Grid>
-               <Grid item xs={3}>
-                  <StyledAutoCompleteHasCreateNew
-                     value={data?.category}
-                     options={initDataFilter.categories}
-                     label={t('filters.category')}
-                     onChange={(e, option) => handleChangeDataFilter(option.value, 'category')}
-                     limitTags={2}
-                     disableListWrap
-                     primaryKeyOption="value"
-                     disableCloseOnSelect
-                     disableClearable={false}
-                     renderOption={(prop, option) => `${option.value}`}
-                     getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
             </Grid>

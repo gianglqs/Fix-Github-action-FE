@@ -1,16 +1,15 @@
-import { useState, useMemo, isValidElement, useRef, useEffect } from 'react';
-import {
-   TextField,
-   Checkbox,
-   Autocomplete,
-   AutocompleteRenderInputParams,
-   Typography,
-   Box,
-} from '@mui/material';
+import React, {
+   useState,
+   useRef,
+   useEffect,
+   KeyboardEventHandler,
+   useMemo,
+   isValidElement,
+} from 'react';
+import { TextField, Autocomplete, Typography, Box, Checkbox } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { FormControllerErrorMessage } from '@/components';
 import _ from 'lodash';
-import type { AppAutocompleteProps } from './type';
+import { FormControllerErrorMessage } from '@/components';
 
 const useStyles = makeStyles((theme) => ({
    buttonGroup: {
@@ -30,7 +29,12 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
-const AppAutocomplete: React.FC<AppAutocompleteProps<any>> = (props) => {
+const createOption = (value) => ({
+   value: value,
+   type: 'create-new',
+});
+
+const AppAutocomplete = (props) => {
    const {
       error,
       helperText,
@@ -141,14 +145,15 @@ const AppAutocomplete: React.FC<AppAutocompleteProps<any>> = (props) => {
 
    const handleCreateNew = (inputValue) => {
       if (inputValue) {
-         const newOption = { [primaryKeyOption]: inputValue };
+         const newOption = createOption(inputValue);
+
          setOptions((prevOptions) => [...prevOptions, newOption]);
          setInputValue('');
          onChange(null, newOption, 'createOption', undefined);
       }
    };
 
-   const renderInput = (params: AutocompleteRenderInputParams) => {
+   const renderInput = (params) => {
       return (
          <TextField
             {...params}
@@ -174,17 +179,26 @@ const AppAutocomplete: React.FC<AppAutocompleteProps<any>> = (props) => {
 
    const filterOptions = (options, { inputValue }) => {
       const filtered = options.filter((option) =>
-         option.description.toLowerCase().includes(inputValue.toLowerCase())
+         option.value.toLowerCase().includes(inputValue.toLowerCase())
       );
 
-      if (inputValue !== '' && !filtered.some((option) => option.description === inputValue)) {
+      if (inputValue !== '' && !filtered.some((option) => option.value === inputValue)) {
          filtered.push({
-            [primaryKeyOption]: 'create-new',
-            description: `Create new "${inputValue}"`,
+            [primaryKeyOption]: `Create new "${inputValue}"`,
          });
       }
 
       return filtered;
+   };
+
+   const handleKeyDown: KeyboardEventHandler = (event) => {
+      if (!inputValue) return;
+      switch (event.key) {
+         case 'Enter':
+         case 'Tab':
+            handleCreateNew(inputValue);
+            event.preventDefault();
+      }
    };
 
    return (
@@ -209,12 +223,15 @@ const AppAutocomplete: React.FC<AppAutocompleteProps<any>> = (props) => {
             filterOptions={filterOptions}
             options={filteredOptions}
             onChange={(event, newValue, reason, details) => {
-               if (newValue && newValue[primaryKeyOption] === 'create-new') {
+               if (!newValue) newValue = {};
+
+               if (newValue && newValue['value']?.includes('Create new')) {
                   handleCreateNew(inputValue);
                } else {
                   onChange(event, newValue, reason, details);
                }
             }}
+            onKeyDown={handleKeyDown}
             {...autocompleteProps}
          />
       </FormControllerErrorMessage>
@@ -226,10 +243,10 @@ AppAutocomplete.defaultProps = {
    textFieldProps: {},
    disableClearable: true,
    renderOption(prop, option) {
-      return option?.description;
+      return option?.label;
    },
    getOptionLabel(option) {
-      return option.description;
+      return option.label;
    },
 };
 
