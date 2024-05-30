@@ -2,11 +2,14 @@ import indicatorApi from '@/api/indicators.api';
 import { AppAutocomplete, AppNumberField, AppTextField } from '@/components/App';
 import AutoCompleteHasCreateNew from '@/components/App/AutocompleteWithCreateNew';
 import { commonStore, indicatorStore } from '@/store/reducers';
-import { Button, Dialog, Grid, Typography, styled } from '@mui/material';
+import { Box, Button, Dialog, Grid, Typography, styled } from '@mui/material';
 import { t } from 'i18next';
 import { produce } from 'immer';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
+import { DialogUpdateCompetitor } from '../CompetitorColorDialog/UpdateDialog';
+import { useState } from 'react';
+import ColorPickerDialog from '../ColorPicker';
 
 const StyledAutoComplete = styled(AppAutocomplete)(() => ({
    '& .MuiTextField-root': {
@@ -160,6 +163,23 @@ const EditDataIndicator: React.FC<any> = (props) => {
 
    const initDataFilter = useSelector(indicatorStore.selectInitDataFilter);
 
+   const [openSelectColor, setOpenSelectColor] = useState(false);
+
+   const handleOpenSelectColor = () => {
+      setOpenSelectColor(true);
+   };
+
+   const handleCloseSelectColor = () => {
+      setOpenSelectColor(false);
+   };
+
+   const updateColor = (color: string) => {
+      console.log('update Color', color);
+      setData((prev) => ({ ...prev, color: { ...prev.color, colorCode: color } }));
+   };
+
+   console.log(data?.color);
+
    const handleChangeDataFilter = (option, path) => {
       setData((prev) =>
          produce(prev, (draft) => {
@@ -167,20 +187,28 @@ const EditDataIndicator: React.FC<any> = (props) => {
                if (option === 'Chinese Brand') draft[path] = true;
                else draft[path] = false;
             } else {
-               const keys = path.split('.');
-               let temp = draft;
+               if (path === 'color.groupName') {
+                  draft.color = getGroupByGroupName(option);
+               } else {
+                  const keys = path.split('.');
+                  let temp = draft;
 
-               for (let i = 0; i < keys.length - 1; i++) {
-                  if (!temp[keys[i]]) {
-                     temp[keys[i]] = {};
+                  for (let i = 0; i < keys.length - 1; i++) {
+                     if (!temp[keys[i]]) {
+                        temp[keys[i]] = {};
+                     }
+                     temp = temp[keys[i]];
                   }
-                  temp = temp[keys[i]];
-               }
 
-               temp[keys[keys.length - 1]] = option;
+                  temp[keys[keys.length - 1]] = option;
+               }
             }
          })
       );
+   };
+
+   const getGroupByGroupName = (groupName: string) => {
+      return initDataFilter?.groups.find((item) => item.groupName === groupName) || { groupName };
    };
 
    const handleUpdateCompetitor = () => {
@@ -423,8 +451,40 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      suffix="%"
                   />
                </Grid>
+               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <StyledAutoCompleteHasCreateNew
+                     value={data?.color?.groupName}
+                     options={initDataFilter.groups}
+                     label={t('filters.group')}
+                     onChange={(e, option) =>
+                        handleChangeDataFilter(option.groupName, 'color.groupName')
+                     }
+                     primaryKeyOption="groupName"
+                     disableClearable={false}
+                     renderOption={(prop, option) => `${option.groupName}`}
+                     getOptionLabel={(option) => `${option.groupName}`}
+                     sx={{ width: '80%' }}
+                  />
+                  <Box
+                     sx={{
+                        backgroundColor: data?.color?.colorCode
+                           ? data?.color?.colorCode
+                           : '#EBEFF5',
+                        width: 35,
+                        height: 35,
+                        cursor: 'pointer',
+                     }}
+                     onClick={handleOpenSelectColor}
+                  />
+               </Grid>
             </Grid>
          </Grid>
+         <ColorPickerDialog
+            open={openSelectColor}
+            onClose={handleCloseSelectColor}
+            color={data?.color?.colorCode}
+            updateColor={updateColor}
+         />
       </Dialog>
    );
 };

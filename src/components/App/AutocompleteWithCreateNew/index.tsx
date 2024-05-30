@@ -29,11 +29,6 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
-const createOption = (value) => ({
-   value: value,
-   type: 'create-new',
-});
-
 const AppAutocomplete = (props) => {
    const {
       error,
@@ -95,6 +90,10 @@ const AppAutocomplete = (props) => {
          return false;
       }
    };
+   const createOption = (value) => ({
+      [primaryKeyOption]: value,
+      type: 'create-new',
+   });
 
    const renderOptionMultiple = (prop, option, state) => {
       const { selected } = state;
@@ -179,10 +178,13 @@ const AppAutocomplete = (props) => {
 
    const filterOptions = (options, { inputValue }) => {
       const filtered = options.filter((option) =>
-         option.value.toLowerCase().includes(inputValue.toLowerCase())
+         option[primaryKeyOption].toLowerCase().includes(inputValue.toLowerCase())
       );
 
-      if (inputValue !== '' && !filtered.some((option) => option.value === inputValue)) {
+      if (
+         inputValue !== '' &&
+         !filtered.some((option) => option[primaryKeyOption] === inputValue)
+      ) {
          filtered.push({
             [primaryKeyOption]: `Create new "${inputValue}"`,
          });
@@ -225,7 +227,7 @@ const AppAutocomplete = (props) => {
             onChange={(event, newValue, reason, details) => {
                if (!newValue) newValue = {};
 
-               if (newValue && newValue['value']?.includes('Create new')) {
+               if (newValue && newValue[primaryKeyOption]?.includes('Create new')) {
                   handleCreateNew(inputValue);
                } else {
                   onChange(event, newValue, reason, details);

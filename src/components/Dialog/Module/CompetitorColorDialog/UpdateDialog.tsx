@@ -12,13 +12,13 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 const DialogUpdateCompetitor: React.FC<any> = (props) => {
-   const { open, onClose, detail } = props;
+   const { open, onClose, detail, updateDetail, notUpdate } = props;
 
    const dispatch = useDispatch();
    const { t } = useTranslation();
    const [loading, setLoading] = useState(false);
 
-   const [chosenColor, setChosenColor] = useState(detail.colorCode);
+   const [chosenColor, setChosenColor] = useState(detail?.colorCode);
 
    const updateColorForm = useForm({
       shouldUnregister: false,
@@ -28,30 +28,32 @@ const DialogUpdateCompetitor: React.FC<any> = (props) => {
    const search = useSelector(competitorColorStore.selectCompetitorColorSearch);
 
    const handleSubmitForm = updateColorForm.handleSubmit(async (data: any) => {
-      const transformedData = {
-         id: detail?.id,
-         groupName: data.groupName,
-         colorCode: chosenColor,
-      };
-      try {
-         setLoading(true);
-         await competitorColorApi.updateCompetitorColor(transformedData);
+      if (!notUpdate) {
+         const transformedData = {
+            id: detail?.id,
+            groupName: data.groupName,
+            colorCode: chosenColor,
+         };
+         try {
+            setLoading(true);
+            await competitorColorApi.updateCompetitorColor(transformedData);
 
-         const competitorColorList = await competitorColorApi.getCompetitorColor({
-            search: search,
-         });
-         dispatch(
-            competitorColorStore.actions.setCompetitorColorList(
-               JSON.parse(competitorColorList?.data)?.competitorColors
-            )
-         );
-
-         dispatch(commonStore.actions.setSuccessMessage('Update Competitor Color successfully'));
-      } catch (error) {
-         dispatch(commonStore.actions.setErrorMessage(error?.message));
+            const competitorColorList = await competitorColorApi.getCompetitorColor({
+               search: search,
+            });
+            dispatch(
+               competitorColorStore.actions.setCompetitorColorList(
+                  JSON.parse(competitorColorList?.data)?.competitorColors
+               )
+            );
+            updateDetail && updateDetail(transformedData);
+            dispatch(commonStore.actions.setSuccessMessage('Update Competitor Color successfully'));
+         } catch (error) {
+            dispatch(commonStore.actions.setErrorMessage(error?.message));
+         }
+         onClose();
+         setLoading(false);
       }
-      onClose();
-      setLoading(false);
    });
 
    const handleChooseColor = (color) => {
@@ -59,7 +61,7 @@ const DialogUpdateCompetitor: React.FC<any> = (props) => {
    };
 
    useEffect(() => {
-      setChosenColor(detail.colorCode);
+      setChosenColor(detail?.colorCode);
       updateColorForm.reset(detail);
    }, [detail]);
 
@@ -82,13 +84,11 @@ const DialogUpdateCompetitor: React.FC<any> = (props) => {
                <SketchPicker color={chosenColor} onChangeComplete={handleChooseColor} />
             </Grid>
             <Grid item xs={6}>
-               <FormControlledTextField
-                  control={updateColorForm.control}
+               <AppTextField
                   name="competitorName"
-                  label={t('competitors.competitorName')}
-                  required
+                  placeholder={t('competitors.competitorName')}
+                  value={detail?.groupName}
                   disabled
-                  defaultValue={chosenColor}
                />
                <div style={{ width: 20, height: 20 }}></div>
 
