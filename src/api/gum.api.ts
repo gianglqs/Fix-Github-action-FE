@@ -9,8 +9,8 @@ class GumApi extends HttpService<any> {
       return this.instance.post<T>('gum/getReport', data);
    };
 
-   getGumColums = () => {
-      return this.post<{segments: any; regions:any}>('gum/getColumns');
+   getGroupingCriteria = () => {
+      return this.post<{segments: any; regions:any}>('gum/getGroupingCriteria');
    };
 }
 

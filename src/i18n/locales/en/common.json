@@ -112,7 +112,6 @@
       "lastUpdatedBy": "Last updated by",
       "lastUpdatedAt": "on",
       "rowsPerPage": "Rows per page: ",
-
       "order#": "Order #",
       "quoteNumber": "Quote Number",
       "createAt": "Create At",
@@ -130,13 +129,10 @@
       "marginAfterSurcharge": "Margin $ After Surcharge",
       "marginPercentageAfterSurcharge": "Margin % After Surcharge",
       "aopMarginPercentage": "AOP Margin %",
-
       "totalActualCost": "Total Actual Cost",
       "bookingMarginPercentage": "Booking Margin %",
-
       "partNumber": "Part Number",
       "listPrice": "List Price",
-
       "numberOfOrders": "Number of Orders",
       "additionalUnits": "Additional Units",
       "originalDealerNet": "Original DN",
@@ -157,12 +153,10 @@
       "truckType": "Truck Type",
       "description": "Description",
       "edit": "Edit",
-
       "productName": "Product Name",
       "image": "Image",
       "price": "Price",
       "currency": "Currency",
-
       "fileName": "File Name",
       "importAt": "Import At",
       "importBy": "Import By",
@@ -175,7 +169,8 @@
       "cost": "Cost",
       "volume": "Volume",
       "fileStyle": "File Style",
-      "frequency": "Frequency"
+      "frequency": "Frequency",
+      "totalClasses": "Total Classes"
    },
 
    "competitors": {
@@ -287,7 +282,17 @@
       "marginAfterDiscount": "Margin After Discount",
       "marginAfterDiscount%": "% Margin After Discount"
    },
-
+   "gumReport": {
+      "bookingRevenue": "Est. Bookings Revenue $M",
+      "actualBookingRevenue": "Est. Actual Bookings Adj Revenue $M - Price and Cost adjusted",
+      "bkgsAdjRevenue": "Fav/(Unfav) Bkgs Adj Revenue $M",
+      "bookingStdMargin": "Est. Bookings Std Margin $M",
+      "actualBookingAdjMargin": "Est. Actual Bookings Adj Margin $M - Price and Cost adjusted",
+      "bkgsAdjMargin": "Fav/(Unfav) Bkgs Adj Margin $M",
+      "actualBkingStdMargin": "Est. Actual Bkings Std Margin %",
+      "actualBkingAdjMargin": "Est. Actual Bkings Adj Margin % - Price and Cost adjusted",
+      "YTDActualBooking": "YTD Actual Bookings"
+   },
    "yes": "Yes",
    "no": "No",
    "or": "OR",
