@@ -158,7 +158,8 @@
       "size": "大小",
       "volume": "调整",
       "fileStyle": "文件风格",
-      "frequency": "频率"
+      "frequency": "频率",
+      "totalClasses": "总课程"
    },
 
    "competitors": {

@@ -121,7 +121,7 @@ export default function GumReport() {
       })),
       {
          field: 'total',
-         headerName: 'Total',
+         headerName: t('table.total'),
          sortable: false,
          ...formatNumbericColumn,
          renderCell(params) {

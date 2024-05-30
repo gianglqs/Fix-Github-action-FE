@@ -159,7 +159,8 @@
       "size": "Kích thước",
       "volume": "Số lượng",
       "fileStyle": "Loại File",
-      "frequency": "Tần suất"
+      "frequency": "Tần suất",
+      "totalClasses": "Tổng các nhóm"
    },
 
    "competitors": {
