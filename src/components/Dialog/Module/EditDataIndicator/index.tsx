@@ -165,8 +165,10 @@ const EditDataIndicator: React.FC<any> = (props) => {
 
    const [openSelectColor, setOpenSelectColor] = useState(false);
 
+   const defaultGroupColor = 'black';
+
    const handleOpenSelectColor = () => {
-      setOpenSelectColor(true);
+      if (data?.color?.groupName && data?.color?.groupName.trim() !== '') setOpenSelectColor(true);
    };
 
    const handleCloseSelectColor = () => {
@@ -177,8 +179,6 @@ const EditDataIndicator: React.FC<any> = (props) => {
       console.log('update Color', color);
       setData((prev) => ({ ...prev, color: { ...prev.color, colorCode: color } }));
    };
-
-   console.log(data?.color);
 
    const handleChangeDataFilter = (option, path) => {
       setData((prev) =>
@@ -208,7 +208,12 @@ const EditDataIndicator: React.FC<any> = (props) => {
    };
 
    const getGroupByGroupName = (groupName: string) => {
-      return initDataFilter?.groups.find((item) => item.groupName === groupName) || { groupName };
+      return (
+         initDataFilter?.groups.find((item) => item.groupName === groupName) || {
+            groupName,
+            colorCode: defaultGroupColor,
+         }
+      );
    };
 
    const handleUpdateCompetitor = () => {
@@ -324,11 +329,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                </Grid>
                <Grid item xs={3}>
                   <StyledAutoComplete
-                     value={
-                        data.chineseBrand
-                           ? { value: 'Chinese Brands' }
-                           : { value: 'None Chinese Brand' }
-                     }
+                     value={data.chineseBrand ? 'Chinese Brands' : 'None Chinese Brand'}
                      options={initDataFilter.chineseBrands}
                      label={t('filters.chineseBrand')}
                      onChange={(e, option) => handleChangeDataFilter(option.value, 'chineseBrand')}
@@ -451,7 +452,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      suffix="%"
                   />
                </Grid>
-               <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+               <Grid item xs={3}>
                   <StyledAutoCompleteHasCreateNew
                      value={data?.color?.groupName}
                      options={initDataFilter.groups}
@@ -463,13 +464,14 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      disableClearable={false}
                      renderOption={(prop, option) => `${option.groupName}`}
                      getOptionLabel={(option) => `${option.groupName}`}
-                     sx={{ width: '80%' }}
                   />
+               </Grid>
+               <Grid item xs={1}>
                   <Box
                      sx={{
                         backgroundColor: data?.color?.colorCode
                            ? data?.color?.colorCode
-                           : '#EBEFF5',
+                           : defaultGroupColor,
                         width: 35,
                         height: 35,
                         cursor: 'pointer',
