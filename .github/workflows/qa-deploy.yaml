@@ -43,6 +43,7 @@ jobs:
            shell: bash
            run: |
               cd $WORK_DIR
+              yarn install
               docker build -t $NEW_IMAGE_NAME --build-arg IMAGE_TAG=qa-deploy-${{ github.sha }} --build-arg RELEASE_TAG=${{ github.event.release.tag_name }} -f docker/Dockerfile .
 
          - name: Stop old container is running
