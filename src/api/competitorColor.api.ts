@@ -12,7 +12,7 @@ class CompetitorColorApi extends HttpService<any> {
    };
 
    updateCompetitorColor = (data: any) => {
-      return this.put<any>(`competitorColors`, data);
+      return this.put<any>(`competitorColors`, {}, data);
    };
 }
 

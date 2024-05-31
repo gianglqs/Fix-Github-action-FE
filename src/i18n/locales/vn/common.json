@@ -18,6 +18,7 @@
       "products": "Sản phẩm",
       "exchangeRates": "Tỷ giá tiền tệ",
       "dataScraping": "Thu nhập dữ liệu",
+      "gumReport": "Bao cao",
       "volumeDiscountAnalysis": "Phân tích số lượng giảm giá",
       "bookingMarginTrialTest": "So Sánh Lợi Nhuận",
       "priceVolumeSensitivity": "Tương quan giá và số lượng",
@@ -77,7 +78,8 @@
       "marginPercentagePerUnit": "Lợi nhuận % mỗi đơn vị",
       "discountPercentagePerOneNewItem": "Giảm giá % mỗi đơn vị thêm vào",
       "unitIncreaseLever": "Đòn bẩy tăng đơn vị",
-      "monthYear": "Tháng năm"
+      "monthYear": "Tháng năm",
+      "group": "Nhóm"
    },
 
    "button": {
@@ -163,7 +165,8 @@
       "size": "Kích thước",
       "volume": "Số lượng",
       "fileStyle": "Loại File",
-      "frequency": "Tần suất"
+      "frequency": "Tần suất",
+      "totalClasses": "Tổng các nhóm"
    },
 
    "competitors": {
@@ -276,7 +279,17 @@
       "marginAfterDiscount": "Lợi nhuận sau giảm giá $",
       "marginAfterDiscount%": "% Lợi nhuận sau giảm giá"
    },
-
+   "gumReport": {
+      "bookingRevenue": "Doanh thu đặt hàng ước tính $M",
+      "actualBookingRevenue": "Doanh thu đặt hàng ước tính đã điều chỉnh ($M) - giá và chi phí đã điều chỉnh",
+      "bkgsAdjRevenue": "Doanh thu điều chỉnh từ Đặt hàng Thuận lợi/(Bất lợi) $M",
+      "bookingStdMargin": "Lợi nhuận tiêu chuẩn ước tính từ doanh số đặt hàng $M",
+      "actualBookingAdjMargin": "Lợi nhuận được điều chỉnh từ Doanh số Đặt hàng Thực tế ước tính - Triệu Đô la Mỹ - Điều chỉnh Giá và Chi phí.",
+      "bkgsAdjMargin": "Biên lợi nhuận điều chỉnh từ Đặt hàng Thuận lợi/(Bất lợi) $M",
+      "actualBkingStdMargin": "Tỷ lệ Biên lợi nhuận Tiêu chuẩn ước tính từ Doanh số Đặt hàng Thực tế",
+      "actualBkingAdjMargin": "Tỷ lệ Biên lợi nhuận Đặt hàng Thực tế Điều chỉnh - Điều chỉnh Giá và Chi phí",
+      "YTDActualBooking": "Doanh số đặt hàng thực tế tính đến cuối năm"
+   },
    "yes": "Có",
    "no": "Không",
    "or": "Hoặc",

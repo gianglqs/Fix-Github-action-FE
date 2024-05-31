@@ -163,7 +163,8 @@
       "size": "大小",
       "volume": "调整",
       "fileStyle": "文件风格",
-      "frequency": "频率"
+      "frequency": "频率",
+      "totalClasses": "总课程"
    },
 
    "competitors": {
@@ -200,7 +201,8 @@
       "marketShare": "市场份额",
       "updateDate": "更新时间",
       "model": "样本",
-      "competitor": "竞争者"
+      "competitor": "竞争者",
+      "group": "团体"
    },
 
    "quotationMargin": {
@@ -276,7 +278,17 @@
       "marginAfterDiscount": "折扣后利润 $",
       "marginAfterDiscount%": "% 折扣后利润"
    },
-
+   "gumReport": {
+      "bookingRevenue": "估计预订收入（百万美元）",
+      "actualBookingRevenue": "估计实际预订调整收入（百万美元）- 价格和成本调整",
+      "bkgsAdjRevenue": "有利/不利预订调整收入（百万美元）",
+      "bookingStdMargin": "估计预订标准利润（百万美元）",
+      "actualBookingAdjMargin": "估计实际预订调整利润（百万美元）- 价格和成本调整",
+      "bkgsAdjMargin": "有利/不利预订调整利润（百万美元）",
+      "actualBkingStdMargin": "估计实际预订标准利润率",
+      "actualBkingAdjMargin": "估计实际预订调整利润率（百分比）- 价格和成本调整",
+      "YTDActualBooking": "年度累计实际预订"
+   },
    "yes": "是",
    "no": "否",
    "or": "或",

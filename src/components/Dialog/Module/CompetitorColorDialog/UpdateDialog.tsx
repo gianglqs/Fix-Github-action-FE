@@ -24,7 +24,6 @@ const DialogUpdateCompetitor: React.FC<any> = (props) => {
       shouldUnregister: false,
       defaultValues: detail,
    });
-
    const search = useSelector(competitorColorStore.selectCompetitorColorSearch);
 
    const handleSubmitForm = updateColorForm.handleSubmit(async (data: any) => {
@@ -111,5 +110,4 @@ const DialogUpdateCompetitor: React.FC<any> = (props) => {
       </AppDialog>
    );
 };
-
 export { DialogUpdateCompetitor };
