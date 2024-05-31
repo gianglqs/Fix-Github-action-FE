@@ -278,6 +278,13 @@
       "marginAfterDiscount": "折扣后利润 $",
       "marginAfterDiscount%": "% 折扣后利润"
    },
+
+   "commonErrorMessage": {
+      "selectAFileToUpload": "请选择要上传的文件.",
+      "uploadSelectOnlyOneFileAtATime": "请一次仅选择一个文件.",
+      "selectRegion": "请先选择地区."
+   },
+
    "gumReport": {
       "bookingRevenue": "估计预订收入（百万美元）",
       "actualBookingRevenue": "估计实际预订调整收入（百万美元）- 价格和成本调整",
