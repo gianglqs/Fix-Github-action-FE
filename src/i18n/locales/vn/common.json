@@ -283,7 +283,7 @@
    "commonErrorMessage": {
       "selectAFileToUpload": "Vui lòng chọn một tập tin để tải lên.",
       "uploadSelectOnlyOneFileAtATime": "Vui lòng chỉ chọn một tệp mỗi lần.",
-      "selectRegion": "Vui lòng chọn trước khu vực."
+      "selectRegion": "Vui lòng chọn khu vực trước."
    },
 
    "gumReport": {

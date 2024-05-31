@@ -287,7 +287,7 @@
    "commonErrorMessage": {
       "selectAFileToUpload": "Please select a file to upload.",
       "uploadSelectOnlyOneFileAtATime": "Please select only one file at a time.",
-      "selectRegion": "Please select region in advance."
+      "selectRegion": "Please select region first."
    },
 
    "gumReport": {
