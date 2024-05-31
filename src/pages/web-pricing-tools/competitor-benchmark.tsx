@@ -173,8 +173,14 @@ export default function Indicators() {
          setLoadingSwot(true);
       }
       try {
-         if (swotDataFilter.regions == '') {
+         console.log(swotDataFilter.regions);
+         if (!swotDataFilter.regions ) {
             setRegionError({ error: true });
+            console.log(swotDataFilter);
+            // notify error message when user select other fields but region
+            if(!swotDataFilter.regions && (swotDataFilter.countries.length > 0 || swotDataFilter.series.length > 0 || swotDataFilter.classes.length > 0 || swotDataFilter.categories.length > 0)){ 
+               dispatch(commonStore.actions.setErrorMessage("Please select region in advance"));}
+            setLoadingSwot(false);
             return;
          }
 
@@ -187,7 +193,6 @@ export default function Indicators() {
             categories: swotDataFilter.categories,
             series: swotDataFilter.series,
          });
-
          const datasets = competitiveLandscape.map((item) => {
             return {
                label: `${item.color.groupName}`,
