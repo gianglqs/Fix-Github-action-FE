@@ -176,6 +176,7 @@ export default function Indicators() {
          console.log(swotDataFilter.regions);
          if (!swotDataFilter.regions ) {
             setRegionError({ error: true });
+            dispatch(commonStore.actions.setErrorMessage("Please select region in advance"));
             setLoadingSwot(false);
             return;
          }
