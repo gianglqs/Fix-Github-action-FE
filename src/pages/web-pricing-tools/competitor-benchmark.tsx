@@ -174,12 +174,19 @@ export default function Indicators() {
       }
       try {
          console.log(swotDataFilter.regions);
-         if (!swotDataFilter.regions ) {
+         if (!swotDataFilter.regions) {
             setRegionError({ error: true });
             console.log(swotDataFilter);
             // notify error message when user select other fields but region
-            if(!swotDataFilter.regions && (swotDataFilter.countries.length > 0 || swotDataFilter.series.length > 0 || swotDataFilter.classes.length > 0 || swotDataFilter.categories.length > 0)){ 
-               dispatch(commonStore.actions.setErrorMessage("Please select region in advance"));}
+            if (
+               !swotDataFilter.regions &&
+               (swotDataFilter.countries.length > 0 ||
+                  swotDataFilter.series.length > 0 ||
+                  swotDataFilter.classes.length > 0 ||
+                  swotDataFilter.categories.length > 0)
+            ) {
+               dispatch(commonStore.actions.setErrorMessage('Please select region in advance'));
+            }
             setLoadingSwot(false);
             return;
          }
@@ -1005,7 +1012,7 @@ export default function Indicators() {
                      onClick={handleFilterIndicator}
                      sx={{ width: '100%', height: 24 }}
                   >
-                     {t('button.clear')}
+                     {t('button.filter')}
                   </Button>
                </Grid>
                <Grid item xs={1}>
