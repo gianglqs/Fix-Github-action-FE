@@ -279,6 +279,13 @@
       "marginAfterDiscount": "Lợi nhuận sau giảm giá $",
       "marginAfterDiscount%": "% Lợi nhuận sau giảm giá"
    },
+
+   "commonErrorMessage": {
+      "selectAFileToUpload": "Vui lòng chọn một tập tin để tải lên.",
+      "uploadSelectOnlyOneFileAtATime": "Vui lòng chỉ chọn một tệp mỗi lần.",
+      "selectRegion": "Vui lòng chọn trước khu vực."
+   },
+
    "gumReport": {
       "bookingRevenue": "Doanh thu đặt hàng ước tính $M",
       "actualBookingRevenue": "Doanh thu đặt hàng ước tính đã điều chỉnh ($M) - giá và chi phí đã điều chỉnh",

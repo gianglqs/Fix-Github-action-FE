@@ -185,7 +185,7 @@ export default function Indicators() {
                   swotDataFilter.classes.length > 0 ||
                   swotDataFilter.categories.length > 0)
             ) {
-               dispatch(commonStore.actions.setErrorMessage('Please select region in advance'));
+               dispatch(commonStore.actions.setErrorMessage(t('commonErrorMessage.selectRegion')));
             }
             setLoadingSwot(false);
             return;
