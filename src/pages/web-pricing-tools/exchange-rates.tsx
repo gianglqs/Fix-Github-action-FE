@@ -135,7 +135,7 @@ export default function ExchangeRate() {
    const handleCompareCurrency = async () => {
       try {
          if (dataFilter.currentCurrency.value == '') {
-            dispatch(commonStore.actions.setErrorMessage('User must select currency unit'));
+            dispatch(commonStore.actions.setErrorMessage('Please select the currency to exchange'));
             setDataFilter((prev) =>
                produce(prev, (draft) => {
                   draft['currentCurrency'] = { value: '', error: true };
@@ -144,7 +144,7 @@ export default function ExchangeRate() {
             return;
          }
          if (dataFilter.comparisonCurrencies.value.length == 0) {
-            dispatch(commonStore.actions.setErrorMessage('User must select comparison currencies'));
+            dispatch(commonStore.actions.setErrorMessage('Please select the currencies to exchange to'));
             setDataFilter((prev) =>
                produce(prev, (draft) => {
                   draft['comparisonCurrencies'] = { value: [], error: true };

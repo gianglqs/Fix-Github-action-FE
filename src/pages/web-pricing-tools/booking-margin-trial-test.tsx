@@ -858,7 +858,7 @@ function UploadFileDropZone(props) {
             reader.onerror = () => console.log('file reading has failed');
             reader.onload = () => {
                if (props.uploadedFile.length + acceptedFiles.length >= 2) {
-                  dispatch(commonStore.actions.setErrorMessage('Too many files'));
+                  dispatch(commonStore.actions.setErrorMessage(t('uploadSelectOnlyOneFileAtATime')));
                } else {
                   props.setUploadedFile(file);
                }
