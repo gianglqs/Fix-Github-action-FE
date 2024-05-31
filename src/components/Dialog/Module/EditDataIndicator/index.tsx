@@ -1,13 +1,15 @@
 import indicatorApi from '@/api/indicators.api';
 import { AppAutocomplete, AppNumberField, AppTextField } from '@/components/App';
+import AutoCompleteHasCreateNew from '@/components/App/AutocompleteWithCreateNew';
 import { commonStore, indicatorStore } from '@/store/reducers';
-import { Button, Dialog, Grid, TextField, Typography, styled } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers';
-import { parseISO } from 'date-fns';
+import { Box, Button, Dialog, Grid, Typography, styled } from '@mui/material';
 import { t } from 'i18next';
 import { produce } from 'immer';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
+import { DialogUpdateCompetitor } from '../CompetitorColorDialog/UpdateDialog';
+import { useState } from 'react';
+import ColorPickerDialog from '../ColorPicker';
 
 const StyledAutoComplete = styled(AppAutocomplete)(() => ({
    '& .MuiTextField-root': {
@@ -117,11 +119,66 @@ const StyleAppNumerField = styled(AppNumberField)(() => ({
    },
 }));
 
+const StyledAutoCompleteHasCreateNew = styled(AutoCompleteHasCreateNew)(() => ({
+   '& .MuiTextField-root': {
+      maxHeight: 38,
+   },
+   '& .MuiAutocomplete-tag': {
+      marginLeft: 5,
+   },
+   '& .MuiInputBase-root': {
+      height: 38,
+      backgroundColor: '#f5f7fa',
+      border: '1px solid #eef1f6',
+      borderRadius: 5,
+   },
+   '& .MuiOutlinedInput-notchedOutline': {
+      border: '1px solid #eef1f6',
+      borderRadius: 5,
+   },
+   '& .MuiOutlinedInput-input': {
+      boxSizing: 'inherit',
+   },
+   '& input': {
+      height: 38,
+      fontSize: 14,
+   },
+   '& .MuiInputLabel-root': {
+      transform: 'translate(14px, 1px) scale(1)',
+      position: 'absolute',
+      top: 10,
+   },
+   '& .MuiInputLabel-shrink': {
+      transform: 'translate(15px, -18px) scale(0.8)',
+      fontSize: 14,
+      backgroundColor: '#f5f7fa',
+      padding: '0 7px 0 5px',
+      borderRadius: 999,
+   },
+}));
+
 const EditDataIndicator: React.FC<any> = (props) => {
    const { open, onClose, data, setData, isCreate, setOpenConfirmDeleteDialog } = props;
    const dispatch = useDispatch();
 
    const initDataFilter = useSelector(indicatorStore.selectInitDataFilter);
+
+   const [openSelectColor, setOpenSelectColor] = useState(false);
+
+   const defaultGroupColor = 'black';
+
+   const handleOpenSelectColor = () => {
+      if (data?.color?.groupName && data?.color?.groupName.trim() !== '') setOpenSelectColor(true);
+   };
+
+   const handleCloseSelectColor = () => {
+      setOpenSelectColor(false);
+   };
+
+   const updateColor = (color: string) => {
+      console.log('update Color', color);
+      setData((prev) => ({ ...prev, color: { ...prev.color, colorCode: color } }));
+   };
 
    const handleChangeDataFilter = (option, path) => {
       setData((prev) =>
@@ -130,19 +187,32 @@ const EditDataIndicator: React.FC<any> = (props) => {
                if (option === 'Chinese Brand') draft[path] = true;
                else draft[path] = false;
             } else {
-               const keys = path.split('.');
-               let temp = draft;
+               if (path === 'color.groupName') {
+                  draft.color = getGroupByGroupName(option);
+               } else {
+                  const keys = path.split('.');
+                  let temp = draft;
 
-               for (let i = 0; i < keys.length - 1; i++) {
-                  if (!temp[keys[i]]) {
-                     temp[keys[i]] = {};
+                  for (let i = 0; i < keys.length - 1; i++) {
+                     if (!temp[keys[i]]) {
+                        temp[keys[i]] = {};
+                     }
+                     temp = temp[keys[i]];
                   }
-                  temp = temp[keys[i]];
-               }
 
-               temp[keys[keys.length - 1]] = option;
+                  temp[keys[keys.length - 1]] = option;
+               }
             }
          })
+      );
+   };
+
+   const getGroupByGroupName = (groupName: string) => {
+      return (
+         initDataFilter?.groups.find((item) => item.groupName === groupName) || {
+            groupName,
+            colorCode: defaultGroupColor,
+         }
       );
    };
 
@@ -259,11 +329,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                </Grid>
                <Grid item xs={3}>
                   <StyledAutoComplete
-                     value={
-                        data.chineseBrand
-                           ? { value: 'Chinese Brands' }
-                           : { value: 'None Chinese Brand' }
-                     }
+                     value={data.chineseBrand ? 'Chinese Brands' : 'None Chinese Brand'}
                      options={initDataFilter.chineseBrands}
                      label={t('filters.chineseBrand')}
                      onChange={(e, option) => handleChangeDataFilter(option.value, 'chineseBrand')}
@@ -276,15 +342,13 @@ const EditDataIndicator: React.FC<any> = (props) => {
                   />
                </Grid>
                <Grid item xs={3}>
-                  <StyledAutoComplete
+                  <StyledAutoCompleteHasCreateNew
                      value={data?.plant}
                      options={initDataFilter.plants}
                      label={t('filters.plant')}
                      onChange={(e, option) => handleChangeDataFilter(option.value, 'plant')}
-                     limitTags={2}
-                     disableListWrap
                      primaryKeyOption="value"
-                     disableCloseOnSelect
+                     disableClearable={false}
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
@@ -306,15 +370,13 @@ const EditDataIndicator: React.FC<any> = (props) => {
                   />
                </Grid>
                <Grid item xs={3}>
-                  <StyledAutoComplete
+                  <StyledAutoCompleteHasCreateNew
                      value={data?.category}
                      options={initDataFilter.categories}
                      label={t('filters.category')}
                      onChange={(e, option) => handleChangeDataFilter(option.value, 'category')}
-                     limitTags={2}
-                     disableListWrap
                      primaryKeyOption="value"
-                     disableCloseOnSelect
+                     disableClearable={false}
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
@@ -354,6 +416,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      label={t('competitors.competitorPricing')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'competitorPricing')}
                      value={data?.competitorPricing}
+                     prefix="$ "
                   />
                </Grid>
                <Grid item xs={3}>
@@ -361,6 +424,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      label={t('competitors.dealerPricingPremium')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'dealerPremiumPercentage')}
                      value={data?.dealerPremiumPercentage}
+                     prefix="$ "
                   />
                </Grid>
                <Grid item xs={3}>
@@ -368,6 +432,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      label={t('competitors.dealerNet')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'dealerNet')}
                      value={data?.dealerNet}
+                     prefix="$ "
                   />
                </Grid>
 
@@ -384,10 +449,44 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      label={t('competitors.marketShare')}
                      onChange={(e) => handleChangeDataFilter(e.value, 'marketShare')}
                      value={data?.marketShare}
+                     suffix="%"
+                  />
+               </Grid>
+               <Grid item xs={3}>
+                  <StyledAutoCompleteHasCreateNew
+                     value={data?.color?.groupName}
+                     options={initDataFilter.groups}
+                     label={t('filters.group')}
+                     onChange={(e, option) =>
+                        handleChangeDataFilter(option.groupName, 'color.groupName')
+                     }
+                     primaryKeyOption="groupName"
+                     disableClearable={false}
+                     renderOption={(prop, option) => `${option.groupName}`}
+                     getOptionLabel={(option) => `${option.groupName}`}
+                  />
+               </Grid>
+               <Grid item xs={1}>
+                  <Box
+                     sx={{
+                        backgroundColor: data?.color?.colorCode
+                           ? data?.color?.colorCode
+                           : defaultGroupColor,
+                        width: 35,
+                        height: 35,
+                        cursor: 'pointer',
+                     }}
+                     onClick={handleOpenSelectColor}
                   />
                </Grid>
             </Grid>
          </Grid>
+         <ColorPickerDialog
+            open={openSelectColor}
+            onClose={handleCloseSelectColor}
+            color={data?.color?.colorCode}
+            updateColor={updateColor}
+         />
       </Dialog>
    );
 };

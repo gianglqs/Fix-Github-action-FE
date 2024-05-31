@@ -63,6 +63,7 @@ import { produce } from 'immer';
 import _ from 'lodash';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
+import { DialogUpdateCompetitor } from '@/components/Dialog/Module/CompetitorColorDialog/UpdateDialog';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageAdmin(context);
@@ -183,7 +184,7 @@ export default function ImportTracking() {
       });
    };
 
-   const [dataEditCompetitor, setDataEditCompetitor] = useState({ id: null });
+   const [dataEditCompetitor, setDataEditCompetitor] = useState({ id: null, color: {} });
    const [openEditCompetitor, setOpenEditCompetitor] = useState({});
 
    const handleOpenEditIndicatorDialog = (row: any) => {
@@ -191,7 +192,7 @@ export default function ImportTracking() {
          .getCompetitorById(row.row.id)
          .then((res) => {
             const data = JSON.parse(String(res.data));
-            data.updateDate = formatDate(new Date(data.updateDate));
+            // data.updateDate = formatDate(new Date(data.updateDate));
             setDataEditCompetitor(data);
             setOpenEditCompetitor({ open: true, isCreate: false, setOpenConfirmDeleteDialog });
          })
@@ -214,7 +215,7 @@ export default function ImportTracking() {
    };
 
    const handleOpenCreateIndicatorDialog = () => {
-      setDataEditCompetitor({ id: null });
+      setDataEditCompetitor({ id: null, color: {} });
       setOpenEditCompetitor({ open: true, isCreate: true });
    };
 
@@ -451,6 +452,34 @@ export default function ImportTracking() {
 
    const handleCloseConfirmDeleteDialog = () => {
       setOpenConfirmDeleteDialog(false);
+   };
+
+   // adjust color
+
+   const [updateColorState, setUpdateColorState] = useState({
+      open: false,
+      detail: {} as any,
+   });
+
+   const handleOpenUpdateColorDialog = (data) => {
+      try {
+         // Get init data
+
+         // Open form
+         setUpdateColorState({
+            open: true,
+            detail: data?.color,
+         });
+      } catch (error) {
+         // dispatch(commonStore.actions.setErrorMessage(error))
+      }
+   };
+
+   const handleCloseUpdateColorDialog = () => {
+      setUpdateColorState({
+         open: false,
+         detail: {},
+      });
    };
 
    return (
@@ -793,13 +822,16 @@ export default function ImportTracking() {
             setData={setDataEditCompetitor}
             {...openEditCompetitor}
             onClose={handleCloseEditCompetitorDialog}
+            openEditColorDialog={handleOpenUpdateColorDialog}
          />
          <DialogChangePassword {...changePasswordState} onClose={handleCloseChangePasswordDialog} />
+
          <ConfirmDeleteDialog
             open={openConfirmDeleteDialog}
             onClose={handleCloseConfirmDeleteDialog}
             handleDelete={handleDeleteCompetitor}
          />
+
          <Backdrop
             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 999 }}
             open={loadingPage}

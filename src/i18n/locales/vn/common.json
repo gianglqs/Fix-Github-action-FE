@@ -78,7 +78,8 @@
       "marginPercentagePerUnit": "Lợi nhuận % mỗi đơn vị",
       "discountPercentagePerOneNewItem": "Giảm giá % mỗi đơn vị thêm vào",
       "unitIncreaseLever": "Đòn bẩy tăng đơn vị",
-      "monthYear": "Tháng năm"
+      "monthYear": "Tháng năm",
+      "group": "Nhóm"
    },
 
    "button": {

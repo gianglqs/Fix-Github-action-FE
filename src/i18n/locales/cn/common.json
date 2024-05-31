@@ -201,7 +201,8 @@
       "marketShare": "市场份额",
       "updateDate": "更新时间",
       "model": "样本",
-      "competitor": "竞争者"
+      "competitor": "竞争者",
+      "group": "团体"
    },
 
    "quotationMargin": {
