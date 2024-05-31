@@ -514,7 +514,7 @@ export default function Shipment() {
          setLoading(true);
          handleUploadFile(uploadedFile[0]);
       } else {
-         dispatch(commonStore.actions.setErrorMessage('No file choosed'));
+         dispatch(commonStore.actions.setErrorMessage(t('commonErrorMessage.selectAFileToUpload')));
       }
    };
 
@@ -858,7 +858,7 @@ function UploadFileDropZone(props) {
             reader.onerror = () => console.log('file reading has failed');
             reader.onload = () => {
                if (props.uploadedFile.length + acceptedFiles.length >= 2) {
-                  dispatch(commonStore.actions.setErrorMessage('Too many files'));
+                  dispatch(commonStore.actions.setErrorMessage(t('uploadSelectOnlyOneFileAtATime')));
                } else {
                   props.setUploadedFile(file);
                }

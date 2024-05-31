@@ -283,6 +283,12 @@
       "marginAfterDiscount": "Margin After Discount",
       "marginAfterDiscount%": "% Margin After Discount"
    },
+
+   "commonErrorMessage": {
+      "selectAFileToUpload": "Please select a file to upload.",
+      "uploadSelectOnlyOneFileAtATime": "Please select only one file at a time."     
+   },
+
    "gumReport": {
       "bookingRevenue": "Est. Bookings Revenue $M",
       "actualBookingRevenue": "Est. Actual Bookings Adj Revenue $M - Price and Cost adjusted",
@@ -294,6 +300,7 @@
       "actualBkingAdjMargin": "Est. Actual Bkings Adj Margin % - Price and Cost adjusted",
       "YTDActualBooking": "YTD Actual Bookings"
    },
+
    "yes": "Yes",
    "no": "No",
    "or": "OR",

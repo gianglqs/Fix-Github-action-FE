@@ -101,7 +101,7 @@ export default function LoginPage(props) {
             router.push('/web-pricing-tools/admin/users');
          })
          .catch(() => {
-            dispatch(commonStore.actions.setErrorMessage('Error on signing in'));
+            dispatch(commonStore.actions.setErrorMessage('Incorrect username or password. Please double-check your credentials.'));
          });
    });
    const [backendVersion, setBackendVersion] = useState({ imageTag: '', releaseTag: '' });
