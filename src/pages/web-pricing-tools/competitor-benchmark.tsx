@@ -176,7 +176,10 @@ export default function Indicators() {
          console.log(swotDataFilter.regions);
          if (!swotDataFilter.regions ) {
             setRegionError({ error: true });
-            dispatch(commonStore.actions.setErrorMessage("Please select region in advance"));
+            console.log(swotDataFilter);
+            // notify error message when user select other fields but region
+            if(!swotDataFilter.regions && (swotDataFilter.countries.length > 0 || swotDataFilter.series.length > 0 || swotDataFilter.classes.length > 0 || swotDataFilter.categories.length > 0)){ 
+               dispatch(commonStore.actions.setErrorMessage("Please select region in advance"));}
             setLoadingSwot(false);
             return;
          }
