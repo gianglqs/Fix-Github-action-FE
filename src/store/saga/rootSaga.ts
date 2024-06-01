@@ -3,7 +3,7 @@ import userSaga from './userSaga';
 import { fetchBooking, switchCurrencyBooking } from './bookingSaga';
 import { fetchLoadingQuotationMarginPage, fetchDataViewPrevious } from './analysisSaga';
 import indicatorSaga from './indicatorSaga';
-import shipmentSaga from './shipmentSaga';
+import { fetchShipment, switchCurrencyShipment } from './shipmentSaga';
 import outlierSaga from './outlierSaga';
 import trendsSaga from './trendsSaga';
 import adjustmentSaga from './adjustmentSaga';
@@ -31,7 +31,9 @@ function* rootSaga() {
    yield fork(fetchLoadingQuotationMarginPage);
    yield fork(fetchDataViewPrevious);
    yield fork(indicatorSaga);
-   yield fork(shipmentSaga);
+   //shipment
+   yield fork(fetchShipment);
+   yield fork(switchCurrencyShipment);
    yield fork(outlierSaga);
    yield fork(trendsSaga);
    yield fork(adjustmentSaga);

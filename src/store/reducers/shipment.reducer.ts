@@ -11,12 +11,11 @@ export const initialState = {
    totalRow: [] as any[],
    initDataFilter: {} as any,
    defaultValueFilterOrder: defaultValueFilterOrder as any,
-   exchangeRateList: [] as any[],
-   nearestExchangeRateList: [] as any[],
    dataFilter: {} as any,
    serverTimeZone: '' as any,
    lastUpdatedTime: '' as any,
    lastUpdatedBy: '' as any,
+   currency: 'USD',
 };
 
 const shipmentSlice = createSlice({
@@ -26,12 +25,7 @@ const shipmentSlice = createSlice({
       setShipmentList(state, { payload }: PayloadAction<any[]>) {
          state.shipmentList = payload;
       },
-      setExchangeRateList(state, { payload }: PayloadAction<any[]>) {
-         state.exchangeRateList = payload;
-      },
-      setNearestExchangeRateList(state, { payload }: PayloadAction<any[]>) {
-         state.nearestExchangeRateList = payload;
-      },
+
       setTotalRow(state, { payload }: PayloadAction<any[]>) {
          state.totalRow = payload;
       },
@@ -56,6 +50,9 @@ const shipmentSlice = createSlice({
       setLastUpdatedBy(state, { payload }: PayloadAction<any[]>) {
          state.lastUpdatedBy = payload;
       },
+      setCurrency(state, { payload }: PayloadAction<string>) {
+         state.currency = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -65,26 +62,22 @@ const shipmentSlice = createSlice({
 });
 
 export const sagaGetList = createAction(`${name}/GET_LIST`);
+export const actionSwitchCurrency = createAction(`${name}/switchCurrency`);
+
 // Selectors
 export const selectState = (state: RootReducerType) => state[name];
 export const selectShipmentList = createSelector(selectState, (state) => state.shipmentList);
 export const selectTotalRow = createSelector(selectState, (state) => state.totalRow);
 export const selectDataFilter = createSelector(selectState, (state) => state.dataFilter);
 export const selectInitDataFilter = createSelector(selectState, (state) => state.initDataFilter);
-export const selectExchangeRateList = createSelector(
-   selectState,
-   (state) => state.exchangeRateList
-);
-export const selectNearestExchangeRateList = createSelector(
-   selectState,
-   (state) => state.nearestExchangeRateList
-);
+
 export const selectDefaultValueFilterOrder = createSelector(
    selectState,
    (state) => state.defaultValueFilterOrder
 );
 export const selectServerTimeZone = createSelector(selectState, (state) => state.serverTimeZone);
 export const selectLastUpdatedTime = createSelector(selectState, (state) => state.lastUpdatedTime);
+export const selectCurrency = createSelector(selectState, (state) => state.currency);
 
 export const selectLastUpdatedBy = createSelector(selectState, (state) => state.lastUpdatedBy);
 export const { actions } = shipmentSlice;
