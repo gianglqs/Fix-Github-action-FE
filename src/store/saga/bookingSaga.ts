@@ -35,7 +35,7 @@ function* getDataBooking() {
 
       const data = JSON.parse(String(res.data));
 
-      const dataBooking = data.data.listBookingOrder;
+      const dataBooking = data.data.listOrder;
       const dataTotalRow = data.data.total;
       const dataServerTimeZone = data.data.serverTimeZone;
       const dataLastUpdatedAt = data.data.lastUpdatedTime;

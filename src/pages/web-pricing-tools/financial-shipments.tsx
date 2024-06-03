@@ -69,18 +69,9 @@ export default function Shipment() {
 
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
 
-   const [listOrder, setListOrder] = useState(listShipment);
-
-   const [totalRow, setTotalRow] = useState(listTotalRow);
-
-   const serverTimeZone = useSelector(shipmentStore.selectServerTimeZone);
    const serverLastUpdatedTime = useSelector(shipmentStore.selectLastUpdatedTime);
    const serverLastUpdatedBy = useSelector(shipmentStore.selectLastUpdatedBy);
-
-   const [currency, setCurrency] = useState('USD');
-   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
-   const listExchangeRate = useSelector(shipmentStore.selectExchangeRateList);
-   const listNearestExchangeRate = useSelector(shipmentStore.selectNearestExchangeRateList);
+   const currency = useSelector(shipmentStore.selectCurrency);
 
    //  const [uploadedFile, setUploadedFile] = useState({ name: '' });
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
@@ -402,36 +393,6 @@ export default function Shipment() {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
    };
 
-   // ======= CONVERT CURRENCY ========
-
-   const handleChange = (event) => {
-      setCurrency(event.target.value);
-   };
-
-   useEffect(() => {
-      setListOrder(listShipment);
-      setTotalRow(listTotalRow);
-
-      setListOrder((prev) => {
-         return convertCurrencyOfDataBookingOrder(
-            prev,
-            currency,
-            listExchangeRate,
-            listNearestExchangeRate
-         );
-      });
-
-      setTotalRow((prev) => {
-         return convertCurrencyOfDataBookingOrder(
-            prev,
-            currency,
-            listExchangeRate,
-            listNearestExchangeRate
-         );
-      });
-      convertTimezone();
-   }, [listShipment, listTotalRow, currency]);
-
    // ===== show Product detail =======
    const [productDetailState, setProductDetailState] = useState({
       open: false,
@@ -482,18 +443,13 @@ export default function Shipment() {
       }
    };
 
-   // show latest updated time
-   const convertTimezone = () => {
-      if (serverLastUpdatedTime && serverTimeZone) {
-         setClientLatestUpdatedTime(
-            convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
-         );
-      }
-   };
-
    // handle button to clear all filters
    const handleClearAllFilters = () => {
       setDataFilter(defaultValueFilterOrder);
+   };
+
+   const handleSwitchCurrency = () => {
+      dispatch(shipmentStore.actionSwitchCurrency());
    };
 
    return (
@@ -507,7 +463,7 @@ export default function Shipment() {
                            {t('table.listPrice')} ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {formatNumber(totalRow[0]?.dealerNet)}
+                           {formatNumber(listTotalRow[0]?.dealerNet)}
                         </Typography>
                      </div>
                   </Paper>
@@ -519,7 +475,7 @@ export default function Shipment() {
                            {t('table.dealerNet')} ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {formatNumber(totalRow[0]?.dealerNetAfterSurcharge)}
+                           {formatNumber(listTotalRow[0]?.dealerNetAfterSurcharge)}
                         </Typography>
                      </div>
                   </Paper>
@@ -531,7 +487,7 @@ export default function Shipment() {
                            {t('table.totalCost')} ('000 {currency})
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {formatNumber(totalRow[0]?.totalCost)}
+                           {formatNumber(listTotalRow[0]?.totalCost)}
                         </Typography>
                      </div>
                   </Paper>
@@ -544,7 +500,7 @@ export default function Shipment() {
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumberPercentage(
-                              totalRow[0]?.marginPercentageAfterSurcharge * 100
+                              listTotalRow[0]?.marginPercentageAfterSurcharge * 100
                            )}
                         </Typography>
                      </div>
@@ -786,7 +742,7 @@ export default function Shipment() {
                   <RadioGroup
                      row
                      value={currency}
-                     onChange={handleChange}
+                     onChange={handleSwitchCurrency}
                      aria-labelledby="demo-row-radio-buttons-group-label"
                      name="row-radio-buttons-group"
                      sx={{
@@ -886,7 +842,7 @@ export default function Shipment() {
                         toolbar: GridToolbar,
                      }}
                      rowHeight={30}
-                     rows={listOrder}
+                     rows={listShipment}
                      rowBufferPx={35}
                      columns={columns}
                      getRowId={(params) =>
@@ -901,7 +857,7 @@ export default function Shipment() {
                   totalItems={tableState.totalItems}
                   onChangePage={handleChangePage}
                   onChangePerPage={handleChangePerPage}
-                  lastUpdatedAt={clientLatestUpdatedTime}
+                  lastUpdatedAt={serverLastUpdatedTime}
                   lastUpdatedBy={serverLastUpdatedBy}
                />
                <AppBackDrop open={loadingTable} hightHeaderTable={'93px'} />

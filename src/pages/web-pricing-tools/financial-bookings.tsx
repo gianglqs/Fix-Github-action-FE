@@ -166,6 +166,9 @@ export default function Booking() {
          flex: 0.5,
          minWidth: 100,
          headerName: t('table.order#'),
+         renderCell(params) {
+            return <span>{params?.row?.id?.orderNo}</span>;
+         },
       },
       {
          field: 'quoteNumber',
@@ -179,7 +182,7 @@ export default function Booking() {
          minWidth: 100,
          headerName: t('table.createAt'),
          renderCell(params) {
-            return <span>{formatDate(params?.row?.date)}</span>;
+            return <span>{formatDate(params?.row?.id?.date)}</span>;
          },
       },
       {
@@ -206,7 +209,7 @@ export default function Booking() {
          minWidth: 150,
          headerName: t('table.dealerName'),
          renderCell(params) {
-            return <span>{params.row.dealer?.name}</span>;
+            return <span>{params.row?.id?.dealer?.name}</span>;
          },
       },
       {
@@ -865,7 +868,7 @@ export default function Booking() {
                      rows={listOrder}
                      rowBufferPx={35}
                      columns={columns}
-                     getRowId={(params) => params.orderNo}
+                     getRowId={(params) => params.id.orderNo + params.id.date + params.id.dealer}
                      onCellClick={handleOnCellClick}
                   />
                </Grid>
