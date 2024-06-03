@@ -4,6 +4,7 @@ import common from './common.reducer';
 import booking from './booking.reducer';
 import marginAnalysis from './analysis.reducer';
 import indicator from './indicator.reducer';
+import manageCompetitor from './manageCompetitor.reducer';
 import shipment from './shipment.reducer';
 import outlier from './outlier.reducer';
 import trends from './trends.reducer';
@@ -39,7 +40,8 @@ const rootReducers = combineReducers({
    [priceVolumeSensitivity.name]: priceVolumeSensitivity.reducer,
    [residualValue.name]: residualValue.reducer,
    [importTracking.name]: importTracking.reducer,
-   [gum.name] : gum.reducer
+   [gum.name]: gum.reducer,
+   [manageCompetitor.name]: manageCompetitor.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;
