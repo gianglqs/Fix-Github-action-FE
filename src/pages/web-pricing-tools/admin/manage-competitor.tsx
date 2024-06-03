@@ -26,7 +26,7 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import { useEffect, useMemo, useState } from 'react';
 
-import { commonStore, importTrackingStore, indicatorStore } from '@/store/reducers';
+import { commonStore, importTrackingStore, manageCompetitorStore } from '@/store/reducers';
 import { createAction } from '@reduxjs/toolkit';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -57,13 +57,11 @@ import indicatorApi from '@/api/indicators.api';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { defaultValueFilterIndicator } from '@/utils/defaultValues';
 import { formatNumber, formatNumberPercentage } from '@/utils/formatCell';
-import { formatDate } from '@/utils/formatDateInput';
 import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
 import { produce } from 'immer';
 import _ from 'lodash';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
-import { DialogUpdateCompetitor } from '@/components/Dialog/Module/CompetitorColorDialog/UpdateDialog';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageAdmin(context);
@@ -117,7 +115,7 @@ export default function ImportTracking() {
    const { t } = useTranslation();
 
    const [open, setOpen] = useState(true);
-   const entityApp = 'indicator';
+   const entityApp = 'manage-competitor';
    const getListAction = useMemo(() => createAction(`${entityApp}/GET_LIST`), [entityApp]);
    //   const resetStateAction = useMemo(() => createAction(`${entityApp}/RESET_STATE`), [entityApp]);
    const router = useRouter();
@@ -127,12 +125,12 @@ export default function ImportTracking() {
    const [userName, setUserName] = useState('');
    const serverTimeZone = useSelector(importTrackingStore.selectServerTimeZone);
    const tableState = useSelector(commonStore.selectTableState);
-   const initDataFilter = useSelector(indicatorStore.selectInitDataFilter);
-   const cacheDataFilter = useSelector(indicatorStore.selectDataFilter);
-   const getDataForTable = useSelector(indicatorStore.selectIndicatorList);
+   const initDataFilter = useSelector(manageCompetitorStore.selectInitDataFilter);
+   const cacheDataFilter = useSelector(manageCompetitorStore.selectDataFilter);
+   const getDataForTable = useSelector(manageCompetitorStore.selectIndicatorList);
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
    const [loadingTable, setLoadingTable] = useState(false);
-   const loadingPage = useSelector(indicatorStore.selectLoadingPage);
+   const loadingPage = useSelector(manageCompetitorStore.selectLoadingPage);
 
    useEffect(() => {
       setUserName(cookies['name']);
@@ -206,7 +204,7 @@ export default function ImportTracking() {
          .deleteCompetitor(dataEditCompetitor.id)
          .then((res) => {
             dispatch(commonStore.actions.setSuccessMessage(res.data.message));
-            dispatch(indicatorStore.sagaGetList());
+            dispatch(manageCompetitorStore.sagaGetList());
             handleCloseEditCompetitorDialog();
          })
          .catch((error) => {
@@ -237,7 +235,7 @@ export default function ImportTracking() {
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
-      dispatch(indicatorStore.sagaGetList());
+      dispatch(manageCompetitorStore.sagaGetList());
    };
 
    const handleChangePerPage = (perPage: number) => {
@@ -408,7 +406,7 @@ export default function ImportTracking() {
    ];
 
    const handleReload = () => {
-      dispatch(indicatorStore.sagaGetList());
+      dispatch(manageCompetitorStore.sagaGetList());
    };
 
    const handleChangeDataFilter = (option, field) => {
@@ -426,7 +424,7 @@ export default function ImportTracking() {
    useEffect(() => {
       const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
          if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
-            setCookie(null, 'indicatorTableFilter', JSON.stringify(dataFilter), {
+            setCookie(null, 'manage-competitor', JSON.stringify(dataFilter), {
                maxAge: 604800,
                path: '/',
             });
@@ -440,7 +438,7 @@ export default function ImportTracking() {
 
    const handleFilterIndicator = () => {
       setLoadingTable(true);
-      dispatch(indicatorStore.actions.setDefaultValueFilterIndicator(dataFilter));
+      dispatch(manageCompetitorStore.actions.setDefaultValueFilterIndicator(dataFilter));
       handleChangePage(1);
    };
 

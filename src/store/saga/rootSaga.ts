@@ -23,6 +23,7 @@ import {
 } from './residualValueSaga';
 
 import { fetchImportTracking } from './importTrackingSaga';
+import managerCompetitorSaga from './manageCompetitorSaga';
 
 function* rootSaga() {
    yield fork(userSaga);
@@ -50,6 +51,7 @@ function* rootSaga() {
    yield fork(fetchModelCodeSaga);
    yield fork(fetchDataResidualValueSaga);
    yield fork(fetchImportTracking);
+   yield fork(managerCompetitorSaga);
 }
 
 export default rootSaga;
