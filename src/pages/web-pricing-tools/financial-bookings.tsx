@@ -772,14 +772,6 @@ export default function Booking() {
                         control={<Radio />}
                         label="USD"
                      />
-                     <FormControlLabel
-                        sx={{
-                           height: '80%',
-                        }}
-                        value="AUD"
-                        control={<Radio />}
-                        label="AUD"
-                     />
                   </RadioGroup>
                </Grid>
             </Grid>
