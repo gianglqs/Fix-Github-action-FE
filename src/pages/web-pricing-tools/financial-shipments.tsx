@@ -506,6 +506,20 @@ export default function Shipment() {
                      </div>
                   </Paper>
                </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {t('table.totalQuantity')}
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {
+                              listTotalRow[0]?.quantity ||0
+                           }
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
             </Grid>
 
             <Grid container spacing={1}>

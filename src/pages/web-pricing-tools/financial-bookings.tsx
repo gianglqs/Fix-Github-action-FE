@@ -384,7 +384,6 @@ export default function Booking() {
       const updateUploaded = uploadedFile.filter((file) => file.name != fileName);
       setUploadedFile(updateUploaded);
    };
-
    useEffect(() => {
       setUserRoleState(userRole);
 
@@ -515,6 +514,20 @@ export default function Booking() {
                            {formatNumberPercentage(
                               totalRow[0]?.marginPercentageAfterSurcharge * 100
                            )}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {t('table.totalQuantity')}
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {
+                              totalRow[0]?.quantity ||0
+                           }
                         </Typography>
                      </div>
                   </Paper>
