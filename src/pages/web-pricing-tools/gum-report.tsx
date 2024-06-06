@@ -56,6 +56,8 @@ function StatsTable({ rows, columns, header }: StatsTableProps) {
             hideFooter
             disableColumnMenu
             disableColumnFilter
+            getRowClassName={params =>{if(params.row.segment == "Total Classes"){
+               return " highlight-row ";}}}
             columnGroupingModel={header}
             rows={rows}
             rowHeight={38}
@@ -83,7 +85,6 @@ export default function GumReport() {
       dispatch(gumStore.actions.setDataFilter({ month: 4, year: 2023 }));
       dispatch(gumStore.sagaGetList());
       gumApi.getGroupingCriteria().then((rst) => {
-         console.log(rst);
          const { regions, segments } = rst?.data || {};
          setSegments(segments);
          setRegions(regions.filter((region) => region != 'China'));
