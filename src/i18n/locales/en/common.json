@@ -171,7 +171,8 @@
       "volume": "Volume",
       "fileStyle": "File Style",
       "frequency": "Frequency",
-      "totalClasses": "Total Classes"
+      "totalClasses": "Total Classes",
+      "totalQuantity":"Total Quantity"
    },
 
    "competitors": {
