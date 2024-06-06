@@ -448,11 +448,6 @@ export default function Shipment() {
    const handleClearAllFilters = () => {
       setDataFilter(defaultValueFilterOrder);
    };
-
-   const handleSwitchCurrency = () => {
-      dispatch(shipmentStore.actionSwitchCurrency());
-   };
-
    return (
       <>
          <AppLayout entity="shipment">
@@ -503,6 +498,20 @@ export default function Shipment() {
                            {formatNumberPercentage(
                               listTotalRow[0]?.marginPercentageAfterSurcharge * 100
                            )}
+                        </Typography>
+                     </div>
+                  </Paper>
+               </Grid>
+               <Grid item xs={3}>
+                  <Paper elevation={2} sx={paperStyle}>
+                     <div className="space-between-element">
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {t('table.totalQuantity')}
+                        </Typography>
+                        <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
+                           {
+                              listTotalRow[0]?.quantity ||0
+                           }
                         </Typography>
                      </div>
                   </Paper>
@@ -739,38 +748,6 @@ export default function Shipment() {
                   </Button>
                </Grid>
 
-               <Grid item>
-                  <RadioGroup
-                     row
-                     value={currency}
-                     onChange={handleSwitchCurrency}
-                     aria-labelledby="demo-row-radio-buttons-group-label"
-                     name="row-radio-buttons-group"
-                     sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        marginLeft: 1,
-                        height: '90%',
-                     }}
-                  >
-                     <FormControlLabel
-                        sx={{
-                           height: '80%',
-                        }}
-                        value="USD"
-                        control={<Radio />}
-                        label="USD"
-                     />
-                     <FormControlLabel
-                        sx={{
-                           height: '80%',
-                        }}
-                        value="AUD"
-                        control={<Radio />}
-                        label="AUD"
-                     />
-                  </RadioGroup>
-               </Grid>
             </Grid>
             {userRoleState === 'ADMIN' && (
                <Grid container spacing={1} sx={{ marginTop: '3px' }}>

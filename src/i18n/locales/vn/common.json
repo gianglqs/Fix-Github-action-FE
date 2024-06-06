@@ -166,7 +166,8 @@
       "volume": "Số lượng",
       "fileStyle": "Loại File",
       "frequency": "Tần suất",
-      "totalClasses": "Tổng các nhóm"
+      "totalClasses": "Tổng các nhóm",
+      "totalQuantity":"Tổng số lượng"
    },
 
    "competitors": {
