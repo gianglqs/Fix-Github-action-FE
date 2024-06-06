@@ -1,4 +1,4 @@
-import commonApi from '@/api/common.api';
+import commonApi from '@/api/exportTable.api';
 import { commonStore } from '@/store/reducers';
 import { getFileNameFromPath, handleDownloadFile } from '@/utils/handleDownloadFile';
 import { MenuItem } from '@mui/material';
@@ -19,16 +19,30 @@ const CsvExportToolbar: React.FC<GridCsvExportMenuItemProps> = (props) => {
 
    const handleExport = async () => {
       const dataFilter = { modelType, optionsFilter: optionsFilter };
-      commonApi
-         .exportTableToExcelFile(dataFilter, { currency })
-         .then((res) => {
-            const pathFile = JSON.parse(res.data).data;
-            handleDownloadFile(getFileNameFromPath(pathFile), pathFile);
-         })
-         .catch((error) => {
-            console.log(error);
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
+      if (modelType === 'simulation-modeling') {
+         commonApi
+            .exportSimulationModelingTableToExcelFile(optionsFilter)
+            .then((res) => {
+               console.log(res.data);
+               const pathFile = res.data.data;
+               handleDownloadFile(getFileNameFromPath(pathFile), pathFile);
+            })
+            .catch((error) => {
+               console.log(error);
+               dispatch(commonStore.actions.setErrorMessage(error.message));
+            });
+      } else {
+         commonApi
+            .exportTableToExcelFile(dataFilter, { currency })
+            .then((res) => {
+               const pathFile = JSON.parse(res.data).data;
+               handleDownloadFile(getFileNameFromPath(pathFile), pathFile);
+            })
+            .catch((error) => {
+               console.log(error);
+               dispatch(commonStore.actions.setErrorMessage(error.message));
+            });
+      }
 
       hideMenu?.();
    };
