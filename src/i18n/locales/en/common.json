@@ -69,6 +69,7 @@
       "chineseBrand": "Chinese Brand",
       "country": "Country",
       "category": "Category",
+      "competitor": "Competitor",
       "brand": "Brand",
       "family": "Family",
       "truckType": "Truck Type",
@@ -172,7 +173,7 @@
       "fileStyle": "File Style",
       "frequency": "Frequency",
       "totalClasses": "Total Classes",
-      "totalQuantity":"Total Quantity"
+      "totalQuantity": "Total Quantity"
    },
 
    "competitors": {

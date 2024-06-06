@@ -67,6 +67,7 @@
       "chineseBrand": "中国品牌",
       "country": "国家",
       "category": "类别",
+      "competitor": "竞争者",
       "brand": "品牌",
       "family": "家族",
       "truckType": "卡车类型",
@@ -165,7 +166,7 @@
       "fileStyle": "文件风格",
       "frequency": "频率",
       "totalClasses": "总课程",
-      "totalQuantity":"总数量"
+      "totalQuantity": "总数量"
    },
 
    "competitors": {
