@@ -29,5 +29,6 @@ p {
 }
 .highlight-row {
    pointer-events: none;
+   font-weight: 600;
    background-color: #fff0c8 !important;
 }
