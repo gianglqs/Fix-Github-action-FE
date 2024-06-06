@@ -48,6 +48,7 @@ import { paperStyle } from '@/theme/paperStyle';
 import { useTranslation } from 'react-i18next';
 import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
 import { extractTextInParentheses } from '@/utils/getString';
+import AppDataTable from '@/components/DataTable/AppDataGridPro';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -828,7 +829,7 @@ export default function Shipment() {
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
-                  <DataGridPro
+                  {/* <DataGridPro
                      hideFooter
                      disableColumnMenu
                      sx={{
@@ -848,6 +849,16 @@ export default function Shipment() {
                      getRowId={(params) =>
                         params.id.orderNo + params.id.dealer.name + params.id.date
                      }
+                     onCellClick={handleOnCellClick}
+                  /> */}
+                  <AppDataTable
+                     columnHeaderHeight={90}
+                     dataFilter={dataFilter}
+                     currency={currency}
+                     entity={'shipment'}
+                     rows={listShipment}
+                     columns={columns}
+                     getRowId={(params) => params.id.orderNo + params.id.date + params.id.dealer}
                      onCellClick={handleOnCellClick}
                   />
                </Grid>

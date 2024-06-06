@@ -47,7 +47,7 @@ const AppDataTable: React.FC<any> = (props) => {
             },
          }}
          columnHeaderHeight={90}
-         rowHeight={50}
+         rowHeight={30}
          slots={{
             toolbar: () => (
                <ToolbarTable optionsFilter={dataFilter} currency={currency} modelType={entity} />
