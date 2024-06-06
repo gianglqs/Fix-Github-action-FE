@@ -461,10 +461,6 @@ export default function Booking() {
    const handleClearAllFilters = () => {
       setDataFilter(defaultValueFilterOrder);
    };
-
-   const handleSwitchCurrency = () => {
-      dispatch(bookingStore.actionSwitchCurrency());
-   };
    return (
       <>
          <AppLayout entity="booking">
@@ -748,31 +744,6 @@ export default function Booking() {
                   >
                      {t('button.clear')}
                   </Button>
-               </Grid>
-
-               <Grid item>
-                  <RadioGroup
-                     row
-                     value={currency}
-                     onChange={handleSwitchCurrency}
-                     aria-labelledby="demo-row-radio-buttons-group-label"
-                     name="row-radio-buttons-group"
-                     sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        marginLeft: 1,
-                        height: '90%',
-                     }}
-                  >
-                     <FormControlLabel
-                        sx={{
-                           height: '80%',
-                        }}
-                        value="USD"
-                        control={<Radio />}
-                        label="USD"
-                     />
-                  </RadioGroup>
                </Grid>
             </Grid>
 
