@@ -53,6 +53,7 @@ import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
 import ToolbarTable from '@/components/App/ToolbarTable/ToolbarTable';
 import { DataGrid, GridColDef, GridRowId } from '@mui/x-data-grid';
+import AppDataTable from '@/components/DataTable/AppDataGridPro';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -168,12 +169,8 @@ export default function Booking() {
          flex: 0.5,
          minWidth: 100,
          headerName: t('table.order#'),
-         valueGetter: (params) => params?.row?.id.orderNo, // Lấy giá trị từ dữ liệu của hàng
-         valueSetter: (params) => {
-            // Cập nhật giá trị của cột orderNo khi được chỉnh sửa
-            const newValue = params?.newValue;
-            const updatedRow = { ...params?.row, id: { ...params?.row?.id, orderNo: newValue } };
-            return updatedRow;
+         renderCell(params) {
+            return <span>{params?.row?.id?.orderNo}</span>;
          },
       },
       {
@@ -187,16 +184,8 @@ export default function Booking() {
          flex: 0.5,
          minWidth: 100,
          headerName: t('table.createAt'),
-         // renderCell(params) {
-         //    return <span>{formatDate(params?.row?.id?.date)}</span>;
-         // },
-         valueGetter: (params) => {
-            console.log('valueGetter', params);
-            return params?.row?.quoteNumber;
-         },
-         valueSetter: (row, value) => {
-            console.log('value   Setter', row, value);
-            return row?.row?.quoteNumber;
+         renderCell(params) {
+            return <span>{formatDate(params?.row?.id?.date)}</span>;
          },
       },
       {
@@ -207,7 +196,6 @@ export default function Booking() {
          renderCell(params) {
             return <span>{params.row.country?.region?.regionName}</span>;
          },
-         valueGetter: (params) => 'hehehe region',
       },
       {
          field: 'ctryCode',
@@ -479,14 +467,6 @@ export default function Booking() {
 
    const handleSwitchCurrency = () => {
       dispatch(bookingStore.actionSwitchCurrency());
-   };
-
-   const getRowsToExport = (rows) => {
-      return rows.map((row) => ({
-         orderNo: row.id?.orderNo,
-         quoteNumber: row.quoteNumber,
-         date: formatDate(row.id?.date),
-      }));
    };
 
    return (
@@ -875,23 +855,12 @@ export default function Booking() {
                }}
             >
                <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
-                  <DataGrid
-                     hideFooter
-                     disableColumnMenu
-                     sx={{
-                        '& .MuiDataGrid-columnHeaderTitle': {
-                           whiteSpace: 'break-spaces',
-                           lineHeight: 1.2,
-                        },
-                     }}
+                  <AppDataTable
                      columnHeaderHeight={90}
-                     rowHeight={30}
-                     slots={{
-                        toolbar: () => <ToolbarTable optionsFilter={dataFilter} />,
-                     }}
-                     slotProps={{ toolbar: {} }}
+                     dataFilter={dataFilter}
+                     currency={currency}
+                     entity={'booking'}
                      rows={listOrder}
-                     rowBufferPx={35}
                      columns={columns}
                      getRowId={(params) => params.id.orderNo + params.id.date + params.id.dealer}
                      onCellClick={handleOnCellClick}

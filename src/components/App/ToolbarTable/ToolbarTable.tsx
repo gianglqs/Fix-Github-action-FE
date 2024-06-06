@@ -11,7 +11,7 @@ import CsvExportToolbar from './CsvExportMenu';
 const ToolbarTable = (props) => {
    return (
       <GridToolbarContainer>
-         <CsvExportToolbar optionsFilter={props?.optionsFilter} />
+         <CsvExportToolbar {...props} />
          <GridToolbarColumnsButton />
          <GridToolbarDensitySelector />
          <GridToolbarFilterButton />

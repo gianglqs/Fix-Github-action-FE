@@ -1,49 +1,41 @@
-import { MenuItem } from '@mui/material';
-import {
-   GridToolbarExport,
-   GridToolbarExportContainer,
-   useGridApiContext,
-} from '@mui/x-data-grid-pro';
 import commonApi from '@/api/common.api';
+import { getFileNameFromPath, handleDownloadFile } from '@/utils/handleDownloadFile';
+import { MenuItem } from '@mui/material';
+import { GridToolbarExportContainer, useGridApiContext } from '@mui/x-data-grid-pro';
 
 interface GridCsvExportMenuItemProps {
    hideMenu?: () => void;
    options?: any;
    optionsFilter?: any;
+   currency?: string;
+   modelType?: string;
 }
 
 const CsvExportToolbar: React.FC<GridCsvExportMenuItemProps> = (props) => {
    const apiRef = useGridApiContext();
-   const { hideMenu, options, optionsFilter, ...other } = props;
+   const { hideMenu, options, optionsFilter, modelType, currency, ...other } = props;
 
    const handleExport = async () => {
-      const dataFilter = { modelType: 'booking', optionsFilter: optionsFilter };
-      console.log('click export ');
-      const currentRowIds = apiRef.current.getAllRowIds();
-      const allRows = await exportAllRows(dataFilter);
-      console.log(allRows);
+      const dataFilter = { modelType, optionsFilter: optionsFilter };
+      const pathFile = await getExcelPathExported(dataFilter, currency);
+      handleDownloadFile(getFileNameFromPath(pathFile), pathFile);
 
-      apiRef.current.updateRows(allRows);
-      await apiRef.current.exportDataAsCsv();
-      const idsToDelete = allRows.map((row) => row.id).filter((id) => !currentRowIds.includes(id));
-      apiRef.current.updateRows(idsToDelete.map((rowId) => ({ id: rowId, _action: 'delete' })));
-
+      getExcelPathExported;
       hideMenu?.();
    };
 
    return (
       <GridToolbarExportContainer>
-         <MenuItem onClick={handleExport}>Export as CSV</MenuItem>
+         <MenuItem onClick={handleExport}>Export as Excel</MenuItem>
       </GridToolbarExportContainer>
    );
 };
 
-const exportAllRows = (optionsFilter) => {
+const getExcelPathExported = (optionsFilter, currency) => {
    return commonApi
-      .getAllDataForExport(optionsFilter, { currency: 'USD' })
+      .exportTableToExcelFile(optionsFilter, { currency })
       .then((res) => {
-         const data = JSON.parse(res.data);
-         return data.data.listOrder;
+         return JSON.parse(res.data).data;
       })
       .catch((error) => {
          console.log(error);
