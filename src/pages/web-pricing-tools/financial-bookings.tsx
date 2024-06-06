@@ -464,7 +464,7 @@ export default function Booking() {
       <>
          <AppLayout entity="booking">
             <Grid container spacing={1} sx={{ marginBottom: 2 }}>
-               <Grid item xs={3}>
+               <Grid item xs={2.4}>
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
@@ -476,7 +476,7 @@ export default function Booking() {
                      </div>
                   </Paper>
                </Grid>
-               <Grid item xs={3}>
+               <Grid item xs={2.4}>
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
@@ -488,7 +488,7 @@ export default function Booking() {
                      </div>
                   </Paper>
                </Grid>
-               <Grid item xs={3}>
+               <Grid item xs={2.4}>
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
@@ -500,7 +500,7 @@ export default function Booking() {
                      </div>
                   </Paper>
                </Grid>
-               <Grid item xs={3}>
+               <Grid item xs={2.4}>
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
@@ -514,7 +514,7 @@ export default function Booking() {
                      </div>
                   </Paper>
                </Grid>
-               <Grid item xs={3}>
+               <Grid item xs={2.4}>
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
