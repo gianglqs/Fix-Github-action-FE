@@ -1,7 +1,7 @@
 {
    "navBar": {
       "dashboard": "仪表板",
-      "competitors": "竞争对手",
+      "competitorColor": "竞争对手的颜色",
       "manageIndicator": "管理竞争对手",
       "users": "用户",
       "historicalImporting": "历史导入",
