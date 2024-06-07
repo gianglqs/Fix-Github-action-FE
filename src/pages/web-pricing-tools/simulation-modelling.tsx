@@ -48,6 +48,7 @@ import { setCookie } from 'nookies';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { paperStyle } from '@/theme/paperStyle';
 import { useTranslation } from 'react-i18next';
+import AppDataTable from '@/components/DataTable/AppDataGridPro';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -993,7 +994,7 @@ export default function Adjustment() {
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: 'calc(100vh - 283px)' }}>
-                  <DataGridPro
+                  {/* <DataGridPro
                      sx={{
                         '& .MuiDataGrid-cell': {
                            padding: 0,
@@ -1015,6 +1016,29 @@ export default function Adjustment() {
                      }}
                      rows={listAdjustment}
                      rowBufferPx={35}
+                     columns={columns}
+                     columnGroupingModel={columnGroupingModel}
+                     getRowId={(params) => params.id}
+                  /> */}
+
+                  <AppDataTable
+                     sx={{
+                        '& .MuiDataGrid-cell': {
+                           padding: 0,
+                        },
+                        '& .css-1ey3qrw-MuiDataGrid-root': {
+                           padding: 0,
+                        },
+                        '& .MuiDataGrid-columnHeaderTitle': {
+                           whiteSpace: 'break-spaces',
+                           lineHeight: 1.2,
+                        },
+                     }}
+                     columnHeaderHeight={60}
+                     dataFilter={{ dataFilter: dataFilter, dataCalculate: dataCalculator }}
+                     currency="USD"
+                     entity="simulation-modeling"
+                     rows={listAdjustment}
                      columns={columns}
                      columnGroupingModel={columnGroupingModel}
                      getRowId={(params) => params.id}

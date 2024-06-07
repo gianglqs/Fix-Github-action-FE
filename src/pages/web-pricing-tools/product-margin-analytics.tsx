@@ -51,6 +51,7 @@ import { setCookie } from 'nookies';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { paperStyle } from '@/theme/paperStyle';
 import { useTranslation } from 'react-i18next';
+import AppDataTable from '@/components/DataTable/AppDataGridPro';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -410,10 +411,17 @@ export default function Outlier() {
       convertTimezone();
    }, [serverLastUpdatedTime, serverTimeZone]);
 
+   const [entityExport, setEntityExport] = useState('product-margin-analytic-booking');
+
    const handleChangeDataSource = (e) => {
       dispatch(outlierStore.actions.setDataSource(e.target.value));
       dispatch(outlierStore.sagaGetList());
       getOutliersDataForChart();
+      setEntityExport(
+         e.target.value === 'true'
+            ? 'product-margin-analytic-booking'
+            : 'product-margin-analytic-shipment'
+      );
    };
 
    return (
@@ -708,24 +716,12 @@ export default function Outlier() {
 
                <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                   <Grid container sx={{ height: 'calc(60vh - 238px)' }}>
-                     <DataGridPro
-                        sx={{
-                           '& .MuiDataGrid-columnHeaderTitle': {
-                              textOverflow: 'clip',
-                              whiteSpace: 'break-spaces',
-                              lineHeight: 1.2,
-                           },
-                        }}
-                        columnHeaderHeight={50}
-                        hideFooter
-                        disableColumnMenu
-                        // tableHeight={740}
-                        rowHeight={35}
+                     <AppDataTable
+                        columnHeaderHeight={90}
+                        dataFilter={dataFilter}
+                        currency={'USD'}
+                        entity={entityExport}
                         rows={listOutlier}
-                        slots={{
-                           toolbar: GridToolbar,
-                        }}
-                        rowBufferPx={35}
                         columns={columns}
                         getRowId={(params) => params.orderNo}
                      />

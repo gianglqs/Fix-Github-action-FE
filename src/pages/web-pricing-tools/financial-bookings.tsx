@@ -51,6 +51,9 @@ import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { extractTextInParentheses } from '@/utils/getString';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
+import ToolbarTable from '@/components/App/ToolbarTable/ToolbarTable';
+import { DataGrid, GridColDef, GridRowId } from '@mui/x-data-grid';
+import AppDataTable from '@/components/DataTable/AppDataGridPro';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -460,6 +463,7 @@ export default function Booking() {
    const handleClearAllFilters = () => {
       setDataFilter(defaultValueFilterOrder);
    };
+
    return (
       <>
          <AppLayout entity="booking">
@@ -521,9 +525,7 @@ export default function Booking() {
                            {t('table.totalQuantity')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {
-                              totalRow[0]?.quantity ||0
-                           }
+                           {totalRow[0]?.quantity || 0}
                         </Typography>
                      </div>
                   </Paper>
@@ -827,22 +829,12 @@ export default function Booking() {
                }}
             >
                <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
-                  <DataGridPro
-                     hideFooter
-                     disableColumnMenu
-                     sx={{
-                        '& .MuiDataGrid-columnHeaderTitle': {
-                           whiteSpace: 'break-spaces',
-                           lineHeight: 1.2,
-                        },
-                     }}
+                  <AppDataTable
                      columnHeaderHeight={90}
-                     rowHeight={30}
-                     slots={{
-                        toolbar: GridToolbar,
-                     }}
+                     dataFilter={dataFilter}
+                     currency={currency}
+                     entity={'booking'}
                      rows={listOrder}
-                     rowBufferPx={35}
                      columns={columns}
                      getRowId={(params) => params.id.orderNo + params.id.date + params.id.dealer}
                      onCellClick={handleOnCellClick}

@@ -62,6 +62,7 @@ import { produce } from 'immer';
 import _ from 'lodash';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
+import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPageAdmin(context);
@@ -123,7 +124,6 @@ export default function ImportTracking() {
    const listImportTracking = useSelector(importTrackingStore.selectListImportTracking);
    const cookies = parseCookies();
    const [userName, setUserName] = useState('');
-   const serverTimeZone = useSelector(importTrackingStore.selectServerTimeZone);
    const tableState = useSelector(commonStore.selectTableState);
    const initDataFilter = useSelector(manageCompetitorStore.selectInitDataFilter);
    const cacheDataFilter = useSelector(manageCompetitorStore.selectDataFilter);
@@ -131,6 +131,9 @@ export default function ImportTracking() {
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
    const [loadingTable, setLoadingTable] = useState(false);
    const loadingPage = useSelector(manageCompetitorStore.selectLoadingPage);
+   const serverTimeZone = useSelector(manageCompetitorStore.selectServerTimeZone);
+   const serverLastUpdatedTime = useSelector(manageCompetitorStore.selectLastUpdatedTime);
+   const serverLastUpdatedBy = useSelector(manageCompetitorStore.selectLastUpdatedBy);
 
    useEffect(() => {
       setUserName(cookies['name']);
@@ -480,6 +483,19 @@ export default function ImportTracking() {
          detail: {},
       });
    };
+   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
+   useEffect(() => {
+      convertTimezone();
+   }, [serverTimeZone, serverLastUpdatedTime]);
+
+   // show latest updated time
+   const convertTimezone = () => {
+      if (serverLastUpdatedTime && serverTimeZone) {
+         setClientLatestUpdatedTime(
+            convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
+         );
+      }
+   };
 
    return (
       <>
@@ -825,8 +841,8 @@ export default function ImportTracking() {
                      totalItems={tableState.totalItems}
                      onChangePage={handleChangePage}
                      onChangePerPage={handleChangePerPage}
-                     // lastUpdatedAt={clientLatestUpdatedTime}
-                     // lastUpdatedBy={serverLastUpdatedBy}
+                     lastUpdatedAt={clientLatestUpdatedTime}
+                     lastUpdatedBy={serverLastUpdatedBy}
                   />
                </Paper>
 

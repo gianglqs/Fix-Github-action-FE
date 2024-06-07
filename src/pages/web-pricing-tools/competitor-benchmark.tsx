@@ -52,6 +52,7 @@ import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { paperStyle } from '@/theme/paperStyle';
 import { useTranslation } from 'react-i18next';
+import AppDataTable from '@/components/DataTable/AppDataGridPro';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -1046,23 +1047,12 @@ export default function Indicators() {
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: 'calc(67vh - 275px)', minHeight: '200px' }}>
-                  <DataGridPro
-                     sx={{
-                        '& .MuiDataGrid-columnHeaderTitle': {
-                           textOverflow: 'clip',
-                           whiteSpace: 'break-spaces',
-                           lineHeight: 1.2,
-                        },
-                     }}
-                     columnHeaderHeight={100}
-                     hideFooter
-                     disableColumnMenu
-                     slots={{
-                        toolbar: GridToolbar,
-                     }}
-                     rowHeight={35}
+                  <AppDataTable
+                     columnHeaderHeight={90}
+                     dataFilter={dataFilter}
+                     currency="USD"
+                     entity="competitor-pricing"
                      rows={getDataForTable}
-                     rowBufferPx={35}
                      columns={columns}
                      getRowId={(params) => params.id}
                   />
