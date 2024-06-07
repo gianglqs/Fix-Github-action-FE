@@ -220,7 +220,6 @@ export default function ImportTracking() {
    const handleCloseEditCompetitorDialog = () => {
       setOpenEditCompetitor({ open: false, isCreate: false });
    };
-   console.log('asas' + initDataFilter.competitorNames);
 
    const handleLogOut = () => {
       try {
@@ -417,6 +416,7 @@ export default function ImportTracking() {
                draft[field] = option.value;
             } else {
                draft[field] = option.map(({ value }) => value);
+               console.log(draft[field]);
             }
          })
       );
@@ -613,6 +613,24 @@ export default function ImportTracking() {
                   </Grid>
                   <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                      <AppAutocomplete
+                        value={_.map(dataFilter.competitorNames, (item) => {
+                           return { value: item };
+                        })}
+                        options={initDataFilter.competitorNames}
+                        label={t('filters.competitor')}
+                        sx={{ height: 25, zIndex: 10 }}
+                        onChange={(e, option) => handleChangeDataFilter(option, 'competitorNames')}
+                        limitTags={1}
+                        disableListWrap
+                        primaryKeyOption="value"
+                        multiple
+                        disableCloseOnSelect
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+                  <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+                     <AppAutocomplete
                         value={_.map(dataFilter.regions, (item) => {
                            return { value: item };
                         })}
@@ -752,25 +770,6 @@ export default function ImportTracking() {
                            // handleChangeDataFilter(option, 'aopMarginPercentageGroup')
                         }
                         disableClearable={false}
-                        renderOption={(prop, option) => `${option.value}`}
-                        getOptionLabel={(option) => `${option.value}`}
-                     />
-                  </Grid>
-
-                  <Grid item xs={2}>
-                     <AppAutocomplete
-                        value={_.map(dataFilter.competitorNames, (item) => {
-                           return { value: item };
-                        })}
-                        options={initDataFilter.competitorNames}
-                        label={t('filters.competitor')}
-                        sx={{ height: 25, zIndex: 10 }}
-                        onChange={(e, option) => handleChangeDataFilter(option, 'competitorNames')}
-                        limitTags={1}
-                        disableListWrap
-                        primaryKeyOption="value"
-                        multiple
-                        disableCloseOnSelect
                         renderOption={(prop, option) => `${option.value}`}
                         getOptionLabel={(option) => `${option.value}`}
                      />
