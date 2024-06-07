@@ -93,7 +93,7 @@ const Drawer = styled(MuiDrawer, {
    },
 }));
 
-export default function competitors() {
+export default function competitorColor() {
    const { t } = useTranslation();
    const [open, setOpen] = useState(true);
    const router = useRouter();
