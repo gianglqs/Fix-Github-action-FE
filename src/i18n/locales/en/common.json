@@ -1,7 +1,7 @@
 {
    "navBar": {
       "dashboard": "Dashboard",
-      "competitorColor": "Competitor Color",
+      "competitorColors": "Competitor Colors",
       "manageIndicator": "Manage Competitors",
       "users": "Users",
       "historicalImporting": "Historical Importing",

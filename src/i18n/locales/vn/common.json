@@ -1,7 +1,7 @@
 {
    "navBar": {
       "dashboard": "Bảng thống kê",
-      "competitorColor": "Màu đối thủ",
+      "competitorColors": "Màu đối thủ",
       "manageIndicator": "Quản lý đối thủ cạnh tranh",
       "users": "Người dùng",
       "historicalImporting": "Lịch sử nhập dữ liệu",

@@ -14,7 +14,7 @@ const NavBar = () => {
 
    const navOptions = {
       'financial-bookings': t('navBar.dashboard'),
-      'competitor-color': t('navBar.competitorColor'),
+      'competitor-colors': t('navBar.competitorColors'),
       'manage-competitor': t('navBar.manageIndicator'),
       users: t('navBar.users'),
       'historical-import': t('navBar.historicalImporting'),
