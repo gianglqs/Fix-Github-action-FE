@@ -1,7 +1,7 @@
 import indicatorApi from '@/api/indicators.api';
 import { AppAutocomplete, AppNumberField, AppTextField } from '@/components/App';
 import AutoCompleteHasCreateNew from '@/components/App/AutocompleteWithCreateNew';
-import { commonStore, indicatorStore } from '@/store/reducers';
+import { commonStore, indicatorStore, manageCompetitorStore } from '@/store/reducers';
 import { Box, Button, Dialog, Grid, Typography, styled } from '@mui/material';
 import { t } from 'i18next';
 import { produce } from 'immer';
@@ -161,7 +161,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
    const { open, onClose, data, setData, isCreate, setOpenConfirmDeleteDialog } = props;
    const dispatch = useDispatch();
 
-   const initDataFilter = useSelector(indicatorStore.selectInitDataFilter);
+   const initDataFilter = useSelector(manageCompetitorStore.selectInitDataFilter);
 
    const [openSelectColor, setOpenSelectColor] = useState(false);
 
