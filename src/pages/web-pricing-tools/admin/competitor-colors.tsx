@@ -93,12 +93,12 @@ const Drawer = styled(MuiDrawer, {
    },
 }));
 
-export default function competitors() {
+export default function competitorColors() {
    const { t } = useTranslation();
    const [open, setOpen] = useState(true);
    const router = useRouter();
 
-   const entityApp = 'competitorColor';
+   const entityApp = 'competitorColors';
    const getListAction = useMemo(() => createAction(`${entityApp}/GET_LIST`), [entityApp]);
    const resetStateAction = useMemo(() => createAction(`${entityApp}/RESET_STATE`), [entityApp]);
 
