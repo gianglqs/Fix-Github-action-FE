@@ -6,5 +6,6 @@ services:
          - '3005:3005'
       volumes:
          - /opt/hysteryale:/opt/hysteryale
+         - /opt/hysteryale/hyster-yale-frontend/.env:/hysteryale-frontend/.env
       environment:
          - TZ=${TIMEZONE_HY}
