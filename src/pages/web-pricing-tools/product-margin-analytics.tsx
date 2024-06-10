@@ -201,7 +201,7 @@ export default function Outlier() {
          field: 'dealerNet',
          flex: 0.8,
          minWidth: 100,
-         headerName: `${t('table.dealerNet')} ('000 USD)`,
+         headerName: `${t('table.listPrice')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNet)}</span>;
@@ -211,7 +211,7 @@ export default function Outlier() {
          field: 'dealerNetAfterSurCharge',
          flex: 0.8,
          minWidth: 100,
-         headerName: `${t('table.dealerNetAfterSurcharge')} ('000 USD)`,
+         headerName: `${t('table.dealerNet')} ('000 USD)`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
@@ -432,7 +432,7 @@ export default function Outlier() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.dealerNet')}('000)
+                           {t('table.listPrice')}('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.dealerNet)}
@@ -444,7 +444,7 @@ export default function Outlier() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.dealerNetAfterSurcharge')} ('000)
+                           {t('table.dealerNet')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.dealerNetAfterSurcharge)}
