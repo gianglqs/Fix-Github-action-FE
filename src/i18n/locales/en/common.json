@@ -124,6 +124,7 @@
       "class": "Class",
       "series": "Series",
       "models": "Model Code",
+      "discount": "Discount",
       "qty": "Qty",
       "dealerNet": "Dealer Net",
       "dealerNetAfterSurcharge": "Dealer Net After Surcharge",

@@ -99,16 +99,20 @@ export default function MarginAnalysis() {
             },
             requestId
          );
-         console.log(data);
 
          const analysisSummary = data?.MarginAnalystSummary;
          const marginAnalystData = data?.MarginAnalystData;
 
          marginAnalystData.forEach((margin) => {
+            margin.discountPercentage = (
+               1 -
+               margin.dealerNet / (margin.listPrice === 0 ? 1 : margin.listPrice)
+            ).toLocaleString();
             margin.listPrice = margin.listPrice.toLocaleString();
             margin.manufacturingCost = margin.manufacturingCost.toLocaleString();
             margin.dealerNet = margin.dealerNet.toLocaleString();
          });
+         console.log(marginAnalystData);
 
          const marginData = {
             targetMargin: data?.TargetMargin,
@@ -291,21 +295,32 @@ export default function MarginAnalysis() {
          align: 'right',
          cellClassName: 'highlight-cell',
       },
+
+      {
+         field: 'dealerNet',
+         flex: 0.4,
+         minWidth: 130,
+         headerName: t('table.dealerNet'),
+         headerAlign: 'right',
+         align: 'right',
+         cellClassName: 'highlight-cell',
+      },
+
+      {
+         field: 'discountPercentage',
+         flex: 0.4,
+         minWidth: 130,
+         headerName: `${t('table.discount')} (%)`,
+         headerAlign: 'right',
+         align: 'right',
+         cellClassName: 'highlight-cell',
+      },
       {
          field: 'manufacturingCost',
          flex: 0.7,
          headerName: `${getCurrencyForManufacturingCost(marginCalculateData.marginAnalysisSummary?.monthly)}`, //+ ` (${dataFilter.currency})`,
          headerAlign: 'right',
          align: 'right',
-      },
-      {
-         field: 'dealerNet',
-         flex: 0.4,
-         minWidth: 150,
-         headerName: t('table.dealerNet'),
-         headerAlign: 'right',
-         align: 'right',
-         cellClassName: 'highlight-cell',
       },
       {
          field: 'isSPED',
