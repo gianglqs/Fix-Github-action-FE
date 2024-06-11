@@ -244,8 +244,8 @@ export default function Booking() {
       },
       {
          field: 'model',
-         flex: 0.6,
-         minWidth: 100,
+         flex: 0.3,
+         minWidth: 70,
          headerName: t('table.models'),
          renderCell(params) {
             return <span style={{ cursor: 'pointer' }}>{params.row.product.modelCode}</span>;
@@ -253,8 +253,8 @@ export default function Booking() {
       },
       {
          field: 'quantity',
-         flex: 0.5,
-         minWidth: 60,
+         flex: 0.3,
+         minWidth: 50,
          headerName: t('table.qty'),
          ...formatNumbericColumn,
       },
@@ -262,7 +262,7 @@ export default function Booking() {
       {
          field: 'dealerNet',
          flex: 0.6,
-         minWidth: 100,
+         minWidth: 80,
          headerName: `${t('table.listPrice')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -272,8 +272,8 @@ export default function Booking() {
       },
       {
          field: 'dealerNetAfterSurcharge',
-         flex: 0.7,
-         minWidth: 150,
+         flex: 0.5,
+         minWidth: 100,
          headerName: `${t('table.dealerNet')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -282,9 +282,30 @@ export default function Booking() {
          },
       },
       {
-         field: 'totalCost',
+         field: 'discountPercentage',
          flex: 0.6,
-         minWidth: 110,
+         minWidth: 80,
+         headerName: `${t('table.discount')} (%)`,
+         cellClassName: 'highlight-cell',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return (
+               <span>
+                  {formatNumberPercentage(
+                     1 -
+                        params?.row.dealerNet /
+                           (params?.row.dealerNetAfterSurcharge === 0
+                              ? 1
+                              : params?.row.dealerNetAfterSurcharge)
+                  )}
+               </span>
+            );
+         },
+      },
+      {
+         field: 'totalCost',
+         flex: 0.7,
+         minWidth: 80,
          headerName: `${t('table.totalCost')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,

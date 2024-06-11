@@ -60,6 +60,7 @@
       "dealerName": "Nhà phân phối",
       "class": "Phân lớp",
       "models": "Mã sản phẩm",
+      "discount": "Giảm giá",
       "segment": "Bộ phận",
       "aopMarginPercentage": "AOP Margin %",
       "marginPercentage": "Lợi nhuận %",

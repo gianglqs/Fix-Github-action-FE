@@ -59,6 +59,7 @@
       "dealerName": "经销商名称",
       "class": "类别",
       "models": "型号",
+      "discount": "折扣",
       "segment": "段",
       "aopMarginPercentage": "AOP利润率 %",
       "marginPercentage": "利润率",
