@@ -183,7 +183,7 @@ export default function Outlier() {
       {
          field: 'quantity',
          flex: 0.3,
-         minWidth: 100,
+         minWidth: 50,
          headerName: t('table.qty'),
          ...formatNumbericColumn,
       },
@@ -217,6 +217,7 @@ export default function Outlier() {
             return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
          },
       },
+
       {
          field: 'marginAfterSurCharge',
          flex: 0.7,
@@ -225,6 +226,26 @@ export default function Outlier() {
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
+         },
+      },
+      {
+         field: 'discountPercentage',
+         flex: 0.7,
+         minWidth: 80,
+         headerName: `${t('table.discount')} (%)`,
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return (
+               <span>
+                  {formatNumberPercentage(
+                     1 -
+                        params?.row.dealerNet /
+                           (params?.row.dealerNetAfterSurcharge === 0
+                              ? 1
+                              : params?.row.dealerNetAfterSurcharge)
+                  )}
+               </span>
+            );
          },
       },
 

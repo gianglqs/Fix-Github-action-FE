@@ -1,7 +1,7 @@
 {
    "navBar": {
       "dashboard": "Dashboard",
-      "competitors": "Competitors",
+      "competitorColors": "Competitor Colors",
       "manageIndicator": "Manage Competitors",
       "users": "Users",
       "historicalImporting": "Historical Importing",
@@ -69,6 +69,7 @@
       "chineseBrand": "Chinese Brand",
       "country": "Country",
       "category": "Category",
+      "competitor": "Competitor",
       "brand": "Brand",
       "family": "Family",
       "truckType": "Truck Type",
@@ -123,6 +124,7 @@
       "class": "Class",
       "series": "Series",
       "models": "Model Code",
+      "discount": "Discount",
       "qty": "Qty",
       "dealerNet": "Dealer Net",
       "dealerNetAfterSurcharge": "Dealer Net After Surcharge",
@@ -172,7 +174,7 @@
       "fileStyle": "File Style",
       "frequency": "Frequency",
       "totalClasses": "Total Classes",
-      "totalQuantity":"Total Quantity"
+      "totalQuantity": "Total Quantity"
    },
 
    "competitors": {

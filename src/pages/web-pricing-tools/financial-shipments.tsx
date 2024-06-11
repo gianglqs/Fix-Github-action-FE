@@ -237,7 +237,7 @@ export default function Shipment() {
       },
       {
          field: 'quantity',
-         flex: 0.6,
+         flex: 0.3,
          minWidth: 50,
          headerName: t('table.qty'),
          ...formatNumbericColumn,
@@ -245,8 +245,8 @@ export default function Shipment() {
 
       {
          field: 'dealerNet',
-         flex: 0.6,
-         minWidth: 100,
+         flex: 0.5,
+         minWidth: 80,
          headerName: `${t('table.listPrice')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -257,7 +257,7 @@ export default function Shipment() {
       {
          field: 'dealerNetAfterSurcharge',
          flex: 0.6,
-         minWidth: 150,
+         minWidth: 100,
          headerName: `${t('table.dealerNet')} ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -265,9 +265,30 @@ export default function Shipment() {
          },
       },
       {
+         field: 'discountPercentage',
+         flex: 0.6,
+         minWidth: 80,
+         headerName: `${t('table.discount')} (%)`,
+         cellClassName: 'highlight-cell',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return (
+               <span>
+                  {formatNumberPercentage(
+                     1 -
+                        params?.row.dealerNet /
+                           (params?.row.dealerNetAfterSurcharge === 0
+                              ? 1
+                              : params?.row.dealerNetAfterSurcharge)
+                  )}
+               </span>
+            );
+         },
+      },
+      {
          field: 'totalCost',
          flex: 0.6,
-         minWidth: 120,
+         minWidth: 80,
          headerName: `${t('table.totalActualCost')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -452,7 +473,7 @@ export default function Shipment() {
       <>
          <AppLayout entity="shipment">
             <Grid container spacing={1} sx={{ marginBottom: 2 }}>
-               <Grid item xs={3}>
+               <Grid item xs={2.4}>
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
@@ -464,7 +485,7 @@ export default function Shipment() {
                      </div>
                   </Paper>
                </Grid>
-               <Grid item xs={3}>
+               <Grid item xs={2.4}>
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
@@ -476,7 +497,7 @@ export default function Shipment() {
                      </div>
                   </Paper>
                </Grid>
-               <Grid item xs={3}>
+               <Grid item xs={2.4}>
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
@@ -488,7 +509,7 @@ export default function Shipment() {
                      </div>
                   </Paper>
                </Grid>
-               <Grid item xs={3}>
+               <Grid item xs={2.4}>
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
@@ -502,16 +523,14 @@ export default function Shipment() {
                      </div>
                   </Paper>
                </Grid>
-               <Grid item xs={3}>
+               <Grid item xs={2.4}>
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {t('table.totalQuantity')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {
-                              listTotalRow[0]?.quantity ||0
-                           }
+                           {listTotalRow[0]?.quantity || 0}
                         </Typography>
                      </div>
                   </Paper>
@@ -747,7 +766,6 @@ export default function Shipment() {
                      {t('button.clear')}
                   </Button>
                </Grid>
-
             </Grid>
             {userRoleState === 'ADMIN' && (
                <Grid container spacing={1} sx={{ marginTop: '3px' }}>
