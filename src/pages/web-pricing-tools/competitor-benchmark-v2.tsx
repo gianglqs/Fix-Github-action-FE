@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { commonStore } from '@/store/reducers';
 import { Button, CircularProgress } from '@mui/material';
-
+import {AppAutocomplete} from '@/components';
 import { AppLayout } from '@/components';
 import Grid from '@mui/material/Grid';
 
@@ -54,27 +54,6 @@ export default function IndicatorsV2() {
 
    return (
       <>
-
-            <div
-               style={{
-                  height: '100%',
-                  width: '100%',
-                  backgroundColor: 'rgba(0,0,0, 0.3)',
-                  position: 'absolute',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  zIndex: 1000,
-               }}
-            >
-               <CircularProgress
-                  color="info"
-                  size={60}
-                  sx={{
-                     position: 'relative',
-                  }}
-               />
-            </div>
          <AppLayout entity="indicator">
             <Grid
                container
@@ -83,16 +62,10 @@ export default function IndicatorsV2() {
                alignItems="center"
                sx={{ margin: '20px 0' }}
             >
-             
-
-                  <Grid item xs={1.5} sx={{ zIndex: 10 }}>
-                     <Button
-                        variant="contained"
-                        sx={{ width: '100%', height: 24 }}
-                     >
-                        {t('button.filter')}
-                     </Button>
+              <Grid container spacing={1} justifyContent="center" alignItems="center">
+              <Grid item xs={1.2} sx={{ zIndex: 15 }}>
                   </Grid>
+              </Grid>
                   <Grid item xs={1.5}>
                      <Button
                         variant="contained"
@@ -111,7 +84,6 @@ export default function IndicatorsV2() {
                      position: 'relative',
                   }}
                >
-                  <AppBackDrop  hightHeaderTable={'35px'} bottom={'0px'} />
                </Grid>
           
          </AppLayout>

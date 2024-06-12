@@ -19,3 +19,4 @@ export * as residualValueStore from './residualValue.reducer';
 export * as importTrackingStore from './importTracking.reducer';
 export * as gumStore from './gum.reducer';
 export * as manageCompetitorStore from './manageCompetitor.reducer';
+export * as indicatorV2Store from './indicatorV2.reducer';
