@@ -159,8 +159,8 @@ export default function HistoricalImport() {
    });
 
    const handleSearch = async (event, searchQuery) => {
-      console.log('search');
-      dispatch(historicalImportStore.actions.setDataFilter(searchQuery));
+      dispatch(commonStore.resetState());
+      dispatch(historicalImportStore.actions.setDataFilter({ filter: searchQuery + '' }));
       dispatch(historicalImportStore.sagaGetList());
    };
 

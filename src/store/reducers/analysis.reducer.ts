@@ -18,12 +18,14 @@ export const initialState = {
             value: 'Pacific',
          },
          {
-            value: 'India Sub Continent',
+            value: 'India',
          },
          {
             value: 'China',
          },
       ],
+      subRegion: [{ value: 'Australia' }, { value: 'None Australia' }],
+      delivery: [{ value: 'DDP' }, { value: 'CIF' }],
    } as any,
    fileUUID: undefined,
    fileName: undefined,

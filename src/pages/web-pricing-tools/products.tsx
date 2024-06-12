@@ -158,6 +158,9 @@ export default function Product() {
          flex: 0.3,
          minWidth: 100,
          headerName: t('table.series'),
+         renderCell(params) {
+            return <span>{params.row.series.series}</span>;
+         },
       },
       {
          field: 'brand',
@@ -185,6 +188,9 @@ export default function Product() {
          flex: 0.8,
          minWidth: 150,
          headerName: t('table.segment'),
+         renderCell(params) {
+            return <span>{params.row?.segmentGroup.name}</span>;
+         },
       },
 
       {

@@ -223,7 +223,7 @@ export default function Shipment() {
          minWidth: 100,
          headerName: t('table.series'),
          renderCell(params) {
-            return <span>{params.row.series}</span>;
+            return <span>{params.row.series.series}</span>;
          },
       },
       {
@@ -237,7 +237,7 @@ export default function Shipment() {
       },
       {
          field: 'quantity',
-         flex: 0.6,
+         flex: 0.3,
          minWidth: 50,
          headerName: t('table.qty'),
          ...formatNumbericColumn,
@@ -245,8 +245,8 @@ export default function Shipment() {
 
       {
          field: 'dealerNet',
-         flex: 0.6,
-         minWidth: 100,
+         flex: 0.5,
+         minWidth: 80,
          headerName: `${t('table.listPrice')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -257,7 +257,7 @@ export default function Shipment() {
       {
          field: 'dealerNetAfterSurcharge',
          flex: 0.6,
-         minWidth: 150,
+         minWidth: 100,
          headerName: `${t('table.dealerNet')} ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
@@ -265,9 +265,29 @@ export default function Shipment() {
          },
       },
       {
+         field: 'discountPercentage',
+         flex: 0.6,
+         minWidth: 80,
+         headerName: `${t('table.discount')} (%)`,
+         cellClassName: 'highlight-cell',
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return (
+               <span>
+                  {formatNumberPercentage(
+                     (1 -
+                        params?.row.dealerNetAfterSurcharge /
+                           (params?.row.dealerNet === 0 ? 1 : params?.row.dealerNet)) *
+                        100
+                  )}
+               </span>
+            );
+         },
+      },
+      {
          field: 'totalCost',
          flex: 0.6,
-         minWidth: 120,
+         minWidth: 80,
          headerName: `${t('table.totalActualCost')} ('000 ${currency})`,
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
@@ -509,9 +529,7 @@ export default function Shipment() {
                            {t('table.totalQuantity')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {
-                              listTotalRow[0]?.quantity ||0
-                           }
+                           {listTotalRow[0]?.quantity || 0}
                         </Typography>
                      </div>
                   </Paper>
@@ -747,7 +765,6 @@ export default function Shipment() {
                      {t('button.clear')}
                   </Button>
                </Grid>
-
             </Grid>
             {userRoleState === 'ADMIN' && (
                <Grid container spacing={1} sx={{ marginTop: '3px' }}>
@@ -835,7 +852,9 @@ export default function Shipment() {
                      entity={'shipment'}
                      rows={listShipment}
                      columns={columns}
-                     getRowId={(params) => params.id.orderNo + params.id.date + params.id.dealer}
+                     getRowId={(params) =>
+                        params.id.orderNo + params.id.date + params.id?.dealer?.name
+                     }
                      onCellClick={handleOnCellClick}
                   />
                </Grid>

@@ -98,6 +98,8 @@ export const defaultDataFilterQuotationMargin = {
    type: null,
    modelCode: null,
    series: null,
+   subRegion: 'Australia',
+   delivery: 'DDP',
 };
 
 export const defaultValueChartSelectedFilterIndicator : ChartSelectedFilters = {

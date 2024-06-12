@@ -60,6 +60,7 @@
       "dealerName": "经销商名称",
       "class": "类别",
       "models": "型号",
+      "discount": "折扣",
       "segment": "段",
       "aopMarginPercentage": "AOP利润率 %",
       "marginPercentage": "利润率",
@@ -215,7 +216,8 @@
       "competitor": "竞争者",
       "group": "团体",
       "playerPriceVsLeadtimeOfCompetitorMarketshare": "球员价格与竞争对手的交货时间（市场份额）之间的关系",
-      "playerPriceVsLeadtimeTrend": "球员价格与交货时间（趋势)"
+      "playerPriceVsLeadtimeTrend": "球员价格与交货时间（趋势)",
+      "delivery": "送货"
    },
 
    "quotationMargin": {

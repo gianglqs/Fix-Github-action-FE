@@ -25,7 +25,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { formatNumberPercentage } from '@/utils/formatCell';
 import { v4 as uuidv4 } from 'uuid';
-import { log } from 'console';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -86,6 +85,8 @@ export default function MarginAnalysis() {
                modelCode: dataFilter.modelCode,
             },
             region: dataFilter.region,
+            subRegion: dataFilter.subRegion,
+            delivery: dataFilter.delivery,
          };
 
          setLoading(true);
@@ -99,16 +100,20 @@ export default function MarginAnalysis() {
             },
             requestId
          );
-         console.log(data);
 
          const analysisSummary = data?.MarginAnalystSummary;
          const marginAnalystData = data?.MarginAnalystData;
 
          marginAnalystData.forEach((margin) => {
+            margin.discountPercentage = (
+               1 -
+               margin.dealerNet / (margin.listPrice === 0 ? 1 : margin.listPrice)
+            ).toLocaleString();
             margin.listPrice = margin.listPrice.toLocaleString();
             margin.manufacturingCost = margin.manufacturingCost.toLocaleString();
             margin.dealerNet = margin.dealerNet.toLocaleString();
          });
+         console.log(marginAnalystData);
 
          const marginData = {
             targetMargin: data?.TargetMargin,
@@ -291,21 +296,32 @@ export default function MarginAnalysis() {
          align: 'right',
          cellClassName: 'highlight-cell',
       },
+
+      {
+         field: 'dealerNet',
+         flex: 0.4,
+         minWidth: 130,
+         headerName: t('table.dealerNet'),
+         headerAlign: 'right',
+         align: 'right',
+         cellClassName: 'highlight-cell',
+      },
+
+      {
+         field: 'discountPercentage',
+         flex: 0.4,
+         minWidth: 130,
+         headerName: `${t('table.discount')} (%)`,
+         headerAlign: 'right',
+         align: 'right',
+         cellClassName: 'highlight-cell',
+      },
       {
          field: 'manufacturingCost',
          flex: 0.7,
          headerName: `${getCurrencyForManufacturingCost(marginCalculateData.marginAnalysisSummary?.monthly)}`, //+ ` (${dataFilter.currency})`,
          headerAlign: 'right',
          align: 'right',
-      },
-      {
-         field: 'dealerNet',
-         flex: 0.4,
-         minWidth: 150,
-         headerName: t('table.dealerNet'),
-         headerAlign: 'right',
-         align: 'right',
-         cellClassName: 'highlight-cell',
       },
       {
          field: 'isSPED',
@@ -476,6 +492,23 @@ export default function MarginAnalysis() {
                   />
                </Grid>
 
+               {dataFilter.region === 'Pacific' && (
+                  <Grid item sx={{ width: '10%', minWidth: 140 }} xs={0.8}>
+                     <AppAutocomplete
+                        options={initDataFilter.subRegion}
+                        //label={t('filters.subRegion')}
+                        value={dataFilter.subRegion}
+                        onChange={(e, option) =>
+                           handleUpdateDataFilterStore('subRegion', option.value)
+                        }
+                        disableListWrap
+                        primaryKeyOption="value"
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+               )}
+
                <Grid item>
                   <RadioGroup
                      row
@@ -493,6 +526,24 @@ export default function MarginAnalysis() {
                      <FormControlLabel value="AUD" control={<Radio />} label="AUD" />
                   </RadioGroup>
                </Grid>
+               {dataFilter.region === 'Pacific' &&
+                  dataFilter.subRegion === 'Australia' &&
+                  dataFilter.currency === 'AUD' && (
+                     <Grid item sx={{ width: '10%', minWidth: 80 }} xs={0.8}>
+                        <AppAutocomplete
+                           options={initDataFilter.delivery}
+                           label={t('filters.delivery')}
+                           value={dataFilter.delivery}
+                           onChange={(e, option) =>
+                              handleUpdateDataFilterStore('delivery', option.value)
+                           }
+                           disableListWrap
+                           primaryKeyOption="value"
+                           renderOption={(prop, option) => `${option.value}`}
+                           getOptionLabel={(option) => `${option.value}`}
+                        />
+                     </Grid>
+                  )}
                <Grid item>
                   <Button
                      variant="contained"

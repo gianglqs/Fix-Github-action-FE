@@ -61,6 +61,7 @@
       "dealerName": "Nhà phân phối",
       "class": "Phân lớp",
       "models": "Mã sản phẩm",
+      "discount": "Giảm giá",
       "segment": "Bộ phận",
       "aopMarginPercentage": "AOP Margin %",
       "marginPercentage": "Lợi nhuận %",
@@ -83,7 +84,8 @@
       "monthYear": "Tháng năm",
       "group": "Nhóm",
       "brand-group": "Người chơi (Thương hiệu - Nhóm)",
-      "leadTime": "Thời gian dẫn đầu"
+      "leadTime": "Thời gian dẫn đầu",
+      "delivery": "Vận chuyển"
    },
 
    "button": {
