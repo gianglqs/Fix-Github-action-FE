@@ -13,6 +13,7 @@
       "financialShipments": "Financial Shipments",
       "quotationMarginPercentage": "Quotation Margin %",
       "competitorBenchmark": "Competitor Benchmark",
+      "competitorBenchmarkV2": "Competitor Benchmark - V2",
       "simulationModelling": "Simulation Modelling",
       "productMarginAnalytics": "Product Margin Analytics",
       "products": "Products",
@@ -84,7 +85,9 @@
       "model": "Model",
       "year": "Year",
       "monthYear": "Month Year",
-      "group": "Group"
+      "group": "Group",
+      "brand-group": "Players (Brand - Group)",
+      "leadTime": "Lead Time"
    },
 
    "button": {
@@ -148,7 +151,6 @@
       "adjustedDealerNet": "Adjusted Dealer Net",
       "newMargin": "New Margin ",
       "newMarginPercentage": "New Margin %",
-
       "brand": "Brand",
       "segment": "Segment",
       "family": "Family",
@@ -173,7 +175,12 @@
       "fileStyle": "File Style",
       "frequency": "Frequency",
       "totalClasses": "Total Classes",
-      "totalQuantity": "Total Quantity"
+      "totalQuantity": "Total Quantity",
+      "group": "Group",
+      "HYGAverageStreetPrice": "HYG Avarage Street Price('000 USD)",
+      "priceForPlayer": "Price (USD) for Player",
+      "playerHYGVariance": "Player - HYG Variance %",
+      "avgPriceForPlayer": "Average Price for Player('000 USD)"
    },
 
    "competitors": {

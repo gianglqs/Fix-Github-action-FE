@@ -13,6 +13,7 @@
       "financialShipments": "财务发货",
       "quotationMarginPercentage": "报价利润率 %",
       "competitorBenchmark": "竞争对手基准",
+      "competitorBenchmarkV2": "竞争对手基准 - V2",
       "simulationModelling": "模拟建模",
       "productMarginAnalytics": "产品利润分析",
       "products": "产品",
@@ -78,7 +79,10 @@
       "marginPercentagePerUnit": "每单位的利润率",
       "discountPercentagePerOneNewItem": "每增加 1 个新项目的折扣率",
       "unitIncreaseLever": "单位增长杠杆",
-      "monthYear": "可能"
+      "monthYear": "可能",
+      "group": "团体",
+      "brand-group": "玩家（品牌-集团",
+      "leadTime": "交货时间"
    },
 
    "button": {
@@ -166,7 +170,12 @@
       "fileStyle": "文件风格",
       "frequency": "频率",
       "totalClasses": "总课程",
-      "totalQuantity": "总数量"
+      "totalQuantity": "总数量",
+      "group": "团体",
+      "HYGAverageStreetPrice": "HYG 平均街道价格('000 美元)",
+      "priceForPlayer": "播放器价格（美元）",
+      "playerHYGVariance": "玩家 - HYG 差异 %",
+      "avgPriceForPlayer": "球员平均价格（千美元）"
    },
 
    "competitors": {
