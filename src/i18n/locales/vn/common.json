@@ -13,6 +13,7 @@
       "financialShipments": "Đơn vận chuyển",
       "quotationMarginPercentage": "Dự đoán lợi nhuận",
       "competitorBenchmark": "Thông số đối thủ",
+      "competitorBenchmarkV2": "Thông số đối thủ - V2",
       "simulationModelling": "Mô phỏng sản phẩm",
       "productMarginAnalytics": "Phân tích lợi nhuận sản phẩm",
       "products": "Sản phẩm",
@@ -80,7 +81,9 @@
       "discountPercentagePerOneNewItem": "Giảm giá % mỗi đơn vị thêm vào",
       "unitIncreaseLever": "Đòn bẩy tăng đơn vị",
       "monthYear": "Tháng năm",
-      "group": "Nhóm"
+      "group": "Nhóm",
+      "brand-group": "Người chơi (Thương hiệu - Nhóm)",
+      "leadTime": "Thời gian dẫn đầu"
    },
 
    "button": {
@@ -168,7 +171,12 @@
       "fileStyle": "Loại File",
       "frequency": "Tần suất",
       "totalClasses": "Tổng các nhóm",
-      "totalQuantity": "Tổng số lượng"
+      "totalQuantity": "Tổng số lượng",
+      "group": "Group",
+      "HYGAverageStreetPrice": "Giá đường phố trung bình của HYG ('000 USD)",
+      "priceForPlayer": "Giá (USD) cho Người chơi",
+      "playerHYGVariance": "Người chơi - Phương sai HYG %",
+      "avgPriceForPlayer": "Giá trung bình cho người chơi ('000 USD)"
    },
 
    "competitors": {
