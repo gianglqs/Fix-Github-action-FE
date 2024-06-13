@@ -10,7 +10,7 @@ class IndicatorV2Api extends HttpService<any> {
      };
     
     getChartFilters = (data: ChartSelectedFilters) => {
-        return this.get<any>(`filters/competitorPricingV2`, { ...data });
+        return this.post<any>(`filters/competitorPricingV2`, { ...data });
      };
     }
 

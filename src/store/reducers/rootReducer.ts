@@ -20,6 +20,7 @@ import priceVolumeSensitivity from './priceVolumeSensitivity.reducer';
 import residualValue from './residualValue.reducer';
 import importTracking from './importTracking.reducer';
 import gum from './gum.reducer';
+import indicatorV2 from './indicatorV2.reducer';
 const rootReducers = combineReducers({
    [common.name]: common.reducer,
    [user.name]: user.reducer,
@@ -42,6 +43,7 @@ const rootReducers = combineReducers({
    [importTracking.name]: importTracking.reducer,
    [gum.name]: gum.reducer,
    [manageCompetitor.name]: manageCompetitor.reducer,
+   [indicatorV2.name] : indicatorV2.reducer
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;

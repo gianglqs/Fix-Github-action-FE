@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createSelector, createAction } from '@reduxjs/toolkit';
 
 import type { RootReducerType } from './rootReducer';
-export const name = 'indicatorv2';
+export const name = 'indicatorV2';
 export const resetState = createAction(`${name}/RESET_STATE`);
 //types
 import { FilterOptions } from '@/types';
@@ -34,6 +34,7 @@ const indicatorSlice = createSlice({
    initialState,
    reducers: {
       setChartFilterOptions(state, { payload }: PayloadAction<FilterOptions>) {
+         console.log(payload);
          state.chartFilterOptions = payload;
       },
       setChartSelectedFilters(state, { payload }: PayloadAction<ChartSelectedFilters>) {
@@ -73,7 +74,7 @@ export const selectChartSelectedFilters = createSelector(selectState, (state) =>
 
 export const selectChartData = createSelector(
    selectState,
-   (state) => state.ChartData
+   (state) => state.chartData
 );
 
 export const selectServerTimeZone = createSelector(selectState, (state) => state.serverTimeZone);

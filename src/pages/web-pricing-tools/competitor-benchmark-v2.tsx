@@ -30,6 +30,19 @@ import {
 } from 'chart.js';
 import ChartAnnotation from 'chartjs-plugin-annotation';
 import _ from 'lodash';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { useEffect, useState } from 'react';
+import { destroyCookie, parseCookies, setCookie } from 'nookies';
+import { useDropzone } from 'react-dropzone';
+import { indicatorStore, commonStore } from '@/store/reducers';
+import { indicatorV2Store } from '@/store/reducers';
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import { GetServerSidePropsContext } from 'next';
+import AppBackDrop from '@/components/App/BackDrop';
+import { useTranslation } from 'react-i18next';
+import { log } from 'console';
+import { Bubble } from 'react-chartjs-2';
+
 
 ChartJS.register(
    CategoryScale,
@@ -41,15 +54,7 @@ ChartJS.register(
    Title,
    ChartAnnotation
 );
-import { isEmptyObject } from '@/utils/checkEmptyObject';
-import { useEffect, useState } from 'react';
-import { destroyCookie, parseCookies, setCookie } from 'nookies';
-import { useDropzone } from 'react-dropzone';
-import { indicatorStore, commonStore } from '@/store/reducers';
-import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
-import { GetServerSidePropsContext } from 'next';
-import AppBackDrop from '@/components/App/BackDrop';
-import { useTranslation } from 'react-i18next';
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
@@ -92,13 +97,12 @@ export default function IndicatorsV2() {
    const serverTimeZone = useSelector(indicatorStore.selectServerTimeZone);
    const serverLastUpdatedTime = useSelector(indicatorStore.selectLastUpdatedTime);
    const serverLastUpdatedBy = useSelector(indicatorStore.selectLastUpdatedBy);
+   // v2
+   const selectedFilter = useSelector(indicatorV2Store.selectChartSelectedFilters);
+   const optionsFilter = useSelector(indicatorV2Store.selectChartFilterOptions);
+   const chartData = useSelector(indicatorV2Store.selectChartData);
 
    const [competitiveLandscapeData, setCompetitiveLandscapeData] = useState({
-      datasets: [],
-      clearFilter: false,
-   });
-
-   const [forecastLandscapeData, setForecastLandscapeData] = useState({
       datasets: [],
       clearFilter: false,
    });
@@ -108,6 +112,25 @@ export default function IndicatorsV2() {
 
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
    const [hasSetSwotFilter, setHasSetSwotFilter] = useState(false);
+
+   const datasets = chartData.map((item) => {
+      return {
+         label: `${item.color.groupName}`,
+         data: [
+            {
+               y: item.competitorPricing,
+               x: item.competitorLeadTime,
+               r:4,
+            },
+         ],
+         backgroundColor: `${item.color.colorCode}`,
+      };
+   });
+
+   useEffect(()=>{
+      console.log(selectedFilter);
+      dispatch(indicatorV2Store.sagaGetList());
+      },[])
 
    useEffect(() => {
       if (!hasSetDataFilter && cacheDataFilter) {
@@ -192,24 +215,7 @@ export default function IndicatorsV2() {
             categories: swotDataFilter.categories,
             series: swotDataFilter.series,
          });
-         const datasets = competitiveLandscape.map((item) => {
-            return {
-               label: `${item.color.groupName}`,
-               data: [
-                  {
-                     y: item.competitorPricing,
-                     x: item.competitorLeadTime,
-                     r: (item.marketShare * 100).toLocaleString(),
-                  },
-               ],
-               backgroundColor: `${item.color.colorCode}`,
-            };
-         });
 
-         setCompetitiveLandscapeData({
-            datasets: datasets,
-            clearFilter: false,
-         });
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error.message));
       }
@@ -338,7 +344,15 @@ export default function IndicatorsV2() {
    }, [swotDataFilter]);
 
    const handleChangeDataFilter = (option, field) => {
-      setDataFilter((prev) =>
+      console.log("option la: ",option);
+
+      const newSelectedFilter  = (field == "regions") ? 
+       {...selectedFilter,[field]:option.value} : 
+       {...selectedFilter,[field]:option?.map(({value}) => value)};
+       dispatch(indicatorV2Store.actions.setChartSelectedFilters(newSelectedFilter));
+       dispatch(indicatorV2Store.sagaGetList());
+
+     /*setDataFilter((prev) =>
          produce(prev, (draft) => {
             if (_.includes(['leadTime', 'marginPercentage'], field)) {
                draft[field] = option.value;
@@ -347,12 +361,12 @@ export default function IndicatorsV2() {
                console.log('aaaaaaaaaaaaa');
             }
          })
-      );
+      );*/
    };
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
-      dispatch(indicatorStore.sagaGetList());
+      dispatch(indicatorV2Store.sagaGetList());
    };
 
    const handleChangePerPage = (perPage: number) => {
@@ -508,6 +522,109 @@ export default function IndicatorsV2() {
       }
    };
 
+   const options = {
+      legend: { 
+         position: 'right' 
+     },
+      scales: {
+         y: {
+            title: {
+               text: 'Price $',
+               display: true,
+            },
+            ticks: {
+               stepSize:2000,
+            },
+            // beginAtZero: true,
+            // title: {
+            //    text: 'Lead Time (weeks)',
+            //    display: true,
+            // },
+         },
+         x: {
+            beginAtZero: true,
+            title: {
+               text: 'Lead Time (weeks)',
+               display: true,
+            },
+         },
+      },
+      maintainAspectRatio: false,
+      plugins: {
+         legend: {
+            display: true,
+            position: 'right' ,
+            
+            
+         },
+         title: {
+            display: true,
+            text: t('competitors.competitorSwotAnalysis'),
+            position: 'top' as const,
+         },
+         tooltip: {
+            interaction: {
+               intersect: true,
+               mode: 'nearest',
+            },
+            bodyFont: {
+               size: 14,
+            },
+            callbacks: {
+               label: (context) => {
+                  let label = context.dataset.label || '';
+                  if (label) {
+                     label += ': ';
+                  }
+                  label += `($ ${context.parsed.y.toLocaleString()}, ${context.parsed.x.toLocaleString()} weeks, ${
+                     context.raw.r
+                  }%)`;
+
+                  return label;
+               },
+            },
+         },
+         annotation: {
+            annotations: {
+               line1: {
+                  yMax: (context) => (context.chart.scales.y.max + context.chart.scales.y.min) ,
+                  yMin: (context) => (context.chart.scales.y.max + context.chart.scales.y.min) ,
+                  borderColor: 'rgb(0, 0, 0)',
+                  borderWidth: 1,
+                  label: {
+                     display: true,
+                     content: [
+                        `${t('competitors.highPrice')}, ${t('competitors.lowLeadTime')}   ${t(
+                           'competitors.highPrice'
+                        )}, ${t('competitors.highLeadTime')}`,
+                        '',
+                        `${t('competitors.lowPrice')}, ${t('competitors.lowLeadTime')}   ${t(
+                           'competitors.lowPrice'
+                        )}, ${t('competitors.highLeadTime')}`,
+                     ],
+                     backgroundColor: 'transparent',
+                     width: '40%',
+                     height: '40%',
+                     position: 'center',
+                     color: ['black'],
+                     font: [
+                        {
+                           size: 10,
+                        },
+                     ],
+                  },
+               },
+               line2: {
+                  xMax: (context) => (context.chart.scales.x.max + context.chart.scales.x.min) / 2,
+                  xMin: (context) => (context.chart.scales.x.max + context.chart.scales.x.min) / 2,
+                  borderColor: 'white',
+                  borderWidth: 5,
+               },
+            },
+         },
+      },
+   };
+
    return (
       <>
          <div
@@ -572,31 +689,30 @@ export default function IndicatorsV2() {
 
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
-                  <AppAutocomplete
-                     value={_.map(dataFilter.regions, (item) => {
-                        return { value: item };
-                     })}
-                     options={initDataFilter.regions}
+               <AppAutocomplete
+                     value={selectedFilter?.regions||[]}
+                     options={optionsFilter.regions}
                      label={t('filters.region')}
+                     sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
-                     limitTags={2}
+                     limitTags={1}
                      disableListWrap
                      primaryKeyOption="value"
-                     multiple
                      disableCloseOnSelect
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
+                     required
                   />
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     value={_.map(dataFilter.countries, (item) => {
+                      value={_.map(selectedFilter.countries, (item) => {
                         return { value: item };
                      })}
-                     options={initDataFilter.countries}
+                     options={optionsFilter.countries}
                      label={t('filters.country')}
                      sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'country')}
+                     onChange={(e, option) => handleChangeDataFilter(option, 'countries')}
                      limitTags={1}
                      disableListWrap
                      primaryKeyOption="value"
@@ -609,10 +725,10 @@ export default function IndicatorsV2() {
 
                <Grid item xs={2}>
                   <AppAutocomplete
-                     value={_.map(dataFilter.classes, (item) => {
+                     value={_.map(selectedFilter.classes, (item) => {
                         return { value: item };
                      })}
-                     options={initDataFilter.classes}
+                     options={optionsFilter.classes}
                      label={t('filters.class')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
@@ -628,13 +744,13 @@ export default function IndicatorsV2() {
 
                <Grid item xs={2}>
                   <AppAutocomplete
-                     value={_.map(dataFilter.metaSeries, (item) => {
+                     value={_.map(selectedFilter.series, (item) => {
                         return { value: item };
                      })}
-                     options={initDataFilter.metaSeries}
+                     options={optionsFilter.series}
                      label={t('filters.metaSeries')}
                      sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
+                     onChange={(e, option) => handleChangeDataFilter(option, 'series')}
                      limitTags={1}
                      disableListWrap
                      primaryKeyOption="value"
@@ -647,10 +763,10 @@ export default function IndicatorsV2() {
 
                <Grid item xs={2}>
                   <AppAutocomplete
-                     value={_.map(dataFilter.models, (item) => {
+                     value={_.map(selectedFilter.models, (item) => {
                         return { value: item };
                      })}
-                     options={initDataFilter.models}
+                     options={optionsFilter.models}
                      label={t('filters.models')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'models')}
@@ -666,10 +782,10 @@ export default function IndicatorsV2() {
 
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     value={_.map(dataFilter.newGroup, (item) => {
+                     value={_.map(selectedFilter.groups, (item) => {
                         return { value: item };
                      })}
-                     options={initDataFilter.newGroup}
+                     options={optionsFilter.groups}
                      label={t('filters.brand-group')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'groups')}
@@ -680,6 +796,7 @@ export default function IndicatorsV2() {
                      disableCloseOnSelect
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
+                     
                   />
                </Grid>
 
@@ -692,7 +809,7 @@ export default function IndicatorsV2() {
                              }
                            : { value: '' }
                      }
-                     options={initDataFilter.leadTimes}
+                     options={optionsFilter.leadTimes}
                      label={t('filters.leadTime')}
                      primaryKeyOption="value"
                      onChange={
@@ -744,6 +861,18 @@ export default function IndicatorsV2() {
                   </>
                )}
             </Grid>
+            //chart zone
+            <Grid item xs={6}>
+               <Paper elevation={1} sx={{ marginTop: 30, position: 'relative' }}>
+                  <Grid
+                     container
+                     sx={{height:"500px", width: '100%' }}
+                  >
+                     <Bubble options={options} data={{datasets}} />
+                     </Grid>
+                     </Paper>
+                     </Grid>
+
 
             <Grid item xs={12}>
                <Paper elevation={1} sx={{ marginTop: 30, position: 'relative' }}>

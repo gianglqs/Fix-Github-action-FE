@@ -16,6 +16,7 @@ import bookingMarginTrialTestSaga from './bookingMarginTrialTestSaga';
 import importFailureSaga from './importFailureSaga';
 import priceVolumeSensitivitySaga from './priceVolumeSensitivitySaga';
 import gumSaga from './gumSaga';
+import indicatorV2Saga from './indicatorV2Saga';
 import {
    fetchModelCodeSaga,
    fetchFirstResidualValue,
@@ -52,6 +53,7 @@ function* rootSaga() {
    yield fork(fetchDataResidualValueSaga);
    yield fork(fetchImportTracking);
    yield fork(managerCompetitorSaga);
+   yield fork(indicatorV2Saga);
 }
 
 export default rootSaga;

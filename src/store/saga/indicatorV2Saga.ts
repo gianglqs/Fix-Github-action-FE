@@ -1,19 +1,16 @@
-import { selectDataFilterBubbleChart } from './../reducers/indicator.reducer';
 import { takeEvery, put } from 'redux-saga/effects';
 import { indicatorV2Store, commonStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import indicatorV2Api from '@/api/indicatorV2.api';
-import { parseCookies } from 'nookies';
 //types
-import { ChartSelectedFilters } from '@/types/competitor';
+import { ChartData} from '@/types/competitor';
 //others
-import { defaultValueChartSelectedFilterIndicator } from '@/utils/defaultValues';
+import { mapCompetitorFiltersToOptionValues, mappingCompetitorsToChartData } from '@/utils/mapping';
 function* fetchIndicator() {
    try {
-      const cookies = parseCookies();
-
+    //  const cookies = parseCookies();
         // dataFilter bubble chart
-        const jsonIndicatorBubbleChart = cookies['indicatorChartSelectedFilter'];
+      /*  const jsonIndicatorBubbleChart = cookies['indicatorSelectedFilter'];
         let chartSelectedFilters : ChartSelectedFilters ;
   
         if (jsonIndicatorBubbleChart) {
@@ -22,10 +19,24 @@ function* fetchIndicator() {
         } else {
             chartSelectedFilters = defaultValueChartSelectedFilterIndicator;
         }
-
+        
+        console.log("getSagaList "+ chartSelectedFilters);
+        console.log(chartSelectedFilters);*/
+      const { chartSelectedFilters } = yield* all({
+         chartSelectedFilters: select(indicatorV2Store.selectChartSelectedFilters),
+      });
+      const { currentFilterOptions } = yield* all({
+         currentFilterOptions: select(indicatorV2Store.selectChartFilterOptions),
+      });
       // get data for select options
-      const chartSelectedOptions = yield* call(indicatorV2Api.getChartFilters, chartSelectedFilters);
-      const chartSe = JSON.parse(String(chartSelectedOptions.data)).lineChartRegion;
+      const chartFilterOptionsRawData = yield* call(indicatorV2Api.getChartFilters, chartSelectedFilters);
+      const chartFilterOptions = mapCompetitorFiltersToOptionValues(chartFilterOptionsRawData?.data||{});
+      yield put(indicatorV2Store.actions.setChartFilterOptions({...currentFilterOptions,...chartFilterOptions}));
+
+      // get data for Chart 
+      const chartRawData = yield* call(indicatorV2Api.getChartData, chartSelectedFilters);
+      const chartData : ChartData  =  mappingCompetitorsToChartData(chartRawData?.data?.competitiveLandscape||[]);
+      yield put(indicatorV2Store.actions.setChartData(chartData));
       /*
       yield put(indicatorV2Store.actions.setChartFilterOptions(lineChartRegionData));
 
