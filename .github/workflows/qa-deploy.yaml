@@ -7,7 +7,7 @@ on:
 
 jobs:
    deploy:
-      runs-on: [self-hosted]
+      runs-on: [deploy-QA-host]
       if: github.event_name == 'release' && github.event.release.target_commitish == 'qa-deploy'
 
       steps:
