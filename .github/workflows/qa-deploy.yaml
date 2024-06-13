@@ -16,13 +16,14 @@ jobs:
            run: |
               CONFIG_FILE='/opt/hysteryale/config/docker_container.conf'
 
-              while IFS='=' read -r key value; do
-                export "$key"="$value"
-              done < $CONFIG_FILE
+              fe_release_tag=$(sed -n 's/^fe_release_tag=//p' "$CONFIG_FILE")
+               echo "LAST_SUCCESS_RELEASE_TAG=$fe_release_tag" >> "$GITHUB_ENV"
 
-              echo "LAST_SUCCESS_IMAGE_NAME=$fe_image_id" >> $GITHUB_ENV
-              echo "LAST_SUCCESS_CONTAINER_NAME=$fe_container_name" >> $GITHUB_ENV
-              echo "LAST_SUCCESS_RELEASE_TAG=$fe_release_tag" >> $GITHUB_ENV
+              fe_image_id=$(sed -n 's/^fe_image_id=//p' "$CONFIG_FILE")
+              echo "LAST_SUCCESS_IMAGE_NAME=$fe_image_id" >> "$GITHUB_ENV"
+
+              fe_container_name=$(sed -n 's/^fe_container_name=//p' "$CONFIG_FILE")
+              echo "LAST_SUCCESS_CONTAINER_NAME=$fe_container_name" >> "$GITHUB_ENV"
 
               echo "TIMEZONE_HY=$(cat /etc/timezone)" >> $GITHUB_ENV
               echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
