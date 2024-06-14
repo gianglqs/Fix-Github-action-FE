@@ -7,11 +7,13 @@ export const mapCompetitorFiltersToOptionValues  = (filters) : FilterOptions =>{
     });
     return filters;
 }
-export const mappingCompetitorsToChartData = (competitors) : ChartData => {
- return competitors.map(({color,competitorLeadTime,competitorPricing,marketShare}) =>({
+export const mappingCompetitorsToChartData = ({chartData,trendline}) : ChartData => {
+ return {
+    trendline,
+    dataset: chartData.map(({color,competitorLeadTime,competitorPricing,marketShare}) =>({
     color,
     competitorLeadTime,
     competitorPricing,
     marketShare 
- }));
+ }))};
 }

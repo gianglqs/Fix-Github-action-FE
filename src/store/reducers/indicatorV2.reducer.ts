@@ -5,7 +5,7 @@ export const name = 'indicatorV2';
 export const resetState = createAction(`${name}/RESET_STATE`);
 //types
 import { FilterOptions } from '@/types';
-import { ChartData } from '@/types/competitor';
+import { ChartData , TrendLine} from '@/types/competitor';
 import { ChartSelectedFilters } from '@/types/competitor';
 import { InitReducer } from '@/types';
 //others
@@ -22,7 +22,10 @@ type IndicatorInitState = {
 export const initialState : IndicatorInitState = {
     chartFilterOptions : {},
     chartSelectedFilters : defaultValueChartSelectedFilterIndicator,
-    chartData : [],
+    chartData : {
+      dataset:[],
+      trendline: null
+    },
     serverTimeZone: '' ,
     lastUpdatedTime: '',
     lastUpdatedBy: '',

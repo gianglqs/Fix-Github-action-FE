@@ -18,6 +18,7 @@ import indicatorApi from '@/api/indicators.api';
 import AppDataTable from '@/components/DataTable/AppDataGridPro';
 import { produce } from 'immer';
 import { defaultValueFilterIndicator } from '@/utils/defaultValues';
+import chartTrendline from 'chartjs-plugin-trendline';
 import {
    Chart as ChartJS,
    LinearScale,
@@ -28,6 +29,8 @@ import {
    CategoryScale,
    Title,
 } from 'chart.js';
+import Box from '@mui/material';
+import Slider from '@mui/material/Slider';
 import ChartAnnotation from 'chartjs-plugin-annotation';
 import _ from 'lodash';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
@@ -42,10 +45,12 @@ import AppBackDrop from '@/components/App/BackDrop';
 import { useTranslation } from 'react-i18next';
 import { log } from 'console';
 import { Bubble } from 'react-chartjs-2';
+import { BorderStyle } from '@mui/icons-material';
 
 
 ChartJS.register(
    CategoryScale,
+   chartTrendline,
    LinearScale,
    PointElement,
    LineElement,
@@ -101,6 +106,7 @@ export default function IndicatorsV2() {
    const selectedFilter = useSelector(indicatorV2Store.selectChartSelectedFilters);
    const optionsFilter = useSelector(indicatorV2Store.selectChartFilterOptions);
    const chartData = useSelector(indicatorV2Store.selectChartData);
+   const [sliderLeadTime,setSliderLeadTime] = useState([0,50]);
 
    const [competitiveLandscapeData, setCompetitiveLandscapeData] = useState({
       datasets: [],
@@ -113,7 +119,7 @@ export default function IndicatorsV2() {
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
    const [hasSetSwotFilter, setHasSetSwotFilter] = useState(false);
 
-   const datasets = chartData.map((item) => {
+   const datasets = chartData.dataset.map((item) => {
       return {
          label: `${item.color.groupName}`,
          data: [
@@ -126,7 +132,7 @@ export default function IndicatorsV2() {
          backgroundColor: `${item.color.colorCode}`,
       };
    });
-
+   const trendline = chartData.trendline
    useEffect(()=>{
       console.log(selectedFilter);
       dispatch(indicatorV2Store.sagaGetList());
@@ -522,6 +528,9 @@ export default function IndicatorsV2() {
       }
    };
 
+   const handleOnSliderChange = (option,value) =>{
+      setSliderLeadTime(value);
+   }
    const options = {
       legend: { 
          position: 'right' 
@@ -541,8 +550,22 @@ export default function IndicatorsV2() {
             //    display: true,
             // },
          },
+         xAxes: [{
+            gridLines: {
+                // You can change the color, the dash effect, the main axe color, etc.
+                borderDash: [8, 4],
+                color: "#348632"
+            }
+        }],
          x: {
             beginAtZero: true,
+            min:sliderLeadTime[0],
+            max:sliderLeadTime[1],
+            gridLines: {
+               // You can change the color, the dash effect, the main axe color, etc.
+               borderDash: [8, 4],
+               color: "#348632"
+           },
             title: {
                text: 'Lead Time (weeks)',
                display: true,
@@ -586,39 +609,13 @@ export default function IndicatorsV2() {
          },
          annotation: {
             annotations: {
-               line1: {
-                  yMax: (context) => (context.chart.scales.y.max + context.chart.scales.y.min) ,
-                  yMin: (context) => (context.chart.scales.y.max + context.chart.scales.y.min) ,
+               trendline: {
+                  yMax:trendline? sliderLeadTime[0]*trendline.m+trendline.b :0,
+                  yMin: trendline? sliderLeadTime[1]*trendline.m+trendline.b : 0,
+                  borderDash: [5, 5] ,// Set the border to dashed style
                   borderColor: 'rgb(0, 0, 0)',
                   borderWidth: 1,
-                  label: {
-                     display: true,
-                     content: [
-                        `${t('competitors.highPrice')}, ${t('competitors.lowLeadTime')}   ${t(
-                           'competitors.highPrice'
-                        )}, ${t('competitors.highLeadTime')}`,
-                        '',
-                        `${t('competitors.lowPrice')}, ${t('competitors.lowLeadTime')}   ${t(
-                           'competitors.lowPrice'
-                        )}, ${t('competitors.highLeadTime')}`,
-                     ],
-                     backgroundColor: 'transparent',
-                     width: '40%',
-                     height: '40%',
-                     position: 'center',
-                     color: ['black'],
-                     font: [
-                        {
-                           size: 10,
-                        },
-                     ],
-                  },
-               },
-               line2: {
-                  xMax: (context) => (context.chart.scales.x.max + context.chart.scales.x.min) / 2,
-                  xMin: (context) => (context.chart.scales.x.max + context.chart.scales.x.min) / 2,
-                  borderColor: 'white',
-                  borderWidth: 5,
+                  BorderStyle:"dashed",
                },
             },
          },
@@ -861,17 +858,28 @@ export default function IndicatorsV2() {
                   </>
                )}
             </Grid>
-            //chart zone
-            <Grid item xs={6}>
-               <Paper elevation={1} sx={{ marginTop: 30, position: 'relative' }}>
+            <Grid item xs={6} justifyContent={'center'} alignItems={"center"} style={{display: "flex", flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
+               <div  style={{display: "flex", flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
+                  <div style={{height:'400px'}}> 
+                     <Slider
+                     sx={{
+                        '& input[type="range"]': {
+                           WebkitAppearance: 'slider-vertical',
+                        },
+                     }}
+                     orientation="vertical"
+                     defaultValue={30}
+                     />
+                  </div>
                   <Grid
                      container
                      sx={{height:"500px", width: '100%' }}
                   >
                      <Bubble options={options} data={{datasets}} />
+                     <Slider style={{width:'500px'}} value={sliderLeadTime} onChange = {handleOnSliderChange}/>
                      </Grid>
-                     </Paper>
-                     </Grid>
+                     </div>
+            </Grid>
 
 
             <Grid item xs={12}>

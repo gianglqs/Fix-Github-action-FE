@@ -48,7 +48,15 @@ type chartPoint = {
     competitorPricing: number;
     marketShare : number;
 }
-export type ChartData = chartPoint[];
+
+export type TrendLine = {
+    b: number;
+    m: number
+};
+export type ChartData ={
+    dataset: chartPoint[];
+    trendline: TrendLine| null;
+} 
 
 export type ChartSelectedFilters = {
     regions: string| null;
