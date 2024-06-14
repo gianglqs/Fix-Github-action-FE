@@ -18,7 +18,7 @@ export const initialState = {
             value: 'Pacific',
          },
          {
-            value: 'India Sub Continent',
+            value: 'India',
          },
          {
             value: 'China',
