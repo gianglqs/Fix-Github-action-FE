@@ -3,13 +3,13 @@ import { indicatorV2Store, commonStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import indicatorV2Api from '@/api/indicatorV2.api';
 //types
-import { ChartData} from '@/types/competitor';
+import { ChartData } from '@/types/competitor';
 //others
 import { mapCompetitorFiltersToOptionValues, mappingCompetitorsToChartData } from '@/utils/mapping';
 function* fetchIndicator() {
    try {
-    //  const cookies = parseCookies();
-        // dataFilter bubble chart
+      //  const cookies = parseCookies();
+      // dataFilter bubble chart
       /*  const jsonIndicatorBubbleChart = cookies['indicatorSelectedFilter'];
         let chartSelectedFilters : ChartSelectedFilters ;
   
@@ -29,13 +29,27 @@ function* fetchIndicator() {
          currentFilterOptions: select(indicatorV2Store.selectChartFilterOptions),
       });
       // get data for select options
-      const chartFilterOptionsRawData = yield* call(indicatorV2Api.getChartFilters, chartSelectedFilters);
-      const chartFilterOptions = mapCompetitorFiltersToOptionValues(chartFilterOptionsRawData?.data||{});
-      yield put(indicatorV2Store.actions.setChartFilterOptions({...currentFilterOptions,...chartFilterOptions}));
+      const chartFilterOptionsRawData = yield* call(
+         indicatorV2Api.getChartFilters,
+         chartSelectedFilters
+      );
+      const chartFilterOptions = mapCompetitorFiltersToOptionValues(
+         chartFilterOptionsRawData?.data || {}
+      );
+      yield put(
+         indicatorV2Store.actions.setChartFilterOptions({
+            ...currentFilterOptions,
+            ...chartFilterOptions,
+         })
+      );
 
-      // get data for Chart 
+      // get data for Chart
+      console.log('get data');
       const chartRawData = yield* call(indicatorV2Api.getChartData, chartSelectedFilters);
-      const chartData : ChartData  =  mappingCompetitorsToChartData(chartRawData?.data?.competitiveLandscape||[]);
+      const chartData: ChartData = mappingCompetitorsToChartData(
+         chartRawData?.data?.competitiveLandscape || []
+      );
+      console.log('chartData is ' + chartData);
       yield put(indicatorV2Store.actions.setChartData(chartData));
       /*
       yield put(indicatorV2Store.actions.setChartFilterOptions(lineChartRegionData));

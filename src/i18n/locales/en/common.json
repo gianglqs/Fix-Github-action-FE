@@ -217,7 +217,9 @@
       "marketShare": "Market Share",
       "updateDate": "Update Date",
       "model": "Model",
-      "competitor": "Competitor"
+      "competitor": "Competitor",
+      "playerPriceVsLeadtimeOfCompetitorMarketshare": "Player Price vs Lead time of Competitor (Market Share)",
+      "PlayerPriceVsLeadtimeTrend": "Player Price vs Lead time (Trend)"
    },
 
    "quotationMargin": {

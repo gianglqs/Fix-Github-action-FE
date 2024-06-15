@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Button, CircularProgress, Typography } from '@mui/material';
+import { Button, CircularProgress, Hidden, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import {
    AppLayout,
@@ -18,16 +18,15 @@ import indicatorApi from '@/api/indicators.api';
 import AppDataTable from '@/components/DataTable/AppDataGridPro';
 import { produce } from 'immer';
 import { defaultValueFilterIndicator } from '@/utils/defaultValues';
-import chartTrendline from 'chartjs-plugin-trendline';
 import {
    Chart as ChartJS,
    LinearScale,
    PointElement,
    Tooltip,
    LineElement,
-   Legend,
    CategoryScale,
    Title,
+   Legend,
 } from 'chart.js';
 import Box from '@mui/material';
 import Slider from '@mui/material/Slider';
@@ -45,19 +44,103 @@ import AppBackDrop from '@/components/App/BackDrop';
 import { useTranslation } from 'react-i18next';
 import { log } from 'console';
 import { Bubble } from 'react-chartjs-2';
-import { BorderStyle } from '@mui/icons-material';
+import { BorderStyle, Dataset } from '@mui/icons-material';
+//hooks
+import { useLayoutEffect } from 'react';
+import { ref } from 'yup';
+const getOrCreateLegendList = (chart, id) => {
+   const legendContainer = document.getElementById(id);
+   let listContainer = legendContainer.querySelector('ul');
 
+   if (!listContainer) {
+      listContainer = document.createElement('ul');
+      listContainer.style.display = 'flex';
+      listContainer.style.flexDirection = 'column';
+      listContainer.style.overflowY = 'scroll';
+      listContainer.style.margin = '0';
+      listContainer.style.width = '150px';
+      listContainer.style.padding = '0';
+      listContainer.style.height = '500px';
+      listContainer.style.gap = '5px';
+      legendContainer.appendChild(listContainer);
+   }
 
+   return listContainer;
+};
+
+const htmlLegendPlugin = {
+   id: 'htmlLegend',
+   afterUpdate(chart, args, options) {
+      const ul = getOrCreateLegendList(chart, options.containerID);
+
+      // Remove old legend items
+      while (ul.firstChild) {
+         ul.firstChild.remove();
+      }
+
+      // Reuse the built-in legendItems generator
+      const items = chart.options.plugins.legend.labels.generateLabels(chart);
+
+      items.forEach((item) => {
+         const li = document.createElement('li');
+         li.style.alignItems = 'center';
+         li.style.cursor = 'pointer';
+         li.style.display = 'flex';
+         li.style.flexDirection = 'col';
+         li.style.marginLeft = '10px';
+
+         li.onclick = () => {
+            const { type } = chart.config;
+            if (type === 'pie' || type === 'doughnut') {
+               // Pie and doughnut charts only have a single dataset and visibility is per item
+               chart.toggleDataVisibility(item.index);
+            } else {
+               chart.setDatasetVisibility(
+                  item.datasetIndex,
+                  !chart.isDatasetVisible(item.datasetIndex)
+               );
+            }
+            chart.update();
+         };
+
+         // Color box
+         const boxSpan = document.createElement('span');
+         boxSpan.style.background = item.fillStyle;
+         boxSpan.style.borderColor = item.strokeStyle;
+         boxSpan.style.borderWidth = item.lineWidth + 'px';
+         boxSpan.style.display = 'inline-block';
+         boxSpan.style.flexShrink = '0';
+         boxSpan.style.height = '20px';
+         boxSpan.style.marginRight = '10px';
+         boxSpan.style.width = '20px';
+         boxSpan.style.borderRadius = '100%';
+
+         // Text
+         const textContainer = document.createElement('p');
+         textContainer.style.color = item.fontColor;
+         textContainer.style.margin = '0';
+         textContainer.style.padding = '0';
+         textContainer.style.textDecoration = item.hidden ? 'line-through' : '';
+
+         const text = document.createTextNode(item.text);
+         textContainer.appendChild(text);
+
+         li.appendChild(boxSpan);
+         li.appendChild(textContainer);
+         ul.appendChild(li);
+      });
+   },
+};
 ChartJS.register(
    CategoryScale,
-   chartTrendline,
    LinearScale,
    PointElement,
    LineElement,
    Tooltip,
    Legend,
    Title,
-   ChartAnnotation
+   ChartAnnotation,
+   htmlLegendPlugin
 );
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -82,6 +165,7 @@ export default function IndicatorsV2() {
    useEffect(() => {
       setUserRole(userRoleCookies);
    });
+   const [legend, setLegend] = useState();
    const [loading, setLoading] = useState(false);
 
    const [loadingTable, setLoadingTable] = useState(false);
@@ -105,38 +189,31 @@ export default function IndicatorsV2() {
    // v2
    const selectedFilter = useSelector(indicatorV2Store.selectChartSelectedFilters);
    const optionsFilter = useSelector(indicatorV2Store.selectChartFilterOptions);
-   const chartData = useSelector(indicatorV2Store.selectChartData);
-   const [sliderLeadTime,setSliderLeadTime] = useState([0,50]);
+   const { dataset, trendline, modeline, maxX, maxY } = useSelector(
+      indicatorV2Store.selectChartData
+   );
 
    const [competitiveLandscapeData, setCompetitiveLandscapeData] = useState({
       datasets: [],
       clearFilter: false,
    });
-
    const cachDataFilterBubbleChart = useSelector(indicatorStore.selectDataFilterBubbleChart);
    const [swotDataFilter, setSwotDataFilter] = useState(cachDataFilterBubbleChart);
 
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
    const [hasSetSwotFilter, setHasSetSwotFilter] = useState(false);
 
-   const datasets = chartData.dataset.map((item) => {
-      return {
-         label: `${item.color.groupName}`,
-         data: [
-            {
-               y: item.competitorPricing,
-               x: item.competitorLeadTime,
-               r:4,
-            },
-         ],
-         backgroundColor: `${item.color.colorCode}`,
-      };
-   });
-   const trendline = chartData.trendline
-   useEffect(()=>{
-      console.log(selectedFilter);
+   //setting chart Data
+   const [sliderLeadTime, setSliderLeadTime] = useState([0, 0]);
+   const [sliderPrice, setSliderPrice] = useState([0, 0]);
+
+   useEffect(() => {
       dispatch(indicatorV2Store.sagaGetList());
-      },[])
+   }, []);
+   useEffect(() => {
+      setSliderLeadTime([0, maxX]);
+      setSliderPrice([0, maxY]);
+   }, [maxX, maxY]);
 
    useEffect(() => {
       if (!hasSetDataFilter && cacheDataFilter) {
@@ -162,7 +239,7 @@ export default function IndicatorsV2() {
                maxAge: 604800,
                path: '/',
             });
-            handleFilterCompetitiveLandscape();
+            //  handleFilterCompetitiveLandscape();
          }
       }, 700);
       debouncedHandleWhenChangeDataFilter();
@@ -188,148 +265,6 @@ export default function IndicatorsV2() {
 
    const [bubbleSerieInitFilter, setBubbleSerieInitFilter] = useState(initDataFilter.series);
 
-   const handleFilterCompetitiveLandscape = async () => {
-      if (
-         !competitiveLandscapeData.clearFilter &&
-         JSON.stringify(swotDataFilter) !== JSON.stringify(defaultDataFilterBubbleChart)
-      ) {
-         setLoadingSwot(true);
-      }
-      try {
-         if (!swotDataFilter.regions) {
-            setRegionError({ error: true });
-            // notify error message when user select other fields but region
-            if (
-               !swotDataFilter.regions &&
-               (swotDataFilter.countries.length > 0 ||
-                  swotDataFilter.series.length > 0 ||
-                  swotDataFilter.classes.length > 0 ||
-                  swotDataFilter.categories.length > 0)
-            ) {
-               dispatch(commonStore.actions.setErrorMessage(t('commonErrorMessage.selectRegion')));
-            }
-            setLoadingSwot(false);
-            return;
-         }
-
-         const {
-            data: { competitiveLandscape },
-         } = await indicatorApi.getCompetitiveLandscape({
-            regions: swotDataFilter.regions,
-            countries: swotDataFilter.countries,
-            classes: swotDataFilter.classes,
-            categories: swotDataFilter.categories,
-            series: swotDataFilter.series,
-         });
-
-      } catch (error) {
-         dispatch(commonStore.actions.setErrorMessage(error.message));
-      }
-   };
-
-   //
-
-   useEffect(() => {
-      const getCountryByRegion = async () => {
-         const { data } = await indicatorApi.getCountryByRegion(swotDataFilter.regions);
-         return data;
-      };
-      getCountryByRegion()
-         .then((response) => {
-            const countries = response.country;
-            setBubbleCountryInitFilter(() =>
-               countries.map((value) => {
-                  return { value: value };
-               })
-            );
-         })
-         .catch((error) => {
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
-   }, [swotDataFilter.regions]);
-
-   useEffect(() => {
-      const getClassByFilter = async () => {
-         const { data } = await indicatorApi.getClassByFilter(
-            swotDataFilter.countries,
-            swotDataFilter.categories,
-            swotDataFilter.series
-         );
-         return data;
-      };
-      getClassByFilter()
-         .then((response) => {
-            const classes = response.class;
-            setBubbleClassInitFilter(() =>
-               classes.map((value) => {
-                  return { value: value };
-               })
-            );
-         })
-         .catch((error) => {
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
-   }, [swotDataFilter.countries, swotDataFilter.categories, swotDataFilter.series]);
-
-   useEffect(() => {
-      const getCategoryByFilter = async () => {
-         const { data } = await indicatorApi.getCategoryByFilter(
-            swotDataFilter.countries,
-            swotDataFilter.classes,
-            swotDataFilter.series
-         );
-         return data;
-      };
-      getCategoryByFilter()
-         .then((response) => {
-            const categories = response.category;
-            setBubbleCategoryInitFilter(() =>
-               categories.map((value) => {
-                  return { value: value };
-               })
-            );
-         })
-         .catch((error) => {
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
-   }, [swotDataFilter.countries, swotDataFilter.classes, swotDataFilter.series]);
-
-   useEffect(() => {
-      const getSeriesByFilter = async () => {
-         const { data } = await indicatorApi.getSeriesByFilter(
-            swotDataFilter.countries,
-            swotDataFilter.classes,
-            swotDataFilter.categories
-         );
-         return data;
-      };
-      getSeriesByFilter()
-         .then((response) => {
-            const series = response.series;
-            setBubbleSerieInitFilter(() =>
-               series.map((value) => {
-                  return { value: value };
-               })
-            );
-         })
-         .catch((error) => {
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
-   }, [swotDataFilter.countries, swotDataFilter.classes, swotDataFilter.categories]);
-
-   const handleChangeSwotFilter = (option, field) => {
-      setSwotDataFilter((prev) =>
-         produce(prev, (draft) => {
-            if (_.includes(['regions'], field)) {
-               draft[field] = option.value;
-               draft.countries = [];
-            } else {
-               draft[field] = option.map(({ value }) => value);
-            }
-         })
-      );
-   };
-
    useEffect(() => {
       const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
          if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
@@ -350,15 +285,16 @@ export default function IndicatorsV2() {
    }, [swotDataFilter]);
 
    const handleChangeDataFilter = (option, field) => {
-      console.log("option la: ",option);
+      console.log('option la: ', option);
 
-      const newSelectedFilter  = (field == "regions") ? 
-       {...selectedFilter,[field]:option.value} : 
-       {...selectedFilter,[field]:option?.map(({value}) => value)};
-       dispatch(indicatorV2Store.actions.setChartSelectedFilters(newSelectedFilter));
-       dispatch(indicatorV2Store.sagaGetList());
+      const newSelectedFilter =
+         field == 'regions'
+            ? { ...selectedFilter, [field]: option.value }
+            : { ...selectedFilter, [field]: option?.map(({ value }) => value) };
+      dispatch(indicatorV2Store.actions.setChartSelectedFilters(newSelectedFilter));
+      dispatch(indicatorV2Store.sagaGetList());
 
-     /*setDataFilter((prev) =>
+      /*setDataFilter((prev) =>
          produce(prev, (draft) => {
             if (_.includes(['leadTime', 'marginPercentage'], field)) {
                draft[field] = option.value;
@@ -398,7 +334,7 @@ export default function IndicatorsV2() {
             dispatch(commonStore.actions.setSuccessMessage('Import succesfully'));
 
             handleFilterIndicator();
-            handleFilterCompetitiveLandscape();
+            //  handleFilterCompetitiveLandscape();
          })
          .catch((error) => {
             setLoading(false);
@@ -528,44 +464,30 @@ export default function IndicatorsV2() {
       }
    };
 
-   const handleOnSliderChange = (option,value) =>{
+   const handleOnSliderChange = (option, value) => {
       setSliderLeadTime(value);
-   }
+   };
    const options = {
-      legend: { 
-         position: 'right' 
-     },
       scales: {
          y: {
+            beginAtZero: true,
+            min: sliderPrice[0],
+            max: sliderPrice[1],
             title: {
                text: 'Price $',
                display: true,
             },
             ticks: {
-               stepSize:2000,
+               maxTicksLimit: 10,
+               callback: function (value, index, values) {
+                  return value == 0 ? 0 : `$${(value / 1000).toFixed(0)}K`;
+               },
             },
-            // beginAtZero: true,
-            // title: {
-            //    text: 'Lead Time (weeks)',
-            //    display: true,
-            // },
          },
-         xAxes: [{
-            gridLines: {
-                // You can change the color, the dash effect, the main axe color, etc.
-                borderDash: [8, 4],
-                color: "#348632"
-            }
-        }],
          x: {
             beginAtZero: true,
-            min:sliderLeadTime[0],
-            max:sliderLeadTime[1],
-            gridLines: {
-               // You can change the color, the dash effect, the main axe color, etc.
-               borderDash: [8, 4],
-               color: "#348632"
-           },
+            min: sliderLeadTime[0],
+            max: sliderLeadTime[1],
             title: {
                text: 'Lead Time (weeks)',
                display: true,
@@ -575,15 +497,20 @@ export default function IndicatorsV2() {
       maintainAspectRatio: false,
       plugins: {
          legend: {
-            display: true,
-            position: 'right' ,
-            
-            
+            display: false,
+         },
+         htmlLegend: {
+            // ID of the container to put the legend in
+            containerID: 'legend-container',
          },
          title: {
             display: true,
-            text: t('competitors.competitorSwotAnalysis'),
+            text: t('competitors.playerPriceVsLeadtimeOfCompetitorMarketshare'),
             position: 'top' as const,
+            align: 'start',
+            font: {
+               size: 15,
+            },
          },
          tooltip: {
             interaction: {
@@ -610,18 +537,29 @@ export default function IndicatorsV2() {
          annotation: {
             annotations: {
                trendline: {
-                  yMax:trendline? sliderLeadTime[0]*trendline.m+trendline.b :0,
-                  yMin: trendline? sliderLeadTime[1]*trendline.m+trendline.b : 0,
-                  borderDash: [5, 5] ,// Set the border to dashed style
+                  yMax: trendline ? sliderLeadTime[1] * trendline.m + trendline.b : 0,
+                  yMin: trendline ? sliderLeadTime[0] * trendline.m + trendline.b : 0,
+                  xMin: sliderLeadTime[0] ?? 0,
+                  xMax: sliderLeadTime[1] ?? 0,
+                  borderDash: [5, 5],
                   borderColor: 'rgb(0, 0, 0)',
                   borderWidth: 1,
-                  BorderStyle:"dashed",
+                  BorderStyle: 'dashed',
+               },
+               modeline: {
+                  yMax: sliderPrice[1],
+                  yMin: sliderPrice[0],
+                  xMin: modeline,
+                  xMax: modeline,
+                  borderDash: [5, 5],
+                  borderColor: 'rgb(0, 0, 0)',
+                  borderWidth: 1,
+                  BorderStyle: 'dashed',
                },
             },
          },
       },
    };
-
    return (
       <>
          <div
@@ -686,8 +624,8 @@ export default function IndicatorsV2() {
 
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
-               <AppAutocomplete
-                     value={selectedFilter?.regions||[]}
+                  <AppAutocomplete
+                     value={selectedFilter?.regions || []}
                      options={optionsFilter.regions}
                      label={t('filters.region')}
                      sx={{ height: 25, zIndex: 10 }}
@@ -703,7 +641,7 @@ export default function IndicatorsV2() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                      value={_.map(selectedFilter.countries, (item) => {
+                     value={_.map(selectedFilter.countries, (item) => {
                         return { value: item };
                      })}
                      options={optionsFilter.countries}
@@ -793,7 +731,6 @@ export default function IndicatorsV2() {
                      disableCloseOnSelect
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
-                     
                   />
                </Grid>
 
@@ -858,29 +795,49 @@ export default function IndicatorsV2() {
                   </>
                )}
             </Grid>
-            <Grid item xs={6} justifyContent={'center'} alignItems={"center"} style={{display: "flex", flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
-               <div  style={{display: "flex", flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
-                  <div style={{height:'400px'}}> 
+            <Grid
+               item
+               xs={12}
+               justifyContent={'center'}
+               alignItems={'center'}
+               style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+               }}
+            >
+               <div
+                  style={{
+                     display: 'flex',
+                     flexDirection: 'row',
+                     justifyContent: 'center',
+                     alignItems: 'center',
+                  }}
+               >
+                  <div style={{ height: '400px' }}>
                      <Slider
-                     sx={{
-                        '& input[type="range"]': {
-                           WebkitAppearance: 'slider-vertical',
-                        },
-                     }}
-                     orientation="vertical"
-                     defaultValue={30}
+                        max={maxY}
+                        value={sliderPrice}
+                        onChange={(option, value) => {
+                           setSliderPrice(value);
+                        }}
+                        orientation="vertical"
                      />
                   </div>
-                  <Grid
-                     container
-                     sx={{height:"500px", width: '100%' }}
-                  >
-                     <Bubble options={options} data={{datasets}} />
-                     <Slider style={{width:'500px'}} value={sliderLeadTime} onChange = {handleOnSliderChange}/>
-                     </Grid>
-                     </div>
-            </Grid>
+                  <Grid container sx={{ maxWidth: '1080px', height: '500px' }}>
+                     <Bubble options={options} data={{ datasets: dataset }} />
 
+                     <Slider
+                        max={maxX}
+                        style={{ width: '500px', margin: 'auto' }}
+                        value={sliderLeadTime}
+                        onChange={handleOnSliderChange}
+                     />
+                  </Grid>
+                  <div id="legend-container"></div>
+               </div>
+            </Grid>
 
             <Grid item xs={12}>
                <Paper elevation={1} sx={{ marginTop: 30, position: 'relative' }}>
