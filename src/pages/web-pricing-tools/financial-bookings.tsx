@@ -81,17 +81,11 @@ export default function Booking() {
 
    const [loadingTable, setLoadingTable] = useState(false);
 
-   const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
-
    const [listOrder, setListOrder] = useState(listBookingOrder);
 
    const [totalRow, setTotalRow] = useState(listTotalRow);
 
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
-
-   const appendFileIntoList = (file) => {
-      setUploadedFile((prevFiles) => [...prevFiles, file]);
-   };
 
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
@@ -336,12 +330,31 @@ export default function Booking() {
       heightComponentExcludingTable = 330;
    }
 
-   const handleUploadFile = async (file) => {
+   const handleUploadBookedFile = async (file) => {
+      let formData = new FormData();
+      formData.append('file', file);
+      setLoading(true);
+      bookingApi
+         .importBookedFile(formData)
+         .then((response) => {
+            setLoading(false);
+            handleWhenImportSuccessfully(response);
+         })
+         .catch((error) => {
+            // stop spiner
+            setLoading(false);
+            //show message
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         });
+   };
+
+   const handleUploadCostDataFile = async (file) => {
+      setLoading(true);
       let formData = new FormData();
       formData.append('file', file);
 
       bookingApi
-         .importDataBooking(formData)
+         .importCostDataFile(formData)
          .then((response) => {
             setLoading(false);
             handleWhenImportSuccessfully(response);
@@ -373,20 +386,6 @@ export default function Booking() {
       dispatch(bookingStore.sagaGetList());
    };
 
-   const handleImport = () => {
-      if (uploadedFile.length > 0) {
-         // resert message
-         setLoading(true);
-         handleUploadFile(uploadedFile[0]);
-      } else {
-         dispatch(commonStore.actions.setErrorMessage('No file choosed'));
-      }
-   };
-
-   const handleRemove = (fileName) => {
-      const updateUploaded = uploadedFile.filter((file) => file.name != fileName);
-      setUploadedFile(updateUploaded);
-   };
    useEffect(() => {
       setUserRoleState(userRole);
 
@@ -764,56 +763,17 @@ export default function Booking() {
 
             <When condition={userRoleState === 'ADMIN'}>
                <Grid container spacing={1} sx={{ marginTop: '3px' }}>
-                  <Grid item xs={1}>
+                  <Grid item xs={2}>
                      <UploadFileDropZone
-                        uploadedFile={uploadedFile}
-                        setUploadedFile={appendFileIntoList}
-                        handleUploadFile={handleUploadFile}
+                        handleUploadFile={handleUploadBookedFile}
+                        buttonName="button.bookedFile"
                      />
                   </Grid>
-                  <Grid item xs={1}>
-                     <Button
-                        variant="contained"
-                        onClick={handleImport}
-                        sx={{ width: '100%', height: 24 }}
-                     >
-                        {t('button.import')}
-                     </Button>
-                  </Grid>
-
-                  <Grid item xs={4} sx={{ display: 'flex' }}>
-                     {uploadedFile &&
-                        uploadedFile.map((file) => (
-                           <ListItem
-                              sx={{
-                                 padding: 0,
-                                 backgroundColor: '#e3e3e3',
-                                 width: '75%',
-                                 display: 'flex',
-                                 justifyContent: 'space-between',
-                                 paddingLeft: '10px',
-                                 borderRadius: '3px',
-                                 marginLeft: '4px',
-                                 height: '26px',
-                              }}
-                           >
-                              <span
-                                 style={{
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                 }}
-                              >
-                                 {file.name}
-                              </span>
-                              <Button
-                                 onClick={() => handleRemove(file.name)}
-                                 sx={{ width: '20px' }}
-                              >
-                                 <ClearIcon />
-                              </Button>
-                           </ListItem>
-                        ))}
+                  <Grid item xs={2}>
+                     <UploadFileDropZone
+                        handleUploadFile={handleUploadCostDataFile}
+                        buttonName="button.costDataFile"
+                     />
                   </Grid>
                </Grid>
             </When>
@@ -880,11 +840,7 @@ function UploadFileDropZone(props) {
             reader.onabort = () => console.log('file reading was aborted');
             reader.onerror = () => console.log('file reading has failed');
             reader.onload = () => {
-               if (props.uploadedFile.length + acceptedFiles.length > 1) {
-                  dispatch(commonStore.actions.setErrorMessage('Too many files'));
-               } else {
-                  props.setUploadedFile(file);
-               }
+               props.handleUploadFile(file);
             };
             reader.readAsArrayBuffer(file);
          });
@@ -922,7 +878,7 @@ function UploadFileDropZone(props) {
             variant="contained"
             sx={{ width: '100%', height: 24 }}
          >
-            {t('button.selectFile')}
+            {t(props.buttonName)}
          </Button>
       </div>
    );

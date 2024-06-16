@@ -5,8 +5,12 @@ class BookingApi extends HttpService<any> {
       return this.get<any>(`filters/booking`);
    };
 
-   importDataBooking = (data: any) => {
-      return this.importData<any>('importNewBooking', data);
+   importBookedFile = (data: any) => {
+      return this.importData<any>('import-booking/import-booked-file', data);
+   };
+
+   importCostDataFile = (data: any) => {
+      return this.importData<any>('import-booking/import-cost-data-file', data);
    };
 }
 
