@@ -1,7 +1,7 @@
 {
    "navBar": {
       "dashboard": "Bảng thống kê",
-      "competitors": "Đối thủ cạnh tranh",
+      "competitorColors": "Màu đại diện",
       "manageIndicator": "Quản lý đối thủ cạnh tranh",
       "users": "Người dùng",
       "historicalImporting": "Lịch sử nhập dữ liệu",
@@ -60,6 +60,7 @@
       "dealerName": "Nhà phân phối",
       "class": "Phân lớp",
       "models": "Mã sản phẩm",
+      "discount": "Giảm giá",
       "segment": "Bộ phận",
       "aopMarginPercentage": "AOP Margin %",
       "marginPercentage": "Lợi nhuận %",
@@ -68,6 +69,7 @@
       "chineseBrand": "Hãng Trung Quốc",
       "country": "Quốc gia",
       "category": "Phân loại",
+      "competitor": "Đối thủ",
       "brand": "Hãng",
       "family": "Family",
       "truckType": "Loại xe tải",
@@ -167,7 +169,7 @@
       "fileStyle": "Loại File",
       "frequency": "Tần suất",
       "totalClasses": "Tổng các nhóm",
-      "totalQuantity":"Tổng số lượng"
+      "totalQuantity": "Tổng số lượng"
    },
 
    "competitors": {

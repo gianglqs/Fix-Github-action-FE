@@ -1,7 +1,7 @@
 {
    "navBar": {
       "dashboard": "仪表板",
-      "competitors": "竞争对手",
+      "competitorColors": "竞争对手的颜色",
       "manageIndicator": "管理竞争对手",
       "users": "用户",
       "historicalImporting": "历史导入",
@@ -59,6 +59,7 @@
       "dealerName": "经销商名称",
       "class": "类别",
       "models": "型号",
+      "discount": "折扣",
       "segment": "段",
       "aopMarginPercentage": "AOP利润率 %",
       "marginPercentage": "利润率",
@@ -67,6 +68,7 @@
       "chineseBrand": "中国品牌",
       "country": "国家",
       "category": "类别",
+      "competitor": "竞争者",
       "brand": "品牌",
       "family": "家族",
       "truckType": "卡车类型",
@@ -165,7 +167,7 @@
       "fileStyle": "文件风格",
       "frequency": "频率",
       "totalClasses": "总课程",
-      "totalQuantity":"总数量"
+      "totalQuantity": "总数量"
    },
 
    "competitors": {

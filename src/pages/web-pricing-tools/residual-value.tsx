@@ -1,54 +1,32 @@
-import { cache, useCallback, useContext, useEffect, useMemo, useState, useTransition } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
-import { formatNumbericColumn } from '@/utils/columnProperties';
+import { commonStore, importFailureStore, residualValueStore } from '@/store/reducers';
 import { formatNumberTwoPercentDigit } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
-import { residualValueStore, commonStore, importFailureStore } from '@/store/reducers';
 
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import {
-   Backdrop,
-   Box,
-   Button,
-   CircularProgress,
-   FormControlLabel,
-   ListItem,
-   Radio,
-   RadioGroup,
-   Typography,
-} from '@mui/material';
-import { useDropzone } from 'react-dropzone';
-import { setCookie } from 'nookies';
 import ClearIcon from '@mui/icons-material/Clear';
+import { Backdrop, Box, Button, CircularProgress, ListItem, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import { setCookie } from 'nookies';
+import { useDropzone } from 'react-dropzone';
 
-import {
-   AppAutocomplete,
-   AppDateField,
-   AppLayout,
-   AppNumberField,
-   AppTextField,
-   DataTablePagination,
-} from '@/components';
+import { AppAutocomplete, AppLayout, AppNumberField } from '@/components';
 
 import _ from 'lodash';
-import { produce } from 'immer';
 
-import { defaultValueFilterOrder, defaultValueFilterResidualValue } from '@/utils/defaultValues';
-import { UserInfoContext } from '@/provider/UserInfoContext';
-import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
-import { GetServerSidePropsContext } from 'next';
 import residualValueApi from '@/api/residualValue.api';
-import { isEmptyObject } from '@/utils/checkEmptyObject';
-import { useTranslation } from 'react-i18next';
+import { ProductImage } from '@/components/App/Image/ProductImage';
 import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
+import { UserInfoContext } from '@/provider/UserInfoContext';
+import { boxStyle } from '@/theme/paperStyle';
+import { ResidualValueDataFilter } from '@/types/defaultValue';
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
+import { defaultValueFilterResidualValue } from '@/utils/defaultValues';
 import { extractTextInParentheses } from '@/utils/getString';
 import { createAction } from '@reduxjs/toolkit';
-import { ProductImage } from '@/components/App/Image/ProductImage';
-import { boxStyle, componentType, paperStyle } from '@/theme/paperStyle';
-import { abort } from 'process';
-import { ResidualValueDataFilter } from '@/types/defaultValue';
-import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
+import { GetServerSidePropsContext } from 'next';
+import { useTranslation } from 'react-i18next';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -215,11 +193,14 @@ export default function ResidualValue() {
       selectedResidualValue.sort((n1, n2) => n1.id.hours - n2.id.hours);
       return selectedResidualValue.map((residualValue) => {
          return (
-            <Box sx={boxStyle} key={residualValue.id}>
+            <Box sx={{ ...boxStyle, width: 200 }} key={residualValue.id}>
                <p style={{ fontWeight: 900, fontSize: 16, margin: 0 }}>
                   {residualValue.id.hours} hours
                </p>
-               <Typography>{`$  ${formatNumberTwoPercentDigit(residualValue.price)}`}</Typography>
+               <Typography>{`${formatNumberTwoPercentDigit(residualValue.residualPercentage * 100)} %`}</Typography>
+               {dataFilter?.price !== 0 && (
+                  <Typography>{`$ ${formatNumberTwoPercentDigit(residualValue.residualPercentage * dataFilter?.price)}`}</Typography>
+               )}
             </Box>
          );
       });

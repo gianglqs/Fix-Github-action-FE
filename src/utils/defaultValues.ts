@@ -12,6 +12,7 @@ export const defaultValueFilterIndicator = {
    chineseBrand: '',
    series: [],
    countries: [],
+   competitorNames: [],
 } as any;
 
 export const defaultValueFilterOrder = {

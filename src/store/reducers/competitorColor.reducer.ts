@@ -2,7 +2,7 @@ import { createSlice, PayloadAction, createSelector, createAction } from '@redux
 
 import type { RootReducerType } from './rootReducer';
 
-export const name = 'competitorColor';
+export const name = 'competitorColors';
 export const resetState = createAction(`${name}/RESET_STATE`);
 
 export const initialState = {
