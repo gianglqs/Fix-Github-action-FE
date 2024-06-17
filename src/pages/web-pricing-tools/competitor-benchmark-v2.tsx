@@ -1,23 +1,19 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Button, CircularProgress, Hidden, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import {
    AppLayout,
    AppAutocomplete,
-   AppTextField,
-   AppDateField,
    DataTablePagination,
 } from '@/components';
 import Paper from '@mui/material/Paper';
 import { paperStyle } from '@/theme/paperStyle';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { formatNumbericColumn } from '@/utils/columnProperties';
-import { formatDate, formatNumber, formatNumberPercentage } from '@/utils/formatCell';
+import {  formatNumber, formatNumberPercentage } from '@/utils/formatCell';
 import Grid from '@mui/material/Grid';
 import indicatorApi from '@/api/indicators.api';
 import AppDataTable from '@/components/DataTable/AppDataGridPro';
-import { produce } from 'immer';
-import { defaultValueFilterIndicator } from '@/utils/defaultValues';
 import {
    Chart as ChartJS,
    LinearScale,
@@ -28,13 +24,11 @@ import {
    Title,
    Legend,
 } from 'chart.js';
-import Box from '@mui/material';
 import Slider from '@mui/material/Slider';
 import ChartAnnotation from 'chartjs-plugin-annotation';
 import _ from 'lodash';
-import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { useEffect, useState } from 'react';
-import { destroyCookie, parseCookies, setCookie } from 'nookies';
+import {  parseCookies } from 'nookies';
 import { useDropzone } from 'react-dropzone';
 import { indicatorStore, commonStore } from '@/store/reducers';
 import { indicatorV2Store } from '@/store/reducers';
@@ -42,11 +36,12 @@ import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import AppBackDrop from '@/components/App/BackDrop';
 import { useTranslation } from 'react-i18next';
-import { log } from 'console';
 import { Bubble, Scatter } from 'react-chartjs-2';
 //hooks
 import { useTransition } from 'react';
-import { ref } from 'yup';
+//others
+import { defaultValueChartSelectedFilterIndicator } from '@/utils/defaultValues';
+
 const getOrCreateLegendList = (chart, id) => {
    const legendContainer = document.getElementById(id);
    if (!legendContainer) return null;
@@ -67,6 +62,18 @@ const getOrCreateLegendList = (chart, id) => {
    return listContainer;
 };
 
+const LoadingCurtain = () =>{
+   return <div
+   style ={{position:'absolute',
+      inset:0,   
+      display: 'flex',
+      justifyContent: 'center',
+      backgroundColor:'white',
+      alignItems: 'center'}}
+   >
+      <CircularProgress sx={{backgroundColor:'white',inset:0,transform:'translate(-50%,-50%)'}}/>
+   </div>
+}
 const htmlLegendPlugin = {
    id: 'htmlLegend',
    afterUpdate(chart, args, options) {
@@ -182,6 +189,7 @@ export default function IndicatorsV2() {
    const optionsFilter = useSelector(indicatorV2Store.selectChartFilterOptions);
    const averageStats = useSelector(indicatorV2Store.selectAVGState);
    const dataTable = useSelector(indicatorV2Store.selectTableData);
+   const loadingPage = useSelector(indicatorStore.selectLoadingPage)
    const { dataset, trendline, modeline, maxX, maxY } = useSelector(
       indicatorV2Store.selectChartData
    );
@@ -196,6 +204,7 @@ export default function IndicatorsV2() {
 
       
    useEffect(() => {
+      dispatch(indicatorV2Store.actions.setLoadingPage(true));
       dispatch(indicatorV2Store.sagaGetList());
    }, []);
    useEffect(() => {
@@ -205,19 +214,25 @@ export default function IndicatorsV2() {
       setSliderPriceScatter([0,maxY]);
    }, [maxX, maxY]);
 
-   useEffect(() => {
-      setLoadingTable(false);
-   }, [getDataForTable]);
+
+   const handleFetchFilter = (filters) =>{
+      dispatch(indicatorV2Store.actions.setLoadingPage(true))
+      dispatch(indicatorV2Store.actions.setChartSelectedFilters(filters));
+      dispatch(commonStore.actions.setTableState({ pageNo: 1 }));
+      dispatch(indicatorV2Store.sagaGetList());
+   }
 
    const handleChangeDataFilter = (option, field) => {
       const newSelectedFilter =
          field === 'region' || field === 'leadTime'
             ? { ...selectedFilter, [field]: option.value }
             : { ...selectedFilter, [field]: option?.map(({ value }) => value) };
-      dispatch(indicatorV2Store.actions.setChartSelectedFilters(newSelectedFilter));
-      dispatch(commonStore.actions.setTableState({ pageNo: 1 }));
-      dispatch(indicatorV2Store.sagaGetList());
+      handleFetchFilter(newSelectedFilter);
    };
+
+   const handleClearFilter = ()=>{
+      handleFetchFilter(defaultValueChartSelectedFilterIndicator)
+   }
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
@@ -228,6 +243,9 @@ export default function IndicatorsV2() {
    const handleChangePerPage = (perPage: number) => {
       dispatch(commonStore.actions.setTableState({ perPage }));
       handleChangePage(1);
+   };
+   const handleOnSliderChange = (option, value) => {
+         setSliderLeadTime(value);
    };
 
    const handleImportFile = async (file) => {
@@ -347,26 +365,11 @@ export default function IndicatorsV2() {
       },
    ];
 
-   const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
+   const clientLatestUpdatedTime = useMemo(()=>{
+      return serverLastUpdatedTime && serverTimeZone ? convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone) : null;
+   },[serverLastUpdatedTime,serverTimeZone])
 
-   useEffect(() => {
-      convertTimezone();
-   }, [serverTimeZone, serverLastUpdatedTime]);
 
-   // show latest updated time
-   const convertTimezone = () => {
-      if (serverLastUpdatedTime && serverTimeZone) {
-         setClientLatestUpdatedTime(
-            convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
-         );
-      }
-   };
-
-   const handleOnSliderChange = (option, value) => {
-      startTransition(() => {
-         setSliderLeadTime(value);
-      });
-   };
 
    const options = {
       responsive: true,
@@ -712,7 +715,7 @@ export default function IndicatorsV2() {
                   />
                </Grid>
                <Grid item xs={1}>
-                  <Button variant="contained" onClick={() => {}} sx={{ width: '100%', height: 24 }}>
+                  <Button variant="contained" onClick={handleClearFilter} sx={{ width: '100%', height: 24 }}>
                      {t('button.clear')}
                   </Button>
                </Grid>
@@ -736,11 +739,13 @@ export default function IndicatorsV2() {
                   </>
                )}
             </Grid>
-            <div style={{display:'flex',marginTop:50}} >
+            <div style={{display:'flex',marginTop:50,gap:10}} >
             <div
-            style={{flex:1}}
+            style={{flex:1,position:'relative'}}
             >
-               <div
+               {loadingPage && <LoadingCurtain/>}
+               {loadingPage ? <LoadingCurtain/> :
+                              <div
                   style={{
                      display: 'flex',
                      flexDirection: 'row',
@@ -748,29 +753,27 @@ export default function IndicatorsV2() {
                      alignItems: 'center',
                   }}
                >
-                  <div style={{ height: '400px' }}>
+                  <div style={{ height: '300px' }}>
                      <Slider
                         max={maxY}
                         value={sliderPrice}
                         onChange={(option, value) => {
-                           startTransition(() => {
                               setSliderPrice(value);
-                           });
                         }}
                         orientation="vertical"
                      />
                   </div>
-                  <div  style={{  height: '500px' ,flex:1}}>
+                  <div  style={{  height: '500px' ,flex:1,display:'flex',flexDirection:'column', justifyContent:'center',alignItems:'center' }}>
                      <Bubble options={options} data={{ datasets: dataset }} />
                      <Slider
                         max={maxX}
-                        style={{ width: '500px', margin: 'auto' }}
+                        style={{ width: '300px', margin: 'auto' }}
                         value={sliderLeadTime}
                         onChange={handleOnSliderChange}
                      />
                   </div>
                   <div id="legend-container" style={{width:'150px'}}></div>
-               </div>
+               </div>}
             </div>
 
             <div   style={{flex:1}}  >
@@ -783,28 +786,24 @@ export default function IndicatorsV2() {
                      width:'100%'
                   }}
                >
-                  <div style={{ height: '400px' }}>
+                  <div style={{ height: '300px' }}>
                      <Slider
                         max={maxY}
                         value={sliderPriceScatter}
                         onChange={(option, value) => {
-                           startTransition(() => {
                               setSliderPriceScatter(value);
-                           });
                         }}
                         orientation="vertical"
                      />
                   </div>
-                  <div  style={{height: '500px',flex:1 }}>
+                  <div  style={{height: '500px',flex:1 ,display:'flex',flexDirection:'column', justifyContent:'center',alignItems:'center' }}>
                      <Scatter options={scatterOptions} data={{ datasets: dataset }} />
                      <Slider
                         max={maxX}
-                        style={{ width: '500px', margin: 'auto' }}
+                        style={{ width: '300px', margin: 'auto' }}
                         value={sliderLeadTimeScatter}
                         onChange={(option, value) => {
-                           startTransition(() => {
                               setSliderLeadTimeScatter(value);
-                           });
                         }}
                      />
                   </div>

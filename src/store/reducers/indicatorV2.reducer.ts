@@ -9,6 +9,7 @@ import { ChartData, ChartSelectedFilters, CompetitorTableData, AVGStats } from '
 import { InitReducer } from '@/types';
 //others
 import { defaultValueChartSelectedFilterIndicator } from '@/utils/defaultValues';
+import { log } from 'console';
 type IndicatorInitState = {
    // data to fill select options of chart
    chartFilterOptions: FilterOptions;
@@ -80,6 +81,7 @@ const indicatorSlice = createSlice({
          state.lastUpdatedBy = payload;
       },
       setLoadingPage(state, { payload }: PayloadAction<boolean>) {
+         console.log("loadingg page",payload.valueOf())
          state.loadingPage = payload;
       },
    },

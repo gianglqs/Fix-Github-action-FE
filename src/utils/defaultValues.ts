@@ -101,10 +101,10 @@ export const defaultDataFilterQuotationMargin = {
 };
 
 export const defaultValueChartSelectedFilterIndicator : ChartSelectedFilters = {
-   regions: null,
+   region: null,
    countries: [],
    classes: [],
-   series: [],
+   metaSeries: [],
    models:[],
    groups:[],
    leadTime: null

@@ -37,7 +37,7 @@ export const mappingCompetitorsToChartData = ({ chartData, trendline, modeline }
       const data = {
          x: competitor?.competitorLeadTime || 0.0,
          y: competitor?.competitorPricing || 0.0,
-         r: competitor?.marketShare * 100 || 0.0,
+         r: Math.sqrt(competitor?.marketShare * 1000) || 0.0,
       };
       if (existedGroup) {
          existedGroup.data.push(data);

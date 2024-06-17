@@ -1,6 +1,6 @@
 import { takeEvery, put } from 'redux-saga/effects';
 import { indicatorV2Store, commonStore } from '../reducers';
-import { select, call, all } from 'typed-redux-saga';
+import { select, call, all, debounce} from 'typed-redux-saga';
 import indicatorV2Api from '@/api/indicatorV2.api';
 //types
 import { ChartData } from '@/types/competitor';
@@ -68,7 +68,6 @@ function* fetchIndicator() {
             ...chartFilterOptions,
          })
       );
-
       // get data for Chart
       const chartRawData = yield* call(indicatorV2Api.getChartData, chartSelectedFilters);
       const chartData: ChartData = mappingCompetitorsToChartData(
@@ -98,14 +97,20 @@ function* fetchIndicator() {
       yield put(indicatorV2Store.actions.setServerTimeZone(mappedDataCompetitors.serverTimeZone));
       yield put(indicatorV2Store.actions.setLastUpdatedTime(mappedDataCompetitors.lastUpdatedTime));
       yield put(indicatorV2Store.actions.setLastUpdatedBy(mappedDataCompetitors.lastUpdatedBy));
-   } catch (error) {}
+      //setting loading page to false
+      yield put(
+               indicatorV2Store.actions.setLoadingPage(false)
+            );
+   } catch (error) {
+
+   }
 }
 
 function* fetchDashboard() {
-   yield takeEvery(indicatorV2Store.sagaGetList, fetchIndicator);
+   yield debounce(1000,indicatorV2Store.sagaGetList, fetchIndicator);
 }
 function* fetchTableIndicator() {
-   yield takeEvery(indicatorV2Store.fetchTable, fetchTableData);
+   yield debounce(500,indicatorV2Store.fetchTable, fetchTableData);
 }
 
 export { fetchDashboard, fetchTableIndicator };
