@@ -276,10 +276,8 @@ export default function Shipment() {
                <span>
                   {formatNumberPercentage(
                      1 -
-                        params?.row.dealerNet /
-                           (params?.row.dealerNetAfterSurcharge === 0
-                              ? 1
-                              : params?.row.dealerNetAfterSurcharge)
+                        params?.row.dealerNetAfterSurcharge /
+                           (params?.row.dealerNet === 0 ? 1 : params?.row.dealerNet)
                   )}
                </span>
             );
