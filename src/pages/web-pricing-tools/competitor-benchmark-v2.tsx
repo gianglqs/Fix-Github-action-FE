@@ -43,7 +43,7 @@ import { GetServerSidePropsContext } from 'next';
 import AppBackDrop from '@/components/App/BackDrop';
 import { useTranslation } from 'react-i18next';
 import { log } from 'console';
-import { Bubble } from 'react-chartjs-2';
+import { Bubble, Scatter } from 'react-chartjs-2';
 //hooks
 import { useTransition } from 'react';
 import { ref } from 'yup';
@@ -190,12 +190,19 @@ export default function IndicatorsV2() {
    const [sliderLeadTime, setSliderLeadTime] = useState([0, 0]);
    const [sliderPrice, setSliderPrice] = useState([0, 0]);
 
+   //setting chart Data
+      const [sliderLeadTimeScatter, setSliderLeadTimeScatter] = useState([0, 0]);
+      const [sliderPriceScatter, setSliderPriceScatter] = useState([0, 0]);
+
+      
    useEffect(() => {
       dispatch(indicatorV2Store.sagaGetList());
    }, []);
    useEffect(() => {
       setSliderLeadTime([0, maxX]);
       setSliderPrice([0, maxY]);
+      setSliderLeadTimeScatter([0, maxX]);
+      setSliderPriceScatter([0,maxY]);
    }, [maxX, maxY]);
 
    useEffect(() => {
@@ -392,7 +399,7 @@ export default function IndicatorsV2() {
       maintainAspectRatio: false,
       plugins: {
          legend: {
-            display: false,
+            display: false
          },
          htmlLegend: {
             // ID of the container to put the legend in
@@ -431,19 +438,104 @@ export default function IndicatorsV2() {
          },
          annotation: {
             annotations: {
+               modeline: modeline && {
+                  yMax: sliderPrice[1],
+                  yMin: sliderPrice[0],
+                  xMin: modeline,
+                  xMax: modeline,
+                  borderDash: [5, 5],
+                  borderColor: 'rgb(0, 0, 0)',
+                  borderWidth: 1,
+                  BorderStyle: 'dashed',
+               },
+            },
+         },
+      },
+   };
+   
+   const scatterOptions = {
+      responsive: true,
+      scales: {
+         y: {
+            beginAtZero: true,
+            min: sliderPriceScatter[0],
+            max: sliderPriceScatter[1],
+            title: {
+               text: 'Price $',
+               display: true,
+            },
+            ticks: {
+               maxTicksLimit: 10,
+               callback: function (value, index, values) {
+                  return value == 0 ? 0 : `$${(value / 1000).toFixed(0)}K`;
+               },
+            },
+         },
+         x: {
+            beginAtZero: true,
+            min: sliderLeadTimeScatter[0],
+            max: sliderLeadTimeScatter[1],
+            title: {
+               text: 'Lead Time (weeks)',
+               display: true,
+            },
+         },
+      },
+      maintainAspectRatio: false,
+      plugins: {
+         legend: {
+            display: false
+         },
+         htmlLegend: {
+            // ID of the container to put the legend in
+            containerID: 'scater-container',
+         },
+         title: {
+            display: true,
+            text: t('competitors.playerPriceVsLeadtimeOfCompetitorMarketshare'),
+            position: 'top' as const,
+            align: 'start',
+            font: {
+               size: 15,
+            },
+         },
+         tooltip: {
+            interaction: {
+               intersect: true,
+               mode: 'nearest',
+            },
+            bodyFont: {
+               size: 14,
+            },
+            callbacks: {
+               label: (context) => {
+                  let label = context.dataset.label || '';
+                  if (label) {
+                     label += ': ';
+                  }
+                  label += `($ ${context.parsed.y.toLocaleString()}, ${context.parsed.x.toLocaleString()} weeks, ${
+                     context.raw.r
+                  }%)`;
+
+                  return label;
+               },
+            },
+         },
+         annotation: {
+            annotations: {
                trendline: trendline && {
-                  yMax: trendline ? sliderLeadTime[1] * trendline.m + trendline.b : 0,
-                  yMin: trendline ? sliderLeadTime[0] * trendline.m + trendline.b : 0,
-                  xMin: sliderLeadTime[0] ?? 0,
-                  xMax: sliderLeadTime[1] ?? 0,
+                  yMax: trendline ? sliderLeadTimeScatter[1] * trendline.m + trendline.b : 0,
+                  yMin: trendline ? sliderLeadTimeScatter[0] * trendline.m + trendline.b : 0,
+                  xMin: sliderLeadTimeScatter[0] ?? 0,
+                  xMax: sliderLeadTimeScatter[1] ?? 0,
                   borderDash: [5, 5],
                   borderColor: 'rgb(0, 0, 0)',
                   borderWidth: 1,
                   BorderStyle: 'dashed',
                },
                modeline: modeline && {
-                  yMax: sliderPrice[1],
-                  yMin: sliderPrice[0],
+                  yMax: sliderPriceScatter[1],
+                  yMin: sliderPriceScatter[0],
                   xMin: modeline,
                   xMax: modeline,
                   borderDash: [5, 5],
@@ -644,18 +736,9 @@ export default function IndicatorsV2() {
                   </>
                )}
             </Grid>
-            <Grid
-               item
-               xs={12}
-               justifyContent={'center'}
-               alignItems={'center'}
-               style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginTop: '10px',
-               }}
+            <div style={{display:'flex',marginTop:50}} >
+            <div
+            style={{flex:1}}
             >
                <div
                   style={{
@@ -677,22 +760,60 @@ export default function IndicatorsV2() {
                         orientation="vertical"
                      />
                   </div>
-                  <Grid container sx={{ maxWidth: '1080px', height: '500px' }}>
+                  <div  style={{  height: '500px' ,flex:1}}>
                      <Bubble options={options} data={{ datasets: dataset }} />
-
                      <Slider
                         max={maxX}
                         style={{ width: '500px', margin: 'auto' }}
                         value={sliderLeadTime}
                         onChange={handleOnSliderChange}
                      />
-                  </Grid>
-                  <div id="legend-container"></div>
+                  </div>
+                  <div id="legend-container" style={{width:'150px'}}></div>
                </div>
-            </Grid>
+            </div>
 
+            <div   style={{flex:1}}  >
+               <div
+                  style={{
+                     display: 'flex',
+                     flexDirection: 'row',
+                     justifyContent: 'center',
+                     alignItems: 'center',
+                     width:'100%'
+                  }}
+               >
+                  <div style={{ height: '400px' }}>
+                     <Slider
+                        max={maxY}
+                        value={sliderPriceScatter}
+                        onChange={(option, value) => {
+                           startTransition(() => {
+                              setSliderPriceScatter(value);
+                           });
+                        }}
+                        orientation="vertical"
+                     />
+                  </div>
+                  <div  style={{height: '500px',flex:1 }}>
+                     <Scatter options={scatterOptions} data={{ datasets: dataset }} />
+                     <Slider
+                        max={maxX}
+                        style={{ width: '500px', margin: 'auto' }}
+                        value={sliderLeadTimeScatter}
+                        onChange={(option, value) => {
+                           startTransition(() => {
+                              setSliderLeadTimeScatter(value);
+                           });
+                        }}
+                     />
+                  </div>
+                  <div id="scater-container" style={{width:'150px'}}></div>
+               </div>
+            </div>
+            </div>
             <Grid item xs={12}>
-               <Paper elevation={1} sx={{ marginTop: 30, position: 'relative' }}>
+               <Paper elevation={1} sx={{ marginTop: 10, position: 'relative' }}>
                   <Grid
                      container
                      sx={{ height: 'calc(67vh - 275px)', minHeight: '200px', width: '100%' }}
