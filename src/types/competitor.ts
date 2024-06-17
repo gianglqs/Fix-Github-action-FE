@@ -1,13 +1,26 @@
-export type competitor = {
+export type Competitor = {
    createdBy: string;
    createdAt: string;
    latestModifiedBy: string;
    latestModifiedAt: string;
    id: string;
-   country: string;
+   country: {
+      id: number;
+      countryName: string;
+      region: {
+         id: 1;
+         regionShortName: string;
+         regionName: string;
+      };
+      code: string;
+      hasDealer: boolean;
+   };
    plant: string;
    competitorName: string;
-   clazz: string;
+   clazz: {
+      id: number;
+      clazzName: string;
+   };
    category: string;
    series: string;
    averageDN: string;
@@ -62,11 +75,21 @@ export type ChartData = {
 };
 
 export type ChartSelectedFilters = {
-   regions: string | null;
+   region: string | null;
    countries: string[];
    classes: string[];
-   series: string[];
+   metaSeries: string[];
    models: string[];
    groups: string[];
    leadTime: string | null;
 };
+export type AVGStats = { avgStreetPrice: number; avgPrice: number; avgVariancePercentage: number };
+
+export type CompetitorTableData = ({
+   id: string;
+   region: string | null;
+   country: string;
+   class: string;
+   series: string;
+   group: string;
+} & AVGStats)[];

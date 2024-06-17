@@ -5,23 +5,49 @@ import indicatorV2Api from '@/api/indicatorV2.api';
 //types
 import { ChartData } from '@/types/competitor';
 //others
-import { mapCompetitorFiltersToOptionValues, mappingCompetitorsToChartData } from '@/utils/mapping';
+import {
+   mapCompetitorFiltersToOptionValues,
+   mappingCompetitorsToChartData,
+   mappingCompetitorsToTableData,
+} from '@/utils/mapping';
+function* fetchTableData() {
+   try {
+      const { tableState } = yield* all({
+         tableState: select(commonStore.selectTableState),
+      });
+      const { chartSelectedFilters } = yield* all({
+         chartSelectedFilters: select(indicatorV2Store.selectChartSelectedFilters),
+      });
+
+      // get data for table
+      const dataCompetitorsRaw = yield* call(
+         indicatorV2Api.getCompetitorData,
+         chartSelectedFilters,
+         {
+            pageNo: tableState.pageNo,
+            perPage: tableState.perPage,
+         }
+      );
+      const mappedDataCompetitors = mappingCompetitorsToTableData(dataCompetitorsRaw?.data);
+      yield put(indicatorV2Store.actions.setTableData(mappedDataCompetitors.tableData));
+
+      yield put(indicatorV2Store.actions.setAverageStats(mappedDataCompetitors.averageStats));
+
+      yield put(
+         commonStore.actions.setTableState({
+            totalItems: mappedDataCompetitors.totalItems,
+         })
+      );
+      yield put(indicatorV2Store.actions.setServerTimeZone(mappedDataCompetitors.serverTimeZone));
+      yield put(indicatorV2Store.actions.setLastUpdatedTime(mappedDataCompetitors.lastUpdatedTime));
+      yield put(indicatorV2Store.actions.setLastUpdatedBy(mappedDataCompetitors.lastUpdatedBy));
+   } catch (err) {}
+}
 function* fetchIndicator() {
    try {
-      //  const cookies = parseCookies();
-      // dataFilter bubble chart
-      /*  const jsonIndicatorBubbleChart = cookies['indicatorSelectedFilter'];
-        let chartSelectedFilters : ChartSelectedFilters ;
-  
-        if (jsonIndicatorBubbleChart) {
-            chartSelectedFilters = JSON.parse(String(jsonIndicatorBubbleChart));
-           yield put(indicatorV2Store.actions.setChartSelectedFilters(chartSelectedFilters));
-        } else {
-            chartSelectedFilters = defaultValueChartSelectedFilterIndicator;
-        }
-        
-        console.log("getSagaList "+ chartSelectedFilters);
-        console.log(chartSelectedFilters);*/
+      const { tableState } = yield* all({
+         tableState: select(commonStore.selectTableState),
+      });
       const { chartSelectedFilters } = yield* all({
          chartSelectedFilters: select(indicatorV2Store.selectChartSelectedFilters),
       });
@@ -44,28 +70,42 @@ function* fetchIndicator() {
       );
 
       // get data for Chart
-      console.log('get data');
       const chartRawData = yield* call(indicatorV2Api.getChartData, chartSelectedFilters);
       const chartData: ChartData = mappingCompetitorsToChartData(
          chartRawData?.data?.competitiveLandscape || []
       );
-      console.log('chartData is ' + chartData);
       yield put(indicatorV2Store.actions.setChartData(chartData));
-      /*
-      yield put(indicatorV2Store.actions.setChartFilterOptions(lineChartRegionData));
 
-      const dataServerTimeZone = JSON.parse(String(dataListIndicator.data)).serverTimeZone;
-      const dataLastUpdatedTime = JSON.parse(String(dataListIndicator.data)).lastUpdatedTime;
-      const dataLastUpdatedBy = JSON.parse(String(dataListIndicator.data)).lastUpdatedBy;
+      // get data for table
+      const dataCompetitorsRaw = yield* call(
+         indicatorV2Api.getCompetitorData,
+         chartSelectedFilters,
+         {
+            pageNo: tableState.pageNo,
+            perPage: tableState.perPage,
+         }
+      );
+      const mappedDataCompetitors = mappingCompetitorsToTableData(dataCompetitorsRaw?.data);
+      yield put(indicatorV2Store.actions.setTableData(mappedDataCompetitors.tableData));
 
-      yield put(indicatorV2Store.actions.setServerTimeZone(dataServerTimeZone));
-      yield put(indicatorV2Store.actions.setLastUpdatedTime(dataLastUpdatedTime));
-      yield put(indicatorV2Store.actions.setLastUpdatedBy(dataLastUpdatedBy)); */
+      yield put(indicatorV2Store.actions.setAverageStats(mappedDataCompetitors.averageStats));
+
+      yield put(
+         commonStore.actions.setTableState({
+            totalItems: mappedDataCompetitors.totalItems,
+         })
+      );
+      yield put(indicatorV2Store.actions.setServerTimeZone(mappedDataCompetitors.serverTimeZone));
+      yield put(indicatorV2Store.actions.setLastUpdatedTime(mappedDataCompetitors.lastUpdatedTime));
+      yield put(indicatorV2Store.actions.setLastUpdatedBy(mappedDataCompetitors.lastUpdatedBy));
    } catch (error) {}
 }
 
-function* dashboardSaga() {
+function* fetchDashboard() {
    yield takeEvery(indicatorV2Store.sagaGetList, fetchIndicator);
 }
+function* fetchTableIndicator() {
+   yield takeEvery(indicatorV2Store.fetchTable, fetchTableData);
+}
 
-export default dashboardSaga;
+export { fetchDashboard, fetchTableIndicator };

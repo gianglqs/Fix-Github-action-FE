@@ -44,12 +44,12 @@ import AppBackDrop from '@/components/App/BackDrop';
 import { useTranslation } from 'react-i18next';
 import { log } from 'console';
 import { Bubble } from 'react-chartjs-2';
-import { BorderStyle, Dataset } from '@mui/icons-material';
 //hooks
-import { useLayoutEffect } from 'react';
+import { useTransition } from 'react';
 import { ref } from 'yup';
 const getOrCreateLegendList = (chart, id) => {
    const legendContainer = document.getElementById(id);
+   if (!legendContainer) return null;
    let listContainer = legendContainer.querySelector('ul');
 
    if (!listContainer) {
@@ -64,7 +64,6 @@ const getOrCreateLegendList = (chart, id) => {
       listContainer.style.gap = '5px';
       legendContainer.appendChild(listContainer);
    }
-
    return listContainer;
 };
 
@@ -72,7 +71,9 @@ const htmlLegendPlugin = {
    id: 'htmlLegend',
    afterUpdate(chart, args, options) {
       const ul = getOrCreateLegendList(chart, options.containerID);
-
+      if (!ul) {
+         return null;
+      }
       // Remove old legend items
       while (ul.firstChild) {
          ul.firstChild.remove();
@@ -157,6 +158,7 @@ const defaultDataFilterBubbleChart = {
 
 export default function IndicatorsV2() {
    const { t } = useTranslation();
+   const [isPending, startTransition] = useTransition();
    const dispatch = useDispatch();
    let cookies = parseCookies();
    let userRoleCookies = cookies['role'];
@@ -165,22 +167,11 @@ export default function IndicatorsV2() {
    useEffect(() => {
       setUserRole(userRoleCookies);
    });
-   const [legend, setLegend] = useState();
    const [loading, setLoading] = useState(false);
 
    const [loadingTable, setLoadingTable] = useState(false);
    const [loadingSwot, setLoadingSwot] = useState(false);
-
    const tableState = useSelector(commonStore.selectTableState);
-
-   // select data Filter in store
-   const initDataFilter = useSelector(indicatorStore.selectInitDataFilter);
-
-   const cacheDataFilter = useSelector(indicatorStore.selectDataFilter);
-
-   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
-
-   const listTotalRow = useSelector(indicatorStore.selectTotalRow);
 
    const getDataForTable = useSelector(indicatorStore.selectIndicatorList);
    const serverTimeZone = useSelector(indicatorStore.selectServerTimeZone);
@@ -189,19 +180,11 @@ export default function IndicatorsV2() {
    // v2
    const selectedFilter = useSelector(indicatorV2Store.selectChartSelectedFilters);
    const optionsFilter = useSelector(indicatorV2Store.selectChartFilterOptions);
+   const averageStats = useSelector(indicatorV2Store.selectAVGState);
+   const dataTable = useSelector(indicatorV2Store.selectTableData);
    const { dataset, trendline, modeline, maxX, maxY } = useSelector(
       indicatorV2Store.selectChartData
    );
-
-   const [competitiveLandscapeData, setCompetitiveLandscapeData] = useState({
-      datasets: [],
-      clearFilter: false,
-   });
-   const cachDataFilterBubbleChart = useSelector(indicatorStore.selectDataFilterBubbleChart);
-   const [swotDataFilter, setSwotDataFilter] = useState(cachDataFilterBubbleChart);
-
-   const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
-   const [hasSetSwotFilter, setHasSetSwotFilter] = useState(false);
 
    //setting chart Data
    const [sliderLeadTime, setSliderLeadTime] = useState([0, 0]);
@@ -216,109 +199,27 @@ export default function IndicatorsV2() {
    }, [maxX, maxY]);
 
    useEffect(() => {
-      if (!hasSetDataFilter && cacheDataFilter) {
-         setDataFilter(cacheDataFilter);
-
-         setHasSetDataFilter(true);
-      }
-   }, [cacheDataFilter]);
-
-   const [regionError, setRegionError] = useState({ error: false });
-
-   useEffect(() => {
-      if (!hasSetSwotFilter && cacheDataFilter) {
-         setSwotDataFilter(cachDataFilterBubbleChart);
-         setHasSetSwotFilter(true);
-      }
-   }, [cachDataFilterBubbleChart]);
-
-   useEffect(() => {
-      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
-         if (!isEmptyObject(swotDataFilter)) {
-            setCookie(null, 'indicatorBubbleChartFilter', JSON.stringify(swotDataFilter), {
-               maxAge: 604800,
-               path: '/',
-            });
-            //  handleFilterCompetitiveLandscape();
-         }
-      }, 700);
-      debouncedHandleWhenChangeDataFilter();
-
-      return () => debouncedHandleWhenChangeDataFilter.cancel();
-   }, [swotDataFilter]);
-
-   useEffect(() => {
       setLoadingTable(false);
    }, [getDataForTable]);
 
-   useEffect(() => {
-      setLoadingSwot(false);
-   }, [competitiveLandscapeData]);
-
-   const [bubbleCountryInitFilter, setBubbleCountryInitFilter] = useState(initDataFilter.countries);
-
-   const [bubbleClassInitFilter, setBubbleClassInitFilter] = useState(initDataFilter.classes);
-
-   const [bubbleCategoryInitFilter, setBubbleCategoryInitFilter] = useState(
-      initDataFilter.categories
-   );
-
-   const [bubbleSerieInitFilter, setBubbleSerieInitFilter] = useState(initDataFilter.series);
-
-   useEffect(() => {
-      const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
-         if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
-            setCookie(null, 'indicatorTableFilter', JSON.stringify(dataFilter), {
-               maxAge: 604800,
-               path: '/',
-            });
-            handleFilterIndicator();
-         }
-      }, 500);
-      debouncedHandleWhenChangeDataFilter();
-
-      return () => debouncedHandleWhenChangeDataFilter.cancel();
-   }, [dataFilter]);
-
-   useEffect(() => {
-      if (swotDataFilter.regions != null) setRegionError({ error: false });
-   }, [swotDataFilter]);
-
    const handleChangeDataFilter = (option, field) => {
-      console.log('option la: ', option);
-
       const newSelectedFilter =
-         field == 'regions'
+         field === 'region' || field === 'leadTime'
             ? { ...selectedFilter, [field]: option.value }
             : { ...selectedFilter, [field]: option?.map(({ value }) => value) };
       dispatch(indicatorV2Store.actions.setChartSelectedFilters(newSelectedFilter));
+      dispatch(commonStore.actions.setTableState({ pageNo: 1 }));
       dispatch(indicatorV2Store.sagaGetList());
-
-      /*setDataFilter((prev) =>
-         produce(prev, (draft) => {
-            if (_.includes(['leadTime', 'marginPercentage'], field)) {
-               draft[field] = option.value;
-            } else {
-               draft[field] = option.map(({ value }) => value);
-               console.log('aaaaaaaaaaaaa');
-            }
-         })
-      );*/
    };
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
-      dispatch(indicatorV2Store.sagaGetList());
+      //prefetch table when page change
+      dispatch(indicatorV2Store.fetchTable());
    };
 
    const handleChangePerPage = (perPage: number) => {
       dispatch(commonStore.actions.setTableState({ perPage }));
-      handleChangePage(1);
-   };
-
-   const handleFilterIndicator = () => {
-      setLoadingTable(true);
-      dispatch(indicatorStore.actions.setDefaultValueFilterIndicator(dataFilter));
       handleChangePage(1);
    };
 
@@ -333,7 +234,7 @@ export default function IndicatorsV2() {
             setLoading(false);
             dispatch(commonStore.actions.setSuccessMessage('Import succesfully'));
 
-            handleFilterIndicator();
+            //handleFilterIndicator();
             //  handleFilterCompetitiveLandscape();
          })
          .catch((error) => {
@@ -351,15 +252,13 @@ export default function IndicatorsV2() {
          .then(() => {
             setLoading(false);
             dispatch(commonStore.actions.setSuccessMessage('Upload successfully'));
-            handleFilterIndicator();
+            //   handleFilterIndicator();
          })
          .catch((error) => {
             setLoading(false);
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
-
-   const currentYear = new Date().getFullYear();
 
    const columns = [
       {
@@ -368,7 +267,7 @@ export default function IndicatorsV2() {
          minWidth: 60,
          headerName: t('table.region'),
          renderCell(params) {
-            return <span>{params.row.country.region.regionName}</span>;
+            return <span>{params.row.region}</span>;
          },
       },
       {
@@ -377,7 +276,7 @@ export default function IndicatorsV2() {
          minWidth: 60,
          headerName: t('table.country'),
          renderCell(params) {
-            return <span>{params.row.country?.countryName}</span>;
+            return <span>{params.row.country}</span>;
          },
       },
       {
@@ -386,7 +285,7 @@ export default function IndicatorsV2() {
          minWidth: 60,
          headerName: t('table.class'),
          renderCell(params) {
-            return <span>{params.row.clazz?.clazzName}</span>;
+            return <span>{params.row.class}</span>;
          },
       },
       {
@@ -401,7 +300,7 @@ export default function IndicatorsV2() {
          minWidth: 60,
          headerName: t('table.group'),
          renderCell(params) {
-            return <span>{params.row.color?.groupName}</span>;
+            return <span>{params.row.group}</span>;
          },
       },
 
@@ -412,7 +311,7 @@ export default function IndicatorsV2() {
          headerName: t('table.HYGAverageStreetPrice'),
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params.row.dealerStreetPricing)}</span>;
+            return <span>{formatNumber(params.row.avgStreetPrice)}</span>;
          },
       },
       {
@@ -422,7 +321,7 @@ export default function IndicatorsV2() {
          headerName: `${t('table.priceForPlayer')}`,
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumber(params.row.dealerHandlingCost)}</span>;
+            return <span>{formatNumber(params.row.avgPrice)}</span>;
          },
       },
       {
@@ -432,22 +331,14 @@ export default function IndicatorsV2() {
          headerName: `${t('table.playerHYGVariance')} `,
          ...formatNumbericColumn,
          renderCell(params) {
-            return <span>{formatNumberPercentage(params.row.variancePercentage * 100)}</span>;
+            return (
+               <span style={{ fontStyle: 'bold' }}>
+                  {formatNumberPercentage(params.row.avgVariancePercentage * 100)}
+               </span>
+            );
          },
       },
    ];
-
-   const handleClearAllFilterTable = () => {
-      setDataFilter(defaultValueFilterIndicator);
-   };
-
-   const handleClearAllFilterBubbleChart = () => {
-      setSwotDataFilter(defaultDataFilterBubbleChart);
-      setCompetitiveLandscapeData({
-         datasets: [],
-         clearFilter: true,
-      });
-   };
 
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
@@ -465,9 +356,13 @@ export default function IndicatorsV2() {
    };
 
    const handleOnSliderChange = (option, value) => {
-      setSliderLeadTime(value);
+      startTransition(() => {
+         setSliderLeadTime(value);
+      });
    };
+
    const options = {
+      responsive: true,
       scales: {
          y: {
             beginAtZero: true,
@@ -536,7 +431,7 @@ export default function IndicatorsV2() {
          },
          annotation: {
             annotations: {
-               trendline: {
+               trendline: trendline && {
                   yMax: trendline ? sliderLeadTime[1] * trendline.m + trendline.b : 0,
                   yMin: trendline ? sliderLeadTime[0] * trendline.m + trendline.b : 0,
                   xMin: sliderLeadTime[0] ?? 0,
@@ -546,7 +441,7 @@ export default function IndicatorsV2() {
                   borderWidth: 1,
                   BorderStyle: 'dashed',
                },
-               modeline: {
+               modeline: modeline && {
                   yMax: sliderPrice[1],
                   yMin: sliderPrice[0],
                   xMin: modeline,
@@ -562,26 +457,6 @@ export default function IndicatorsV2() {
    };
    return (
       <>
-         <div
-         // style={{
-         //    height: '100%',
-         //    width: '100%',
-         //    // backgroundColor: 'rgba(0,0,0, 0.3)',
-         //    position: 'absolute',
-         //    display: 'flex',
-         //    justifyContent: 'center',
-         //    alignItems: 'center',
-         //    zIndex: 1000,
-         // }}
-         >
-            {/* <CircularProgress
-               color="info"
-               size={60}
-               sx={{
-                  position: 'relative',
-               }}
-            /> */}
-         </div>
          <AppLayout entity="indicator">
             <Grid container spacing={1} sx={{ marginBottom: 2 }}>
                <Grid item xs={4} sx={{ marginLeft: 0 }}>
@@ -591,7 +466,7 @@ export default function IndicatorsV2() {
                            {t('table.HYGAverageStreetPrice')} ('000 USD)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {500}
+                           {averageStats.avgStreetPrice.toFixed(2)}
                         </Typography>
                      </div>
                   </Paper>
@@ -603,7 +478,7 @@ export default function IndicatorsV2() {
                            {t('table.avgPriceForPlayer')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {500}
+                           {averageStats.avgPrice.toFixed(2)}
                         </Typography>
                      </div>
                   </Paper>
@@ -615,7 +490,7 @@ export default function IndicatorsV2() {
                            {t('table.playerHYGVariance')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {formatNumber(500)}
+                           {(averageStats.avgVariancePercentage * 100).toFixed(2)}
                         </Typography>
                      </div>
                   </Paper>
@@ -625,16 +500,15 @@ export default function IndicatorsV2() {
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     value={selectedFilter?.regions || []}
+                     value={selectedFilter?.region || []}
                      options={optionsFilter.regions}
                      label={t('filters.region')}
                      sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'regions')}
+                     onChange={(e, option) => handleChangeDataFilter(option, 'region')}
                      limitTags={1}
                      disableListWrap
                      primaryKeyOption="value"
-                     disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
+                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
                      getOptionLabel={(option) => `${option.value}`}
                      required
                   />
@@ -653,7 +527,7 @@ export default function IndicatorsV2() {
                      primaryKeyOption="value"
                      multiple
                      disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
+                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
@@ -672,26 +546,26 @@ export default function IndicatorsV2() {
                      primaryKeyOption="value"
                      multiple
                      disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
+                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
 
                <Grid item xs={2}>
                   <AppAutocomplete
-                     value={_.map(selectedFilter.series, (item) => {
+                     value={_.map(selectedFilter.metaSeries, (item) => {
                         return { value: item };
                      })}
                      options={optionsFilter.series}
                      label={t('filters.metaSeries')}
                      sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'series')}
+                     onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
                      limitTags={1}
                      disableListWrap
                      primaryKeyOption="value"
                      multiple
                      disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
+                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
@@ -710,7 +584,7 @@ export default function IndicatorsV2() {
                      primaryKeyOption="value"
                      multiple
                      disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
+                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
@@ -729,49 +603,24 @@ export default function IndicatorsV2() {
                      primaryKeyOption="value"
                      multiple
                      disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
+                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
 
                <Grid item xs={2}>
                   <AppAutocomplete
-                     value={
-                        dataFilter.leadTimes !== undefined
-                           ? {
-                                value: `${dataFilter.leadTimes}`,
-                             }
-                           : { value: '' }
-                     }
-                     options={optionsFilter.leadTimes}
+                     value={selectedFilter?.leadTime || ''}
+                     options={optionsFilter?.leadTimes}
                      label={t('filters.leadTime')}
                      primaryKeyOption="value"
-                     onChange={
-                        (e, option) =>
-                           handleChangeDataFilter(_.isNil(option) ? '' : option, 'leadTime')
-                        // handleChangeDataFilter(option, 'leadTime')
-                     }
-                     disableClearable={false}
-                     renderOption={(prop, option) => `${option.value}`}
+                     onChange={(e, option) => handleChangeDataFilter(option, 'leadTime')}
+                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-
                <Grid item xs={1}>
-                  <Button
-                     variant="contained"
-                     onClick={handleFilterIndicator}
-                     sx={{ width: '100%', height: 24 }}
-                  >
-                     {t('button.filter')}
-                  </Button>
-               </Grid>
-               <Grid item xs={1}>
-                  <Button
-                     variant="contained"
-                     onClick={handleClearAllFilterTable}
-                     sx={{ width: '100%', height: 24 }}
-                  >
+                  <Button variant="contained" onClick={() => {}} sx={{ width: '100%', height: 24 }}>
                      {t('button.clear')}
                   </Button>
                </Grid>
@@ -805,6 +654,7 @@ export default function IndicatorsV2() {
                   flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
+                  marginTop: '10px',
                }}
             >
                <div
@@ -820,7 +670,9 @@ export default function IndicatorsV2() {
                         max={maxY}
                         value={sliderPrice}
                         onChange={(option, value) => {
-                           setSliderPrice(value);
+                           startTransition(() => {
+                              setSliderPrice(value);
+                           });
                         }}
                         orientation="vertical"
                      />
@@ -847,10 +699,9 @@ export default function IndicatorsV2() {
                   >
                      <AppDataTable
                         columnHeaderHeight={90}
-                        dataFilter={dataFilter}
                         currency="USD"
                         entity="competitor-pricing"
-                        rows={getDataForTable}
+                        rows={dataTable}
                         columns={columns}
                         getRowId={(params) => params.id}
                      />

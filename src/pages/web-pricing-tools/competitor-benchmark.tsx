@@ -105,11 +105,6 @@ export default function Indicators() {
       clearFilter: false,
    });
 
-   const [forecastLandscapeData, setForecastLandscapeData] = useState({
-      datasets: [],
-      clearFilter: false,
-   });
-
    const cachDataFilterBubbleChart = useSelector(indicatorStore.selectDataFilterBubbleChart);
    const [swotDataFilter, setSwotDataFilter] = useState(cachDataFilterBubbleChart);
 
