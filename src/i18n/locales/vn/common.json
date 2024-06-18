@@ -213,7 +213,9 @@
       "marketShare": "Thị phần",
       "updateDate": "Thời gian cập nhập",
       "model": "Mẫu",
-      "competitor": "Đối thủ cạnh tranh"
+      "competitor": "Đối thủ cạnh tranh",
+      "playerPriceVsLeadtimeOfCompetitorMarketshare": "Giá so với thời gian của đối thủ (Thị phần)",
+      "PlayerPriceVsLeadtimeTrend": "Giá so với thời gian (Xu hướng)"
    },
 
    "quotationMargin": {

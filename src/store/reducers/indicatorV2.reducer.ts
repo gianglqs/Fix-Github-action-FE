@@ -53,7 +53,6 @@ const indicatorSlice = createSlice({
    initialState,
    reducers: {
       setChartFilterOptions(state, { payload }: PayloadAction<FilterOptions>) {
-         console.log(payload);
          state.chartFilterOptions = payload;
       },
       setChartSelectedFilters(state, { payload }: PayloadAction<ChartSelectedFilters>) {
@@ -81,7 +80,6 @@ const indicatorSlice = createSlice({
          state.lastUpdatedBy = payload;
       },
       setLoadingPage(state, { payload }: PayloadAction<boolean>) {
-         console.log("loadingg page",payload.valueOf())
          state.loadingPage = payload;
       },
    },

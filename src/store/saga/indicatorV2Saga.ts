@@ -12,13 +12,17 @@ import {
 } from '@/utils/mapping';
 function* fetchTableData() {
    try {
+
       const { tableState } = yield* all({
          tableState: select(commonStore.selectTableState),
       });
       const { chartSelectedFilters } = yield* all({
          chartSelectedFilters: select(indicatorV2Store.selectChartSelectedFilters),
       });
+      if (typeof window !== "undefined") {
+      localStorage.setItem('competitorFilters',JSON.stringify(chartSelectedFilters));}
 
+     // console.log('localstorage la: '+ localStorage.getItem('competitorFilters'));
       // get data for table
       const dataCompetitorsRaw = yield* call(
          indicatorV2Api.getCompetitorData,

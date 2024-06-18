@@ -26,7 +26,7 @@ import {
 } from 'chart.js';
 import Slider from '@mui/material/Slider';
 import ChartAnnotation from 'chartjs-plugin-annotation';
-import _ from 'lodash';
+import _, { filter } from 'lodash';
 import { useEffect, useState } from 'react';
 import {  parseCookies } from 'nookies';
 import { useDropzone } from 'react-dropzone';
@@ -221,7 +221,9 @@ export default function IndicatorsV2() {
       dispatch(commonStore.actions.setTableState({ pageNo: 1 }));
       dispatch(indicatorV2Store.sagaGetList());
    }
-
+   if (typeof window !== "undefined") {
+      console.log(localStorage.getItem("competitorFilters"));
+    }
    const handleChangeDataFilter = (option, field) => {
       const newSelectedFilter =
          field === 'region' || field === 'leadTime'
@@ -585,7 +587,7 @@ export default function IndicatorsV2() {
                            {t('table.playerHYGVariance')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {(averageStats.avgVariancePercentage * 100).toFixed(2)}
+                           {(formatNumberPercentage(averageStats.avgVariancePercentage * 100))}
                         </Typography>
                      </div>
                   </Paper>
@@ -595,7 +597,7 @@ export default function IndicatorsV2() {
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     value={selectedFilter?.region || []}
+                     value={selectedFilter?.region ||''}
                      options={optionsFilter.regions}
                      label={t('filters.region')}
                      sx={{ height: 25, zIndex: 10 }}
@@ -603,7 +605,7 @@ export default function IndicatorsV2() {
                      limitTags={1}
                      disableListWrap
                      primaryKeyOption="value"
-                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
+                     renderOption={(prop, { value }) => `${value || 'Others'}`}
                      getOptionLabel={(option) => `${option.value}`}
                      required
                   />
@@ -622,7 +624,7 @@ export default function IndicatorsV2() {
                      primaryKeyOption="value"
                      multiple
                      disableCloseOnSelect
-                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
+                     renderOption={(prop, { value }) => `${value || 'Others'}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
@@ -641,7 +643,7 @@ export default function IndicatorsV2() {
                      primaryKeyOption="value"
                      multiple
                      disableCloseOnSelect
-                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
+                     renderOption={(prop, { value }) => `${value || 'Others'}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
@@ -660,7 +662,7 @@ export default function IndicatorsV2() {
                      primaryKeyOption="value"
                      multiple
                      disableCloseOnSelect
-                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
+                     renderOption={(prop, { value }) => `${value || 'Others'}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
@@ -679,7 +681,7 @@ export default function IndicatorsV2() {
                      primaryKeyOption="value"
                      multiple
                      disableCloseOnSelect
-                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
+                     renderOption={(prop, { value }) => `${value || 'Others'}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
@@ -698,7 +700,7 @@ export default function IndicatorsV2() {
                      primaryKeyOption="value"
                      multiple
                      disableCloseOnSelect
-                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
+                     renderOption={(prop, { value }) => `${value || 'Others'}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
@@ -710,7 +712,7 @@ export default function IndicatorsV2() {
                      label={t('filters.leadTime')}
                      primaryKeyOption="value"
                      onChange={(e, option) => handleChangeDataFilter(option, 'leadTime')}
-                     renderOption={(prop, { value }) => `${value || 'Unknown'}`}
+                     renderOption={(prop, { value }) => `${value || 'Others'}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
