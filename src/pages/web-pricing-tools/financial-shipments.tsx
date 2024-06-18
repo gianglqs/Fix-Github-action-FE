@@ -851,7 +851,7 @@ export default function Shipment() {
                      entity={'shipment'}
                      rows={listShipment}
                      columns={columns}
-                     getRowId={(params) => params.id.orderNo + params.id.date + params.id.dealer}
+                     getRowId={(params) => params.id.orderNo + params.id.date + params.id.dealer.name}
                      onCellClick={handleOnCellClick}
                   />
                </Grid>
