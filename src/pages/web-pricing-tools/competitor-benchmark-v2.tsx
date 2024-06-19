@@ -53,7 +53,7 @@ const getOrCreateLegendList = (chart, id) => {
       listContainer.style.flexDirection = 'column';
       listContainer.style.overflowY = 'scroll';
       listContainer.style.margin = '0';
-      listContainer.style.width = '150px';
+      listContainer.style.width = '200px';
       listContainer.style.padding = '0';
       listContainer.style.height = '500px';
       listContainer.style.gap = '5px';
@@ -85,7 +85,6 @@ const htmlLegendPlugin = {
       while (ul.firstChild) {
          ul.firstChild.remove();
       }
-
       // Reuse the built-in legendItems generator
       const items = chart.options.plugins.legend.labels.generateLabels(chart);
 
@@ -497,7 +496,7 @@ export default function IndicatorsV2() {
          },
          title: {
             display: true,
-            text: t('competitors.playerPriceVsLeadtimeOfCompetitorMarketshare'),
+            text: t('competitors.playerPriceVsLeadtimeTrend'),
             position: 'top' as const,
             align: 'start',
             font: {
@@ -538,7 +537,7 @@ export default function IndicatorsV2() {
                   borderWidth: 1,
                   BorderStyle: 'dashed',
                },
-               modeline: modeline && {
+               modeline: modeline !== null && {
                   yMax: sliderPriceScatter[1],
                   yMin: sliderPriceScatter[0],
                   xMin: modeline,
@@ -774,7 +773,10 @@ export default function IndicatorsV2() {
                         onChange={handleOnSliderChange}
                      />
                   </div>
-                  <div id="legend-container" style={{width:'150px'}}></div>
+                  <div>
+                  <b style={{fontSize:'14px', fontStyle:'bold', marginBottom:'10px',display:'block'}}>Group (Brand) (groups)</b>
+                  <div id="legend-container" style={{width:'200px'}}></div>
+                  </div>
                </div>}
             </div>
 
@@ -809,7 +811,10 @@ export default function IndicatorsV2() {
                         }}
                      />
                   </div>
-                  <div id="scater-container" style={{width:'150px'}}></div>
+                  <div>
+                  <b style={{fontSize:'14px', fontStyle:'bold', marginBottom:'10px',display:'block'}}>Group (Brand) (groups)</b>
+                  <div id="scater-container" style={{width:'200px'}}></div>
+                  </div>
                </div>
             </div>
             </div>

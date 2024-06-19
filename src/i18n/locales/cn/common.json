@@ -215,7 +215,7 @@
       "competitor": "竞争者",
       "group": "团体",
       "playerPriceVsLeadtimeOfCompetitorMarketshare": "球员价格与竞争对手的交货时间（市场份额）之间的关系",
-      "PlayerPriceVsLeadtimeTrend": "球员价格与交货时间（趋势)"
+      "playerPriceVsLeadtimeTrend": "球员价格与交货时间（趋势)"
    },
 
    "quotationMargin": {

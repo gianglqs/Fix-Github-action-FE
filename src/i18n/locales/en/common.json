@@ -219,7 +219,7 @@
       "model": "Model",
       "competitor": "Competitor",
       "playerPriceVsLeadtimeOfCompetitorMarketshare": "Player Price vs Lead time of Competitor (Market Share)",
-      "PlayerPriceVsLeadtimeTrend": "Player Price vs Lead time (Trend)"
+      "playerPriceVsLeadtimeTrend": "Player Price vs Lead time (Trend)"
    },
 
    "quotationMargin": {
