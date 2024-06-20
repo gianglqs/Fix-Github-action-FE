@@ -9,7 +9,6 @@ import { ChartData, ChartSelectedFilters, CompetitorTableData, AVGStats } from '
 import { InitReducer } from '@/types';
 //others
 import { defaultValueChartSelectedFilterIndicator } from '@/utils/defaultValues';
-import { log } from 'console';
 type IndicatorInitState = {
    // data to fill select options of chart
    chartFilterOptions: FilterOptions;
@@ -45,7 +44,7 @@ export const initialState: IndicatorInitState = {
    serverTimeZone: '',
    lastUpdatedTime: '',
    lastUpdatedBy: '',
-   loadingPage: false,
+   loadingPage: true,
 };
 
 const indicatorSlice = createSlice({
@@ -94,6 +93,7 @@ export const sagaGetList = createAction(`${name}/GET_LIST`);
 
 export const fetchTable = createAction(`${name}/FETCH_TABLE`);
 
+export const fetchInit = createAction(`${name}/FETCH_INIT_FILTER`);
 // Selectors
 export const selectState = (state: RootReducerType) => state[name];
 

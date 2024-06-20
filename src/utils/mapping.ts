@@ -3,6 +3,7 @@ import { FilterOptions } from '@/types';
 import { ChartData, CompetitorTableData, AVGStats, Competitor } from '@/types/competitor';
 import { hexToRgb } from '@mui/material';
 import { borderColor } from '@mui/system';
+import { log } from 'console';
 import { v4 as uuidv4 } from 'uuid';
 export const mapCompetitorFiltersToOptionValues = (filters): FilterOptions => {
    Object.keys(filters).forEach((field) => {
@@ -34,7 +35,9 @@ export const mappingCompetitorsToChartData = ({ chartData, trendline, modeline }
       const existedGroup = dataset.find(
          (chartData) => chartData.label == competitor?.color?.groupName || ''
       );
+      console.log('market share la: ' + competitor?.marketShare);
       const data = {
+         marketShare: competitor?.marketShare * 100,
          x: competitor?.competitorLeadTime || 0.0,
          y: competitor?.competitorPricing || 0.0,
          r: Math.sqrt(competitor?.marketShare * 1000) || 0.0,

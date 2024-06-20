@@ -1,16 +1,12 @@
 import { useCallback, useMemo } from 'react';
 import { Button, CircularProgress, Hidden, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-   AppLayout,
-   AppAutocomplete,
-   DataTablePagination,
-} from '@/components';
+import { AppLayout, AppAutocomplete, DataTablePagination } from '@/components';
 import Paper from '@mui/material/Paper';
 import { paperStyle } from '@/theme/paperStyle';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { formatNumbericColumn } from '@/utils/columnProperties';
-import {  formatNumber, formatNumberPercentage } from '@/utils/formatCell';
+import { formatNumber, formatNumberPercentage } from '@/utils/formatCell';
 import Grid from '@mui/material/Grid';
 import indicatorApi from '@/api/indicators.api';
 import AppDataTable from '@/components/DataTable/AppDataGridPro';
@@ -28,20 +24,21 @@ import Slider from '@mui/material/Slider';
 import ChartAnnotation from 'chartjs-plugin-annotation';
 import _, { filter } from 'lodash';
 import { useEffect, useState } from 'react';
-import {  parseCookies } from 'nookies';
+import { parseCookies } from 'nookies';
 import { useDropzone } from 'react-dropzone';
-import { indicatorStore, commonStore } from '@/store/reducers';
+import { commonStore } from '@/store/reducers';
 import { indicatorV2Store } from '@/store/reducers';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import AppBackDrop from '@/components/App/BackDrop';
 import { useTranslation } from 'react-i18next';
 import { Bubble, Scatter } from 'react-chartjs-2';
-//hooks
-import { useTransition } from 'react';
 //others
 import { defaultValueChartSelectedFilterIndicator } from '@/utils/defaultValues';
-
+//api
+import indicatorV2Api from '@/api/indicatorV2.api';
+//mapping
+import { mapCompetitorFiltersToOptionValues } from '@/utils/mapping';
 const getOrCreateLegendList = (chart, id) => {
    const legendContainer = document.getElementById(id);
    if (!legendContainer) return null;
@@ -62,18 +59,51 @@ const getOrCreateLegendList = (chart, id) => {
    return listContainer;
 };
 
-const LoadingCurtain = () =>{
-   return <div
-   style ={{position:'absolute',
-      inset:0,   
-      display: 'flex',
-      justifyContent: 'center',
-      backgroundColor:'white',
-      alignItems: 'center'}}
-   >
-      <CircularProgress sx={{backgroundColor:'white',inset:0,transform:'translate(-50%,-50%)'}}/>
-   </div>
-}
+const LoadingCurtain = ({ isLoading }) => {
+   return (
+      <>
+         {isLoading && (
+            <div
+               style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+               }}
+            >
+               <CircularProgress
+                  sx={{ backgroundColor: 'white', inset: 0, transform: 'translate(-50%,-50%)' }}
+               />
+            </div>
+         )}
+      </>
+   );
+};
+const LoadingOverlay = () => {
+   useEffect(() => {
+      document.body.style.overflow = 'hidden';
+      return () => {
+         document.body.style.overflow = 'scroll';
+      };
+   }, []);
+   return (
+      <div
+         style={{
+            position: 'fixed',
+            zIndex: 1000,
+            inset: 0,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0,0,0,0.1)',
+         }}
+      >
+         <CircularProgress sx={{ inset: 0, transform: 'translate(-50%,-50%)' }} />
+      </div>
+   );
+};
 const htmlLegendPlugin = {
    id: 'htmlLegend',
    afterUpdate(chart, args, options) {
@@ -154,41 +184,27 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
 
-const defaultDataFilterBubbleChart = {
-   regions: '',
-   countries: [],
-   classes: [],
-   categories: [],
-   series: [],
-};
-
 export default function IndicatorsV2() {
    const { t } = useTranslation();
-   const [isPending, startTransition] = useTransition();
    const dispatch = useDispatch();
    let cookies = parseCookies();
    let userRoleCookies = cookies['role'];
    const [userRole, setUserRole] = useState('');
-
    useEffect(() => {
       setUserRole(userRoleCookies);
    });
-   const [loading, setLoading] = useState(false);
-
-   const [loadingTable, setLoadingTable] = useState(false);
-   const [loadingSwot, setLoadingSwot] = useState(false);
    const tableState = useSelector(commonStore.selectTableState);
-
-   const getDataForTable = useSelector(indicatorStore.selectIndicatorList);
-   const serverTimeZone = useSelector(indicatorStore.selectServerTimeZone);
-   const serverLastUpdatedTime = useSelector(indicatorStore.selectLastUpdatedTime);
-   const serverLastUpdatedBy = useSelector(indicatorStore.selectLastUpdatedBy);
    // v2
    const selectedFilter = useSelector(indicatorV2Store.selectChartSelectedFilters);
+   const serverTimeZone = useSelector(indicatorV2Store.selectServerTimeZone);
+   const serverLastUpdatedTime = useSelector(indicatorV2Store.selectLastUpdatedTime);
+   const serverLastUpdatedBy = useSelector(indicatorV2Store.selectLastUpdatedBy);
    const optionsFilter = useSelector(indicatorV2Store.selectChartFilterOptions);
    const averageStats = useSelector(indicatorV2Store.selectAVGState);
    const dataTable = useSelector(indicatorV2Store.selectTableData);
-   const loadingPage = useSelector(indicatorStore.selectLoadingPage)
+   const loadingPage = useSelector(indicatorV2Store.selectLoadingPage);
+   const [isUploading, setIsUploading] = useState(false);
+   const [regionError, setRegionError] = useState({ error: false });
    const { dataset, trendline, modeline, maxX, maxY } = useSelector(
       indicatorV2Store.selectChartData
    );
@@ -198,11 +214,25 @@ export default function IndicatorsV2() {
    const [sliderPrice, setSliderPrice] = useState([0, 0]);
 
    //setting chart Data
-      const [sliderLeadTimeScatter, setSliderLeadTimeScatter] = useState([0, 0]);
-      const [sliderPriceScatter, setSliderPriceScatter] = useState([0, 0]);
+   const [sliderLeadTimeScatter, setSliderLeadTimeScatter] = useState([0, 0]);
+   const [sliderPriceScatter, setSliderPriceScatter] = useState([0, 0]);
 
-      
    useEffect(() => {
+      indicatorV2Api.getChartFilters(defaultValueChartSelectedFilterIndicator).then((rs) => {
+         dispatch(
+            indicatorV2Store.actions.setChartFilterOptions(
+               mapCompetitorFiltersToOptionValues(rs?.data)
+            )
+         );
+      });
+      let cachedFilters = null;
+      try {
+         cachedFilters = JSON.parse(localStorage.getItem('competitorFilters'));
+      } catch (error) {}
+      if (cachedFilters) {
+         dispatch(indicatorV2Store.fetchInit(cachedFilters));
+         dispatch(indicatorV2Store.actions.setChartSelectedFilters(cachedFilters));
+      }
       dispatch(indicatorV2Store.actions.setLoadingPage(true));
       dispatch(indicatorV2Store.sagaGetList());
    }, []);
@@ -210,19 +240,32 @@ export default function IndicatorsV2() {
       setSliderLeadTime([0, maxX]);
       setSliderPrice([0, maxY]);
       setSliderLeadTimeScatter([0, maxX]);
-      setSliderPriceScatter([0,maxY]);
+      setSliderPriceScatter([0, maxY]);
    }, [maxX, maxY]);
 
-
-   const handleFetchFilter = (filters) =>{
-      dispatch(indicatorV2Store.actions.setLoadingPage(true))
+   const handleFetchFilter = (filters) => {
+      dispatch(indicatorV2Store.actions.setLoadingPage(true));
       dispatch(indicatorV2Store.actions.setChartSelectedFilters(filters));
-      dispatch(commonStore.actions.setTableState({ pageNo: 1 }));
-      dispatch(indicatorV2Store.sagaGetList());
-   }
-   if (typeof window !== "undefined") {
-      console.log(localStorage.getItem("competitorFilters"));
-    }
+      if (
+         !filters.region &&
+         (filters.classes.length > 0 ||
+            filters.metaSeries.length > 0 ||
+            filters.models.length > 0 ||
+            filters.groups.length > 0 ||
+            filters.leadTime)
+      ) {
+         setRegionError({ error: true });
+         dispatch(commonStore.actions.setErrorMessage(t('commonErrorMessage.selectRegion')));
+         dispatch(indicatorV2Store.actions.setLoadingPage(false));
+      } else {
+         try {
+            localStorage.setItem('competitorFilters', JSON.stringify(filters));
+         } catch (error) {}
+         setRegionError({ error: false });
+         dispatch(commonStore.actions.setTableState({ pageNo: 1 }));
+         dispatch(indicatorV2Store.sagaGetList());
+      }
+   };
    const handleChangeDataFilter = (option, field) => {
       const newSelectedFilter =
          field === 'region' || field === 'leadTime'
@@ -231,9 +274,9 @@ export default function IndicatorsV2() {
       handleFetchFilter(newSelectedFilter);
    };
 
-   const handleClearFilter = ()=>{
-      handleFetchFilter(defaultValueChartSelectedFilterIndicator)
-   }
+   const handleClearFilter = () => {
+      handleFetchFilter(defaultValueChartSelectedFilterIndicator);
+   };
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
@@ -245,26 +288,20 @@ export default function IndicatorsV2() {
       dispatch(commonStore.actions.setTableState({ perPage }));
       handleChangePage(1);
    };
-   const handleOnSliderChange = (option, value) => {
-         setSliderLeadTime(value);
-   };
 
    const handleImportFile = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
-      setLoading(true);
+      setIsUploading(true);
 
       indicatorApi
          .importIndicatorFile(formData)
          .then(() => {
-            setLoading(false);
+            setIsUploading(false);
             dispatch(commonStore.actions.setSuccessMessage('Import succesfully'));
-
-            //handleFilterIndicator();
-            //  handleFilterCompetitiveLandscape();
          })
          .catch((error) => {
-            setLoading(false);
+            setIsUploading(false);
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
@@ -272,16 +309,16 @@ export default function IndicatorsV2() {
    const handleUploadForecastFile = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
-      setLoading(true);
+      setIsUploading(true);
       indicatorApi
          .importForecastFile(formData)
          .then(() => {
-            setLoading(false);
+            setIsUploading(false);
             dispatch(commonStore.actions.setSuccessMessage('Upload successfully'));
             //   handleFilterIndicator();
          })
          .catch((error) => {
-            setLoading(false);
+            setIsUploading(false);
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
@@ -366,11 +403,11 @@ export default function IndicatorsV2() {
       },
    ];
 
-   const clientLatestUpdatedTime = useMemo(()=>{
-      return serverLastUpdatedTime && serverTimeZone ? convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone) : null;
-   },[serverLastUpdatedTime,serverTimeZone])
-
-
+   const clientLatestUpdatedTime = useMemo(() => {
+      return serverLastUpdatedTime && serverTimeZone
+         ? convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
+         : null;
+   }, [serverLastUpdatedTime, serverTimeZone]);
 
    const options = {
       responsive: true,
@@ -403,7 +440,7 @@ export default function IndicatorsV2() {
       maintainAspectRatio: false,
       plugins: {
          legend: {
-            display: false
+            display: false,
          },
          htmlLegend: {
             // ID of the container to put the legend in
@@ -433,7 +470,7 @@ export default function IndicatorsV2() {
                      label += ': ';
                   }
                   label += `($ ${context.parsed.y.toLocaleString()}, ${context.parsed.x.toLocaleString()} weeks, ${
-                     context.raw.r
+                     context.raw.marketShare
                   }%)`;
 
                   return label;
@@ -456,7 +493,7 @@ export default function IndicatorsV2() {
          },
       },
    };
-   
+
    const scatterOptions = {
       responsive: true,
       scales: {
@@ -488,7 +525,7 @@ export default function IndicatorsV2() {
       maintainAspectRatio: false,
       plugins: {
          legend: {
-            display: false
+            display: false,
          },
          htmlLegend: {
             // ID of the container to put the legend in
@@ -518,7 +555,7 @@ export default function IndicatorsV2() {
                      label += ': ';
                   }
                   label += `($ ${context.parsed.y.toLocaleString()}, ${context.parsed.x.toLocaleString()} weeks, ${
-                     context.raw.r
+                     context.raw.marketShare
                   }%)`;
 
                   return label;
@@ -552,17 +589,18 @@ export default function IndicatorsV2() {
       },
    };
    return (
-      <>
+      <div>
          <AppLayout entity="indicator">
-            <Grid container spacing={1} sx={{ marginBottom: 2 }}>
-               <Grid item xs={4} sx={{ marginLeft: 0 }}>
+            {isUploading && <LoadingOverlay />}
+            <Grid container spacing={1} sx={{ marginBottom: 2, position: 'relative' }}>
+               <Grid item xs={4} sx={{ marginLeft: 0, position: 'relative' }}>
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.HYGAverageStreetPrice')} ('000 USD)
+                           {t('table.HYGAverageStreetPrice')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {averageStats.avgStreetPrice.toFixed(2)}
+                           $ {formatNumber(averageStats.avgStreetPrice)}
                         </Typography>
                      </div>
                   </Paper>
@@ -574,7 +612,7 @@ export default function IndicatorsV2() {
                            {t('table.avgPriceForPlayer')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {averageStats.avgPrice.toFixed(2)}
+                           $ {formatNumber(averageStats.avgPrice)}
                         </Typography>
                      </div>
                   </Paper>
@@ -586,7 +624,7 @@ export default function IndicatorsV2() {
                            {t('table.playerHYGVariance')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {(formatNumberPercentage(averageStats.avgVariancePercentage * 100))}
+                           {formatNumberPercentage(averageStats.avgVariancePercentage * 100)}
                         </Typography>
                      </div>
                   </Paper>
@@ -596,7 +634,13 @@ export default function IndicatorsV2() {
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     value={selectedFilter?.region ||''}
+                     value={
+                        selectedFilter?.region != null
+                           ? {
+                                value: selectedFilter?.region,
+                             }
+                           : null
+                     }
                      options={optionsFilter.regions}
                      label={t('filters.region')}
                      sx={{ height: 25, zIndex: 10 }}
@@ -604,8 +648,10 @@ export default function IndicatorsV2() {
                      limitTags={1}
                      disableListWrap
                      primaryKeyOption="value"
+                     helperText="Missing value"
+                     error={regionError.error}
                      renderOption={(prop, { value }) => `${value || 'Others'}`}
-                     getOptionLabel={(option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value || 'Others'}`}
                      required
                   />
                </Grid>
@@ -624,7 +670,7 @@ export default function IndicatorsV2() {
                      multiple
                      disableCloseOnSelect
                      renderOption={(prop, { value }) => `${value || 'Others'}`}
-                     getOptionLabel={(option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value || 'Others'}`}
                   />
                </Grid>
 
@@ -643,7 +689,7 @@ export default function IndicatorsV2() {
                      multiple
                      disableCloseOnSelect
                      renderOption={(prop, { value }) => `${value || 'Others'}`}
-                     getOptionLabel={(option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value || 'Others'}`}
                   />
                </Grid>
 
@@ -662,7 +708,7 @@ export default function IndicatorsV2() {
                      multiple
                      disableCloseOnSelect
                      renderOption={(prop, { value }) => `${value || 'Others'}`}
-                     getOptionLabel={(option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value || 'Others'}`}
                   />
                </Grid>
 
@@ -681,7 +727,7 @@ export default function IndicatorsV2() {
                      multiple
                      disableCloseOnSelect
                      renderOption={(prop, { value }) => `${value || 'Others'}`}
-                     getOptionLabel={(option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value || 'Others'}`}
                   />
                </Grid>
 
@@ -700,7 +746,7 @@ export default function IndicatorsV2() {
                      multiple
                      disableCloseOnSelect
                      renderOption={(prop, { value }) => `${value || 'Others'}`}
-                     getOptionLabel={(option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value || 'Others'}`}
                   />
                </Grid>
 
@@ -712,11 +758,15 @@ export default function IndicatorsV2() {
                      primaryKeyOption="value"
                      onChange={(e, option) => handleChangeDataFilter(option, 'leadTime')}
                      renderOption={(prop, { value }) => `${value || 'Others'}`}
-                     getOptionLabel={(option) => `${option.value}`}
+                     getOptionLabel={(option) => `${option.value || 'Others'}`}
                   />
                </Grid>
                <Grid item xs={1}>
-                  <Button variant="contained" onClick={handleClearFilter} sx={{ width: '100%', height: 24 }}>
+                  <Button
+                     variant="contained"
+                     onClick={handleClearFilter}
+                     sx={{ width: '100%', height: 24 }}
+                  >
                      {t('button.clear')}
                   </Button>
                </Grid>
@@ -740,83 +790,123 @@ export default function IndicatorsV2() {
                   </>
                )}
             </Grid>
-            <div style={{display:'flex',marginTop:50,gap:10}} >
-            <div
-            style={{flex:1,position:'relative'}}
-            >
-               {loadingPage && <LoadingCurtain/>}
-               {loadingPage ? <LoadingCurtain/> :
-                              <div
-                  style={{
-                     display: 'flex',
-                     flexDirection: 'row',
-                     justifyContent: 'center',
-                     alignItems: 'center',
-                  }}
-               >
-                  <div style={{ height: '300px' }}>
-                     <Slider
-                        max={maxY}
-                        value={sliderPrice}
-                        onChange={(option, value) => {
-                              setSliderPrice(value);
+            <div style={{ display: 'flex', marginTop: 50, gap: 10 }}>
+               <div style={{ flex: 1, position: 'relative', minHeight: '500px' }}>
+                  <LoadingCurtain isLoading={loadingPage} />
+                  {!loadingPage && (
+                     <div
+                        style={{
+                           display: 'flex',
+                           flexDirection: 'row',
+                           justifyContent: 'center',
+                           alignItems: 'center',
                         }}
-                        orientation="vertical"
-                     />
-                  </div>
-                  <div  style={{  height: '500px' ,flex:1,display:'flex',flexDirection:'column', justifyContent:'center',alignItems:'center' }}>
-                     <Bubble options={options} data={{ datasets: dataset }} />
-                     <Slider
-                        max={maxX}
-                        style={{ width: '300px', margin: 'auto' }}
-                        value={sliderLeadTime}
-                        onChange={handleOnSliderChange}
-                     />
-                  </div>
-                  <div>
-                  <b style={{fontSize:'14px', fontStyle:'bold', marginBottom:'10px',display:'block'}}>Group (Brand) (groups)</b>
-                  <div id="legend-container" style={{width:'200px'}}></div>
-                  </div>
-               </div>}
-            </div>
-
-            <div   style={{flex:1}}  >
-               <div
-                  style={{
-                     display: 'flex',
-                     flexDirection: 'row',
-                     justifyContent: 'center',
-                     alignItems: 'center',
-                     width:'100%'
-                  }}
-               >
-                  <div style={{ height: '300px' }}>
-                     <Slider
-                        max={maxY}
-                        value={sliderPriceScatter}
-                        onChange={(option, value) => {
-                              setSliderPriceScatter(value);
-                        }}
-                        orientation="vertical"
-                     />
-                  </div>
-                  <div  style={{height: '500px',flex:1 ,display:'flex',flexDirection:'column', justifyContent:'center',alignItems:'center' }}>
-                     <Scatter options={scatterOptions} data={{ datasets: dataset }} />
-                     <Slider
-                        max={maxX}
-                        style={{ width: '300px', margin: 'auto' }}
-                        value={sliderLeadTimeScatter}
-                        onChange={(option, value) => {
-                              setSliderLeadTimeScatter(value);
-                        }}
-                     />
-                  </div>
-                  <div>
-                  <b style={{fontSize:'14px', fontStyle:'bold', marginBottom:'10px',display:'block'}}>Group (Brand) (groups)</b>
-                  <div id="scater-container" style={{width:'200px'}}></div>
-                  </div>
+                     >
+                        <div style={{ height: '300px' }}>
+                           <Slider
+                              max={maxY}
+                              value={sliderPrice}
+                              onChange={(option, value) => {
+                                 setSliderPrice(value);
+                              }}
+                              orientation="vertical"
+                           />
+                        </div>
+                        <div
+                           style={{
+                              height: '500px',
+                              flex: 1,
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                           }}
+                        >
+                           <Bubble options={options} data={{ datasets: dataset || [] }} />
+                           <Slider
+                              max={maxX}
+                              style={{ width: '300px', margin: 'auto' }}
+                              value={sliderLeadTime}
+                              onChange={(option, value) => {
+                                 setSliderLeadTime(value);
+                              }}
+                           />
+                        </div>
+                        <div>
+                           <b
+                              style={{
+                                 fontSize: '14px',
+                                 fontStyle: 'bold',
+                                 marginBottom: '10px',
+                                 display: 'block',
+                              }}
+                           >
+                              Group (Brand) (groups)
+                           </b>
+                           <div id="legend-container" style={{ width: '200px' }}></div>
+                        </div>
+                     </div>
+                  )}
                </div>
-            </div>
+
+               <div style={{ flex: 1, position: 'relative' }}>
+                  <LoadingCurtain isLoading={loadingPage} style={{ height: '500px' }} /> :
+                  {!loadingPage && (
+                     <div
+                        style={{
+                           display: 'flex',
+                           flexDirection: 'row',
+                           justifyContent: 'center',
+                           alignItems: 'center',
+                           width: '100%',
+                        }}
+                     >
+                        <div style={{ height: '300px' }}>
+                           <Slider
+                              max={maxY}
+                              value={sliderPriceScatter}
+                              onChange={(option, value) => {
+                                 setSliderPriceScatter(value);
+                              }}
+                              orientation="vertical"
+                           />
+                        </div>
+                        <div
+                           style={{
+                              height: '500px',
+                              flex: 1,
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                           }}
+                        >
+                           <Scatter options={scatterOptions} data={{ datasets: dataset || [] }} />
+                           <Slider
+                              max={maxX}
+                              style={{ width: '300px', margin: 'auto' }}
+                              value={sliderLeadTimeScatter}
+                              onChange={(option, value) => {
+                                 setSliderLeadTimeScatter(value);
+                              }}
+                           />
+                        </div>
+                        <div>
+                           <b
+                              style={{
+                                 fontSize: '14px',
+                                 fontStyle: 'bold',
+                                 marginBottom: '10px',
+                                 display: 'block',
+                              }}
+                           >
+                              Group (Brand) (groups)
+                           </b>
+                           <div id="scater-container" style={{ width: '200px' }}></div>
+                        </div>
+                     </div>
+                  )}
+               </div>
             </div>
             <Grid item xs={12}>
                <Paper elevation={1} sx={{ marginTop: 10, position: 'relative' }}>
@@ -843,12 +933,12 @@ export default function IndicatorsV2() {
                      lastUpdatedAt={clientLatestUpdatedTime}
                      lastUpdatedBy={serverLastUpdatedBy}
                   />
-                  <AppBackDrop open={loadingTable} hightHeaderTable={'102px'} />
+                  <AppBackDrop open={loadingPage} hightHeaderTable={'102px'} />
                </Paper>
                <AppBackDrop hightHeaderTable={'35px'} bottom={'0px'} />
             </Grid>
          </AppLayout>
-      </>
+      </div>
    );
 }
 
