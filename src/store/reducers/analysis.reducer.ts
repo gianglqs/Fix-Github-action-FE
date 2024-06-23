@@ -24,6 +24,8 @@ export const initialState = {
             value: 'China',
          },
       ],
+      subRegion: [{ value: 'Australia' }, { value: 'None Australia' }],
+      delivery: [{ value: 'DDP' }, { value: 'CIF' }],
    } as any,
    fileUUID: undefined,
    fileName: undefined,
