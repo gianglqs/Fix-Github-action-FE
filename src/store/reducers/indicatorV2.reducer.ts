@@ -18,7 +18,7 @@ type IndicatorInitState = {
    chartData: ChartData;
    // table data
    tableData: CompetitorTableData;
-   // average stats infomation
+   // average stats information
    averageStats: AVGStats;
    // total items for pagination
    totalItems: number;
@@ -93,7 +93,6 @@ export const sagaGetList = createAction(`${name}/GET_LIST`);
 
 export const fetchTable = createAction(`${name}/FETCH_TABLE`);
 
-export const fetchInit = createAction(`${name}/FETCH_INIT_FILTER`);
 // Selectors
 export const selectState = (state: RootReducerType) => state[name];
 

@@ -38,7 +38,7 @@ import { defaultValueChartSelectedFilterIndicator } from '@/utils/defaultValues'
 //api
 import indicatorV2Api from '@/api/indicatorV2.api';
 //mapping
-import { mapCompetitorFiltersToOptionValues } from '@/utils/mapping';
+import { mappingCompetitorFiltersToOptionValues } from '@/utils/mapping';
 const getOrCreateLegendList = (chart, id) => {
    const legendContainer = document.getElementById(id);
    if (!legendContainer) return null;
@@ -221,7 +221,7 @@ export default function IndicatorsV2() {
       indicatorV2Api.getChartFilters(defaultValueChartSelectedFilterIndicator).then((rs) => {
          dispatch(
             indicatorV2Store.actions.setChartFilterOptions(
-               mapCompetitorFiltersToOptionValues(rs?.data)
+               mappingCompetitorFiltersToOptionValues(rs?.data)
             )
          );
       });
@@ -230,12 +230,12 @@ export default function IndicatorsV2() {
          cachedFilters = JSON.parse(localStorage.getItem('competitorFilters'));
       } catch (error) {}
       if (cachedFilters) {
-         dispatch(indicatorV2Store.fetchInit(cachedFilters));
          dispatch(indicatorV2Store.actions.setChartSelectedFilters(cachedFilters));
       }
       dispatch(indicatorV2Store.actions.setLoadingPage(true));
       dispatch(indicatorV2Store.sagaGetList());
    }, []);
+
    useEffect(() => {
       setSliderLeadTime([0, maxX]);
       setSliderPrice([0, maxY]);
@@ -590,7 +590,7 @@ export default function IndicatorsV2() {
    };
    return (
       <div>
-         <AppLayout entity="indicator">
+         <AppLayout entity="indicatorV2">
             {isUploading && <LoadingOverlay />}
             <Grid container spacing={1} sx={{ marginBottom: 2, position: 'relative' }}>
                <Grid item xs={4} sx={{ marginLeft: 0, position: 'relative' }}>
@@ -752,7 +752,13 @@ export default function IndicatorsV2() {
 
                <Grid item xs={2}>
                   <AppAutocomplete
-                     value={selectedFilter?.leadTime || ''}
+                     value={
+                        selectedFilter?.leadTime != null
+                           ? {
+                                value: selectedFilter?.leadTime,
+                             }
+                           : null
+                     }
                      options={optionsFilter?.leadTimes}
                      label={t('filters.leadTime')}
                      primaryKeyOption="value"

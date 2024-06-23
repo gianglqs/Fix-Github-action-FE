@@ -1,16 +1,16 @@
 //types
 import { FilterOptions } from '@/types';
 import { ChartData, CompetitorTableData, AVGStats, Competitor } from '@/types/competitor';
-import { hexToRgb } from '@mui/material';
-import { borderColor } from '@mui/system';
-import { log } from 'console';
 import { v4 as uuidv4 } from 'uuid';
-export const mapCompetitorFiltersToOptionValues = (filters): FilterOptions => {
+
+//competitor benchmark
+export const mappingCompetitorFiltersToOptionValues = (filters): FilterOptions => {
    Object.keys(filters).forEach((field) => {
       filters[field] = filters[field]?.map((value) => ({ value })) || [];
    });
    return filters;
 };
+
 function hexToRGBA(hex, opacity) {
    hex = hex.replace('#', '');
 
@@ -22,6 +22,7 @@ function hexToRGBA(hex, opacity) {
 
    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
+
 export const mappingCompetitorsToChartData = ({ chartData, trendline, modeline }): ChartData => {
    const dataset = [];
 
@@ -35,7 +36,6 @@ export const mappingCompetitorsToChartData = ({ chartData, trendline, modeline }
       const existedGroup = dataset.find(
          (chartData) => chartData.label == competitor?.color?.groupName || ''
       );
-      console.log('market share la: ' + competitor?.marketShare);
       const data = {
          marketShare: competitor?.marketShare * 100,
          x: competitor?.competitorLeadTime || 0.0,

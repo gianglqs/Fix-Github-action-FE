@@ -6,7 +6,7 @@ import indicatorV2Api from '@/api/indicatorV2.api';
 import { ChartData } from '@/types/competitor';
 //others
 import {
-   mapCompetitorFiltersToOptionValues,
+   mappingCompetitorFiltersToOptionValues,
    mappingCompetitorsToChartData,
    mappingCompetitorsToTableData,
 } from '@/utils/mapping';
@@ -21,8 +21,6 @@ function* fetchTableData() {
       if (typeof window !== 'undefined') {
          localStorage.setItem('competitorFilters', JSON.stringify(chartSelectedFilters));
       }
-
-      // console.log('localstorage la: '+ localStorage.getItem('competitorFilters'));
       // get data for table
       const dataCompetitorsRaw = yield* call(
          indicatorV2Api.getCompetitorData,
@@ -64,7 +62,7 @@ function* fetchIndicator() {
          indicatorV2Api.getChartFilters,
          chartSelectedFilters
       );
-      const chartFilterOptions = mapCompetitorFiltersToOptionValues(
+      const chartFilterOptions = mappingCompetitorFiltersToOptionValues(
          chartFilterOptionsRawData?.data || {}
       );
       yield put(
