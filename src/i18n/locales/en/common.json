@@ -84,7 +84,8 @@
       "model": "Model",
       "year": "Year",
       "monthYear": "Month Year",
-      "group": "Group"
+      "group": "Group",
+      "delivery": "Delivery"
    },
 
    "button": {
