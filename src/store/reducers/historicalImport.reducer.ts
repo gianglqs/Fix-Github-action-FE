@@ -17,7 +17,7 @@ const historicalImportSlice = createSlice({
    name,
    initialState,
    reducers: {
-      setDataFilter(state, { payload }: PayloadAction<string>) {
+      setDataFilter(state, { payload }: PayloadAction<any>) {
          state.dataFilter = payload;
       },
       setServerTimeZone(state, { payload }: PayloadAction<any[]>) {
