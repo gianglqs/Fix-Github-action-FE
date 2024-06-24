@@ -299,6 +299,7 @@ export default function IndicatorsV2() {
          .then(() => {
             setIsUploading(false);
             dispatch(commonStore.actions.setSuccessMessage('Import succesfully'));
+            handleClearFilter();
          })
          .catch((error) => {
             setIsUploading(false);
@@ -315,6 +316,7 @@ export default function IndicatorsV2() {
          .then(() => {
             setIsUploading(false);
             dispatch(commonStore.actions.setSuccessMessage('Upload successfully'));
+            handleClearFilter();
             //   handleFilterIndicator();
          })
          .catch((error) => {
@@ -479,7 +481,7 @@ export default function IndicatorsV2() {
          },
          annotation: {
             annotations: {
-               modeline: modeline && {
+               modeline: modeline !== null && {
                   yMax: sliderPrice[1],
                   yMin: sliderPrice[0],
                   xMin: modeline,
