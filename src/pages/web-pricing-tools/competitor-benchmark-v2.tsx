@@ -815,7 +815,7 @@ export default function IndicatorsV2() {
                               max={maxY}
                               value={sliderPrice}
                               onChange={(option, value) => {
-                                 setSliderPrice(value);
+                                 setSliderPrice(value as number[]);
                               }}
                               orientation="vertical"
                            />
@@ -830,13 +830,13 @@ export default function IndicatorsV2() {
                               alignItems: 'center',
                            }}
                         >
-                           <Bubble options={options} data={{ datasets: dataset || [] }} />
+                           <Bubble options={options as any} data={{ datasets: dataset || [] }} />
                            <Slider
                               max={maxX}
                               style={{ width: '300px', margin: 'auto' }}
                               value={sliderLeadTime}
                               onChange={(option, value) => {
-                                 setSliderLeadTime(value);
+                                 setSliderLeadTime(value as number[]);
                               }}
                            />
                         </div>
@@ -858,7 +858,7 @@ export default function IndicatorsV2() {
                </div>
 
                <div style={{ flex: 1, position: 'relative' }}>
-                  <LoadingCurtain isLoading={loadingPage} style={{ height: '500px' }} /> :
+                  <LoadingCurtain isLoading={loadingPage} /> :
                   {!loadingPage && (
                      <div
                         style={{
@@ -874,7 +874,7 @@ export default function IndicatorsV2() {
                               max={maxY}
                               value={sliderPriceScatter}
                               onChange={(option, value) => {
-                                 setSliderPriceScatter(value);
+                                 setSliderPriceScatter(value as number[]);
                               }}
                               orientation="vertical"
                            />
@@ -889,13 +889,16 @@ export default function IndicatorsV2() {
                               alignItems: 'center',
                            }}
                         >
-                           <Scatter options={scatterOptions} data={{ datasets: dataset || [] }} />
+                           <Scatter
+                              options={scatterOptions as any}
+                              data={{ datasets: dataset || [] }}
+                           />
                            <Slider
                               max={maxX}
                               style={{ width: '300px', margin: 'auto' }}
                               value={sliderLeadTimeScatter}
                               onChange={(option, value) => {
-                                 setSliderLeadTimeScatter(value);
+                                 setSliderLeadTimeScatter(value as number[]);
                               }}
                            />
                         </div>
