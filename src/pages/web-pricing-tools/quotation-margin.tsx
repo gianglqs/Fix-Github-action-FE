@@ -25,7 +25,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { formatNumberPercentage } from '@/utils/formatCell';
 import { v4 as uuidv4 } from 'uuid';
-import { log } from 'console';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -86,6 +85,8 @@ export default function MarginAnalysis() {
                modelCode: dataFilter.modelCode,
             },
             region: dataFilter.region,
+            subRegion: dataFilter.subRegion,
+            delivery: dataFilter.delivery,
          };
 
          setLoading(true);
@@ -491,6 +492,23 @@ export default function MarginAnalysis() {
                   />
                </Grid>
 
+               {dataFilter.region === 'Pacific' && (
+                  <Grid item sx={{ width: '10%', minWidth: 140 }} xs={0.8}>
+                     <AppAutocomplete
+                        options={initDataFilter.subRegion}
+                        //label={t('filters.subRegion')}
+                        value={dataFilter.subRegion}
+                        onChange={(e, option) =>
+                           handleUpdateDataFilterStore('subRegion', option.value)
+                        }
+                        disableListWrap
+                        primaryKeyOption="value"
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+               )}
+
                <Grid item>
                   <RadioGroup
                      row
@@ -508,6 +526,22 @@ export default function MarginAnalysis() {
                      <FormControlLabel value="AUD" control={<Radio />} label="AUD" />
                   </RadioGroup>
                </Grid>
+               {dataFilter.subRegion === 'Australia' && dataFilter.currency === 'AUD' && (
+                  <Grid item sx={{ width: '10%', minWidth: 80 }} xs={0.8}>
+                     <AppAutocomplete
+                        options={initDataFilter.delivery}
+                        label={t('filters.delivery')}
+                        value={dataFilter.delivery}
+                        onChange={(e, option) =>
+                           handleUpdateDataFilterStore('delivery', option.value)
+                        }
+                        disableListWrap
+                        primaryKeyOption="value"
+                        renderOption={(prop, option) => `${option.value}`}
+                        getOptionLabel={(option) => `${option.value}`}
+                     />
+                  </Grid>
+               )}
                <Grid item>
                   <Button
                      variant="contained"

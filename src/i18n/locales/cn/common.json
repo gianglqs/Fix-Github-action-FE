@@ -205,7 +205,8 @@
       "updateDate": "更新时间",
       "model": "样本",
       "competitor": "竞争者",
-      "group": "团体"
+      "group": "团体",
+      "delivery": "送货"
    },
 
    "quotationMargin": {
