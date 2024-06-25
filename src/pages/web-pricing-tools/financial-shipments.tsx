@@ -223,7 +223,7 @@ export default function Shipment() {
          minWidth: 100,
          headerName: t('table.series'),
          renderCell(params) {
-            return <span>{params.row.series}</span>;
+            return <span>{params.row.series.series}</span>;
          },
       },
       {
@@ -851,7 +851,9 @@ export default function Shipment() {
                      entity={'shipment'}
                      rows={listShipment}
                      columns={columns}
-                     getRowId={(params) => params.id.orderNo + params.id.date + params.id?.dealer?.name}
+                     getRowId={(params) =>
+                        params.id.orderNo + params.id.date + params.id?.dealer?.name
+                     }
                      onCellClick={handleOnCellClick}
                   />
                </Grid>

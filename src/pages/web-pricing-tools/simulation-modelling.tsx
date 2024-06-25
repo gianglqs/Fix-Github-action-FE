@@ -230,7 +230,7 @@ export default function Adjustment() {
          minWidth: 60,
          headerName: t('table.series'),
          renderCell(params) {
-            return <CellText value={params.row.metaSeries} />;
+            return <CellText value={params.row.series.series} />;
          },
       },
       {
