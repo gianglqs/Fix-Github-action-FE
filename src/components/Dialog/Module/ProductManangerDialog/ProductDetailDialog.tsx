@@ -35,7 +35,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    }, [model]);
 
    useEffect(() => {
-      setSeries(_series);
+      setSeries(_series?.series);
    }, [_series]);
 
    useEffect(() => {
@@ -306,7 +306,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      <TextField
                         id="outlined-read-only-input"
                         label={t('table.series')}
-                        value={productDetail?.series}
+                        value={productDetail?.series.series}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
@@ -327,7 +327,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      <TextField
                         id="outlined-read-only-input"
                         label={t('table.segment')}
-                        value={productDetail?.segment}
+                        value={productDetail?.segmentGroup.name}
                         defaultValue=" "
                         InputProps={{
                            readOnly: true,
