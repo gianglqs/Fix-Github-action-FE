@@ -286,9 +286,10 @@ export default function Booking() {
             return (
                <span>
                   {formatNumberPercentage(
-                     1 -
+                     (1 -
                         params?.row.dealerNetAfterSurcharge /
-                           (params?.row.dealerNet === 0 ? 1 : params?.row.dealerNet)
+                           (params?.row.dealerNet === 0 ? 1 : params?.row.dealerNet)) *
+                        100
                   )}
                </span>
             );
