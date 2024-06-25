@@ -168,7 +168,7 @@ export default function Outlier() {
          minWidth: 100,
          headerName: t('table.series'),
          renderCell(params) {
-            return <span>{params.row.series}</span>;
+            return <span>{params.row.series.series}</span>;
          },
       },
       {
