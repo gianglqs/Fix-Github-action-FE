@@ -70,7 +70,7 @@ export const mappingCompetitorsToTableData = (data) => {
          region: competitor?.country?.region?.regionName || '',
          country: competitor?.country?.countryName || '',
          class: competitor?.clazz?.clazzName || '',
-         series: competitor?.series || '',
+         series: competitor?.series?.series || '',
          group: competitor?.color?.groupName || '',
          avgStreetPrice: competitor?.dealerStreetPricing || 0,
          avgPrice: competitor?.competitorPricing || 0,

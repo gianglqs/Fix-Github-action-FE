@@ -22,7 +22,12 @@ export type Competitor = {
       clazzName: string;
    };
    category: string;
-   series: string;
+   series: {
+      series: string;
+      metaSeries: {
+         name: String;
+      };
+   };
    averageDN: string;
    chineseBrand: string;
    model: string;

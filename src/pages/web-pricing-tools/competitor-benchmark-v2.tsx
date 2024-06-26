@@ -700,7 +700,7 @@ export default function IndicatorsV2() {
                      value={_.map(selectedFilter.metaSeries, (item) => {
                         return { value: item };
                      })}
-                     options={optionsFilter.series}
+                     options={optionsFilter.metaSeries}
                      label={t('filters.metaSeries')}
                      sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
@@ -747,24 +747,6 @@ export default function IndicatorsV2() {
                      primaryKeyOption="value"
                      multiple
                      disableCloseOnSelect
-                     renderOption={(prop, { value }) => `${value || 'Others'}`}
-                     getOptionLabel={(option) => `${option.value || 'Others'}`}
-                  />
-               </Grid>
-
-               <Grid item xs={2}>
-                  <AppAutocomplete
-                     value={
-                        selectedFilter?.leadTime != null
-                           ? {
-                                value: selectedFilter?.leadTime,
-                             }
-                           : null
-                     }
-                     options={optionsFilter?.leadTimes}
-                     label={t('filters.leadTime')}
-                     primaryKeyOption="value"
-                     onChange={(e, option) => handleChangeDataFilter(option, 'leadTime')}
                      renderOption={(prop, { value }) => `${value || 'Others'}`}
                      getOptionLabel={(option) => `${option.value || 'Others'}`}
                   />
