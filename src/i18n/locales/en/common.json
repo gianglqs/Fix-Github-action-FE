@@ -89,7 +89,7 @@
    },
 
    "button": {
-      "filter": "Filter",
+      "filter": "Search",
       "clear": "Clear",
       "clearCalculators": "Clear Calculators",
       "selectFile": "Select File",

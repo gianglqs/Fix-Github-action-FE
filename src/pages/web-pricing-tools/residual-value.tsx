@@ -119,6 +119,7 @@ export default function ResidualValue() {
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
+
    const handleWhenImportSuccessfully = (res) => {
       //show message
       dispatch(commonStore.actions.setSuccessMessage(res.data.message));
@@ -130,6 +131,7 @@ export default function ResidualValue() {
             fileUUID: res.data.data,
          })
       );
+
       dispatch(
          importFailureStore.actions.setImportFailureDialogState({
             overview: extractTextInParentheses(res.data.message),
@@ -145,7 +147,8 @@ export default function ResidualValue() {
          setLoading(true);
          handleUploadFile(uploadedFile[0]);
       } else {
-         dispatch(commonStore.actions.setErrorMessage('No file choosed'));
+         //TODO: need to put this message into language file
+         dispatch(commonStore.actions.setErrorMessage('Please select file to upload first'));
       }
    };
 
@@ -153,6 +156,7 @@ export default function ResidualValue() {
       const updateUploaded = uploadedFile.filter((file) => file.name != fileName);
       setUploadedFile(updateUploaded);
    };
+
    const appendFileIntoList = (file) => {
       setUploadedFile((prevFiles) => [...prevFiles, file]);
    };
@@ -162,10 +166,9 @@ export default function ResidualValue() {
       updateDataFilter(defaultValueFilterResidualValue);
       setSelectedResidualValue([]);
       setImage(undefined);
-   };
+   };   
 
-   const handleFilterOrderResidualValue = () => {};
-
+   //TODO: this should be dynamic, getting from apis
    const optionYearFilter = [
       { value: 2 },
       { value: 3 },
@@ -334,16 +337,7 @@ export default function ResidualValue() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-
-               <Grid item xs={1}>
-                  <Button
-                     variant="contained"
-                     onClick={handleFilterOrderResidualValue}
-                     sx={{ width: '100%', height: 24 }}
-                  >
-                     {t('button.filter')}
-                  </Button>
-               </Grid>
+               
                <Grid item xs={1}>
                   <Button
                      variant="contained"
@@ -456,7 +450,6 @@ export default function ResidualValue() {
                >
                   {
                      /* container residualValue */
-
                      showResidualValue()
                   }
                </Grid>
