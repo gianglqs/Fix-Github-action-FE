@@ -25,7 +25,6 @@ function* fetchmanageCompetitorStore() {
       } else {
          dataFilter = defaultValueFilterIndicator;
       }
-
       // get data for filter
       const initDataFilter = yield* call(indicatorApi.getInitDataFilter);
       yield put(manageCompetitorStore.actions.setInitDataFilter(JSON.parse(initDataFilter.data)));
