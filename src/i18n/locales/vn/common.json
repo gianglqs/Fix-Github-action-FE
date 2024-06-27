@@ -297,7 +297,8 @@
    "commonErrorMessage": {
       "selectAFileToUpload": "Vui lòng chọn một tập tin để tải lên.",
       "uploadSelectOnlyOneFileAtATime": "Vui lòng chỉ chọn một tệp mỗi lần.",
-      "selectRegion": "Vui lòng chọn khu vực trước."
+      "selectRegion": "Vui lòng chọn khu vực trước.",
+      "invalidPageNo": "Trang không hợp lệ. Vui lòng chọn một trang trong khoảng từ {0} đến {1}."
    },
 
    "gumReport": {

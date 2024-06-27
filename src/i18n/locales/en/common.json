@@ -303,7 +303,8 @@
    "commonErrorMessage": {
       "selectAFileToUpload": "Please select a file to upload.",
       "uploadSelectOnlyOneFileAtATime": "Please select only one file at a time.",
-      "selectRegion": "Please select region first."
+      "selectRegion": "Please select region first.",
+      "invalidPageNo": "Invalid page. Please select a page between {0} and {1}."
    },
 
    "gumReport": {

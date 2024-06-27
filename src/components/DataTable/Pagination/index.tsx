@@ -9,6 +9,9 @@ import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/ho
 import { AppNumberField } from '@/components/App';
 import { useTranslation } from 'react-i18next';
 import type { NumberFormatValues } from 'react-number-format';
+import { useDispatch } from 'react-redux';
+import { commonStore } from '@/store/reducers';
+import { stringFormat } from '@/utils/formatString';
 
 const StyledPagination = styled(Pagination)(({ theme }) => ({
    '& .MuiPaginationItem-root': {
@@ -43,6 +46,8 @@ const StyledGoButton = styled(Button)(({ theme }) => ({
 
 const DataTablePagination = (props) => {
    const { t } = useTranslation();
+   const dispatch = useDispatch();
+
    const {
       page,
       perPage,
@@ -53,6 +58,7 @@ const DataTablePagination = (props) => {
       lastUpdatedAt,
       lastUpdatedBy,
    } = props;
+
    const count = Math.ceil(totalItems / perPage);
 
    const [numberGoToPage, setNumberGoToPage] = useState(0);
@@ -71,8 +77,14 @@ const DataTablePagination = (props) => {
       ));
 
    const handleChangePage = (event, nextPage: number) => {
-      if (nextPage !== 0 && nextPage <= count) {
+      if (nextPage > 0 && nextPage <= count) {
          onChangePage(nextPage);
+      } else {
+         dispatch(
+            commonStore.actions.setErrorMessage(
+               stringFormat(t('commonErrorMessage.invalidPageNo'), 1, count)
+            )
+         );
       }
    };
 
