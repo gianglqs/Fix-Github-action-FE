@@ -77,11 +77,10 @@ export default function Booking() {
    const serverLastUpdatedBy = useSelector(bookingStore.selectLastUpdatedBy);
    const currency = useSelector(bookingStore.selectCurrency);
 
+   const loadingTable = useSelector(bookingStore.selectLoadingData);
+
    const [loading, setLoading] = useState(false);
-
-   const [loadingTable, setLoadingTable] = useState(false);
-
-   const [listOrder, setListOrder] = useState(listBookingOrder);
+   // const [listOrder, setListOrder] = useState(listBookingOrder);
 
    const [totalRow, setTotalRow] = useState(listTotalRow);
 
@@ -136,14 +135,13 @@ export default function Booking() {
    }, [dataFilter]);
 
    const handleFilterOrderBooking = () => {
-      setLoadingTable(true);
       dispatch(bookingStore.actions.setDefaultValueFilterBooking(dataFilter));
       handleChangePage(1);
    };
 
-   useEffect(() => {
-      setLoadingTable(false);
-   }, [listOrder]);
+   // useEffect(() => {
+   //    dispatch(bookingStore.actions.setLoadingData(true));
+   // }, [listOrder]);
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
@@ -409,7 +407,7 @@ export default function Booking() {
    useEffect(() => {
       setUserRoleState(userRole);
 
-      setListOrder(listBookingOrder);
+      // setListOrder(listBookingOrder);
       setTotalRow(listTotalRow);
 
       convertTimezone();
@@ -814,7 +812,7 @@ export default function Booking() {
                      dataFilter={dataFilter}
                      currency={currency}
                      entity={'booking'}
-                     rows={listOrder}
+                     rows={listBookingOrder}
                      columns={columns}
                      getRowId={(params) => params.id.orderNo + params.id.date + params.id.dealer}
                      onCellClick={handleOnCellClick}

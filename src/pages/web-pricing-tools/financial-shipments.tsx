@@ -78,7 +78,7 @@ export default function Shipment() {
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
    // use importing to control spiner
    const [loading, setLoading] = useState(false);
-   const [loadingTable, setLoadingTable] = useState(false);
+   const loadingTable = useSelector(shipmentStore.selectLoadingData);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
 
    // import failure dialog
@@ -126,14 +126,9 @@ export default function Shipment() {
    }, [dataFilter]);
 
    const handleFilterOrderShipment = () => {
-      setLoadingTable(true);
       dispatch(shipmentStore.actions.setDefaultValueFilterOrder(dataFilter));
       handleChangePage(1);
    };
-
-   useEffect(() => {
-      setLoadingTable(false);
-   }, [listShipment]);
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));

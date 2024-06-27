@@ -1,8 +1,10 @@
+import { selectLoadingData } from './../reducers/booking.reducer';
 import { takeEvery, put } from 'redux-saga/effects';
 import { bookingStore, commonStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import bookingApi from '@/api/booking.api';
 import { parseCookies } from 'nookies';
+import { isValidDate } from '@/utils/formatDateInput';
 
 function* getDataBooking() {
    try {
@@ -25,6 +27,17 @@ function* getDataBooking() {
 
       const currency = yield* select(bookingStore.selectCurrency);
 
+      const fromDateFilter = dataFilter.fromDate;
+      const toDateFilter = dataFilter.toDate;
+
+      if (!isValidDate(fromDateFilter)) {
+         throw new Error('From date is invalid!');
+      }
+      if (!isValidDate(toDateFilter)) {
+         throw new Error('To date is invalid!');
+      }
+
+      yield put(bookingStore.actions.setLoadingData(true));
       const res = yield* call(bookingApi.getListData, dataFilter, {
          pageNo: tableState.pageNo,
          perPage: tableState.perPage,
@@ -51,7 +64,12 @@ function* getDataBooking() {
       yield put(bookingStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
 
       yield put(commonStore.actions.setTableState({ totalItems }));
-   } catch (error) {}
+
+      yield put(bookingStore.actions.setLoadingData(false));
+   } catch (error) {
+      yield put(bookingStore.actions.setLoadingData(false));
+      yield put(commonStore.actions.setErrorMessage(error.message));
+   }
 }
 
 function* switchCurrency() {
