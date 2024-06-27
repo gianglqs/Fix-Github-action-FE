@@ -50,7 +50,8 @@
       "activateUserQuestion": "Are you sure you want to",
       "oldPassword": "Old password",
       "newPassword": "New password",
-      "confirmNewPassword": "Confirm new password"
+      "confirmNewPassword": "Confirm new password",
+      "userCreatedSuccessfully": "Created user successfully."
    },
 
    "filters": {
@@ -92,7 +93,7 @@
    },
 
    "button": {
-      "filter": "Filter",
+      "filter": "Search",
       "clear": "Clear",
       "clearCalculators": "Clear Calculators",
       "selectFile": "Select File",

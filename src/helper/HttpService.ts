@@ -27,7 +27,7 @@ class HttpService<GetList = any> {
       if (error?.response) {
          const { data, status } = error.response;
          const isServer = typeof window === 'undefined';
-         switch (status) {
+         switch (status) {            
             case 401:
                if (!isServer) {
                   const cookies = parseCookies();
@@ -140,11 +140,6 @@ class HttpService<GetList = any> {
 
    getList = (params = {} as Record<string, any>, context: GetServerSidePropsContext = null) =>
       this.get<GetList>(this.entity, params, context);
-
-   getListUser = <T = any>(endpoint: string, context: GetServerSidePropsContext = null) => {
-      this.saveToken(context);
-      return this.instance.get<T>(endpoint);
-   };
 
    post = <T = any>(
       endpoint: string,
