@@ -1,5 +1,5 @@
 import { ImportTrackingDataFilter, ResidualValueDataFilter } from '@/types/defaultValue';
-
+import { ChartSelectedFilters } from '@/types/competitor';
 export const defaultValueFilterIndicator = {
    regions: [],
    dealers: [],
@@ -14,6 +14,7 @@ export const defaultValueFilterIndicator = {
    countries: [],
    competitorNames: [],
 } as any;
+
 
 export const defaultValueFilterOrder = {
    orderNo: '',
@@ -99,4 +100,14 @@ export const defaultDataFilterQuotationMargin = {
    series: null,
    subRegion: 'Australia',
    delivery: 'DDP',
+};
+
+export const defaultValueChartSelectedFilterIndicator : ChartSelectedFilters = {
+   region: null,
+   countries: [],
+   classes: [],
+   metaSeries: [],
+   models:[],
+   groups:[],
+   leadTime: null
 };

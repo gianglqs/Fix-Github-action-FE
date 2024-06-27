@@ -105,11 +105,6 @@ export default function Indicators() {
       clearFilter: false,
    });
 
-   const [forecastLandscapeData, setForecastLandscapeData] = useState({
-      datasets: [],
-      clearFilter: false,
-   });
-
    const cachDataFilterBubbleChart = useSelector(indicatorStore.selectDataFilterBubbleChart);
    const [swotDataFilter, setSwotDataFilter] = useState(cachDataFilterBubbleChart);
 
@@ -450,6 +445,9 @@ export default function Indicators() {
          flex: 0.6,
          minWidth: 60,
          headerName: t('table.series'),
+         renderCell(params) {
+            return <span>{params.row.series?.series}</span>;
+         },
       },
 
       {
