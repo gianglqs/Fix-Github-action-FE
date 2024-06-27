@@ -285,6 +285,9 @@ export default function ImportTracking() {
          flex: 0.6,
          minWidth: 60,
          headerName: t('table.series'),
+         renderCell(params) {
+            return <span>{params.row.series?.series}</span>;
+         },
       },
 
       {
@@ -756,7 +759,9 @@ export default function ImportTracking() {
 
                   <Grid item xs={2}>
                      <AppAutocomplete
-                        value={dataFilter.chineseBrand}
+                        value={
+                           dataFilter.chineseBrand != '' ? { value: dataFilter.chineseBrand } : null
+                        }
                         options={initDataFilter.chineseBrands}
                         label={t('filters.chineseBrand')}
                         onChange={
@@ -767,27 +772,26 @@ export default function ImportTracking() {
                         disableClearable={false}
                         primaryKeyOption="value"
                         renderOption={(prop, option) => `${option.value}`}
-                        getOptionLabel={(option) => `${option.value}`}
+                        getOptionLabel={(option) => (option.value ? `${option.value}` : '')}
                      />
                   </Grid>
 
                   <Grid item xs={2}>
                      <AppAutocomplete
-                        value={dataFilter.marginPercentage}
+                        value={
+                           dataFilter.marginPercentage != ''
+                              ? { value: dataFilter.marginPercentage }
+                              : null
+                        }
                         options={initDataFilter.marginPercentageGrouping}
                         label={t('filters.marginPercentage')}
                         primaryKeyOption="value"
-                        onChange={
-                           (e, option) =>
-                              handleChangeDataFilter(
-                                 _.isNil(option) ? '' : option,
-                                 'marginPercentage'
-                              )
-                           // handleChangeDataFilter(option, 'aopMarginPercentageGroup')
+                        onChange={(e, option) =>
+                           handleChangeDataFilter(_.isNil(option) ? '' : option, 'marginPercentage')
                         }
                         disableClearable={false}
                         renderOption={(prop, option) => `${option.value}`}
-                        getOptionLabel={(option) => `${option.value}`}
+                        getOptionLabel={(option) => (option.value ? `${option.value}` : '')}
                      />
                   </Grid>
 

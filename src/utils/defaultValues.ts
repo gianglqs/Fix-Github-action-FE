@@ -9,12 +9,12 @@ export const defaultValueFilterIndicator = {
    models: [],
    segments: [],
    aopMarginPercentageGroup: '',
+   marginPercentage: '',
    chineseBrand: '',
    series: [],
    countries: [],
    competitorNames: [],
 } as any;
-
 
 export const defaultValueFilterOrder = {
    orderNo: '',
@@ -102,12 +102,12 @@ export const defaultDataFilterQuotationMargin = {
    delivery: 'DDP',
 };
 
-export const defaultValueChartSelectedFilterIndicator : ChartSelectedFilters = {
+export const defaultValueChartSelectedFilterIndicator: ChartSelectedFilters = {
    region: null,
    countries: [],
    classes: [],
    metaSeries: [],
-   models:[],
-   groups:[],
-   leadTime: null
+   models: [],
+   groups: [],
+   leadTime: null,
 };
