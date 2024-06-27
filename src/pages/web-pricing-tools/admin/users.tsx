@@ -210,9 +210,17 @@ export default function Dashboard() {
    };
 
    const handleSearch = async (event, searchQuery) => {
-      const { data } = await dashboardApi.getUser({ search: searchQuery });
+      const { data } = await dashboardApi.getUser({ search: searchQuery });          
       dispatch(userStore.actions.setUserList(JSON.parse(data)?.userList));
    };
+
+   /**
+    * To reload user data list
+   */
+   const reloadData = async () => {
+      handleChangePage(1);
+      dispatch(userStore.sagaGetList());      
+   }
 
    const handleOpenUpdateUserDialog = async (userId) => {
       try {
@@ -432,7 +440,8 @@ export default function Dashboard() {
             >
                <Toolbar />
                <Grid container justifyContent="flex-end" sx={{ padding: 1 }}>
-                  <Button variant="contained" style={{ marginLeft: 5 }} color="primary">
+                  <Button variant="contained" style={{ marginLeft: 5 }} color="primary"
+                          onClick={reloadData}>
                      <ReloadIcon />
                      {t('user.reload')}
                   </Button>
