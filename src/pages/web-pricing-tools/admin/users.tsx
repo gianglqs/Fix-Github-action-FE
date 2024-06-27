@@ -158,7 +158,7 @@ export default function Dashboard() {
       password: '',
       email: '',
       role: 1,
-      defaultLocale: 'us',
+      defaultLocale: 'en',
    };
 
    const [dialogCreateUser, setDialogCreateUser] = useState({
