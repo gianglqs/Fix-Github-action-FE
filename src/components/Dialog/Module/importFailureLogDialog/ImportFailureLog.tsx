@@ -186,7 +186,7 @@ const CustomToolbar = () => (
    <GridToolbarContainer>
       <GridToolbarColumnsButton />
       <GridToolbarFilterButton />
-      <GridToolbarDensitySelector />
+      {/* <GridToolbarDensitySelector /> */}
       <CustomExportButton />
    </GridToolbarContainer>
 );
