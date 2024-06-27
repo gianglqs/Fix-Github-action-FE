@@ -662,7 +662,7 @@ export default function ImportTracking() {
                         getOptionLabel={(option) => `${option.value}`}
                      />
                   </Grid>
-                  <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+                  {/*<Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                      <AppAutocomplete
                         value={_.map(dataFilter.dealers, (item) => {
                            return { value: item };
@@ -679,7 +679,7 @@ export default function ImportTracking() {
                         renderOption={(prop, option) => `${option.value}`}
                         getOptionLabel={(option) => `${option.value}`}
                      />
-                  </Grid>
+                  </Grid>*/}
                   <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                      <AppAutocomplete
                         value={_.map(dataFilter.plants, (item) => {
