@@ -7,7 +7,7 @@ import moment from 'moment-timezone';
 
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Button, CircularProgress, ListItem, Typography } from '@mui/material';
+import { Backdrop, Button, CircularProgress, ListItem, Typography } from '@mui/material';
 
 import {
    AppAutocomplete,
@@ -662,6 +662,12 @@ export default function Product() {
          />
          <ShowImageDialog {...imageDialogState} onClose={handleCloseImageDialog} />
          <LogImportFailureDialog />
+         <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={loading}
+         >
+            <CircularProgress color="inherit" />
+         </Backdrop>
       </>
    );
 }
