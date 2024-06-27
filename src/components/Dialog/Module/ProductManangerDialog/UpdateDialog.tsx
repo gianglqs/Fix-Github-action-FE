@@ -74,12 +74,13 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
    return (
       <AppDialog
          open={open}
-         loading={!enableSubmitForm}
+         disableOK={!enableSubmitForm}
          onOk={handleSubmitForm}
          onClose={handleCloseForm}
          title={t('updateProduct')}
          okText={t('button.save')}
          closeText={t('button.close')}
+         enableCloseButton={true}
       >
          <Grid
             container
