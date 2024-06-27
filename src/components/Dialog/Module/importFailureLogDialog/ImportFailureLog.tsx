@@ -1,29 +1,21 @@
-import { useDispatch } from 'react-redux';
-import { useEffect, useMemo, useState } from 'react';
-import { Button, Dialog, Grid, Paper, TextField, Typography } from '@mui/material';
-import { AppAutocomplete, AppSearchBar, AppTextField } from '@/components/App';
-import productApi from '@/api/product.api';
+import { AppSearchBar } from '@/components/App';
 import { DataTable, DataTablePagination } from '@/components/DataTable';
-import { GridToolbar } from '@mui/x-data-grid-pro';
-import { getPartImagePath, getProductImagePath } from '@/utils/imagePath';
-import partApi from '@/api/part.api';
-import { formatNumber } from '@/utils/formatCell';
+import { importFailureStore } from '@/store/reducers';
+import { centerColumn, centerHeaderColumn } from '@/utils/columnProperties';
+import { Button, ButtonProps, Dialog, Grid, Paper, Typography } from '@mui/material';
 import {
-   centerColumn,
-   centerHeaderColumn,
-   formatNumbericColumn,
-   iconColumn,
-} from '@/utils/columnProperties';
-import PartImageTooltip from '@/components/App/Tooltip/ImageTootip/Part';
-import { produce } from 'immer';
-import { When } from 'react-if';
-import { ProductImage } from '@/components/App/Image/ProductImage';
-import { useTranslation } from 'react-i18next';
-import { importFailureStore, commonStore } from '@/store/reducers';
-import { useSelector } from 'react-redux';
+   GridCsvExportMenuItem,
+   GridCsvExportOptions,
+   GridToolbarColumnsButton,
+   GridToolbarContainer,
+   GridToolbarDensitySelector,
+   GridToolbarExportContainer,
+   GridToolbarFilterButton,
+} from '@mui/x-data-grid-pro';
 import { createAction } from '@reduxjs/toolkit';
 import { useRouter } from 'next/router';
-import { QueryBuilder } from '@mui/icons-material';
+import { useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const LogImportFailureDialog: React.FC<any> = (props) => {
    const dispatch = useDispatch();
@@ -155,7 +147,7 @@ export const LogImportFailureDialog: React.FC<any> = (props) => {
                         columnHeaderHeight={60}
                         rowHeight={50}
                         slots={{
-                           toolbar: GridToolbar,
+                           toolbar: CustomToolbar,
                         }}
                         rows={listImportFailure}
                         rowBuffer={35}
@@ -179,3 +171,22 @@ export const LogImportFailureDialog: React.FC<any> = (props) => {
       </Dialog>
    );
 };
+
+const csvOptions: GridCsvExportOptions = { delimiter: ';' };
+
+function CustomExportButton(props: ButtonProps) {
+   return (
+      <GridToolbarExportContainer {...props}>
+         <GridCsvExportMenuItem options={csvOptions} />
+      </GridToolbarExportContainer>
+   );
+}
+
+const CustomToolbar = () => (
+   <GridToolbarContainer>
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarDensitySelector />
+      <CustomExportButton />
+   </GridToolbarContainer>
+);
