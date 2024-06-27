@@ -100,8 +100,8 @@ export default function LoginPage(props) {
 
             router.push('/web-pricing-tools/admin/users');
          })
-         .catch(() => {
-            dispatch(commonStore.actions.setErrorMessage('Incorrect username or password. Please double-check your credentials.'));
+         .catch((error) => {                    
+            dispatch(commonStore.actions.setErrorMessage(error.response.data.message));
          });
    });
    const [backendVersion, setBackendVersion] = useState({ imageTag: '', releaseTag: '' });
