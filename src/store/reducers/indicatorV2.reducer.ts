@@ -52,6 +52,7 @@ const indicatorSlice = createSlice({
    initialState,
    reducers: {
       setChartFilterOptions(state, { payload }: PayloadAction<FilterOptions>) {
+         console.log(payload);
          state.chartFilterOptions = payload;
       },
       setChartSelectedFilters(state, { payload }: PayloadAction<ChartSelectedFilters>) {

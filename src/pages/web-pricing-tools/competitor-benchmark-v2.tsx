@@ -703,7 +703,7 @@ export default function IndicatorsV2() {
                      options={optionsFilter.metaSeries}
                      label={t('filters.metaSeries')}
                      sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
+                     onChange={(e, option) => handleChangeDataFilter(option, 'series')}
                      limitTags={1}
                      disableListWrap
                      primaryKeyOption="value"
