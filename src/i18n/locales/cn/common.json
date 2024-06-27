@@ -286,7 +286,8 @@
    "commonErrorMessage": {
       "selectAFileToUpload": "请选择要上传的文件.",
       "uploadSelectOnlyOneFileAtATime": "请一次仅选择一个文件.",
-      "selectRegion": "请先选择地区."
+      "selectRegion": "请先选择地区.",
+      "invalidPageNo": "页面无效。请选择 {0} 到 {1} 之间的页面。"
    },
 
    "gumReport": {
