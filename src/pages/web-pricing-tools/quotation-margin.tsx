@@ -65,8 +65,24 @@ export default function MarginAnalysis() {
 
    const handleCalculateMargin = async () => {
       try {
+         if (!dataFilter.modelCode) {
+            dispatch(
+               commonStore.actions.setErrorMessage(t('commonErrorMessage.modelCodeNotSelected'))
+            );
+            return;
+         }
          if (!dataFilter.series) {
-            dispatch(commonStore.actions.setErrorMessage('Series is not selected'));
+            dispatch(
+               commonStore.actions.setErrorMessage(t('commonErrorMessage.seriesNotSelected'))
+            );
+            return;
+         }
+         if (!dataFilter.orderNumber && !dataFilter.type) {
+            dispatch(
+               commonStore.actions.setErrorMessage(
+                  t('commonErrorMessage.typeOrOrderNumberNotSelected')
+               )
+            );
             return;
          }
 
@@ -446,7 +462,6 @@ export default function MarginAnalysis() {
                      primaryKeyOption="value"
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
-                     required
                      // error={series.error}
                      // helperText={'Please choose a Series to continue'}
                   />

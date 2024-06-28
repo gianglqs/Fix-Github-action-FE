@@ -305,7 +305,10 @@
       "uploadSelectOnlyOneFileAtATime": "Please select only one file at a time.",
       "selectRegion": "Please select region first.",
       "invalidPageNo": "Invalid page. Please select a page between {0} and {1}.",
-      "toDateBeforeFromDate": "The To Date value cannot be earlier than the From Date value"
+      "toDateBeforeFromDate": "The To Date value cannot be earlier than the From Date value",
+      "modelCodeNotSelected": "The model code has not been selected. Please select a valid model code to continue.",
+      "seriesNotSelected": "The Series has not been selected. Please select a valid Series to continue.",
+      "typeOrOrderNumberNotSelected": "The Order Number and Type have not been selected. Please select valid Order Number or Type to continue."
    },
 
    "gumReport": {
