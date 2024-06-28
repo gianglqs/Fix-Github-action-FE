@@ -39,7 +39,6 @@ const CsvExportToolbar: React.FC<GridCsvExportMenuItemProps> = (props) => {
                handleDownloadFile(getFileNameFromPath(pathFile), pathFile);
             })
             .catch((error) => {
-               console.log(error);
                dispatch(commonStore.actions.setErrorMessage(error.message));
             });
       }

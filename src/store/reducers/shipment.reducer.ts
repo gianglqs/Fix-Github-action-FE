@@ -16,6 +16,7 @@ export const initialState = {
    lastUpdatedTime: '' as any,
    lastUpdatedBy: '' as any,
    currency: 'USD',
+   loadingData: true as boolean,
 };
 
 const shipmentSlice = createSlice({
@@ -53,6 +54,9 @@ const shipmentSlice = createSlice({
       setCurrency(state, { payload }: PayloadAction<string>) {
          state.currency = payload;
       },
+      setLoadingData(state, { payload }: PayloadAction<boolean>) {
+         state.loadingData = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -80,6 +84,7 @@ export const selectLastUpdatedTime = createSelector(selectState, (state) => stat
 export const selectCurrency = createSelector(selectState, (state) => state.currency);
 
 export const selectLastUpdatedBy = createSelector(selectState, (state) => state.lastUpdatedBy);
+export const selectLoadingData = createSelector(selectState, (state) => state.loadingData);
 export const { actions } = shipmentSlice;
 
 export default shipmentSlice;

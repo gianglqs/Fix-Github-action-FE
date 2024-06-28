@@ -84,7 +84,7 @@ export default function Adjustment() {
    const [dnAdjColor, setDnAdjColor] = useState(null);
    const [totalColor, setTotalColor] = useState(null);
 
-   const [loadingTable, setLoadingTable] = useState(false);
+   const loadingTable = useSelector(adjustmentStore.selectLoadingData);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
    const [hasSetDataCalculator, setHasSetDataCalculator] = useState(false);
    const serverTimeZone = useSelector(adjustmentStore.selectServerTimeZone);
@@ -166,19 +166,13 @@ export default function Adjustment() {
       return () => debouncedHandleWhenChangeDataCalculator.cancel();
    }, [dataCalculator]);
 
-   useEffect(() => {
-      setLoadingTable(false);
-   }, [listAdjustment]);
-
    const handleCalculator = () => {
-      setLoadingTable(true);
       dispatch(adjustmentStore.actions.setDefaultValueCalculator(dataCalculator));
       changeColorColumnWhenAdjChange();
       handleChangePage(currentPage);
    };
 
    const handleFilterAdjustment = () => {
-      setLoadingTable(true);
       dispatch(adjustmentStore.actions.setDefaultValueFilterAdjustment(dataFilter));
       handleChangePage(1);
    };
@@ -1054,7 +1048,7 @@ export default function Adjustment() {
                   lastUpdatedAt={clientLatestUpdatedTime}
                   lastUpdatedBy={serverLastUpdatedBy}
                />
-               <AppBackDrop open={loadingTable} hightHeaderTable={'102px'} />
+               <AppBackDrop open={loadingTable} hightHeaderTable={'157px'} />
             </Paper>
          </AppLayout>
       </>

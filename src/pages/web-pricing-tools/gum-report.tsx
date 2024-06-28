@@ -211,7 +211,7 @@ export default function GumReport() {
          children: [...regions.map((region) => ({ field: region })), { field: 'total' }],
       },
    ]);
-   // extract rows of all table from response data
+   // extract rows of all table from returned data
    const rowsList = tablesFormat.map(({ datafield ,format}) => {
       const rows = [];
       const totalRow = { id: segments.length, segment: 'Total Classes' };

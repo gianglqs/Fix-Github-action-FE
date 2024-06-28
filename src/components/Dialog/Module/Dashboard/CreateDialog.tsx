@@ -14,6 +14,7 @@ import FormControllerAutocomplete from '@/components/FormController/Autocomplete
 
 import getValidationSchema from './validationSchema';
 import { useTranslation } from 'react-i18next';
+import { string } from 'yup';
 
 const DialogCreateUser: React.FC<any> = (props) => {
    const { open, onClose, detail } = props;
@@ -45,10 +46,10 @@ const DialogCreateUser: React.FC<any> = (props) => {
          await dashboardApi.createUser(transformData);
          const { data } = await dashboardApi.getUser({ search: '' });
          dispatch(userStore.actions.setUserList(JSON.parse(data)?.userList));
-         dispatch(commonStore.actions.setSuccessMessage('Create User Successfully'));
+         dispatch(commonStore.actions.setSuccessMessage(t('user.userCreatedSuccessfully')));
          onClose();
-      } catch (error) {
-         dispatch(commonStore.actions.setErrorMessage(error?.message));
+      } catch (error) {                  
+         dispatch(commonStore.actions.setErrorMessage(error?.message));        
       } finally {
          setLoading(false);
       }
@@ -124,10 +125,12 @@ const DialogCreateUser: React.FC<any> = (props) => {
                />
             </Grid>
             <Grid item xs={6}>
-               <FormControllerAutocomplete
+               <FormControllerAutocomplete 
                   control={createForm.control}
                   name="defaultLocale"
                   label={t('user.language')}
+                  renderOption={(prop, option) => `${option?.description}`}
+                  getOptionLabel={(option) => `${option?.description}`}
                   required
                   options={languageOptions}
                />

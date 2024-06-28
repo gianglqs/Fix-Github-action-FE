@@ -6,7 +6,7 @@ import { NumericFormat } from 'react-number-format';
 import type { AppNumberFieldProps } from './type';
 
 const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) => {
-   const { onChange, value, ...numberFieldProps } = props;
+   const { onChange, value, onPressEnter, debounceDelay, ...numberFieldProps } = props;
 
    const [numberValue, setNumberValue] = useState(value || 0);
 
@@ -17,7 +17,7 @@ const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) =>
    const debouceHandleOnChange = useCallback(
       _.debounce((event) => {
          onChange(event);
-      }, 700),
+      }, debounceDelay || 700),
       [onChange]
    );
 
@@ -32,6 +32,13 @@ const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) =>
       setNumberValue(newValue);
       debouceHandleOnChange(event);
    };
+
+   const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+         onPressEnter();
+      }
+   };
+
    return (
       <NumericFormat
          {...(numberFieldProps as any)}
@@ -39,6 +46,7 @@ const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) =>
          onValueChange={handleOnChange}
          ref={ref as any}
          allowNegative={true}
+         onKeyDown={handleKeyDown}
          format="#### #### #### ####"
          fixedDecimalScale={false}
          decimalScale={10}

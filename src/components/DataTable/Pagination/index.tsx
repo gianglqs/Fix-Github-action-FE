@@ -9,6 +9,9 @@ import { bindMenu, bindTrigger, usePopupState } from 'material-ui-popup-state/ho
 import { AppNumberField } from '@/components/App';
 import { useTranslation } from 'react-i18next';
 import type { NumberFormatValues } from 'react-number-format';
+import { useDispatch } from 'react-redux';
+import { commonStore } from '@/store/reducers';
+import { stringFormat } from '@/utils/formatString';
 
 const StyledPagination = styled(Pagination)(({ theme }) => ({
    '& .MuiPaginationItem-root': {
@@ -43,6 +46,8 @@ const StyledGoButton = styled(Button)(({ theme }) => ({
 
 const DataTablePagination = (props) => {
    const { t } = useTranslation();
+   const dispatch = useDispatch();
+
    const {
       page,
       perPage,
@@ -53,6 +58,7 @@ const DataTablePagination = (props) => {
       lastUpdatedAt,
       lastUpdatedBy,
    } = props;
+
    const count = Math.ceil(totalItems / perPage);
 
    const [numberGoToPage, setNumberGoToPage] = useState(0);
@@ -71,8 +77,14 @@ const DataTablePagination = (props) => {
       ));
 
    const handleChangePage = (event, nextPage: number) => {
-      if (nextPage !== 0 && nextPage <= count) {
+      if (nextPage > 0 && nextPage <= count) {
          onChangePage(nextPage);
+      } else {
+         dispatch(
+            commonStore.actions.setErrorMessage(
+               stringFormat(t('commonErrorMessage.invalidPageNo'), 1, count)
+            )
+         );
       }
    };
 
@@ -85,9 +97,8 @@ const DataTablePagination = (props) => {
       setNumberGoToPage(values.floatValue);
    };
 
-   const handleGoToPage = (event) => {
-      event.preventDefault();
-      handleChangePage(event, numberGoToPage);
+   const handleGoToPage = () => {
+      handleChangePage(null, numberGoToPage);
    };
 
    return (
@@ -142,26 +153,27 @@ const DataTablePagination = (props) => {
                {/* Pagination */}
                <StyledPagination count={count} onChange={handleChangePage} page={page} />
                {/* Go to page */}
-               <form action="">
-                  <AppNumberField
-                     onChange={handleChangeGoToPage}
-                     sx={{ width: 70 }}
-                     decimalScale={0}
-                     fixedDecimalScale={false}
-                     value={numberGoToPage}
-                     InputProps={{
-                        endAdornment: (
-                           <StyledGoButton
-                              type="submit"
-                              onClick={handleGoToPage}
-                              aria-label="go-to-page"
-                           >
-                              {t('go')}
-                           </StyledGoButton>
-                        ),
-                     }}
-                  />
-               </form>
+
+               <AppNumberField
+                  onPressEnter={handleGoToPage}
+                  debounceDelay={100}
+                  onChange={handleChangeGoToPage}
+                  sx={{ width: 70 }}
+                  decimalScale={0}
+                  fixedDecimalScale={false}
+                  value={numberGoToPage}
+                  InputProps={{
+                     endAdornment: (
+                        <StyledGoButton
+                           type="submit"
+                           onClick={handleGoToPage}
+                           aria-label="go-to-page"
+                        >
+                           {t('go')}
+                        </StyledGoButton>
+                     ),
+                  }}
+               />
             </Stack>
          </Stack>
          <Menu

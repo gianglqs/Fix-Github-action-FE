@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 
 export const formatEuropeDate = (date: string) => {
    if (date.length === 0) {
@@ -34,10 +35,10 @@ export const formatAsiaDate = (date: string, symbol: '.' | '/') => {
 export const checkValidDateWithRegex = (date: string) => {
    if (date === null) {
       return true;
-   } else {
-      const regEx = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
-      return date.match(regEx) != null;
    }
+   if (date === '') return true;
+   const regEx = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
+   return date.match(regEx) != null;
 };
 
 const formatDateInput = (value: string) => {
@@ -62,3 +63,23 @@ export function formatDate(date): string {
 }
 
 export default formatDateInput;
+
+export const isValidDate = (dateString: string): boolean => {
+   if (dateString === '') return true;
+   const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
+   if (!regex.test(dateString)) {
+      return false;
+   }
+
+   const [year, month, day] = dateString.split('-').map(Number);
+
+   const daysInMonth = (year: number, month: number): number => {
+      return new Date(year, month, 0).getDate();
+   };
+
+   return day <= daysInMonth(year, month);
+};
+
+export const isBefore = (date1: string, date2: string) => {
+   return moment(date1).isBefore(date2);
+};
