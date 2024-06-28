@@ -867,8 +867,8 @@ export default function Indicators() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
-                  <AppAutocomplete
+               {/*<Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+                 <AppAutocomplete
                      value={_.map(dataFilter.dealers, (item) => {
                         return { value: item };
                      })}
@@ -884,7 +884,7 @@ export default function Indicators() {
                      renderOption={(prop, option) => `${option.value}`}
                      getOptionLabel={(option) => `${option.value}`}
                   />
-               </Grid>
+               </Grid>*/}
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.plants, (item) => {
