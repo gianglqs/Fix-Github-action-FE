@@ -86,6 +86,7 @@ export default function VolumeDiscountAnalysis() {
    }, [dataFilter]);
 
    const handleCalculateVolumeDiscount = async () => {
+      console.log(dataFilter.pricePerUnit?.value === 0);
       try {
          setLoading(true);
          const {
@@ -113,7 +114,6 @@ export default function VolumeDiscountAnalysis() {
                tension: 0.1,
             },
          ];
-
          setChartData({ labels, datasets });
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error.message));
