@@ -20,6 +20,7 @@ export const initialState = {
    serverTimeZone: '' as any,
    lastUpdatedTime: '' as any,
    lastUpdatedBy: '' as any,
+   loadingData: true as boolean,
 };
 
 const adjustmentSlice = createSlice({
@@ -62,6 +63,9 @@ const adjustmentSlice = createSlice({
       setLastUpdatedBy(state, { payload }: PayloadAction<any[]>) {
          state.lastUpdatedBy = payload;
       },
+      setLoadingData(state, { payload }: PayloadAction<boolean>) {
+         state.loadingData = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -91,6 +95,7 @@ export const selectServerTimeZone = createSelector(selectState, (state) => state
 export const selectLastUpdatedTime = createSelector(selectState, (state) => state.lastUpdatedTime);
 
 export const selectLastUpdatedBy = createSelector(selectState, (state) => state.lastUpdatedBy);
+export const selectLoadingData = createSelector(selectState, (state) => state.loadingData);
 
 export const { actions } = adjustmentSlice;
 
