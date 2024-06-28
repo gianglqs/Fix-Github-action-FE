@@ -308,7 +308,8 @@
       "toDateBeforeFromDate": "The To Date value cannot be earlier than the From Date value",
       "modelCodeNotSelected": "The model code has not been selected. Please select a valid model code to continue.",
       "seriesNotSelected": "The Series has not been selected. Please select a valid Series to continue.",
-      "typeOrOrderNumberNotSelected": "The Order Number and Type have not been selected. Please select valid Order Number or Type to continue."
+      "typeOrOrderNumberNotSelected": "The Order Number and Type have not been selected. Please select valid Order Number or Type to continue.",
+      "cannotConnectToServer": "The Server did not respond. Please try again later or contact support."
    },
 
    "gumReport": {

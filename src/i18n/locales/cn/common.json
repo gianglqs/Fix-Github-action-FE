@@ -302,7 +302,8 @@
       "toDateBeforeFromDate": "结束日期不能早于开始日期",
       "modelCodeNotSelected": "尚未选择模型代码。请先选择一个有效的模型代码再继续操作。",
       "seriesNotSelected": "尚未选择系列。请先选择一个模型代码再继续操作。",
-      "typeOrOrderNumberNotSelected": "尚未选择订单编号和类型。请先选择一个有效的订单编号或类型再继续操作。"
+      "typeOrOrderNumberNotSelected": "尚未选择订单编号和类型。请先选择一个有效的订单编号或类型再继续操作。",
+      "cannotConnectToServer": "后台服务没有响应。请稍后再试或联系支持。"
    },
 
    "gumReport": {
