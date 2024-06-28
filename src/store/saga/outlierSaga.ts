@@ -3,6 +3,7 @@ import { outlierStore, commonStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import outlierApi from '@/api/outlier.api';
 import { parseCookies } from 'nookies';
+import { isBefore, isValidDate } from '@/utils/formatDateInput';
 
 function* fetchOutlier() {
    try {
@@ -27,6 +28,19 @@ function* fetchOutlier() {
       } else {
          dataFilter = defaultValueFilterOutlier;
       }
+      const fromDateFilter = dataFilter.fromDate;
+      const toDateFilter = dataFilter.toDate;
+
+      if (!isValidDate(fromDateFilter)) {
+         throw new Error('From date is invalid!');
+      }
+      if (!isValidDate(toDateFilter)) {
+         throw new Error('To date is invalid!');
+      }
+      if (isBefore(toDateFilter, fromDateFilter))
+         throw new Error('The To Date value cannot be earlier than the From Date value');
+
+      yield put(outlierStore.actions.setLoadingData(true));
 
       const initDataFilter = yield* call(outlierApi.getInitDataFilter);
 
@@ -54,7 +68,11 @@ function* fetchOutlier() {
             totalItems: JSON.parse(String(data)).totalItems,
          })
       );
-   } catch (error) {}
+      yield put(outlierStore.actions.setLoadingData(false));
+   } catch (error) {
+      yield put(outlierStore.actions.setLoadingData(false));
+      yield put(commonStore.actions.setErrorMessage(error.message));
+   }
 }
 
 function* dashboardSaga() {

@@ -16,6 +16,7 @@ export const initialState = {
    lastUpdatedTime: '' as any,
    lastUpdatedBy: '' as any,
    isBookingData: true as boolean,
+   loadingData: true as boolean,
 };
 
 const outlierSlice = createSlice({
@@ -53,6 +54,9 @@ const outlierSlice = createSlice({
       setDataSource(state, { payload }: PayloadAction<any>) {
          state.isBookingData = payload;
       },
+      setLoadingData(state, { payload }: PayloadAction<boolean>) {
+         state.loadingData = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -77,6 +81,7 @@ export const selectLastUpdatedTime = createSelector(selectState, (state) => stat
 
 export const selectLastUpdatedBy = createSelector(selectState, (state) => state.lastUpdatedBy);
 export const selectDataSource = createSelector(selectState, (state) => state.isBookingData);
+export const selectLoadingData = createSelector(selectState, (state) => state.loadingData);
 export const { actions } = outlierSlice;
 
 export default outlierSlice;
