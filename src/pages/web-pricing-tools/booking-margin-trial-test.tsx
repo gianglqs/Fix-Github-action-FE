@@ -109,7 +109,7 @@ export default function Shipment() {
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
    // use importing to control spiner
    const [loading, setLoading] = useState(false);
-   const [loadingTable, setLoadingTable] = useState(false);
+   const loadingTable = useSelector(bookingMarginTrialTestStore.selectLoadingData);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
    // import failure dialog
    const importFailureDialogDataFilter = useSelector(importFailureStore.selectDataFilter);
@@ -156,14 +156,9 @@ export default function Shipment() {
    }, [dataFilter]);
 
    const handleFilterOrderShipment = () => {
-      setLoadingTable(true);
       dispatch(bookingMarginTrialTestStore.actions.setDefaultValueFilterOrder(dataFilter));
       handleChangePage(1);
    };
-
-   useEffect(() => {
-      setLoadingTable(false);
-   }, [listShipment]);
 
    const handleChangePage = (pageNo: number) => {
       dispatch(commonStore.actions.setTableState({ pageNo }));
@@ -461,12 +456,12 @@ export default function Shipment() {
       },
    ];
 
-   let heightComponentExcludingTable = 293;
+   let heightComponentExcludingTable = 170;
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
 
    if (userRoleState === 'ADMIN') {
-      heightComponentExcludingTable = 272;
+      heightComponentExcludingTable = 205;
    }
 
    useEffect(() => {
@@ -824,7 +819,7 @@ export default function Shipment() {
                   lastUpdatedAt={clientLatestUpdatedTime}
                   lastUpdatedBy={serverLastUpdatedBy}
                />
-               <AppBackDrop open={loadingTable} hightHeaderTable={'93px'} />
+               <AppBackDrop open={loadingTable} hightHeaderTable={'113px'} />
             </Paper>
          </AppLayout>
          <ProductDetailDialog
