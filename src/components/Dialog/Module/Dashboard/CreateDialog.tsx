@@ -125,10 +125,12 @@ const DialogCreateUser: React.FC<any> = (props) => {
                />
             </Grid>
             <Grid item xs={6}>
-               <FormControllerAutocomplete
+               <FormControllerAutocomplete 
                   control={createForm.control}
                   name="defaultLocale"
                   label={t('user.language')}
+                  renderOption={(prop, option) => `${option?.description}`}
+                  getOptionLabel={(option) => `${option?.description}`}
                   required
                   options={languageOptions}
                />
