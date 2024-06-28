@@ -80,9 +80,9 @@ export const defaultValueFilterVolumeDiscount = {
 };
 
 export const defaultValueFilterResidualValue = {
-   modelType: '',
-   brand: '',
-   modelCode: '',
+   modelType: null,
+   brand: null,
+   modelCode: null,
    year: 2,
    price: 0,
 } as ResidualValueDataFilter;

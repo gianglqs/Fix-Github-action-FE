@@ -49,9 +49,7 @@ export default function ResidualValue() {
    );
    const initDataFilterModelCode = useSelector(residualValueStore.selectInitDataFilterModelCode);
 
-   const cacheDataFilter = useSelector(residualValueStore.selectDataFilter);
-
-   const [dataFilter, setDataFilter] = useState(cacheDataFilter);
+   const dataFilter = useSelector(residualValueStore.selectDataFilter);
 
    const serverTimeZone = useSelector(residualValueStore.selectServerTimeZone);
    const serverLastUpdatedTime = useSelector(residualValueStore.selectLastUpdatedTime);
@@ -73,35 +71,16 @@ export default function ResidualValue() {
    const handleChangeDataFilter = (option, field) => {
       let newDataFilter;
       if (_.includes(['modelType', 'brand'], field)) {
-         newDataFilter = { ...dataFilter, [field]: option, modelCode: '' };
+         newDataFilter = { ...dataFilter, [field]: option, modelCode: null };
       } else {
          newDataFilter = { ...dataFilter, [field]: option };
       }
-      setDataFilter(newDataFilter);
-
-      updateDataFilter(newDataFilter);
-
+      dispatch(residualValueStore.actions.setDataFilter(newDataFilter));
+      dispatch(residualValueStore.reloadModelCode());
       if (_.includes(['modelCode'], field)) {
          dispatch(residualValueStore.getDataResidualValue());
       }
    };
-
-   const updateDataFilter = (dataFilter: ResidualValueDataFilter) => {
-      setCookie(null, 'residualValueFilter', JSON.stringify(dataFilter), {
-         maxAge: 604800,
-         path: '/',
-      });
-      dispatch(residualValueStore.actions.setDataFilter(dataFilter));
-   };
-   useEffect(() => {
-      if (Object.keys(cacheDataFilter).length != 0) {
-         setDataFilter(cacheDataFilter);
-      }
-   }, [cacheDataFilter]);
-
-   useEffect(() => {
-      dispatch(residualValueStore.reloadModelCode());
-   }, [dataFilter.modelType, dataFilter.brand]);
 
    const handleUploadFile = async (file) => {
       let formData = new FormData();
@@ -163,22 +142,22 @@ export default function ResidualValue() {
 
    // handle button to clear all filters
    const handleClearAllFilters = () => {
-      updateDataFilter(defaultValueFilterResidualValue);
       setSelectedResidualValue([]);
       setImage(undefined);
-   };   
+      dispatch(residualValueStore.actions.setDataFilter(defaultValueFilterResidualValue));
+   };
 
    //TODO: this should be dynamic, getting from apis
    const optionYearFilter = [
-      { value: 2 },
-      { value: 3 },
-      { value: 4 },
-      { value: 5 },
-      { value: 6 },
-      { value: 7 },
-      { value: 8 },
-      { value: 9 },
-      { value: 10 },
+      { value: '2' },
+      { value: '3' },
+      { value: '4' },
+      { value: '5' },
+      { value: '6' },
+      { value: '7' },
+      { value: '8' },
+      { value: '9' },
+      { value: '10' },
    ];
 
    let heightComponentExcludingTable = 193;
@@ -210,7 +189,8 @@ export default function ResidualValue() {
    };
 
    const handleChangeYear = (year: any) => {
-      setDataFilter((prev) => ({ ...prev, year }));
+      const newDataFilter = { ...dataFilter, year };
+      dispatch(residualValueStore.actions.setDataFilter(newDataFilter));
       selectResidualValueByYears(year);
    };
 
@@ -241,13 +221,7 @@ export default function ResidualValue() {
             <Grid container spacing={1}>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     value={
-                        dataFilter.modelType !== undefined
-                           ? {
-                                value: `${dataFilter.modelType}`,
-                             }
-                           : { value: '' }
-                     }
+                     value={dataFilter.modelType}
                      options={initDataFilterModelTypeAndBrand.modelTypes}
                      label={t('filters.modelType')}
                      onChange={(e, option) =>
@@ -263,13 +237,7 @@ export default function ResidualValue() {
                </Grid>
                <Grid item xs={1.2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     value={
-                        dataFilter.brand !== undefined
-                           ? {
-                                value: `${dataFilter.brand}`,
-                             }
-                           : { value: '' }
-                     }
+                     value={dataFilter.brand}
                      options={initDataFilterModelTypeAndBrand.brands}
                      label={t('filters.brand')}
                      onChange={(e, option) =>
@@ -285,13 +253,7 @@ export default function ResidualValue() {
                </Grid>
                <Grid item xs={1} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     value={
-                        dataFilter.modelCode !== undefined
-                           ? {
-                                value: `${dataFilter.modelCode}`,
-                             }
-                           : { value: '' }
-                     }
+                     value={dataFilter.modelCode}
                      options={initDataFilterModelCode}
                      label={t('filters.model')}
                      onChange={(e, option) =>
@@ -319,13 +281,7 @@ export default function ResidualValue() {
 
                <Grid item xs={1} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     value={
-                        dataFilter.year !== undefined
-                           ? {
-                                value: `${dataFilter.year}`,
-                             }
-                           : { value: '' }
-                     }
+                     value={dataFilter.year}
                      options={optionYearFilter}
                      label={t('filters.year')}
                      onChange={(e, option) => handleChangeYear(option.value)}
@@ -337,7 +293,7 @@ export default function ResidualValue() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               
+
                <Grid item xs={1}>
                   <Button
                      variant="contained"
