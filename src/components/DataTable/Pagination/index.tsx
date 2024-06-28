@@ -97,9 +97,8 @@ const DataTablePagination = (props) => {
       setNumberGoToPage(values.floatValue);
    };
 
-   const handleGoToPage = (event) => {
-      event.preventDefault();
-      handleChangePage(event, numberGoToPage);
+   const handleGoToPage = () => {
+      handleChangePage(null, numberGoToPage);
    };
 
    return (
@@ -154,26 +153,27 @@ const DataTablePagination = (props) => {
                {/* Pagination */}
                <StyledPagination count={count} onChange={handleChangePage} page={page} />
                {/* Go to page */}
-               <form action="">
-                  <AppNumberField
-                     onChange={handleChangeGoToPage}
-                     sx={{ width: 70 }}
-                     decimalScale={0}
-                     fixedDecimalScale={false}
-                     value={numberGoToPage}
-                     InputProps={{
-                        endAdornment: (
-                           <StyledGoButton
-                              type="submit"
-                              onClick={handleGoToPage}
-                              aria-label="go-to-page"
-                           >
-                              {t('go')}
-                           </StyledGoButton>
-                        ),
-                     }}
-                  />
-               </form>
+
+               <AppNumberField
+                  onPressEnter={handleGoToPage}
+                  debounceDelay={100}
+                  onChange={handleChangeGoToPage}
+                  sx={{ width: 70 }}
+                  decimalScale={0}
+                  fixedDecimalScale={false}
+                  value={numberGoToPage}
+                  InputProps={{
+                     endAdornment: (
+                        <StyledGoButton
+                           type="submit"
+                           onClick={handleGoToPage}
+                           aria-label="go-to-page"
+                        >
+                           {t('go')}
+                        </StyledGoButton>
+                     ),
+                  }}
+               />
             </Stack>
          </Stack>
          <Menu
