@@ -1,26 +1,27 @@
-import { styled, Paper, Grid, Box, Typography } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import FormControlledTextField from '@/components/FormController/TextField';
+import { LoadingButton } from '@mui/lab';
+import { Box, Grid, Paper, Typography, styled } from '@mui/material';
 
 import NextHead from 'next/head';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-import { parseCookies, setCookie } from 'nookies';
 import axios from 'axios';
+import { setCookie } from 'nookies';
 import * as yup from 'yup';
 
+import { AppFooter } from '@/components';
+import { commonStore } from '@/store/reducers';
+import { LoginFormValues } from '@/types/auth';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { commonStore } from '@/store/reducers';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { LoginFormValues } from '@/types/auth';
-import { AppFooter } from '@/components';
 
-import Image from 'next/image';
-import { GetServerSidePropsContext } from 'next';
 import { checkTokenBeforeLoadPageLogin } from '@/utils/checkTokenBeforeLoadPage';
+import { GetServerSidePropsContext } from 'next';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('../public/logo.svg');
@@ -43,6 +44,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
 export default function LoginPage(props) {
    const router = useRouter();
+   const { t } = useTranslation();
    const { imageTagFE, releaseTagFE } = props;
 
    const validationSchema = yup.object({
@@ -100,8 +102,14 @@ export default function LoginPage(props) {
 
             router.push('/web-pricing-tools/admin/users');
          })
-         .catch((error) => {                    
-            dispatch(commonStore.actions.setErrorMessage(error.response.data.message));
+         .catch((error) => {
+            if (error.code === 'ERR_NETWORK') {
+               dispatch(
+                  commonStore.actions.setErrorMessage(t('commonErrorMessage.cannotConnectToServer'))
+               );
+            } else {
+               dispatch(commonStore.actions.setErrorMessage(error.response?.data.message));
+            }
          });
    });
    const [backendVersion, setBackendVersion] = useState({ imageTag: '', releaseTag: '' });
@@ -116,7 +124,7 @@ export default function LoginPage(props) {
             });
          })
          .catch((error) => {
-            console.log(error);
+            // console.log(error);
          });
    }, []);
 

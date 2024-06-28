@@ -299,7 +299,11 @@
       "uploadSelectOnlyOneFileAtATime": "Vui lòng chỉ chọn một tệp mỗi lần.",
       "selectRegion": "Vui lòng chọn khu vực trước.",
       "invalidPageNo": "Trang không hợp lệ. Vui lòng chọn một trang trong khoảng từ {0} đến {1}.",
-      "toDateBeforeFromDate": "Ngày kết thúc không được trước ngày bắt đầu"
+      "toDateBeforeFromDate": "Ngày kết thúc không được trước ngày bắt đầu",
+      "modelCodeNotSelected": "Mã mô hình chưa được chọn. Vui lòng chọn mã mô hình hợp lệ để tiếp tục.",
+      "seriesNotSelected": "Chưa chọn Series. Vui lòng chọn Series trước khi tiếp tục.",
+      "typeOrOrderNumberNotSelected": "Số đơn hàng và Loại chưa được chọn. Vui lòng chọn Số đơn hàng hoặc Loại hợp lệ để tiếp tục.",
+      "cannotConnectToServer": "Server không phản hồi. Vui lòng thử lại sau hoặc liên hệ hỗ trợ."
    },
 
    "gumReport": {
