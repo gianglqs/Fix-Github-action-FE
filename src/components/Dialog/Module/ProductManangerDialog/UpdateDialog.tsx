@@ -80,7 +80,6 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
          title={t('updateProduct')}
          okText={t('button.save')}
          closeText={t('button.close')}
-         enableCloseButton={true}
       >
          <Grid
             container
