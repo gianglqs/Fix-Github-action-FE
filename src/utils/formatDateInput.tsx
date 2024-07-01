@@ -65,7 +65,7 @@ export function formatDate(date): string {
 export default formatDateInput;
 
 export const isValidDate = (dateString: string): boolean => {
-   if (dateString === '') return true;
+   if (dateString === '' || dateString === null || dateString === undefined) return true;
    const regex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
    if (!regex.test(dateString)) {
       return false;
