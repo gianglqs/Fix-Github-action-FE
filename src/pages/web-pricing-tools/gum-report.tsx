@@ -56,8 +56,11 @@ function StatsTable({ rows, columns, header }: StatsTableProps) {
             hideFooter
             disableColumnMenu
             disableColumnFilter
-            getRowClassName={params =>{if(params.row.segment == "Total Classes"){
-               return " highlight-row ";}}}
+            getRowClassName={(params) => {
+               if (params.row.segment == 'Total Classes') {
+                  return ' highlight-row ';
+               }
+            }}
             columnGroupingModel={header}
             rows={rows}
             rowHeight={38}
@@ -173,7 +176,6 @@ export default function GumReport() {
          datafield: 'fav-unfav-bkgs-adj-margin',
          format: {
             type: 'NUMERIC',
-            fix: 1,
          },
       },
       {
@@ -212,14 +214,14 @@ export default function GumReport() {
       },
    ]);
    // extract rows of all table from returned data
-   const rowsList = tablesFormat.map(({ datafield ,format}) => {
+   const rowsList = tablesFormat.map(({ datafield, format }) => {
       const rows = [];
       const totalRow = { id: segments.length, segment: 'Total Classes' };
       const nullValue = !format.displayBlankAsNull && 0;
       segments.forEach((segment, i) => {
          const row = { id: i, segment: segments[i] };
          regions.forEach((region) => {
-            row[region] = gumStats?.[region]?.[segment]?.[datafield] ??nullValue ;
+            row[region] = gumStats?.[region]?.[segment]?.[datafield] ?? nullValue;
             row['total'] = gumStats?.['total']?.[segment]?.[datafield] ?? nullValue;
             totalRow[region] = gumStats?.[region]?.totalClasses?.[datafield] ?? nullValue;
          });

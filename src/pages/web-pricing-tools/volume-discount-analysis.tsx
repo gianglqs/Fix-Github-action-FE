@@ -85,7 +85,30 @@ export default function VolumeDiscountAnalysis() {
       return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
+   // handle button to clear all filters
+   const handleClearAllFilterTable = () => {
+      setDataFilter({
+         pricePerUnit: { value: '', error: false },
+         costOfGoodSold: { value: '', error: false },
+         discountPercentage: { value: '', error: false },
+         lever: { value: '', error: false },
+         expectedUnitSales: { value: '', error: false },
+         ocos: { value: '', error: false },
+         segment: { value: '', error: false },
+      });
+   };
    const handleCalculateVolumeDiscount = async () => {
+      if (
+         dataFilter.pricePerUnit?.value === '' &&
+         dataFilter.costOfGoodSold?.value === '' &&
+         dataFilter.discountPercentage?.value === '' &&
+         dataFilter.lever?.value === '' &&
+         dataFilter.expectedUnitSales?.value === '' &&
+         dataFilter.ocos?.value === '' &&
+         dataFilter.segment?.value === ''
+      )
+         return;
+      console.log(dataFilter);
       try {
          setLoading(true);
          const {
@@ -400,19 +423,6 @@ export default function VolumeDiscountAnalysis() {
       },
    };
 
-   // handle button to clear all filters
-   const handleClearAllFilterTable = () => {
-      setDataFilter({
-         pricePerUnit: { value: 0, error: false },
-         costOfGoodSold: { value: 0, error: false },
-         discountPercentage: { value: 0, error: false },
-         lever: { value: '', error: false },
-         expectedUnitSales: { value: '', error: false },
-         ocos: { value: '', error: false },
-         segment: { value: '', error: false },
-      });
-   };
-
    return (
       <>
          <AppLayout entity="volume-discount">
@@ -420,7 +430,7 @@ export default function VolumeDiscountAnalysis() {
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppNumberField
                      value={
-                        dataFilter.pricePerUnit?.value == 0 ? '' : dataFilter.pricePerUnit?.value
+                        dataFilter.pricePerUnit?.value == '' ? '' : dataFilter.pricePerUnit?.value
                      }
                      onChange={(e) => handleChangeDataFilter(e.value, 'pricePerUnit')}
                      name="pricePerUnittt"
@@ -432,7 +442,7 @@ export default function VolumeDiscountAnalysis() {
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppNumberField
                      value={
-                        dataFilter.costOfGoodSold?.value == 0
+                        dataFilter.costOfGoodSold?.value == ''
                            ? ''
                            : dataFilter.costOfGoodSold?.value
                      }
