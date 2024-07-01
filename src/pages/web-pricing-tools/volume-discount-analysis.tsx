@@ -136,7 +136,6 @@ export default function VolumeDiscountAnalysis() {
                tension: 0.1,
             },
          ];
-
          setChartData({ labels, datasets });
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error.message));

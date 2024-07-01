@@ -167,9 +167,16 @@ export default function Adjustment() {
    }, [dataCalculator]);
 
    const handleCalculator = () => {
-      dispatch(adjustmentStore.actions.setDefaultValueCalculator(dataCalculator));
-      changeColorColumnWhenAdjChange();
-      handleChangePage(currentPage);
+      const isSelectedFilter =
+         dataCalculator.costAdjPercentage ||
+         dataCalculator.dnAdjPercentage ||
+         dataCalculator.freightAdj ||
+         dataCalculator.fxAdj;
+      if (isSelectedFilter) {
+         dispatch(adjustmentStore.actions.setDefaultValueCalculator(dataCalculator));
+         changeColorColumnWhenAdjChange();
+         handleChangePage(currentPage);
+      }
    };
 
    const handleFilterAdjustment = () => {
