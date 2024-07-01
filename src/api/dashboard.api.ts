@@ -15,7 +15,7 @@ class DashboardApi extends HttpService<any> {
    };
 
    updateUser = (userId: any, data: any) => {
-      return this.put<any>(`users/updateUser/${userId}`, data);
+      return this.put<any>(`users/updateUser/${userId}`,{}, data);
    };
 
    deactivateUser = (userId: any) => {

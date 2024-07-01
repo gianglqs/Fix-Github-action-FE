@@ -35,6 +35,9 @@ const DialogUpdateUser: React.FC<any> = (props) => {
    };
 
    const handleSubmitForm = updateUserForm.handleSubmit(async (formData: any) => {
+      
+      console.log(formData);
+
       if (formData.name === '') {
          dispatch(commonStore.actions.setErrorMessage('Username must be at least 2 characters'));
          return;
@@ -45,11 +48,12 @@ const DialogUpdateUser: React.FC<any> = (props) => {
          role: role,
          defaultLocale: formData.defaultLocale,
       };
-
+      
       try {
-         setLoading(true);
+         setLoading(true);        
          const { data } = await dashboardApi.updateUser(detail?.id, transformData);
 
+         //reload user data list
          if (userId != detail?.id) {
             const userList = await dashboardApi.getUser({ search: '' });
             dispatch(userStore.actions.setUserList(JSON.parse(userList?.data)?.userList));

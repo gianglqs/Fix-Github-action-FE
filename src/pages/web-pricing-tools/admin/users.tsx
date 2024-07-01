@@ -225,7 +225,6 @@ export default function Dashboard() {
    const handleOpenUpdateUserDialog = async (userId) => {
       try {
          // Get init data
-
          const { data } = await dashboardApi.getDetailUser(userId);
 
          // Open form
