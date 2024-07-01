@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 
 export const formatEuropeDate = (date: string) => {
    if (date.length === 0) {
@@ -77,4 +78,8 @@ export const isValidDate = (dateString: string): boolean => {
    };
 
    return day <= daysInMonth(year, month);
+};
+
+export const isBefore = (date1: string, date2: string) => {
+   return moment(date1).isBefore(date2);
 };

@@ -869,24 +869,6 @@ export default function Indicators() {
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                   <AppAutocomplete
-                     value={_.map(dataFilter.dealers, (item) => {
-                        return { value: item };
-                     })}
-                     options={initDataFilter.dealers}
-                     label={t('filters.dealerName')}
-                     sx={{ height: 25, zIndex: 10 }}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'dealers')}
-                     limitTags={1}
-                     disableListWrap
-                     primaryKeyOption="value"
-                     multiple
-                     disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
-                     getOptionLabel={(option) => `${option.value}`}
-                  />
-               </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
-                  <AppAutocomplete
                      value={_.map(dataFilter.plants, (item) => {
                         return { value: item };
                      })}

@@ -67,7 +67,7 @@ export default function Outlier() {
    const listTotalRow = useSelector(outlierStore.selectTotalRow);
    const cacheDataFilter = useSelector(outlierStore.selectDataFilter);
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
-   const [loading, setLoading] = useState(false);
+   const loading = useSelector(outlierStore.selectLoadingData);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
    const serverTimeZone = useSelector(outlierStore.selectServerTimeZone);
    const serverLastUpdatedTime = useSelector(outlierStore.selectLastUpdatedTime);
@@ -112,12 +112,7 @@ export default function Outlier() {
       return () => debouncedHandleWhenChangeDataFilter.cancel();
    }, [dataFilter]);
 
-   useEffect(() => {
-      setLoading(false);
-   }, [listOutlier]);
-
    const handleFilterOrderBooking = () => {
-      setLoading(true);
       dispatch(outlierStore.actions.setDefaultValueFilterOutlier(dataFilter));
       handleChangePage(1);
    };

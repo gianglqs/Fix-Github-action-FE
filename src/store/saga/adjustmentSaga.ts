@@ -3,6 +3,7 @@ import { adjustmentStore, commonStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import adjustmentApi from '@/api/adjustment.api';
 import { parseCookies } from 'nookies';
+import { isBefore, isValidDate } from '@/utils/formatDateInput';
 
 function* fetchAdjustment() {
    try {
@@ -37,6 +38,19 @@ function* fetchAdjustment() {
          dataCalculator = defaultValueCalculator;
       }
 
+      const fromDateFilter = dataFilter.fromDate;
+      const toDateFilter = dataFilter.toDate;
+
+      if (!isValidDate(fromDateFilter)) {
+         throw new Error('From date is invalid!');
+      }
+      if (!isValidDate(toDateFilter)) {
+         throw new Error('To date is invalid!');
+      }
+      if (isBefore(toDateFilter, fromDateFilter))
+         throw new Error('The To Date value cannot be earlier than the From Date value');
+
+      yield put(adjustmentStore.actions.setLoadingData(true));
       const { data } = yield* call(
          adjustmentApi.getAdjustment,
          { dataFilter: dataFilter, dataCalculate: dataCalculator },
@@ -65,7 +79,11 @@ function* fetchAdjustment() {
       yield put(adjustmentStore.actions.setServerTimeZone(dataServerTimeZone));
       yield put(adjustmentStore.actions.setLastUpdatedTime(dataLastUpdatedTime));
       yield put(adjustmentStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
-   } catch (error) {}
+      yield put(adjustmentStore.actions.setLoadingData(false));
+   } catch (error) {
+      yield put(adjustmentStore.actions.setLoadingData(false));
+      yield put(commonStore.actions.setErrorMessage(error.message));
+   }
 }
 
 function* dashboardSaga() {

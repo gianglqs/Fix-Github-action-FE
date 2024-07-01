@@ -11,8 +11,8 @@ function* fetchModelCode() {
 
    const { data } = yield* call(
       residualValueApi.getInitDataFilterForModelCode,
-      dataFilter.dataFilter.modelType,
-      dataFilter.dataFilter.brand
+      dataFilter.dataFilter.modelType || '',
+      dataFilter.dataFilter.brand || ''
    );
    yield put(residualValueStore.actions.setInitDataFilterModelCode(JSON.parse(data)));
 }
@@ -29,11 +29,9 @@ function* fetchAllInitDataFilter() {
    );
 
    // fetch data ResidualValue if dataFilter has modelCode
-   const cookies = parseCookies();
-   const jsonDataFilter = cookies['residualValueFilter'];
-   if (jsonDataFilter) {
-      const dataFilter = JSON.parse(String(jsonDataFilter));
-      console.log('getData from cookies', dataFilter);
+   const dataFilterString = localStorage.getItem('residualValueFilter');
+   if (dataFilterString) {
+      const dataFilter = JSON.parse(String(dataFilterString));
       yield put(residualValueStore.actions.setDataFilter(dataFilter));
    }
 
@@ -43,50 +41,27 @@ function* fetchAllInitDataFilter() {
 
    const { data } = yield* call(
       residualValueApi.getInitDataFilterForModelCode,
-      dataFilter.dataFilter.modelType,
-      dataFilter.dataFilter.brand
+      dataFilter.dataFilter.modelType || '',
+      dataFilter.dataFilter.brand || ''
    );
 
    const dataModelCodeFilter = JSON.parse(data);
 
    yield put(residualValueStore.actions.setInitDataFilterModelCode(dataModelCodeFilter));
-
-   const residualValueData = yield* call(
-      residualValueApi.getListResidualValue,
-      dataFilter.dataFilter.modelCode
-   );
-   yield put(
-      residualValueStore.actions.setListResidualValue(
-         JSON.parse(String(residualValueData.data)).listResidualValue
-      )
-   );
-   yield put(
-      residualValueStore.actions.setServerTimeZone(
-         JSON.parse(String(residualValueData.data)).serverTimeZone
-      )
-   );
-
-   yield put(
-      residualValueStore.actions.setLastUpdatedTime(
-         JSON.parse(String(residualValueData.data)).lastUpdatedTime
-      )
-   );
-   yield put(
-      residualValueStore.actions.setLastUpdatedBy(
-         JSON.parse(String(residualValueData.data)).lastUpdatedBy
-      )
-   );
+   yield* fetchDataResidualValue();
 }
 
 function* fetchDataResidualValue() {
-   const dataFilter = yield all({
+   const { dataFilter } = yield all({
       dataFilter: select(residualValueStore.selectDataFilter),
    });
-   if (dataFilter?.dataFilter?.modelCode) {
-      const { data } = yield call(
-         residualValueApi.getListResidualValue,
-         dataFilter.dataFilter.modelCode
-      );
+
+   if (dataFilter?.modelCode && dataFilter?.modelCode !== '') {
+      const { data } = yield call(residualValueApi.getListResidualValue, dataFilter.modelCode);
+
+      const modelType = JSON.parse(data).modelType;
+      const brand = JSON.parse(data).brand;
+      const newDataFilter = { ...dataFilter, modelType, brand };
 
       yield put(
          residualValueStore.actions.setListResidualValue(JSON.parse(data).listResidualValue)
@@ -98,6 +73,7 @@ function* fetchDataResidualValue() {
       yield put(
          residualValueStore.actions.setLastUpdatedBy(JSON.parse(String(data)).lastUpdatedBy)
       );
+      yield put(residualValueStore.actions.setDataFilter(newDataFilter));
    }
 }
 

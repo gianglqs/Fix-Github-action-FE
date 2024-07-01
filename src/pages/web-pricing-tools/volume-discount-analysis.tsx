@@ -86,7 +86,6 @@ export default function VolumeDiscountAnalysis() {
    }, [dataFilter]);
 
    const handleCalculateVolumeDiscount = async () => {
-      console.log(dataFilter.pricePerUnit?.value === 0);
       try {
          setLoading(true);
          const {

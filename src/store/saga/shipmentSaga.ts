@@ -4,7 +4,7 @@ import { select, call, all } from 'typed-redux-saga';
 import shipmentApi from '@/api/shipment.api';
 import { parseCookies } from 'nookies';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
-import { isValidDate } from '@/utils/formatDateInput';
+import { isBefore, isValidDate } from '@/utils/formatDateInput';
 
 function* getDataShipment() {
    try {
@@ -37,6 +37,9 @@ function* getDataShipment() {
       if (!isValidDate(toDateFilter)) {
          throw new Error('To date is invalid!');
       }
+      if (isBefore(toDateFilter, fromDateFilter))
+         throw new Error('The To Date value cannot be earlier than the From Date value');
+
       yield put(shipmentStore.actions.setLoadingData(true));
 
       const { data } = yield* call(shipmentApi.getShipments, dataFilter, {

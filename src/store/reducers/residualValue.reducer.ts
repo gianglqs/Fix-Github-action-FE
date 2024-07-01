@@ -39,6 +39,7 @@ const residualvalueSlice = createSlice({
 
       setDataFilter(state, { payload }: PayloadAction<any>) {
          state.dataFilter = payload;
+         localStorage.setItem('residualValueFilter', JSON.stringify(payload));
       },
 
       setListResidualValue(state, { payload }: PayloadAction<any[]>) {
