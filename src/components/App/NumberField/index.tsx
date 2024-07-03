@@ -45,7 +45,7 @@ const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) =>
          customInput={TextField}
          onValueChange={handleOnChange}
          ref={ref as any}
-         allowNegative={true}
+         allowNegative={false}
          onKeyDown={handleKeyDown}
          format="#### #### #### ####"
          fixedDecimalScale={false}
