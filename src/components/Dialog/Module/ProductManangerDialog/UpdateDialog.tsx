@@ -8,6 +8,8 @@ import { commonStore, productStore } from '@/store/reducers';
 import ChooseImage from '@/components/App/chooseImage';
 import productApi from '@/api/product.api';
 import { useTranslation } from 'react-i18next';
+import { json } from 'stream/consumers';
+import { gridColumnGroupsUnwrappedModelSelector } from '@mui/x-data-grid-pro';
 
 const DialogUpdateProduct: React.FC<any> = (props) => {
    const { open, onClose, preValue } = props;
@@ -48,6 +50,8 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
       // if have change description
       if (newValue.description !== preValue.description)
          updateForm.append('description', newValue.description);
+
+      gridColumnGroupsUnwrappedModelSelector;
 
       try {
          await productApi.updateProduct(updateForm);

@@ -223,7 +223,7 @@ export default function Product() {
                   onClick={() =>
                      handleOpenUpdateColorDialog(
                         params.row.modelCode,
-                        params.row.series,
+                        params.row.series.series,
                         params.row.image,
                         params.row.description
                      )
@@ -313,6 +313,7 @@ export default function Product() {
             },
          });
       } catch (error) {
+         console.log(error);
          // dispatch(commonStore.actions.setErrorMessage(error))
       }
    };
