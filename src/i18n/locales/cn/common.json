@@ -127,8 +127,8 @@
       "dealerNet": "经销商净价",
       "dealerNetAfterSurcharge": "附加费后的经销商净价",
       "totalCost": "总成本",
-      "marginAfterSurcharge": "附加费后利润",
-      "marginPercentageAfterSurcharge": "附加费后利润率",
+      "margin": "利润",
+      "marginPercentage": "保证金百分比",
       "aopMarginPercentage": "AOP利润率",
 
       "totalActualCost": "实际总成本",

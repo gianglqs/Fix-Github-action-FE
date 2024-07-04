@@ -183,16 +183,6 @@ export default function Outlier() {
          ...formatNumbericColumn,
       },
       {
-         field: 'totalCost',
-         flex: 0.8,
-         minWidth: 150,
-         headerName: `${t('table.totalCost')} ('000 USD)`,
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.totalCost)}</span>;
-         },
-      },
-      {
          field: 'dealerNet',
          flex: 0.8,
          minWidth: 100,
@@ -200,27 +190,6 @@ export default function Outlier() {
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.dealerNet)}</span>;
-         },
-      },
-      {
-         field: 'dealerNetAfterSurCharge',
-         flex: 0.8,
-         minWidth: 100,
-         headerName: `${t('table.dealerNet')} ('000 USD)`,
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
-         },
-      },
-
-      {
-         field: 'marginAfterSurCharge',
-         flex: 0.7,
-         minWidth: 150,
-         headerName: `${t('table.marginAfterSurcharge')} ('000 USD)`,
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
          },
       },
       {
@@ -242,12 +211,42 @@ export default function Outlier() {
             );
          },
       },
+      {
+         field: 'dealerNetAfterSurCharge',
+         flex: 0.8,
+         minWidth: 100,
+         headerName: `${t('table.dealerNet')} ('000 USD)`,
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
+         },
+      },
+      {
+         field: 'totalCost',
+         flex: 0.8,
+         minWidth: 150,
+         headerName: `${t('table.totalCost')} ('000 USD)`,
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumber(params?.row.totalCost)}</span>;
+         },
+      },
+      {
+         field: 'marginAfterSurCharge',
+         flex: 0.7,
+         minWidth: 150,
+         headerName: `${t('table.margin')} ('000 USD)`,
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
+         },
+      },
 
       {
          field: 'marginPercentageAfterSurCharge',
          flex: 0.6,
          minWidth: 150,
-         headerName: t('table.marginPercentageAfterSurcharge'),
+         headerName: t('table.marginPercentage'),
          ...formatNumbericColumn,
          renderCell(params) {
             return (
@@ -264,7 +263,7 @@ export default function Outlier() {
          x: {
             beginAtZero: true,
             title: {
-               text: t('table.marginPercentageAfterSurcharge'),
+               text: t('table.marginPercentage'),
                display: true,
             },
             ticks: {
@@ -483,7 +482,7 @@ export default function Outlier() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.marginAfterSurcharge')} ('000)
+                           {t('table.margin')} ('000)
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            $ {formatNumber(listTotalRow[0]?.marginAfterSurcharge)}
@@ -495,7 +494,7 @@ export default function Outlier() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.marginPercentageAfterSurcharge')}
+                           {t('table.marginPercentage')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumberPercentage(
