@@ -1,8 +1,9 @@
 import { takeEvery, put } from 'redux-saga/effects';
-import { residualValueStore } from '../reducers';
+import { commonStore, residualValueStore } from '../reducers';
 import { select, call, all } from 'typed-redux-saga';
 import { parseCookies } from 'nookies';
 import residualValueApi from '@/api/residualValue.api';
+import { throws } from 'assert';
 
 function* fetchModelCode() {
    const dataFilter = yield* all({
@@ -62,6 +63,16 @@ function* fetchDataResidualValue() {
       const modelType = JSON.parse(data).modelType;
       const brand = JSON.parse(data).brand;
       const newDataFilter = { ...dataFilter, modelType, brand };
+
+      if (JSON.parse(data).listResidualValue.length === 0) {
+         yield put(
+            commonStore.actions.setErrorMessage(
+               'The data does not exist for model code' +
+                  dataFilter.modelCode +
+                  ' in the system. Please select a different model code.'
+            )
+         );
+      }
 
       yield put(
          residualValueStore.actions.setListResidualValue(JSON.parse(data).listResidualValue)
