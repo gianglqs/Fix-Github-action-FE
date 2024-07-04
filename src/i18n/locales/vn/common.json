@@ -318,6 +318,11 @@
       "actualBkingAdjMargin": "Tỷ lệ Biên lợi nhuận Đặt hàng Thực tế Điều chỉnh - Điều chỉnh Giá và Chi phí",
       "YTDActualBooking": "Doanh số đặt hàng thực tế tính đến cuối năm"
    },
+
+   "link": {
+      "getExampleUploadFile": "Get example upload file"
+   },
+
    "yes": "Có",
    "no": "Không",
    "or": "Hoặc",

@@ -325,6 +325,10 @@
       "YTDActualBooking": "YTD Actual Bookings"
    },
 
+   "link": {
+      "getExampleUploadFile": "Get example file"
+   },
+
    "yes": "Yes",
    "no": "No",
    "or": "OR",

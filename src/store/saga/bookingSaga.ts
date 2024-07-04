@@ -1,3 +1,4 @@
+import { selectExampleUploadFile } from './../reducers/booking.reducer';
 import bookingApi from '@/api/booking.api';
 import { isBefore, isValidDate } from '@/utils/formatDateInput';
 import { parseCookies } from 'nookies';
@@ -36,7 +37,11 @@ function* getDataBooking() {
          throw new Error('To date is invalid!');
       }
 
-      if (isBefore(toDateFilter, fromDateFilter))
+      if (
+         !isValidDate(fromDateFilter) &&
+         !isValidDate(toDateFilter) &&
+         isBefore(toDateFilter, fromDateFilter)
+      )
          throw new Error('The To Date value cannot be earlier than the From Date value');
 
       yield put(bookingStore.actions.setLoadingData(true));
@@ -56,6 +61,7 @@ function* getDataBooking() {
       const dataLastUpdatedAt = data.data.lastUpdatedTime;
       const dataLastUpdatedBy = data.data.lastUpdatedBy;
       const totalItems = data.data.totalItems;
+      const exampleUploadFile = data.data.exampleUploadFile;
 
       yield put(bookingStore.actions.setDataFilter(dataFilter));
       yield put(bookingStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
@@ -66,6 +72,7 @@ function* getDataBooking() {
       yield put(bookingStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
 
       yield put(commonStore.actions.setTableState({ totalItems }));
+      yield put(bookingStore.actions.setExampleUploadFile(exampleUploadFile));
 
       yield put(bookingStore.actions.setLoadingData(false));
    } catch (error) {
