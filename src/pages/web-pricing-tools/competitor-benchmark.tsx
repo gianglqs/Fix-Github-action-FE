@@ -10,9 +10,6 @@ import { AppLayout, DataTablePagination, AppAutocomplete } from '@/components';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
-import LineChart from '@/components/chart/Line';
-import moment from 'moment-timezone';
-
 import {
    Chart as ChartJS,
    LinearScale,
