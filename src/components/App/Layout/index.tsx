@@ -75,7 +75,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       'financial-bookings': t('title.financialBookings'),
       'financial-shipments': t('title.financialShipments'),
       'quotation-margin': t('title.quotationMarginPercentage'),
-      'competitor-benchmark': t('title.competitorBenchmark'),
+      // 'competitor-benchmark': t('title.competitorBenchmark'),
       'competitor-benchmark-v2': t('title.competitorBenchmarkV2'),
       'simulation-modelling': t('title.simulationModelling'),
       // 'competitor-bubbles': 'Competitor Bubbles',
