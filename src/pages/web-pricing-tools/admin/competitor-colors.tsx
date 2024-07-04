@@ -136,8 +136,9 @@ export default function competitorColors() {
       detail: {} as any,
    });
 
-   const reloadPage = async (event) => {
-      window.location.reload();
+   const reloadData = async (event) => {
+      handleChangePage(1);
+      dispatch(competitorColorStore.sagaGetList());
    };
    const handleSearch = async (event, searchQuery) => {
       dispatch(competitorColorStore.actions.setCompetitorColorSearch(searchQuery));
@@ -347,7 +348,7 @@ export default function competitorColors() {
                <Toolbar />
                <Grid container justifyContent="flex-end" sx={{ padding: 1 }}>
                   <Button
-                     onClick={reloadPage}
+                     onClick={reloadData}
                      variant="contained"
                      style={{ marginLeft: 5 }}
                      color="primary"
