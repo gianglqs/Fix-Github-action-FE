@@ -109,38 +109,48 @@ export default function VolumeDiscountAnalysis() {
       )
          return;
       console.log(dataFilter);
-      try {
-         setLoading(true);
-         const {
-            data: { volumeDiscountAnalysis },
-         } = await volumeDiscountApi.calculateVolumeDiscount({
-            pricePerUnit: dataFilter.pricePerUnit?.value,
-            costOfGoodSold: dataFilter.costOfGoodSold?.value,
-            discountPercentage: dataFilter.discountPercentage?.value / 100,
-            lever: dataFilter.lever?.value,
-            expectedUnitSales: dataFilter.expectedUnitSales?.value,
-            ocos: dataFilter.ocos?.value,
-         });
-         setVolumeDiscountData(volumeDiscountAnalysis);
 
-         const labels = volumeDiscountAnalysis.map(({ volume }) => volume);
-         const datasets = [
-            {
-               label:
-                  grossProfitSegments.find((item) => item == dataFilter.segment?.value) != undefined
-                     ? t('volumeDiscount.grossProfit')
-                     : t('volumeDiscount.standardMargin'),
-               data: volumeDiscountAnalysis.map((item) => item.standardMargin),
-               fill: false,
-               borderColor: 'rgb(75, 192, 192)',
-               tension: 0.1,
-            },
-         ];
-         setChartData({ labels, datasets });
-      } catch (error) {
-         dispatch(commonStore.actions.setErrorMessage(error.message));
-      } finally {
-         setLoading(false);
+      if (dataFilter.discountPercentage?.value > 100) {
+         dispatch(
+            commonStore.actions.setErrorMessage(
+               'Input value out of range. Please enter a value from 0 to 100.'
+            )
+         );
+      } else {
+         try {
+            setLoading(true);
+            const {
+               data: { volumeDiscountAnalysis },
+            } = await volumeDiscountApi.calculateVolumeDiscount({
+               pricePerUnit: dataFilter.pricePerUnit?.value,
+               costOfGoodSold: dataFilter.costOfGoodSold?.value,
+               discountPercentage: dataFilter.discountPercentage?.value / 100,
+               lever: dataFilter.lever?.value,
+               expectedUnitSales: dataFilter.expectedUnitSales?.value,
+               ocos: dataFilter.ocos?.value,
+            });
+            setVolumeDiscountData(volumeDiscountAnalysis);
+
+            const labels = volumeDiscountAnalysis.map(({ volume }) => volume);
+            const datasets = [
+               {
+                  label:
+                     grossProfitSegments.find((item) => item == dataFilter.segment?.value) !=
+                     undefined
+                        ? t('volumeDiscount.grossProfit')
+                        : t('volumeDiscount.standardMargin'),
+                  data: volumeDiscountAnalysis.map((item) => item.standardMargin),
+                  fill: false,
+                  borderColor: 'rgb(75, 192, 192)',
+                  tension: 0.1,
+               },
+            ];
+            setChartData({ labels, datasets });
+         } catch (error) {
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         } finally {
+            setLoading(false);
+         }
       }
    };
 
