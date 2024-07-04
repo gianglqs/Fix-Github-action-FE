@@ -29,8 +29,8 @@ class ProductApi extends HttpService<any> {
       return this.get<any>(`loadImage/product/${imageName}`);
    };
 
-   getProductDetailFilter = (modelCode, metaSeries) => {
-      return this.get<any>('filters/productDetail', { modelCode, metaSeries });
+   getProductDetailFilter = (modelCode, series) => {
+      return this.get<any>('filters/productDetail', { modelCode, series });
    };
 
    getProductDetail = (modelCode, series) => {
