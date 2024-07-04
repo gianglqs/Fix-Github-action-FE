@@ -241,7 +241,7 @@ export default function Dashboard() {
       setUpdateUserState({
          open: false,
          detail: {},
-      });
+      });    
    };
 
    const handleOpenChangePasswordDialog = () => {
@@ -262,7 +262,6 @@ export default function Dashboard() {
    const handleLogOut = () => {
       try {
          popupState.close();
-
          removeAllCookies();
          router.push('/login');
       } catch (err) {
