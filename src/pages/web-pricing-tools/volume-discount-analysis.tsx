@@ -108,7 +108,6 @@ export default function VolumeDiscountAnalysis() {
          dataFilter.segment?.value === ''
       )
          return;
-      console.log(dataFilter);
       try {
          setLoading(true);
          const {
