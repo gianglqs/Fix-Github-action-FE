@@ -1,11 +1,12 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import _, { isNil } from 'lodash';
-
-const LineChart: React.FC<any> = (props) => {
+import { forwardRef } from 'react';
+const LineChart: React.FC<any> = forwardRef((props, ref: any) => {
    const { chartData, scales, chartName, tooltip, subtitle } = props;
    return (
       <Line
+         ref={ref}
          data={chartData}
          options={{
             scales,
@@ -24,5 +25,5 @@ const LineChart: React.FC<any> = (props) => {
          }}
       />
    );
-};
+});
 export default LineChart;

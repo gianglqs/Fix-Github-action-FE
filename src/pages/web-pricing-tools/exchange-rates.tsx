@@ -144,7 +144,9 @@ export default function ExchangeRate() {
             return;
          }
          if (dataFilter.comparisonCurrencies.value.length == 0) {
-            dispatch(commonStore.actions.setErrorMessage('Please select the currencies to exchange to'));
+            dispatch(
+               commonStore.actions.setErrorMessage('Please select the currencies to exchange to')
+            );
             setDataFilter((prev) =>
                produce(prev, (draft) => {
                   draft['comparisonCurrencies'] = { value: [], error: true };

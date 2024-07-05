@@ -1,7 +1,7 @@
 import { Button, Grid, Typography } from '@mui/material';
 import LineChart from '../chart/Line';
 import _ from 'lodash';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { formatDate } from '@/utils/formatCell';
 import { useTranslation } from 'react-i18next';
@@ -9,9 +9,26 @@ import { useTranslation } from 'react-i18next';
 import Slider from '@mui/material/Slider';
 const ChartView: React.FC<any> = ({ chartData, index, tooltip, currentCurrency }) => {
    const { t } = useTranslation();
+   const chartRef = useRef({} as any);
    const handleCloseItem = (item) => {};
-   const [scaleX, setScaleX] = useState([0, 100]);
-   const [scaleY, setScaleY] = useState([0, 100]);
+   const [scaleX, setScaleX] = useState([0, 0]);
+   const [scaleY, setScaleY] = useState([0, 0]);
+   const [scaleY1, setScaleY1] = useState([0, 0]);
+   const [xBoundary, setXBoundary] = useState([0, 0]);
+   const [yBoundary, setYBoundary] = useState([0, 0]);
+   const [y1Boundary, setY1Boundary] = useState([0, 0]);
+
+   const isJPY = chartData[index].title.includes('JPY');
+   //get chart axis boundary after first render
+   useEffect(() => {
+      setXBoundary([chartRef.current.scales.x.min, chartRef.current.scales.x.max]);
+
+      setYBoundary([chartRef.current.scales.y.min, chartRef.current.scales.y.max]);
+      setScaleY([chartRef.current.scales.y.min * 100, chartRef.current.scales.y.max * 100]);
+
+      setY1Boundary([chartRef.current.scales.y1.min, chartRef.current.scales.y1.max]);
+      setScaleY1([chartRef.current.scales.y1?.min * 100, chartRef.current.scales.y1?.max * 100]);
+   }, []);
    let chartItemScales = {
       y1: {
          title: {
@@ -37,7 +54,17 @@ const ChartView: React.FC<any> = ({ chartData, index, tooltip, currentCurrency }
             display: true,
          },
       },
-   };
+   } as any;
+   if (yBoundary[1] != 0) {
+      chartItemScales.y.max = scaleY[1] / 100;
+      chartItemScales.y.min = scaleY[0] / 100;
+   }
+
+   if (y1Boundary[1] != 0 && isJPY) {
+      chartItemScales.y1.display = true;
+      chartItemScales.y1.min = scaleY1[0] / 100;
+      chartItemScales.y1.max = scaleY1[1] / 100;
+   }
    return (
       <Grid
          container
@@ -89,15 +116,23 @@ const ChartView: React.FC<any> = ({ chartData, index, tooltip, currentCurrency }
                      alignItems: 'center',
                   }}
                >
-                  <div style={{ height: '50%', order: 3 }}>
-                     <Slider
-                        max={100}
-                        value={50}
-                        onChange={(option, value) => {
-                           setScaleX(value as number[]);
-                        }}
-                        orientation="vertical"
-                     />
+                  <div
+                     style={{
+                        height: '50%',
+                        order: 1,
+                     }}
+                  >
+                     {yBoundary[1] && (
+                        <Slider
+                           max={yBoundary[1] * 100}
+                           min={yBoundary[0] * 100}
+                           value={scaleY}
+                           onChange={(option, value) => {
+                              setScaleY(value as number[]);
+                           }}
+                           orientation="vertical"
+                        />
+                     )}
                   </div>
                   <Grid
                      item
@@ -110,14 +145,34 @@ const ChartView: React.FC<any> = ({ chartData, index, tooltip, currentCurrency }
                      }}
                   >
                      <LineChart
+                        layout={{ padding: { top: 5 } }}
+                        ref={chartRef}
                         chartData={chartData[index].data}
                         chartName={chartData[index].title}
                         scales={chartItemScales}
                         tooltip={tooltip}
                      />
                   </Grid>
+                  <div
+                     style={{
+                        height: '50%',
+                        order: 3,
+                     }}
+                  >
+                     {y1Boundary[1] && isJPY && (
+                        <Slider
+                           max={y1Boundary[1] * 100}
+                           min={y1Boundary[0] * 100}
+                           value={scaleY1}
+                           onChange={(option, value) => {
+                              setScaleY1(value as number[]);
+                           }}
+                           orientation="vertical"
+                        />
+                     )}
+                  </div>
                </div>
-               <div style={{ width: '60%' }}>
+               {/*<div style={{ width: '60%' }}>
                   <Slider
                      max={100}
                      value={50}
@@ -125,7 +180,7 @@ const ChartView: React.FC<any> = ({ chartData, index, tooltip, currentCurrency }
                         setScaleX(value as number[]);
                      }}
                   />
-               </div>
+               </div>*/}
             </div>
             <Grid
                item
@@ -247,10 +302,6 @@ const CurrencyReport: React.FC<any> = (props) => {
                },
             },
          };
-
-         if (chartData[index].title.includes('JPY')) {
-            chartItemScales.y1.display = true;
-         }
 
          return (
             <>
