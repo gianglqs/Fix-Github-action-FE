@@ -7,10 +7,15 @@ import { formatDate } from '@/utils/formatCell';
 import { useTranslation } from 'react-i18next';
 //components
 import Slider from '@mui/material/Slider';
-const ChartView: React.FC<any> = ({ chartData, index, tooltip, currentCurrency }) => {
+const ChartView: React.FC<any> = ({
+   chartData,
+   index,
+   tooltip,
+   currentCurrency,
+   handleCloseItem,
+}) => {
    const { t } = useTranslation();
    const chartRef = useRef({} as any);
-   const handleCloseItem = (item) => {};
    const [scaleX, setScaleX] = useState([0, 0]);
    const [scaleY, setScaleY] = useState([0, 0]);
    const [scaleY1, setScaleY1] = useState([0, 0]);
@@ -19,6 +24,11 @@ const ChartView: React.FC<any> = ({ chartData, index, tooltip, currentCurrency }
    const [y1Boundary, setY1Boundary] = useState([0, 0]);
 
    const isJPY = chartData[index].title.includes('JPY');
+   const yTitle =
+      chartData[index]?.data?.datasets
+         ?.map((data) => data.label)
+         ?.filter((currency) => currency != 'JPY')
+         ?.join(' ') || '';
    //get chart axis boundary after first render
    useEffect(() => {
       setXBoundary([chartRef.current.scales.x.min, chartRef.current.scales.x.max]);
@@ -42,6 +52,10 @@ const ChartView: React.FC<any> = ({ chartData, index, tooltip, currentCurrency }
          display: false,
       },
       y: {
+         title: {
+            text: yTitle,
+            display: true,
+         },
          ticks: {
             callback: function (value) {
                return Number(value.toFixed(6));
@@ -145,7 +159,6 @@ const ChartView: React.FC<any> = ({ chartData, index, tooltip, currentCurrency }
                      }}
                   >
                      <LineChart
-                        layout={{ padding: { top: 5 } }}
                         ref={chartRef}
                         chartData={chartData[index].data}
                         chartName={chartData[index].title}
@@ -311,6 +324,7 @@ const CurrencyReport: React.FC<any> = (props) => {
                   chartItemScales={chartItemScales}
                   currentCurrency={currentCurrency}
                   tooltip={tooltip}
+                  handleCloseItem={handleCloseItem}
                />
                {/*<Grid
                container

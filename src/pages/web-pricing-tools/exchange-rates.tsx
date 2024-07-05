@@ -104,9 +104,7 @@ export default function ExchangeRate() {
             if (_.includes(['currentCurrency'], field)) {
                draft[field] = { value: option.value, error: false };
             } else if (_.includes(['fromDate', 'toDate'], field)) {
-               exchangeRateSource === 'Database'
-                  ? (draft[field].value = option.slice(0, -3))
-                  : (draft[field].value = option.slice(0));
+               draft[field].value = option.slice(0, -3);
             } else {
                draft[field].value = option.map(({ value }) => value);
                draft[field].error = false;
@@ -184,7 +182,6 @@ export default function ExchangeRate() {
                      .compareCurrency(request)
                      .then((response) => {
                         const data = response.data.compareCurrency;
-
                         // Setting Labels for chart
                         const labels = data[dataFilter.comparisonCurrencies.value[0]]
                            .map((item) => {
@@ -197,7 +194,6 @@ export default function ExchangeRate() {
                               }
                            })
                            .reverse();
-
                         let datasets = [];
                         dataFilter.comparisonCurrencies.value.forEach((item) => {
                            datasets.push({
@@ -240,12 +236,12 @@ export default function ExchangeRate() {
                   setLoading(false);
                   dispatch(
                      commonStore.actions.setErrorMessage(
-                        'Time exceeds 12 months, please choose a shorter range'
+                        t('commonErrorMessage.timeExceedsTwelveMonths')
                      )
                   );
                }
             } else {
-               if (dayDiff < 30) {
+               if (monthDiff < 4) {
                   exchangeRatesApi
                      .compareCurrency(request)
                      .then((response) => {
@@ -306,7 +302,7 @@ export default function ExchangeRate() {
                   setLoading(false);
                   dispatch(
                      commonStore.actions.setErrorMessage(
-                        'Time exceeds 30 days, please choose a shorter range'
+                        t('commonErrorMessage.timeExceedsThreeMonths')
                      )
                   );
                }
@@ -561,11 +557,7 @@ export default function ExchangeRate() {
 
                <Grid item xs={1}>
                   <AppDateField
-                     views={
-                        exchangeRateSource === 'Database'
-                           ? ['month', 'year']
-                           : ['day', 'month', 'year']
-                     }
+                     views={['month', 'year']}
                      label={t('filters.fromDate')}
                      name="fromDate"
                      onChange={(e, value) =>
@@ -578,11 +570,7 @@ export default function ExchangeRate() {
                </Grid>
                <Grid item xs={1}>
                   <AppDateField
-                     views={
-                        exchangeRateSource === 'Database'
-                           ? ['month', 'year']
-                           : ['day', 'month', 'year']
-                     }
+                     views={['month', 'year']}
                      label={t('filters.toDate')}
                      name="toDate"
                      onChange={(e, value) =>
