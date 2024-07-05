@@ -485,6 +485,8 @@ export default function VolumeDiscountAnalysis() {
                      name="lever"
                      label={t('filters.unitIncreaseLever')}
                      placeholder={t('filters.unitIncreaseLever')}
+                     decimalScale={0}
+                     isDecimalScale
                   />
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
@@ -509,6 +511,8 @@ export default function VolumeDiscountAnalysis() {
                      name="expectedUnitSales"
                      label={t('volumeDiscount.expectedUnitSales')}
                      placeholder={t('volumeDiscount.expectedUnitSales')}
+                     decimalScale={0}
+                     isDecimalScale
                   />
                </Grid>
 
