@@ -764,7 +764,7 @@ export default function Shipment() {
                </Grid>
             </Grid>
             {userRoleState === 'ADMIN' && (
-               <Grid container spacing={1} sx={{ marginTop: '3px' }}>
+               <Grid container spacing={1} sx={{ marginTop: '3px', alignItems: 'end' }}>
                   <Grid item xs={1}>
                      <UploadFileDropZone
                         uploadedFile={uploadedFile}
