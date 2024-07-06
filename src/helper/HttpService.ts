@@ -27,7 +27,7 @@ class HttpService<GetList = any> {
       if (error?.response) {
          const { data, status } = error.response;
          const isServer = typeof window === 'undefined';
-         switch (status) {            
+         switch (status) {
             case 401:
                if (!isServer) {
                   const cookies = parseCookies();
@@ -101,7 +101,6 @@ class HttpService<GetList = any> {
       const locale = cookies['defaultLocale'];
       // Set token if had
       if (accessToken) {
-         this.instance.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
          this.instance.defaults.headers.common = {
             Authorization: `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
