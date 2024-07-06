@@ -31,10 +31,18 @@ const ChartView: React.FC<any> = ({
          ?.join(' ') || '';
    //get chart axis boundary after first render
    useEffect(() => {
-      setXBoundary([chartRef.current.scales.x.min, chartRef.current.scales.x.max]);
-
-      setYBoundary([chartRef.current.scales.y.min, chartRef.current.scales.y.max]);
-      setScaleY([chartRef.current.scales.y.min * 100, chartRef.current.scales.y.max * 100]);
+      setXBoundary([
+         Math.floor(chartRef.current.scales.x.min * 0.9),
+         Math.ceil(chartRef.current.scales.x.max * 1.1),
+      ]);
+      setYBoundary([
+         Math.floor(chartRef.current.scales.y.min * 0.9),
+         Math.ceil(chartRef.current.scales.y.max * 1.1),
+      ]);
+      setScaleY([
+         Math.floor(chartRef.current.scales.y.min * 0.9) * 100,
+         Math.ceil(chartRef.current.scales.y.max * 1.1) * 100,
+      ]);
 
       setY1Boundary([chartRef.current.scales.y1.min, chartRef.current.scales.y1.max]);
       setScaleY1([chartRef.current.scales.y1?.min * 100, chartRef.current.scales.y1?.max * 100]);
