@@ -15,6 +15,7 @@ export const initialState = {
    lastUpdatedBy: '' as any,
    dataFilter: defaultValueFilterResidualValue as ResidualValueDataFilter,
    listResidualValue: [] as any[],
+   exampleUploadFile: {} as any,
 };
 
 const residualvalueSlice = createSlice({
@@ -44,6 +45,9 @@ const residualvalueSlice = createSlice({
 
       setListResidualValue(state, { payload }: PayloadAction<any[]>) {
          state.listResidualValue = payload;
+      },
+      setExampleUploadFile(state, { payload }: PayloadAction<any>) {
+         state.exampleUploadFile = payload;
       },
    },
    extraReducers: {
@@ -81,6 +85,11 @@ export const selectLastUpdatedBy = createSelector(selectState, (state) => state.
 export const selectListResidualValue = createSelector(
    selectState,
    (state) => state.listResidualValue
+);
+
+export const selectExampleUploadFile = createSelector(
+   selectState,
+   (state) => state.exampleUploadFile
 );
 
 export const { actions } = residualvalueSlice;

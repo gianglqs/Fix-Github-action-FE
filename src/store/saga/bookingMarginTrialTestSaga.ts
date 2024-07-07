@@ -34,7 +34,11 @@ function* fetchBookingTrialTest() {
          throw new Error('To date is invalid!');
       }
 
-      if (isBefore(toDateFilter, fromDateFilter))
+      if (
+         !isValidDate(fromDateFilter) &&
+         !isValidDate(toDateFilter) &&
+         isBefore(toDateFilter, fromDateFilter)
+      )
          throw new Error('The To Date value cannot be earlier than the From Date value');
 
       yield put(bookingMarginTrialTestStore.actions.setLoadingData(true));
@@ -53,6 +57,7 @@ function* fetchBookingTrialTest() {
       const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
       const dataLastUpdatedTime = JSON.parse(String(data)).lastUpdatedTime;
       const dataLastUpdatedBy = JSON.parse(String(data)).lastUpdatedBy;
+      const exampleUploadFile = JSON.parse(String(data)).exampleUploadFile;
 
       yield put(
          bookingMarginTrialTestStore.actions.setInitDataFilter(
@@ -72,6 +77,7 @@ function* fetchBookingTrialTest() {
             totalItems: JSON.parse(String(data)).totalItems,
          })
       );
+      yield put(bookingMarginTrialTestStore.actions.setExampleUploadFile(exampleUploadFile));
       yield put(bookingMarginTrialTestStore.actions.setLoadingData(false));
    } catch (error) {
       yield put(bookingMarginTrialTestStore.actions.setLoadingData(false));

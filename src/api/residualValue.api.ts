@@ -16,6 +16,9 @@ class ResidualValueApi extends HttpService<any> {
    importDataResidualValue = (data: any) => {
       return this.importData<any>('residualValue/importData', data);
    };
+   getExampleUuploadFile = () => {
+      return this.get<any>('residualValue/get-residual-value-example-upload');
+   };
 }
 
 const residualValueApi = new ResidualValueApi('residualValue');

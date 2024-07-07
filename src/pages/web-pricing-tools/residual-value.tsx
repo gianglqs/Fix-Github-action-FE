@@ -27,6 +27,8 @@ import { extractTextInParentheses } from '@/utils/getString';
 import { createAction } from '@reduxjs/toolkit';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
+import { downloadFileByURL } from '@/utils/handleDownloadFile';
+import { RESIDUAL_VALUE } from '@/utils/modelType';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -54,6 +56,7 @@ export default function ResidualValue() {
    const serverTimeZone = useSelector(residualValueStore.selectServerTimeZone);
    const serverLastUpdatedTime = useSelector(residualValueStore.selectLastUpdatedTime);
    const serverLastUpdatedBy = useSelector(residualValueStore.selectLastUpdatedBy);
+   const exampleFile = useSelector(residualValueStore.selectExampleUploadFile);
 
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
@@ -322,6 +325,18 @@ export default function ResidualValue() {
                         {t('button.import')}
                      </Button>
                   </Grid>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 15,
+                        margin: '0 30px 0 10px',
+                        cursor: 'pointer',
+                        marginTop: '10px',
+                     }}
+                     onClick={() => downloadFileByURL(exampleFile[RESIDUAL_VALUE])}
+                  >
+                     {t('link.getExampleUploadFile')}
+                  </Typography>
                   <Grid item xs={4} sx={{ display: 'flex' }}>
                      {uploadedFile &&
                         uploadedFile.map((file) => (
