@@ -326,7 +326,9 @@
    },
 
    "link": {
-      "getExampleUploadFile": "Get example file"
+      "getExampleUploadFile": "Get example file",
+      "getProductDimensionExampleUploadFile": "Get Product Dimension example file",
+      "getProductAPACExampleUploadFile": "Get Product APAC Serial example file"
    },
 
    "yes": "Yes",

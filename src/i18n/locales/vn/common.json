@@ -320,7 +320,9 @@
    },
 
    "link": {
-      "getExampleUploadFile": "Get example upload file"
+      "getExampleUploadFile": "Get example upload file",
+      "getProductDimensionExampleUploadFile": "Lấy tệp mẫu Product Dimension",
+      "getProductAPACExampleUploadFile": "Lấy tệp mẫu Product APAC Serial"
    },
 
    "yes": "Có",

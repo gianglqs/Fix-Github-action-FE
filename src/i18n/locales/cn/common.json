@@ -320,7 +320,9 @@
    },
 
    "link": {
-      "getExampleUploadFile": "获取示例上传文件"
+      "getExampleUploadFile": "获取示例上传文件",
+      "getProductDimensionExampleUploadFile": "获取产品尺寸示例文件",
+      "getProductAPACExampleUploadFile": "获取产品亚太地区序列示例文件"
    },
 
    "yes": "是",

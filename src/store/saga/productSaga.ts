@@ -35,6 +35,7 @@ function* fetchProduct() {
       const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
       const dataLastUpdatedTime = JSON.parse(String(data)).lastUpdatedTime;
       const dataLastUpdatedBy = JSON.parse(String(data)).lastUpdatedBy;
+      const exampleUploadFile = JSON.parse(String(data)).exampleUploadFile;
 
       yield put(productStore.actions.setInitDataFilter(JSON.parse(String(initDataFilter.data))));
       yield put(productStore.actions.setProductList(dataProduct));
@@ -44,6 +45,7 @@ function* fetchProduct() {
             totalItems: JSON.parse(String(data)).totalItems,
          })
       );
+      yield put(productStore.actions.setExampleUploadFile(exampleUploadFile));
       yield put(productStore.actions.setServerTimeZone(dataServerTimeZone));
       yield put(productStore.actions.setLastUpdatedTime(dataLastUpdatedTime));
       yield put(productStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
