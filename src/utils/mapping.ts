@@ -1,7 +1,14 @@
 //types
 import { FilterOptions } from '@/types';
-import { ChartData, CompetitorTableData, AVGStats, Competitor } from '@/types/competitor';
+import {
+   ChartData,
+   CompetitorTableData,
+   AVGStats,
+   Competitor,
+   ExampleUploadFile,
+} from '@/types/competitor';
 import { v4 as uuidv4 } from 'uuid';
+import { COMPETITOR, FORECAST_PRICING } from './modelType';
 
 //competitor benchmark
 export const mappingCompetitorFiltersToOptionValues = (filters): FilterOptions => {
@@ -83,6 +90,12 @@ export const mappingCompetitorsToTableData = (data) => {
       avgPrice: data?.averageStats?.competitorPricing || 0,
       avgVariancePercentage: data?.averageStats?.variancePercentage || 0,
    };
+
+   const exampleUploadFile: ExampleUploadFile = {
+      [COMPETITOR]: data?.exampleUploadFile?.[COMPETITOR],
+      [FORECAST_PRICING]: data?.exampleUploadFile?.[FORECAST_PRICING],
+   };
+
    return {
       tableData: competitorTableData,
       averageStats,
@@ -90,5 +103,6 @@ export const mappingCompetitorsToTableData = (data) => {
       serverTimeZone: data?.serverTimeZone || '',
       lastUpdatedTime: data?.lastUpdatedTime || '',
       lastUpdatedBy: data?.lastUpdatedBy || '',
+      exampleUploadFile,
    };
 };

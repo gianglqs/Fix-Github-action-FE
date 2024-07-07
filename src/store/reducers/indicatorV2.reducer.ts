@@ -5,7 +5,13 @@ export const name = 'indicatorV2';
 export const resetState = createAction(`${name}/RESET_STATE`);
 //types
 import { FilterOptions } from '@/types';
-import { ChartData, ChartSelectedFilters, CompetitorTableData, AVGStats } from '@/types/competitor';
+import {
+   ChartData,
+   ChartSelectedFilters,
+   CompetitorTableData,
+   AVGStats,
+   ExampleUploadFile,
+} from '@/types/competitor';
 import { InitReducer } from '@/types';
 //others
 import { defaultValueChartSelectedFilterIndicator } from '@/utils/defaultValues';
@@ -22,6 +28,8 @@ type IndicatorInitState = {
    averageStats: AVGStats;
    // total items for pagination
    totalItems: number;
+
+   exampleUploadFile: ExampleUploadFile;
 } & InitReducer;
 
 export const initialState: IndicatorInitState = {
@@ -45,6 +53,7 @@ export const initialState: IndicatorInitState = {
    lastUpdatedTime: '',
    lastUpdatedBy: '',
    loadingPage: true,
+   exampleUploadFile: null,
 };
 
 const indicatorSlice = createSlice({
@@ -81,6 +90,9 @@ const indicatorSlice = createSlice({
       },
       setLoadingPage(state, { payload }: PayloadAction<boolean>) {
          state.loadingPage = payload;
+      },
+      setExampleUploadFile(state, { payload }: PayloadAction<any>) {
+         state.exampleUploadFile = payload;
       },
    },
    extraReducers: {
@@ -120,6 +132,11 @@ export const selectAVGState = createSelector(selectState, (state) => state.avera
 export const selectTableData = createSelector(selectState, (state) => state.tableData);
 
 export const selectLoadingPage = createSelector(selectState, (state) => state.loadingPage);
+
+export const selectExampleUploadFile = createSelector(
+   selectState,
+   (state) => state.exampleUploadFile
+);
 
 export const { actions } = indicatorSlice;
 

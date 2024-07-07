@@ -43,6 +43,9 @@ function* fetchTableData() {
       yield put(indicatorV2Store.actions.setServerTimeZone(mappedDataCompetitors.serverTimeZone));
       yield put(indicatorV2Store.actions.setLastUpdatedTime(mappedDataCompetitors.lastUpdatedTime));
       yield put(indicatorV2Store.actions.setLastUpdatedBy(mappedDataCompetitors.lastUpdatedBy));
+      yield put(
+         indicatorV2Store.actions.setExampleUploadFile(mappedDataCompetitors.exampleUploadFile)
+      );
    } catch (err) {}
 }
 
@@ -100,6 +103,9 @@ function* fetchIndicator() {
       yield put(indicatorV2Store.actions.setServerTimeZone(mappedDataCompetitors.serverTimeZone));
       yield put(indicatorV2Store.actions.setLastUpdatedTime(mappedDataCompetitors.lastUpdatedTime));
       yield put(indicatorV2Store.actions.setLastUpdatedBy(mappedDataCompetitors.lastUpdatedBy));
+      yield put(
+         indicatorV2Store.actions.setExampleUploadFile(mappedDataCompetitors.exampleUploadFile)
+      );
       //setting loading page to false
       yield put(indicatorV2Store.actions.setLoadingPage(false));
    } catch (error) {}

@@ -1,3 +1,5 @@
+import { COMPETITOR, FORECAST_PRICING } from '@/utils/modelType';
+
 export type Competitor = {
    createdBy: string;
    createdAt: string;
@@ -98,3 +100,8 @@ export type CompetitorTableData = ({
    series: string;
    group: string;
 } & AVGStats)[];
+
+export type ExampleUploadFile = {
+   [COMPETITOR]: string;
+   [FORECAST_PRICING]: string;
+};
