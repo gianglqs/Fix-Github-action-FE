@@ -42,6 +42,7 @@ import { extractTextInParentheses } from '@/utils/getString';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
+import { BOOKING, COST_DATA } from '@/utils/modelType';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -783,7 +784,7 @@ export default function Booking() {
                         margin: '0 30px 0 10px',
                         cursor: 'pointer',
                      }}
-                     onClick={() => downloadFileByURL(exampleFile.booked)}
+                     onClick={() => downloadFileByURL(exampleFile[BOOKING])}
                   >
                      {t('link.getExampleUploadFile')}
                   </Typography>
@@ -800,7 +801,7 @@ export default function Booking() {
                         margin: '0 30px 0 10px',
                         cursor: 'pointer',
                      }}
-                     onClick={() => downloadFileByURL(exampleFile.costData)}
+                     onClick={() => downloadFileByURL(exampleFile[COST_DATA])}
                   >
                      {t('link.getExampleUploadFile')}
                   </Typography>

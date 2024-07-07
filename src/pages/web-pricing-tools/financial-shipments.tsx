@@ -50,6 +50,7 @@ import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailure
 import { extractTextInParentheses } from '@/utils/getString';
 import AppDataTable from '@/components/DataTable/AppDataGridPro';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
+import { SHIPMENT } from '@/utils/modelType';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -788,7 +789,7 @@ export default function Shipment() {
                         margin: '0 30px 0 10px',
                         cursor: 'pointer',
                      }}
-                     onClick={() => downloadFileByURL(exampleFile.booked)}
+                     onClick={() => downloadFileByURL(exampleFile[SHIPMENT])}
                   >
                      {t('link.getExampleUploadFile')}
                   </Typography>
