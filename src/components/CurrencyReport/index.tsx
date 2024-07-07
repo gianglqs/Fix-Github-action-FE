@@ -31,17 +31,11 @@ const ChartView: React.FC<any> = ({
          ?.join(' ') || '';
    //get chart axis boundary after first render
    useEffect(() => {
-      setXBoundary([
-         Math.floor(chartRef.current.scales.x.min * 0.9),
-         Math.ceil(chartRef.current.scales.x.max * 1.1),
-      ]);
-      setYBoundary([
-         Math.floor(chartRef.current.scales.y.min * 0.9),
-         Math.ceil(chartRef.current.scales.y.max * 1.1),
-      ]);
+      setXBoundary([chartRef.current.scales.x.min * 0.9, chartRef.current.scales.x.max * 1.1]);
+      setYBoundary([chartRef.current.scales.y.min * 0.9, chartRef.current.scales.y.max * 1.1]);
       setScaleY([
-         Math.floor(chartRef.current.scales.y.min * 0.9) * 100,
-         Math.ceil(chartRef.current.scales.y.max * 1.1) * 100,
+         chartRef.current.scales.y.min * 0.9 * 100,
+         chartRef.current.scales.y.max * 1.1 * 100,
       ]);
 
       setY1Boundary([chartRef.current.scales.y1.min, chartRef.current.scales.y1.max]);
@@ -131,7 +125,7 @@ const ChartView: React.FC<any> = ({
                <div
                   style={{
                      display: 'flex',
-                     height: '40vh',
+                     height: '50vh',
                      gap: '10px',
                      width: '100%',
                      justifyContent: 'center',
@@ -160,7 +154,7 @@ const ChartView: React.FC<any> = ({
                      item
                      sx={{
                         width: '100%',
-                        height: '40vh',
+                        height: '50vh',
                         margin: 'auto',
                         order: 2,
                         flex: 1,
@@ -172,6 +166,31 @@ const ChartView: React.FC<any> = ({
                         chartName={chartData[index].title}
                         scales={chartItemScales}
                         tooltip={tooltip}
+                        /*plugins={{
+                           crosshair: {
+                              line: {
+                                 color: '#444', // crosshair line color
+                                 width: 1, // crosshair line width
+                                 dashPattern: [5, 5], // crosshair line dash pattern
+                              },
+                              zoom: {
+                                 enabled: true, // enable zooming
+                                 zoomboxBackgroundColor: 'rgba(66,133,244,0.2)', // background color of zoom box
+                                 zoomboxBorderColor: '#48F', // border color of zoom box
+                                 zoomButtonText: 'Reset Zoom', // reset zoom button text
+                                 zoomButtonClass: 'reset-zoom', // reset zoom button class
+                              },
+                              callbacks: {
+                                 beforeZoom: function (start, end) {
+                                    // called before zoom, return false to prevent zoom
+                                    return true;
+                                 },
+                                 afterZoom: function (start, end) {
+                                    // called after zoom
+                                 },
+                              },
+                           },
+                        }}*/
                      />
                   </Grid>
                   <div
@@ -282,8 +301,8 @@ const CurrencyReport: React.FC<any> = (props) => {
          const currentCurrency = chartData[index].title.substring(0, 3);
          const tooltip = {
             interaction: {
-               intersect: true,
-               mode: 'nearest',
+               intersect: false,
+               mode: 'index',
             },
             callbacks: {
                label: (context) => {

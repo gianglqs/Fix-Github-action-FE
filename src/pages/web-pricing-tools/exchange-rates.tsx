@@ -2,8 +2,8 @@ import { AppAutocomplete, AppDateField, AppLayout } from '@/components';
 import { Button, Grid, RadioGroup, FormControlLabel, Radio, CircularProgress } from '@mui/material';
 import { produce } from 'immer';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import chartplugin from 'chartjs-plugin-crosshair';
 import _ from 'lodash';
-
 import {
    Chart as ChartJS,
    LinearScale,
@@ -15,7 +15,25 @@ import {
    Title,
 } from 'chart.js';
 import ChartAnnotation from 'chartjs-plugin-annotation';
-
+const crossHairPlugin = {
+   id: 'crossHairPlugin',
+   afterDraw: (chart) => {
+      if (chart.tooltip?._active?.length) {
+         let x = chart.tooltip._active[0].element.x;
+         let yAxis = chart.scales.y;
+         let ctx = chart.ctx;
+         ctx.save();
+         ctx.beginPath();
+         ctx.setLineDash([3, 3]);
+         ctx.moveTo(x, yAxis.top);
+         ctx.lineTo(x, yAxis.bottom);
+         ctx.lineWidth = 1;
+         ctx.strokeStyle = '#333';
+         ctx.stroke();
+         ctx.restore();
+      }
+   },
+};
 ChartJS.register(
    CategoryScale,
    LinearScale,
@@ -24,7 +42,8 @@ ChartJS.register(
    Tooltip,
    Legend,
    Title,
-   ChartAnnotation
+   ChartAnnotation,
+   crossHairPlugin
 );
 
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
