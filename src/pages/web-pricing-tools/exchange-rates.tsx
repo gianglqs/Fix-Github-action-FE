@@ -1,5 +1,14 @@
 import { AppAutocomplete, AppDateField, AppLayout } from '@/components';
-import { Button, Grid, RadioGroup, FormControlLabel, Radio, CircularProgress } from '@mui/material';
+import {
+   Button,
+   Grid,
+   RadioGroup,
+   FormControlLabel,
+   Radio,
+   CircularProgress,
+   Typography,
+   Box,
+} from '@mui/material';
 import { produce } from 'immer';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
@@ -37,6 +46,8 @@ import { useDropzone } from 'react-dropzone';
 import { parseCookies } from 'nookies';
 import { CURRENCY } from '@/utils/constant';
 import { useTranslation } from 'react-i18next';
+import { downloadFileByURL } from '@/utils/handleDownloadFile';
+import { EXCHANGE_RATE } from '@/utils/modelType';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -86,6 +97,7 @@ export default function ExchangeRate() {
    const [chartData, setChartData] = useState([]);
    const [uploadedFile, setUploadedFile] = useState();
    const [exchangeRateSource, setExchangeRateSource] = useState('Database');
+   const [exampleUploadFile, setExampleUploadFile] = useState(null);
 
    useEffect(() => {
       exchangeRatesApi
@@ -96,6 +108,10 @@ export default function ExchangeRate() {
          .catch((error) => {
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
+
+      exchangeRatesApi.getExampleUploadFile().then((res) => {
+         setExampleUploadFile(JSON.parse(String(res.data)).exampleUploadFile);
+      });
    }, []);
 
    const handleChangeDataFilter = (option, field) => {
@@ -144,7 +160,9 @@ export default function ExchangeRate() {
             return;
          }
          if (dataFilter.comparisonCurrencies.value.length == 0) {
-            dispatch(commonStore.actions.setErrorMessage('Please select the currencies to exchange to'));
+            dispatch(
+               commonStore.actions.setErrorMessage('Please select the currencies to exchange to')
+            );
             setDataFilter((prev) =>
                produce(prev, (draft) => {
                   draft['comparisonCurrencies'] = { value: [], error: true };
@@ -557,39 +575,52 @@ export default function ExchangeRate() {
                   </RadioGroup>
                </Grid>
 
-               <Grid item xs={1}>
-                  <AppDateField
-                     views={
-                        exchangeRateSource === 'Database'
-                           ? ['month', 'year']
-                           : ['day', 'month', 'year']
-                     }
-                     label={t('filters.fromDate')}
-                     name="fromDate"
-                     onChange={(e, value) =>
-                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
-                     }
-                     value={dataFilter.fromDate.value}
-                     maxDate={new Date().toISOString().slice(0, 10)}
-                     sx={{ marginTop: 1 }}
-                  />
-               </Grid>
-               <Grid item xs={1}>
-                  <AppDateField
-                     views={
-                        exchangeRateSource === 'Database'
-                           ? ['month', 'year']
-                           : ['day', 'month', 'year']
-                     }
-                     label={t('filters.toDate')}
-                     name="toDate"
-                     onChange={(e, value) =>
-                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
-                     }
-                     value={dataFilter.toDate.value}
-                     maxDate={new Date().toISOString().slice(0, 10)}
-                     sx={{ marginTop: 1 }}
-                  />
+               <Grid item xs={2}>
+                  <Box sx={{ display: 'flex', gap: '5px' }}>
+                     <AppDateField
+                        views={
+                           exchangeRateSource === 'Database'
+                              ? ['month', 'year']
+                              : ['day', 'month', 'year']
+                        }
+                        label={t('filters.fromDate')}
+                        name="fromDate"
+                        onChange={(e, value) =>
+                           handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
+                        }
+                        value={dataFilter.fromDate.value}
+                        maxDate={new Date().toISOString().slice(0, 10)}
+                        sx={{ marginTop: 1 }}
+                     />
+
+                     <AppDateField
+                        views={
+                           exchangeRateSource === 'Database'
+                              ? ['month', 'year']
+                              : ['day', 'month', 'year']
+                        }
+                        label={t('filters.toDate')}
+                        name="toDate"
+                        onChange={(e, value) =>
+                           handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
+                        }
+                        value={dataFilter.toDate.value}
+                        maxDate={new Date().toISOString().slice(0, 10)}
+                        sx={{ marginTop: 1 }}
+                     />
+                  </Box>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 15,
+                        margin: '0 30px 0 10px',
+                        cursor: 'pointer',
+                        marginTop: '10px',
+                     }}
+                     onClick={() => downloadFileByURL(exampleUploadFile[EXCHANGE_RATE])}
+                  >
+                     {t('link.getExampleUploadFile')}
+                  </Typography>
                </Grid>
 
                <CurrencyReport
