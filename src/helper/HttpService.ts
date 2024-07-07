@@ -27,7 +27,7 @@ class HttpService<GetList = any> {
       if (error?.response) {
          const { data, status } = error.response;
          const isServer = typeof window === 'undefined';
-         switch (status) {            
+         switch (status) {
             case 401:
                if (!isServer) {
                   const cookies = parseCookies();
@@ -79,8 +79,11 @@ class HttpService<GetList = any> {
             default:
                break;
          }
-         const { message, ...restData } = data;
+
+         const { message, ...restData } = typeof data === 'string' ? JSON.parse(data) : data;
+
          formatError = { message, status, ...restData };
+
          console.log('from response error: ', formatError);
       }
       // Aborted request case

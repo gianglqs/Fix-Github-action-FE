@@ -322,7 +322,10 @@
    "link": {
       "getExampleUploadFile": "获取示例上传文件",
       "getProductDimensionExampleUploadFile": "获取产品尺寸示例文件",
-      "getProductAPACExampleUploadFile": "获取产品亚太地区序列示例文件"
+      "getProductAPACExampleUploadFile": "获取产品亚太地区序列示例文件",
+      "getNOVOExampleUploadFile": "获取NOVO示例上传文件",
+      "getMarginAnalystMacroTemplateExampleUploadFile": "获取边际分析师宏模板示例上传文件",
+      "getPowerBIExampleUploadFile": "获取Power BI示例上传文件"
    },
 
    "yes": "是",

@@ -322,7 +322,10 @@
    "link": {
       "getExampleUploadFile": "Get example upload file",
       "getProductDimensionExampleUploadFile": "Lấy tệp mẫu Product Dimension",
-      "getProductAPACExampleUploadFile": "Lấy tệp mẫu Product APAC Serial"
+      "getProductAPACExampleUploadFile": "Lấy tệp mẫu Product APAC Serial",
+      "getNOVOExampleUploadFile": "Lấy tệp mẫu NOVO",
+      "getMarginAnalystMacroTemplateExampleUploadFile": "Lấy tệp mẫu Macro Chuyên viên Phân tích Biên lợi nhuận",
+      "getPowerBIExampleUploadFile": "Lấy tệp mẫu Power BI"
    },
 
    "yes": "Có",

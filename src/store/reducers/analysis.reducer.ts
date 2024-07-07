@@ -32,6 +32,7 @@ export const initialState = {
    dataFilter: defaultDataFilterQuotationMargin as any,
    requestId: undefined,
    currency: undefined,
+   exampleUploadFile: {} as any,
 };
 
 const marginAnalysisSlice = createSlice({
@@ -72,6 +73,9 @@ const marginAnalysisSlice = createSlice({
       resetFilter(state) {
          state.dataFilter = defaultDataFilterQuotationMargin;
       },
+      setExampleUploadFile(state, { payload }: PayloadAction<any>) {
+         state.exampleUploadFile = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -92,7 +96,10 @@ export const selectFileUUID = createSelector(selectState, (state) => state.fileU
 export const selectFileName = createSelector(selectState, (state) => state.fileName);
 export const selectRequestId = createSelector(selectState, (state) => state.requestId);
 export const selectCurrency = createSelector(selectState, (state) => state.currency);
-
+export const selectExampleUploadFile = createSelector(
+   selectState,
+   (state) => state.exampleUploadFile
+);
 export const { actions } = marginAnalysisSlice;
 
 export default marginAnalysisSlice;

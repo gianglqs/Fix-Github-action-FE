@@ -49,6 +49,10 @@ class MarginAnalysisApi extends HttpService<any> {
    getPreviousDataView = () => {
       return this.get<any>('get-previous-data-view-quotation-margin');
    };
+
+   getExampleUploadFile = () => {
+      return this.get<any>('get-quotation-margin-example-upload');
+   };
 }
 
 const marginAnalysisApi = new MarginAnalysisApi('QuotationMargin');

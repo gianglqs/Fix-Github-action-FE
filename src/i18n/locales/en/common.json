@@ -326,9 +326,12 @@
    },
 
    "link": {
-      "getExampleUploadFile": "Get example file",
+      "getExampleUploadFile": "Get example upload file",
       "getProductDimensionExampleUploadFile": "Get Product Dimension example file",
-      "getProductAPACExampleUploadFile": "Get Product APAC Serial example file"
+      "getProductAPACExampleUploadFile": "Get Product APAC Serial example file",
+      "getNOVOExampleUploadFile": "Get NOVO example upload file",
+      "getMarginAnalystMacroTemplateExampleUploadFile": "Get Margin Analyst Macro Template example upload file",
+      "getPowerBIExampleUploadFile": "Get Power BI example upload file"
    },
 
    "yes": "Yes",
