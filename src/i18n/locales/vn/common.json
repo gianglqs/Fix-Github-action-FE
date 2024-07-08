@@ -129,8 +129,8 @@
       "dealerNet": "Giá phân phối",
       "dealerNetAfterSurcharge": "Giá phân phối sau phụ phí",
       "totalCost": "Tổng giá",
-      "marginAfterSurcharge": "Lợi nhuận sau phụ phí",
-      "marginPercentageAfterSurcharge": "Lợi nhuận % sau phụ phí",
+      "margin": "Lợi nhuận",
+      "marginPercentage": "Lợi nhuận %",
       "aopMarginPercentage": "AOP Margin %",
 
       "totalActualCost": "Tổng giá thực tế",

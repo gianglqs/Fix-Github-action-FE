@@ -108,38 +108,49 @@ export default function VolumeDiscountAnalysis() {
          dataFilter.segment?.value === ''
       )
          return;
-      try {
-         setLoading(true);
-         const {
-            data: { volumeDiscountAnalysis },
-         } = await volumeDiscountApi.calculateVolumeDiscount({
-            pricePerUnit: dataFilter.pricePerUnit?.value,
-            costOfGoodSold: dataFilter.costOfGoodSold?.value,
-            discountPercentage: dataFilter.discountPercentage?.value / 100,
-            lever: dataFilter.lever?.value,
-            expectedUnitSales: dataFilter.expectedUnitSales?.value,
-            ocos: dataFilter.ocos?.value,
-         });
-         setVolumeDiscountData(volumeDiscountAnalysis);
+      console.log(dataFilter);
 
-         const labels = volumeDiscountAnalysis.map(({ volume }) => volume);
-         const datasets = [
-            {
-               label:
-                  grossProfitSegments.find((item) => item == dataFilter.segment?.value) != undefined
-                     ? t('volumeDiscount.grossProfit')
-                     : t('volumeDiscount.standardMargin'),
-               data: volumeDiscountAnalysis.map((item) => item.standardMargin),
-               fill: false,
-               borderColor: 'rgb(75, 192, 192)',
-               tension: 0.1,
-            },
-         ];
-         setChartData({ labels, datasets });
-      } catch (error) {
-         dispatch(commonStore.actions.setErrorMessage(error.message));
-      } finally {
-         setLoading(false);
+      if (dataFilter.discountPercentage?.value > 100) {
+         dispatch(
+            commonStore.actions.setErrorMessage(
+               'Input value out of range. Please enter a value from 0 to 100.'
+            )
+         );
+      } else {
+         try {
+            setLoading(true);
+            const {
+               data: { volumeDiscountAnalysis },
+            } = await volumeDiscountApi.calculateVolumeDiscount({
+               pricePerUnit: dataFilter.pricePerUnit?.value,
+               costOfGoodSold: dataFilter.costOfGoodSold?.value,
+               discountPercentage: dataFilter.discountPercentage?.value / 100,
+               lever: dataFilter.lever?.value,
+               expectedUnitSales: dataFilter.expectedUnitSales?.value,
+               ocos: dataFilter.ocos?.value,
+            });
+            setVolumeDiscountData(volumeDiscountAnalysis);
+
+            const labels = volumeDiscountAnalysis.map(({ volume }) => volume);
+            const datasets = [
+               {
+                  label:
+                     grossProfitSegments.find((item) => item == dataFilter.segment?.value) !=
+                     undefined
+                        ? t('volumeDiscount.grossProfit')
+                        : t('volumeDiscount.standardMargin'),
+                  data: volumeDiscountAnalysis.map((item) => item.standardMargin),
+                  fill: false,
+                  borderColor: 'rgb(75, 192, 192)',
+                  tension: 0.1,
+               },
+            ];
+            setChartData({ labels, datasets });
+         } catch (error) {
+            dispatch(commonStore.actions.setErrorMessage(error.message));
+         } finally {
+            setLoading(false);
+         }
       }
    };
 
@@ -484,6 +495,8 @@ export default function VolumeDiscountAnalysis() {
                      name="lever"
                      label={t('filters.unitIncreaseLever')}
                      placeholder={t('filters.unitIncreaseLever')}
+                     decimalScale={0}
+                     isDecimalScale
                   />
                </Grid>
                <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
@@ -508,6 +521,8 @@ export default function VolumeDiscountAnalysis() {
                      name="expectedUnitSales"
                      label={t('volumeDiscount.expectedUnitSales')}
                      placeholder={t('volumeDiscount.expectedUnitSales')}
+                     decimalScale={0}
+                     isDecimalScale
                   />
                </Grid>
 

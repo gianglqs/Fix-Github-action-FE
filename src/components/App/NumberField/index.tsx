@@ -6,7 +6,15 @@ import { NumericFormat } from 'react-number-format';
 import type { AppNumberFieldProps } from './type';
 
 const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) => {
-   const { onChange, value, onPressEnter, debounceDelay, ...numberFieldProps } = props;
+   const {
+      onChange,
+      value,
+      onPressEnter,
+      debounceDelay,
+      decimalScale,
+      isDecimalScale,
+      ...numberFieldProps
+   } = props;
 
    const [numberValue, setNumberValue] = useState(value || 0);
 
@@ -49,7 +57,7 @@ const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) =>
          onKeyDown={handleKeyDown}
          format="#### #### #### ####"
          fixedDecimalScale={false}
-         decimalScale={10}
+         decimalScale={isDecimalScale ? decimalScale : 10}
          value={numberValue}
       />
    );
