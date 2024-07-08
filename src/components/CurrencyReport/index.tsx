@@ -39,8 +39,11 @@ const ChartView: React.FC<any> = ({
          chartRef.current.scales.y.max * 1.1 * 100,
       ]);
 
-      setY1Boundary([chartRef.current.scales.y1.min, chartRef.current.scales.y1.max]);
-      setScaleY1([chartRef.current.scales.y1?.min * 100, chartRef.current.scales.y1?.max * 100]);
+      setY1Boundary([chartRef.current.scales.y1.min * 0.9, chartRef.current.scales.y1.max * 1.1]);
+      setScaleY1([
+         chartRef.current.scales.y1?.min * 0.9 * 100,
+         chartRef.current.scales.y1?.max * 1.1 * 100,
+      ]);
    }, []);
    let chartItemScales = {
       y1: {
