@@ -11,6 +11,10 @@ const LineChart: React.FC<any> = forwardRef((props, ref: any) => {
          options={{
             scales,
             maintainAspectRatio: false,
+            hover: {
+               mode: 'index',
+               intersect: false,
+            },
             plugins: {
                title: {
                   display: true,

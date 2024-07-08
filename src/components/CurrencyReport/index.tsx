@@ -7,6 +7,7 @@ import { formatDate } from '@/utils/formatCell';
 import { useTranslation } from 'react-i18next';
 //components
 import Slider from '@mui/material/Slider';
+
 const ChartView: React.FC<any> = ({
    chartData,
    index,
@@ -346,6 +347,7 @@ const CurrencyReport: React.FC<any> = (props) => {
          return (
             <>
                <ChartView
+                  key={chartData[index].title}
                   index={index}
                   chartData={chartData}
                   chartItemScales={chartItemScales}

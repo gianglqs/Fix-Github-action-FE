@@ -221,10 +221,10 @@ export default function ExchangeRate() {
                               borderColor: CURRENCY[item],
                               backgroundColor: CURRENCY[item],
                               pointStyle: 'circle',
-                              pointRadius: 3,
+                              pointRadius: 0,
                               lineTension: 0.4,
                               borderWidth: 1.5,
-                              pointHoverRadius: 6,
+                              pointHoverRadius: 4,
                               yAxisID: item == 'JPY' ? 'y1' : 'y',
                            });
                         });
@@ -289,10 +289,10 @@ export default function ExchangeRate() {
                               borderColor: CURRENCY[item],
                               backgroundColor: CURRENCY[item],
                               pointStyle: 'circle',
-                              pointRadius: 3,
+                              pointRadius: 0,
                               lineTension: 0.4,
                               borderWidth: 1.5,
-                              pointHoverRadius: 6,
+                              pointHoverRadius: 4,
                               yAxisID: item == 'JPY' ? 'y1' : 'y',
                            });
                         });
@@ -357,10 +357,10 @@ export default function ExchangeRate() {
                         borderColor: CURRENCY[item],
                         backgroundColor: CURRENCY[item],
                         pointStyle: 'circle',
-                        pointRadius: 3,
+                        pointRadius: 0,
                         lineTension: 0.4,
                         borderWidth: 1.5,
-                        pointHoverRadius: 6,
+                        pointHoverRadius: 4,
                         yAxisID: item == 'JPY' ? 'y1' : 'y',
                      });
                   });
