@@ -27,4 +27,5 @@ export interface AppNumberFieldProps extends NumberFormatProps, TextFieldProps {
    thousandSeparator?: boolean | string;
    onPressEnter?(): void;
    debounceDelay?: number;
+   isDecimalScale?: boolean;
 }
