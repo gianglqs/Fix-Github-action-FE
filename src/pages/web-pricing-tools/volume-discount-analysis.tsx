@@ -86,7 +86,7 @@ export default function VolumeDiscountAnalysis() {
    }, [dataFilter]);
 
    // handle button to clear all filters
-   const handleClearAllFilterTable = async () => {
+   const handleClearAllFilterTable = () => {
       setDataFilter({
          pricePerUnit: { value: '', error: false },
          costOfGoodSold: { value: '', error: false },
