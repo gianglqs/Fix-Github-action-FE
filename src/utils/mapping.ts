@@ -92,3 +92,10 @@ export const mappingCompetitorsToTableData = (data) => {
       lastUpdatedBy: data?.lastUpdatedBy || '',
    };
 };
+//long term rental
+export const mappingFiltersToOptionValues = (filters): FilterOptions => {
+   Object.keys(filters).forEach((field) => {
+      filters[field] = filters[field]?.map((value) => ({ value })) || [];
+   });
+   return filters;
+};
