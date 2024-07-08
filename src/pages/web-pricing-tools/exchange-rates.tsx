@@ -2,7 +2,6 @@ import { AppAutocomplete, AppDateField, AppLayout } from '@/components';
 import { Button, Grid, RadioGroup, FormControlLabel, Radio, CircularProgress } from '@mui/material';
 import { produce } from 'immer';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import chartplugin from 'chartjs-plugin-crosshair';
 import _ from 'lodash';
 import {
    Chart as ChartJS,
@@ -14,6 +13,7 @@ import {
    CategoryScale,
    Title,
 } from 'chart.js';
+import { hexToRGBA } from '@/utils/mapping';
 import ChartAnnotation from 'chartjs-plugin-annotation';
 const crossHairPlugin = {
    id: 'crossHairPlugin',
@@ -222,9 +222,11 @@ export default function ExchangeRate() {
                               backgroundColor: CURRENCY[item],
                               pointStyle: 'circle',
                               pointRadius: 0,
-                              lineTension: 0.4,
+                              lineTension: 0.05,
                               borderWidth: 1.5,
-                              pointHoverRadius: 4,
+                              pointHoverRadius: 2,
+                              hoverBorderWidth: 12,
+                              hoverBorderColor: hexToRGBA(CURRENCY[item], 0.3),
                               yAxisID: item == 'JPY' ? 'y1' : 'y',
                            });
                         });
@@ -290,9 +292,11 @@ export default function ExchangeRate() {
                               backgroundColor: CURRENCY[item],
                               pointStyle: 'circle',
                               pointRadius: 0,
-                              lineTension: 0.4,
+                              lineTension: 0.05,
                               borderWidth: 1.5,
-                              pointHoverRadius: 4,
+                              pointHoverRadius: 2,
+                              hoverBorderWidth: 12,
+                              hoverBorderColor: hexToRGBA(CURRENCY[item], 0.3),
                               yAxisID: item == 'JPY' ? 'y1' : 'y',
                            });
                         });
@@ -358,9 +362,11 @@ export default function ExchangeRate() {
                         backgroundColor: CURRENCY[item],
                         pointStyle: 'circle',
                         pointRadius: 0,
-                        lineTension: 0.4,
+                        lineTension: 0.05,
                         borderWidth: 1.5,
-                        pointHoverRadius: 4,
+                        pointHoverRadius: 2,
+                        hoverBorderWidth: 12,
+                        hoverBorderColor: hexToRGBA(CURRENCY[item], 0.3),
                         yAxisID: item == 'JPY' ? 'y1' : 'y',
                      });
                   });

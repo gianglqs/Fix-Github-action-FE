@@ -3,7 +3,7 @@ import { Line } from 'react-chartjs-2';
 import _, { isNil } from 'lodash';
 import { forwardRef } from 'react';
 const LineChart: React.FC<any> = forwardRef((props, ref: any) => {
-   const { chartData, scales, chartName, tooltip, subtitle, plugins } = props;
+   const { chartData, scales, chartName, tooltip, subtitle, plugins, hover } = props;
    return (
       <Line
          ref={ref}
@@ -11,10 +11,6 @@ const LineChart: React.FC<any> = forwardRef((props, ref: any) => {
          options={{
             scales,
             maintainAspectRatio: false,
-            hover: {
-               mode: 'index',
-               intersect: false,
-            },
             plugins: {
                title: {
                   display: true,
@@ -27,6 +23,7 @@ const LineChart: React.FC<any> = forwardRef((props, ref: any) => {
                ...plugins,
             },
             spanGaps: true,
+            hover,
          }}
       />
    );

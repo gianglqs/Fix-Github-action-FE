@@ -167,31 +167,10 @@ const ChartView: React.FC<any> = ({
                         chartName={chartData[index].title}
                         scales={chartItemScales}
                         tooltip={tooltip}
-                        /*plugins={{
-                           crosshair: {
-                              line: {
-                                 color: '#444', // crosshair line color
-                                 width: 1, // crosshair line width
-                                 dashPattern: [5, 5], // crosshair line dash pattern
-                              },
-                              zoom: {
-                                 enabled: true, // enable zooming
-                                 zoomboxBackgroundColor: 'rgba(66,133,244,0.2)', // background color of zoom box
-                                 zoomboxBorderColor: '#48F', // border color of zoom box
-                                 zoomButtonText: 'Reset Zoom', // reset zoom button text
-                                 zoomButtonClass: 'reset-zoom', // reset zoom button class
-                              },
-                              callbacks: {
-                                 beforeZoom: function (start, end) {
-                                    // called before zoom, return false to prevent zoom
-                                    return true;
-                                 },
-                                 afterZoom: function (start, end) {
-                                    // called after zoom
-                                 },
-                              },
-                           },
-                        }}*/
+                        hover={{
+                           mode: 'index',
+                           intersect: false,
+                        }}
                      />
                   </Grid>
                   <div
@@ -301,6 +280,7 @@ const CurrencyReport: React.FC<any> = (props) => {
       const content = _.map(otherOptions, (index) => {
          const currentCurrency = chartData[index].title.substring(0, 3);
          const tooltip = {
+            position: 'nearest',
             interaction: {
                intersect: false,
                mode: 'index',
