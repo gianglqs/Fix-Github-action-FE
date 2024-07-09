@@ -12,7 +12,6 @@ import {
 import { produce } from 'immer';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
-
 import {
    Chart as ChartJS,
    LinearScale,
@@ -23,8 +22,27 @@ import {
    CategoryScale,
    Title,
 } from 'chart.js';
+import { hexToRGBA } from '@/utils/mapping';
 import ChartAnnotation from 'chartjs-plugin-annotation';
-
+const crossHairPlugin = {
+   id: 'crossHairPlugin',
+   afterDraw: (chart) => {
+      if (chart.tooltip?._active?.length) {
+         let x = chart.tooltip._active[0].element.x;
+         let yAxis = chart.scales.y;
+         let ctx = chart.ctx;
+         ctx.save();
+         ctx.beginPath();
+         ctx.setLineDash([3, 3]);
+         ctx.moveTo(x, yAxis.top);
+         ctx.lineTo(x, yAxis.bottom);
+         ctx.lineWidth = 1;
+         ctx.strokeStyle = '#333';
+         ctx.stroke();
+         ctx.restore();
+      }
+   },
+};
 ChartJS.register(
    CategoryScale,
    LinearScale,
@@ -33,7 +51,8 @@ ChartJS.register(
    Tooltip,
    Legend,
    Title,
-   ChartAnnotation
+   ChartAnnotation,
+   crossHairPlugin
 );
 
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
@@ -120,9 +139,7 @@ export default function ExchangeRate() {
             if (_.includes(['currentCurrency'], field)) {
                draft[field] = { value: option.value, error: false };
             } else if (_.includes(['fromDate', 'toDate'], field)) {
-               exchangeRateSource === 'Database'
-                  ? (draft[field].value = option.slice(0, -3))
-                  : (draft[field].value = option.slice(0));
+               draft[field].value = option.slice(0, -3);
             } else {
                draft[field].value = option.map(({ value }) => value);
                draft[field].error = false;
@@ -200,7 +217,6 @@ export default function ExchangeRate() {
                      .compareCurrency(request)
                      .then((response) => {
                         const data = response.data.compareCurrency;
-
                         // Setting Labels for chart
                         const labels = data[dataFilter.comparisonCurrencies.value[0]]
                            .map((item) => {
@@ -213,7 +229,6 @@ export default function ExchangeRate() {
                               }
                            })
                            .reverse();
-
                         let datasets = [];
                         dataFilter.comparisonCurrencies.value.forEach((item) => {
                            datasets.push({
@@ -222,8 +237,12 @@ export default function ExchangeRate() {
                               borderColor: CURRENCY[item],
                               backgroundColor: CURRENCY[item],
                               pointStyle: 'circle',
-                              pointRadius: 5,
-                              pointHoverRadius: 10,
+                              pointRadius: 0,
+                              lineTension: 0.05,
+                              borderWidth: 1.5,
+                              pointHoverRadius: 2,
+                              hoverBorderWidth: 12,
+                              hoverBorderColor: hexToRGBA(CURRENCY[item], 0.3),
                               yAxisID: item == 'JPY' ? 'y1' : 'y',
                            });
                         });
@@ -256,12 +275,12 @@ export default function ExchangeRate() {
                   setLoading(false);
                   dispatch(
                      commonStore.actions.setErrorMessage(
-                        'Time exceeds 12 months, please choose a shorter range'
+                        t('commonErrorMessage.timeExceedsTwelveMonths')
                      )
                   );
                }
             } else {
-               if (dayDiff < 30) {
+               if (monthDiff < 4) {
                   exchangeRatesApi
                      .compareCurrency(request)
                      .then((response) => {
@@ -288,8 +307,12 @@ export default function ExchangeRate() {
                               borderColor: CURRENCY[item],
                               backgroundColor: CURRENCY[item],
                               pointStyle: 'circle',
-                              pointRadius: 5,
-                              pointHoverRadius: 10,
+                              pointRadius: 0,
+                              lineTension: 0.05,
+                              borderWidth: 1.5,
+                              pointHoverRadius: 2,
+                              hoverBorderWidth: 12,
+                              hoverBorderColor: hexToRGBA(CURRENCY[item], 0.3),
                               yAxisID: item == 'JPY' ? 'y1' : 'y',
                            });
                         });
@@ -322,7 +345,7 @@ export default function ExchangeRate() {
                   setLoading(false);
                   dispatch(
                      commonStore.actions.setErrorMessage(
-                        'Time exceeds 30 days, please choose a shorter range'
+                        t('commonErrorMessage.timeExceedsThreeMonths')
                      )
                   );
                }
@@ -354,8 +377,12 @@ export default function ExchangeRate() {
                         borderColor: CURRENCY[item],
                         backgroundColor: CURRENCY[item],
                         pointStyle: 'circle',
-                        pointRadius: 5,
-                        pointHoverRadius: 10,
+                        pointRadius: 0,
+                        lineTension: 0.05,
+                        borderWidth: 1.5,
+                        pointHoverRadius: 2,
+                        hoverBorderWidth: 12,
+                        hoverBorderColor: hexToRGBA(CURRENCY[item], 0.3),
                         yAxisID: item == 'JPY' ? 'y1' : 'y',
                      });
                   });
@@ -578,11 +605,7 @@ export default function ExchangeRate() {
                <Grid item xs={2}>
                   <Box sx={{ display: 'flex', gap: '5px' }}>
                      <AppDateField
-                        views={
-                           exchangeRateSource === 'Database'
-                              ? ['month', 'year']
-                              : ['day', 'month', 'year']
-                        }
+                        views={['month', 'year']}
                         label={t('filters.fromDate')}
                         name="fromDate"
                         onChange={(e, value) =>
@@ -594,11 +617,7 @@ export default function ExchangeRate() {
                      />
 
                      <AppDateField
-                        views={
-                           exchangeRateSource === 'Database'
-                              ? ['month', 'year']
-                              : ['day', 'month', 'year']
-                        }
+                        views={['month', 'year']}
                         label={t('filters.toDate')}
                         name="toDate"
                         onChange={(e, value) =>

@@ -18,7 +18,7 @@ export const mappingCompetitorFiltersToOptionValues = (filters): FilterOptions =
    return filters;
 };
 
-function hexToRGBA(hex, opacity) {
+export function hexToRGBA(hex, opacity) {
    hex = hex.replace('#', '');
 
    let r = parseInt(hex.substring(0, 2), 16);

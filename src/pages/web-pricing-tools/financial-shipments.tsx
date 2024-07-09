@@ -253,16 +253,6 @@ export default function Shipment() {
          },
       },
       {
-         field: 'dealerNetAfterSurcharge',
-         flex: 0.6,
-         minWidth: 100,
-         headerName: `${t('table.dealerNet')} ('000 ${currency})`,
-         ...formatNumbericColumn,
-         renderCell(params) {
-            return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
-         },
-      },
-      {
          field: 'discountPercentage',
          flex: 0.6,
          minWidth: 80,
@@ -283,6 +273,16 @@ export default function Shipment() {
          },
       },
       {
+         field: 'dealerNetAfterSurcharge',
+         flex: 0.6,
+         minWidth: 100,
+         headerName: `${t('table.dealerNet')} ('000 ${currency})`,
+         ...formatNumbericColumn,
+         renderCell(params) {
+            return <span>{formatNumber(params?.row.dealerNetAfterSurcharge)}</span>;
+         },
+      },
+      {
          field: 'totalCost',
          flex: 0.6,
          minWidth: 80,
@@ -297,7 +297,7 @@ export default function Shipment() {
          field: 'marginAfterSurcharge',
          flex: 0.7,
          minWidth: 150,
-         headerName: `${t('table.marginAfterSurcharge')} ('000 ${currency})`,
+         headerName: `${t('table.margin')} ('000 ${currency})`,
          ...formatNumbericColumn,
          renderCell(params) {
             return <span>{formatNumber(params?.row.marginAfterSurcharge)}</span>;
@@ -308,7 +308,7 @@ export default function Shipment() {
          field: 'marginPercentageAfterSurcharge',
          flex: 0.6,
          minWidth: 100,
-         headerName: t('table.marginPercentageAfterSurcharge'),
+         headerName: t('table.marginPercentage'),
          cellClassName: 'highlight-cell',
          ...formatNumbericColumn,
          renderCell(params) {
@@ -510,7 +510,7 @@ export default function Shipment() {
                   <Paper elevation={2} sx={paperStyle}>
                      <div className="space-between-element">
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
-                           {t('table.marginPercentageAfterSurcharge')}
+                           {t('table.marginPercentage')}
                         </Typography>
                         <Typography sx={{ fontWeight: 'bold' }} variant="body1" component="span">
                            {formatNumberPercentage(

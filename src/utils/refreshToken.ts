@@ -10,8 +10,16 @@ export const refreshTokenForFunctionGetServerSideProps = async (
       const cookies = parseCookies(context);
       const refresh_token = cookies['refresh_token'];
 
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/refreshToken`, {
-         refreshToken: refresh_token,
+      const { data } = await axios.post(
+         `${process.env.NEXT_PUBLIC_BACKEND_URL}oauth/refreshToken`,
+         {
+            refreshToken: refresh_token,
+         }
+      );
+
+      setCookie(context, 'token', data.data.accessToken, {
+         maxAge: 604800,
+         path: '/',
       });
 
       return {
@@ -53,6 +61,12 @@ export const refreshTokenForFunctionGetServerSidePropsLogin = async (
       };
 
       await axios(newRequest);
+
+      setCookie(context, 'token', accessToken, {
+         maxAge: 604800,
+         path: '/',
+      });
+
       return {
          redirect: {
             destination: PATH_ADMIN_USER,

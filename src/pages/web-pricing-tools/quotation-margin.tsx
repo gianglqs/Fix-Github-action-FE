@@ -1,4 +1,4 @@
-import { AppAutocomplete, AppLayout, DataTable } from '@/components';
+import { AppAutocomplete, AppLayout, AppNumberField, DataTable } from '@/components';
 
 import _ from 'lodash';
 
@@ -14,6 +14,7 @@ import {
    Paper,
    Radio,
    RadioGroup,
+   styled,
    Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
@@ -32,6 +33,12 @@ import { MACRO, NOVO, PART } from '@/utils/modelType';
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
+
+const StyledAppNumberField = styled(AppNumberField)(() => ({
+   '& .MuiInputBase-input': {
+      textAlign: 'end',
+   },
+}));
 export default function MarginAnalysis() {
    const dispatch = useDispatch();
    const { t } = useTranslation();
@@ -51,6 +58,7 @@ export default function MarginAnalysis() {
    const marginCalculateData = useSelector(marginAnalysisStore.selectMarginData);
    const fileName = useSelector(marginAnalysisStore.selectFileName);
    const calculatedCurrency = useSelector(marginAnalysisStore.selectCurrency);
+   const [additionalDiscount, setAdditionalDiscount] = useState(0);
    const exampleFile = useSelector(marginAnalysisStore.selectExampleUploadFile);
 
    const handleUpdateDataFilterStore = (field: string, data: any) => {
@@ -107,6 +115,7 @@ export default function MarginAnalysis() {
             region: dataFilter.region,
             subRegion: dataFilter.subRegion,
             delivery: dataFilter.delivery,
+            additionalDiscount,
          };
 
          setLoading(true);
@@ -130,7 +139,6 @@ export default function MarginAnalysis() {
             margin.manufacturingCost = margin.manufacturingCost.toLocaleString();
             margin.dealerNet = margin.dealerNet.toLocaleString();
          });
-         console.log(marginAnalystData);
 
          const marginData = {
             targetMargin: data?.TargetMargin,
@@ -640,10 +648,16 @@ export default function MarginAnalysis() {
                   data={marginCalculateData.marginAnalysisSummary?.annually}
                   valueCurrency={calculatedCurrency}
                   isAOPBox={true}
+                  additionalDiscount={additionalDiscount}
+                  setAdditionalDiscount={setAdditionalDiscount}
+                  handleCaclulate={handleCalculateMargin}
                />
                <MarginPercentageAOPRateBox
                   data={marginCalculateData.marginAnalysisSummary?.monthly}
                   valueCurrency={calculatedCurrency}
+                  additionalDiscount={additionalDiscount}
+                  setAdditionalDiscount={setAdditionalDiscount}
+                  handleCaclulate={handleCalculateMargin}
                />
                <Grid item xs={4}>
                   <Paper elevation={3} sx={{ padding: 2, height: 'fit-content', minWidth: 300 }}>
@@ -762,7 +776,14 @@ export default function MarginAnalysis() {
 
 const MarginPercentageAOPRateBox = (props) => {
    const { t } = useTranslation();
-   const { data, valueCurrency, isAOPBox } = props;
+   const {
+      data,
+      valueCurrency,
+      isAOPBox,
+      additionalDiscount,
+      setAdditionalDiscount,
+      handleCaclulate,
+   } = props;
    return (
       <Grid item xs={4}>
          <Paper elevation={3} sx={{ padding: 2, height: 'fit-content' }}>
@@ -792,6 +813,19 @@ const MarginPercentageAOPRateBox = (props) => {
                      ? ''
                      : `${(data?.blendedDiscountPercentage * 100).toFixed(2)}%`}
                </Typography>
+            </div>
+            <div className="space-between-element" style={{ alignItems: 'center' }}>
+               <Typography variant="body1" component="span" sx={{ marginLeft: 1 }}>
+                  {t('quotationMargin.additionalDiscountPercentage')}
+               </Typography>
+               <StyledAppNumberField
+                  value={additionalDiscount}
+                  sx={{ maxWidth: '100px', textAlign: 'end' }}
+                  onChange={(e) => setAdditionalDiscount(e.value)}
+                  suffix="%"
+                  onPressEnter={handleCaclulate}
+                  debounceDelay={0.05}
+               />
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span" sx={{ marginLeft: 1 }}>
