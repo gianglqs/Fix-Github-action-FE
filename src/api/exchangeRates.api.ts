@@ -12,6 +12,10 @@ class ExchangeRatesApi extends HttpService<any> {
    uploadExchangeRate = (data: any) => {
       return this.importData<any>('reports/uploadExchangeRate', data);
    };
+
+   getExampleUploadFile = () => {
+      return this.get<any>('reports/get-example-exchange-rate-upload');
+   };
 }
 
 const exchangeRatesApi = new ExchangeRatesApi('exchangeRates');

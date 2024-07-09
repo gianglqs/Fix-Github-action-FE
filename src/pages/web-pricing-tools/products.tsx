@@ -44,6 +44,8 @@ import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { useTranslation } from 'react-i18next';
 import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
 import { extractTextInParentheses } from '@/utils/getString';
+import { downloadFileByURL } from '@/utils/handleDownloadFile';
+import { PRODUCT_APAC, PRODUCT_DIMENSION } from '@/utils/modelType';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -60,6 +62,7 @@ export default function Product() {
    const listProduct = useSelector(productStore.selectProductList);
    const initDataFilter = useSelector(productStore.selectInitDataFilter);
    const cacheDataFilter = useSelector(productStore.selectDataFilter);
+   const exampleFile = useSelector(productStore.selectExampleUploadFile);
 
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
 
@@ -562,7 +565,7 @@ export default function Product() {
             </Grid>
 
             <When condition={userRoleState === 'ADMIN'}>
-               <Grid container spacing={1} sx={{ marginTop: '3px' }}>
+               <Grid container spacing={1} sx={{ marginTop: '3px', alignItems: 'end' }}>
                   <Grid item xs={1}>
                      <UploadFileDropZone
                         uploadedFile={uploadedFile}
@@ -579,7 +582,28 @@ export default function Product() {
                         {t('button.import')}
                      </Button>
                   </Grid>
-
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 15,
+                        margin: '0 30px 0 10px',
+                        cursor: 'pointer',
+                     }}
+                     onClick={() => downloadFileByURL(exampleFile[PRODUCT_APAC])}
+                  >
+                     {t('link.getProductAPACExampleUploadFile')}
+                  </Typography>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 15,
+                        margin: '0 30px 0 10px',
+                        cursor: 'pointer',
+                     }}
+                     onClick={() => downloadFileByURL(exampleFile[PRODUCT_DIMENSION])}
+                  >
+                     {t('link.getProductDimensionExampleUploadFile')}
+                  </Typography>
                   <Grid item xs={4} sx={{ display: 'flex' }}>
                      {uploadedFile &&
                         uploadedFile.map((file) => (

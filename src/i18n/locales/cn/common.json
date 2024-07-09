@@ -321,6 +321,16 @@
       "actualBkingAdjMargin": "估计实际预订调整利润率（百分比）- 价格和成本调整",
       "YTDActualBooking": "年度累计实际预订"
    },
+
+   "link": {
+      "getExampleUploadFile": "获取示例上传文件",
+      "getProductDimensionExampleUploadFile": "获取产品尺寸示例文件",
+      "getProductAPACExampleUploadFile": "获取产品亚太地区序列示例文件",
+      "getNOVOExampleUploadFile": "获取NOVO示例上传文件",
+      "getMarginAnalystMacroTemplateExampleUploadFile": "获取边际分析师宏模板示例上传文件",
+      "getPowerBIExampleUploadFile": "获取Power BI示例上传文件"
+   },
+
    "yes": "是",
    "no": "否",
    "or": "或",

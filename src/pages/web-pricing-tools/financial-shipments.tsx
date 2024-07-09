@@ -49,6 +49,8 @@ import { useTranslation } from 'react-i18next';
 import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
 import { extractTextInParentheses } from '@/utils/getString';
 import AppDataTable from '@/components/DataTable/AppDataGridPro';
+import { downloadFileByURL } from '@/utils/handleDownloadFile';
+import { SHIPMENT } from '@/utils/modelType';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -73,6 +75,7 @@ export default function Shipment() {
    const serverLastUpdatedTime = useSelector(shipmentStore.selectLastUpdatedTime);
    const serverLastUpdatedBy = useSelector(shipmentStore.selectLastUpdatedBy);
    const currency = useSelector(shipmentStore.selectCurrency);
+   const exampleFile = useSelector(shipmentStore.selectExampleUploadFile);
 
    //  const [uploadedFile, setUploadedFile] = useState({ name: '' });
    const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
@@ -762,7 +765,7 @@ export default function Shipment() {
                </Grid>
             </Grid>
             {userRoleState === 'ADMIN' && (
-               <Grid container spacing={1} sx={{ marginTop: '3px' }}>
+               <Grid container spacing={1} sx={{ marginTop: '3px', alignItems: 'end' }}>
                   <Grid item xs={1}>
                      <UploadFileDropZone
                         uploadedFile={uploadedFile}
@@ -779,6 +782,17 @@ export default function Shipment() {
                         {t('button.import')}
                      </Button>
                   </Grid>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 15,
+                        margin: '0 30px 0 10px',
+                        cursor: 'pointer',
+                     }}
+                     onClick={() => downloadFileByURL(exampleFile[SHIPMENT])}
+                  >
+                     {t('link.getExampleUploadFile')}
+                  </Typography>
                   <Grid item xs={4} sx={{ display: 'flex' }}>
                      {uploadedFile &&
                         uploadedFile.map((file) => (

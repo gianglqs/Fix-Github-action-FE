@@ -7,6 +7,7 @@ import CompareMarginDialog from '@/components/Dialog/Module/MarginHistoryDialog/
 import { commonStore, marginAnalysisStore } from '@/store/reducers';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import {
+   Box,
    Button,
    CircularProgress,
    FormControlLabel,
@@ -19,13 +20,15 @@ import {
 import Grid from '@mui/material/Grid';
 import { GetServerSidePropsContext } from 'next';
 import { parseCookies } from 'nookies';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { formatNumberPercentage } from '@/utils/formatCell';
 import { v4 as uuidv4 } from 'uuid';
+import { downloadFileByURL } from '@/utils/handleDownloadFile';
+import { MACRO, NOVO, PART } from '@/utils/modelType';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -56,6 +59,7 @@ export default function MarginAnalysis() {
    const fileName = useSelector(marginAnalysisStore.selectFileName);
    const calculatedCurrency = useSelector(marginAnalysisStore.selectCurrency);
    const [additionalDiscount, setAdditionalDiscount] = useState(0);
+   const exampleFile = useSelector(marginAnalysisStore.selectExampleUploadFile);
 
    const handleUpdateDataFilterStore = (field: string, data: any) => {
       const newDataFilter = JSON.parse(JSON.stringify(dataFilter));
@@ -409,7 +413,7 @@ export default function MarginAnalysis() {
 
    return (
       <>
-         <AppLayout entity="not-refresh-data">
+         <AppLayout entity="margin_analysis">
             {loading ? (
                <div
                   style={{
@@ -603,6 +607,41 @@ export default function MarginAnalysis() {
                   </>
                )}
             </Grid>
+            <Box sx={{ display: 'flex' }}>
+               <Typography
+                  sx={{
+                     color: 'blue',
+                     fontSize: 15,
+                     marginRight: '20px',
+                     cursor: 'pointer',
+                  }}
+                  onClick={() => downloadFileByURL(exampleFile[NOVO])}
+               >
+                  {t('link.getNOVOExampleUploadFile')}
+               </Typography>
+               <Typography
+                  sx={{
+                     color: 'blue',
+                     fontSize: 15,
+                     marginRight: '20px',
+                     cursor: 'pointer',
+                  }}
+                  onClick={() => downloadFileByURL(exampleFile[MACRO])}
+               >
+                  {t('link.getMarginAnalystMacroTemplateExampleUploadFile')}
+               </Typography>
+               <Typography
+                  sx={{
+                     color: 'blue',
+                     fontSize: 15,
+                     marginRight: '20px',
+                     cursor: 'pointer',
+                  }}
+                  onClick={() => downloadFileByURL(exampleFile[PART])}
+               >
+                  {t('link.getPowerBIExampleUploadFile')}
+               </Typography>
+            </Box>
 
             <Grid container spacing={1} sx={{ marginTop: 1 }}>
                <MarginPercentageAOPRateBox

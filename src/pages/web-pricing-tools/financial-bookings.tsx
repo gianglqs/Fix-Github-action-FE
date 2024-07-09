@@ -8,16 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { setCookie } from 'nookies';
 
-import {
-   Backdrop,
-   Button,
-   CircularProgress,
-   FormControlLabel,
-   ListItem,
-   Radio,
-   RadioGroup,
-   Typography,
-} from '@mui/material';
+import { Backdrop, Button, CircularProgress, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
@@ -33,15 +24,14 @@ import { produce } from 'immer';
 import _ from 'lodash';
 
 import { defaultValueFilterOrder } from '@/utils/defaultValues';
-import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
 
 import bookingApi from '@/api/booking.api';
 import { UserInfoContext } from '@/provider/UserInfoContext';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
-import ClearIcon from '@mui/icons-material/Clear';
 import { When } from 'react-if';
 
 import AppBackDrop from '@/components/App/BackDrop';
+import AppDataTable from '@/components/DataTable/AppDataGridPro';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
 import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
@@ -49,11 +39,10 @@ import { paperStyle } from '@/theme/paperStyle';
 import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { extractTextInParentheses } from '@/utils/getString';
+import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
-import ToolbarTable from '@/components/App/ToolbarTable/ToolbarTable';
-import { DataGrid, GridColDef, GridRowId } from '@mui/x-data-grid';
-import AppDataTable from '@/components/DataTable/AppDataGridPro';
+import { BOOKING, COST_DATA } from '@/utils/modelType';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -78,6 +67,7 @@ export default function Booking() {
    const currency = useSelector(bookingStore.selectCurrency);
 
    const loadingTable = useSelector(bookingStore.selectLoadingData);
+   const exampleFile = useSelector(bookingStore.selectExampleUploadFile);
 
    const [loading, setLoading] = useState(false);
    // const [listOrder, setListOrder] = useState(listBookingOrder);
@@ -780,19 +770,41 @@ export default function Booking() {
             </Grid>
 
             <When condition={userRoleState === 'ADMIN'}>
-               <Grid container spacing={1} sx={{ marginTop: '3px' }}>
+               <Grid container spacing={1} sx={{ marginTop: '3px', alignItems: 'end' }}>
                   <Grid item xs={2}>
                      <UploadFileDropZone
                         handleUploadFile={handleUploadBookedFile}
                         buttonName="button.bookedFile"
                      />
                   </Grid>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 15,
+                        margin: '0 30px 0 10px',
+                        cursor: 'pointer',
+                     }}
+                     onClick={() => downloadFileByURL(exampleFile[BOOKING])}
+                  >
+                     {t('link.getExampleUploadFile')}
+                  </Typography>
                   <Grid item xs={2}>
                      <UploadFileDropZone
                         handleUploadFile={handleUploadCostDataFile}
                         buttonName="button.costDataFile"
                      />
                   </Grid>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 15,
+                        margin: '0 30px 0 10px',
+                        cursor: 'pointer',
+                     }}
+                     onClick={() => downloadFileByURL(exampleFile[COST_DATA])}
+                  >
+                     {t('link.getExampleUploadFile')}
+                  </Typography>
                </Grid>
             </When>
 

@@ -321,6 +321,16 @@
       "actualBkingAdjMargin": "Tỷ lệ Biên lợi nhuận Đặt hàng Thực tế Điều chỉnh - Điều chỉnh Giá và Chi phí",
       "YTDActualBooking": "Doanh số đặt hàng thực tế tính đến cuối năm"
    },
+
+   "link": {
+      "getExampleUploadFile": "Get example upload file",
+      "getProductDimensionExampleUploadFile": "Lấy tệp mẫu Product Dimension",
+      "getProductAPACExampleUploadFile": "Lấy tệp mẫu Product APAC Serial",
+      "getNOVOExampleUploadFile": "Lấy tệp mẫu NOVO",
+      "getMarginAnalystMacroTemplateExampleUploadFile": "Lấy tệp mẫu Macro Chuyên viên Phân tích Biên lợi nhuận",
+      "getPowerBIExampleUploadFile": "Lấy tệp mẫu Power BI"
+   },
+
    "yes": "Có",
    "no": "Không",
    "or": "Hoặc",

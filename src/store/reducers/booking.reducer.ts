@@ -17,6 +17,7 @@ export const initialState = {
    dataFilter: {} as any,
    currency: 'USD',
    loadingData: true as boolean,
+   exampleUploadFile: {} as any,
 };
 
 const bookingSlice = createSlice({
@@ -57,6 +58,9 @@ const bookingSlice = createSlice({
       setLoadingData(state, { payload }: PayloadAction<boolean>) {
          state.loadingData = payload;
       },
+      setExampleUploadFile(state, { payload }: PayloadAction<any>) {
+         state.exampleUploadFile = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -85,6 +89,10 @@ export const selectLastUpdatedTime = createSelector(selectState, (state) => stat
 
 export const selectLastUpdatedBy = createSelector(selectState, (state) => state.lastUpdatedBy);
 export const selectLoadingData = createSelector(selectState, (state) => state.loadingData);
+export const selectExampleUploadFile = createSelector(
+   selectState,
+   (state) => state.exampleUploadFile
+);
 
 export const { actions } = bookingSlice;
 
