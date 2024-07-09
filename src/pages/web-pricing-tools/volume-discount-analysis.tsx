@@ -98,18 +98,6 @@ export default function VolumeDiscountAnalysis() {
       });
    };
    const handleCalculateVolumeDiscount = async () => {
-      if (
-         dataFilter.pricePerUnit?.value === '' &&
-         dataFilter.costOfGoodSold?.value === '' &&
-         dataFilter.discountPercentage?.value === '' &&
-         dataFilter.lever?.value === '' &&
-         dataFilter.expectedUnitSales?.value === '' &&
-         dataFilter.ocos?.value === '' &&
-         dataFilter.segment?.value === ''
-      )
-         return;
-      console.log(dataFilter);
-
       if (dataFilter.discountPercentage?.value > 100) {
          dispatch(
             commonStore.actions.setErrorMessage(
