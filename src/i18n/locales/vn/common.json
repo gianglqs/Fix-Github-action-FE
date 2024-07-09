@@ -304,7 +304,9 @@
       "seriesNotSelected": "Chưa chọn Series. Vui lòng chọn Series trước khi tiếp tục.",
       "typeOrOrderNumberNotSelected": "Số đơn hàng và Loại chưa được chọn. Vui lòng chọn Số đơn hàng hoặc Loại hợp lệ để tiếp tục.",
       "cannotConnectToServer": "Server không phản hồi. Vui lòng thử lại sau hoặc liên hệ hỗ trợ.",
-      "pageNotFound": "Trang không được tìm thấy. Đang chuyển hướng tự động về Trang Chủ."
+      "pageNotFound": "Trang không được tìm thấy. Đang chuyển hướng tự động về Trang Chủ.",
+      "timeExceedsThreeMonths": "Thời gian vượt quá 3 tháng, vui lòng chọn khoảng thời gian ngắn hơn.",
+      "timeExceedsTwelveMonths": "Thời gian vượt quá 12 tháng, vui lòng chọn khoảng thời gian ngắn hơn."
    },
 
    "gumReport": {
