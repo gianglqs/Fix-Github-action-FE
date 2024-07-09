@@ -449,7 +449,7 @@ const LongTermRentalSection = () => {
                }}
             >
                <Typography>{t('longTermRental.totalUnitInterestIncomeRevenue')}</Typography>
-               <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
+               {/*<Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
                      value={isAbleToCalculate ? totalUnitInterestIncomeRevenue || 0 : ' '}
                      onChange={(e) => {}}
@@ -457,7 +457,7 @@ const LongTermRentalSection = () => {
                      decimalScale={3}
                      isDecimalScale
                   />
-               </Grid>
+               </Grid>*/}
             </Box>
             <Divider />
             <Box
@@ -512,7 +512,7 @@ const ShortTermRentalSection = () => {
    const unitRecurringRevenue = (monthlyRentalPrice * seccondTerm * utilisation) / 100;
    const estimatedResale = 0;
    const totalIncomeOverTerm = unitRecurringRevenue + estimatedResale;
-   const sectionTitle = `${t('longTermRental.seccondLifeTitle')}${seccondTerm ? `+ ${seccondTerm} ${seccondTerm > 1 ? 'months' : 'month'}` : ''}`;
+   const sectionTitle = `${t('longTermRental.secondLifeTitle')}${seccondTerm ? `+ ${seccondTerm} ${seccondTerm > 1 ? 'months' : 'month'}` : ''}`;
 
    return (
       <Grid
@@ -604,7 +604,7 @@ const ShortTermRentalSection = () => {
                }}
             >
                <Typography>{t('longTermRental.interestRate')}</Typography>
-               <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
+               <Grid item xs={4}>
                   <AppNumberField
                      value={inputValues.interestRate || 0}
                      onChange={(e) => {
