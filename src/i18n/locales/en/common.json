@@ -230,6 +230,7 @@
    "quotationMargin": {
       "totalListPrice": "Total List Price",
       "blendedDiscountPercentage": "Blended Discount %",
+      "additionalDiscountPercentage": "Additional Discount %",
       "marginPercentageAOPRate": "Margin % @ AOP Rate",
       "marginPercentageAOPRateInDialog": "Margin %",
       "marginAnalysisAOPRate": "Margin Analysis",

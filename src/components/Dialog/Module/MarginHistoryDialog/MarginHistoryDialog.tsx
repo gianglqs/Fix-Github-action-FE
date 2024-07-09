@@ -42,6 +42,11 @@ export default function MarginHistoryDialog(props) {
          headerName: 'Region',
       },
       {
+         field: 'additionalDiscountPercentage',
+         flex: 0.5,
+         headerName: 'Additional Discount',
+      },
+      {
          field: 'choose',
          flex: 0.25,
          headerName: '',
@@ -80,6 +85,7 @@ export default function MarginHistoryDialog(props) {
          series: params.row.series,
          currency: params.row.currency,
          region: params.row.region,
+         additionalDiscountPercentage: params.row.additionalDiscountPercentage,
       };
 
       await marginAnalysisApi
@@ -100,8 +106,11 @@ export default function MarginHistoryDialog(props) {
       const series = String(row.partNumber);
       const currency = String(row.currency);
       const region = String(row.region);
+      const additionalDiscountPercentage = String(row.additionalDiscountPercentage);
 
-      return quoteNumber + type + modelCode + series + currency + region;
+      return (
+         quoteNumber + type + modelCode + series + currency + region + additionalDiscountPercentage
+      );
    };
 
    const handleOnCellClick = (params) => {
@@ -112,6 +121,7 @@ export default function MarginHistoryDialog(props) {
          series: params.row.series,
          currency: params.row.currency,
          region: params.row.region,
+         additionalDiscountPercentage: params.row.additionalDiscountPercentage,
       };
       handleOnRowClick(data);
       onClose();

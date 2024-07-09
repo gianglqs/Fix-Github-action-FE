@@ -223,6 +223,7 @@
    "quotationMargin": {
       "totalListPrice": "Tổng giá niêm yết",
       "blendedDiscountPercentage": "Chiết khấu % kết hợp",
+      "additionalDiscountPercentage": "Giảm giá thêm %",
       "marginPercentageAOPRate": "Lợi nhuận % @ AOP Rate",
       "marginPercentageAOPRateInDialog": "Lợi nhuận % ",
       "marginAnalysisAOPRate": "Phân tích lợi nhuận",
