@@ -16,6 +16,9 @@ type LongTermRentalInitState = {
       modelCode: string;
    };
    generalInputValues: any;
+   isAbleToCalculate: boolean;
+   servicePerHour: number;
+   residualPercentage: number;
 } & InitReducer;
 
 export const initialState: LongTermRentalInitState = {
@@ -24,6 +27,9 @@ export const initialState: LongTermRentalInitState = {
       series: null,
       modelCode: null,
    },
+   isAbleToCalculate: false,
+   servicePerHour: 0,
+   residualPercentage: 0,
    generalInputValues: {},
    serverTimeZone: '',
    lastUpdatedTime: '',
@@ -43,6 +49,15 @@ const longTermRentalSlice = createSlice({
       },
       setGeneralInputsValues(state, { payload }: PayloadAction<any>) {
          state.generalInputValues = payload;
+      },
+      setServicePerHours(state, { payload }: PayloadAction<number>) {
+         state.servicePerHour = payload;
+      },
+      setresidualPercentage(state, { payload }: PayloadAction<number>) {
+         state.residualPercentage = payload;
+      },
+      setIsAbleToCalculate(state, { payload }: PayloadAction<boolean>) {
+         state.isAbleToCalculate = payload;
       },
       setServerTimeZone(state, { payload }: PayloadAction<string>) {
          state.serverTimeZone = payload;
@@ -76,9 +91,20 @@ export const selectSelectedFilters = createSelector(
    (state) => state.selectedFilterOptions
 );
 
+export const selectResidualPercentage = createSelector(
+   selectState,
+   (state) => state.residualPercentage
+);
+
 export const selectGeneralInputValues = createSelector(
    selectState,
    (state) => state.generalInputValues
+);
+export const selectServicePerHour = createSelector(selectState, (state) => state.servicePerHour);
+
+export const selectIsAbleToCalculate = createSelector(
+   selectState,
+   (state) => state.isAbleToCalculate
 );
 
 export const selectServerTimeZone = createSelector(selectState, (state) => state.serverTimeZone);

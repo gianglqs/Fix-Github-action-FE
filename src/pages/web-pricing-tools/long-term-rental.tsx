@@ -5,7 +5,7 @@ import { Button, Typography } from '@mui/material';
 import { Grid, Paper } from '@mui/material';
 import { Box, Divider } from '@mui/material';
 //libs
-import _ from 'lodash';
+import _, { result } from 'lodash';
 import { NumberSchema } from 'yup';
 //hooks
 import { useTranslation } from 'react-i18next';
@@ -15,9 +15,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { longTermRentalStore } from '@/store/reducers';
 //api
 import longTermRentalApi from '@/api/longTermRental.api';
+import residualValueApi from '@/api/residualValue.api';
 //others
 import { mappingFiltersToOptionValues } from '@/utils/mapping';
 import { defaultValueSelectedFilterLongTermRental } from '@/utils/defaultValues';
+import { relative } from 'path';
 const LongTermRentalSection = () => {
    const [discountPercent, setDiscountPercent] = useState('' as any);
    const dataFilter = {} as any;
@@ -33,7 +35,10 @@ const LongTermRentalSection = () => {
    const { cost, streetPriceMargin, primaryTerm, customerLoanRatePercentage } = useSelector(
       longTermRentalStore.selectGeneralInputValues
    );
+   const servicePerHour = useSelector(longTermRentalStore.selectServicePerHour);
+   const residualPercentage = useSelector(longTermRentalStore.selectResidualPercentage);
    const {
+      monthlyRentalPrice = 0,
       battery = 0,
       charger = 0,
       localFit = 0,
@@ -41,29 +46,10 @@ const LongTermRentalSection = () => {
       freight = 0,
       importDutyAndCustomsClearance = 0,
       miscellaneous = 0,
+      utilisation = 0,
    } = inputValues;
-   console.log(inputValues);
-   console.log(
-      battery,
-      charger,
-      localFit,
-      telemetry,
-      freight,
-      importDutyAndCustomsClearance,
-      miscellaneous
-   );
    //calculation values
    const truckPrice = (1 + streetPriceMargin) * cost || 0;
-   console.log(
-      truckPrice,
-      battery,
-      charger,
-      localFit,
-      telemetry,
-      freight,
-      importDutyAndCustomsClearance,
-      miscellaneous
-   );
    const totalTruckPrice =
       truckPrice +
       battery +
@@ -73,7 +59,12 @@ const LongTermRentalSection = () => {
       freight +
       importDutyAndCustomsClearance +
       miscellaneous;
-   console.log(totalTruckPrice);
+   const unitRecurringRevenue = (primaryTerm * monthlyRentalPrice * utilisation) / 100;
+   const estimatedResale = truckPrice * residualPercentage;
+   const totalUnitInterestIncomeRevenue = null;
+   const grossIncomeOverTerm = unitRecurringRevenue + estimatedResale;
+   const sectionTitle = `${t('longTermRental.firstLifeTitle')}${primaryTerm ? `${primaryTerm} ${primaryTerm > 1 ? 'months' : 'month'}` : ''}`;
+
    return (
       <Grid
          item
@@ -95,7 +86,7 @@ const LongTermRentalSection = () => {
                display: 'block',
             }}
          >
-            {t('longTermRental.firstLifeTitle')}
+            {sectionTitle}
          </Typography>
          <Box sx={{ paddingY: 4, display: 'flex', gap: 1, flexDirection: 'column' }}>
             <Box
@@ -108,12 +99,11 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.monthlyRentalPrice')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
-                     defaultValue={0}
                      value={inputValues.monthlyRentalPrice}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'monthlyRentalPrice');
                      }}
-                     suffix="%"
+                     prefix="$"
                      name="monthlyRentalPrice"
                   />
                </Grid>
@@ -139,7 +129,7 @@ const LongTermRentalSection = () => {
             >
                <Typography>{t('longTermRental.truckPrice')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
-                  <AppNumberField value={truckPrice} onChange={(e) => {}} disabled />
+                  <AppNumberField value={truckPrice} onChange={(e) => {}} prefix="$" disabled />
                </Grid>
             </Box>
             <Box
@@ -152,6 +142,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.battery')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     prefix="$"
                      value={inputValues.battery}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'battery');
@@ -170,6 +161,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.charger')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     prefix="$"
                      value={inputValues.charger}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'charger');
@@ -188,6 +180,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.localFit')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     prefix="$"
                      value={inputValues.localFit}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'localFit');
@@ -206,6 +199,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.telemetry')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     prefix="$"
                      value={inputValues.telemetry}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'telemetry');
@@ -224,6 +218,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.freight')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     prefix="$"
                      value={inputValues.freight}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'freight');
@@ -246,6 +241,7 @@ const LongTermRentalSection = () => {
                      onChange={(e) => {
                         handleChangeInputValue(e, 'importDutyAndCustomsClearance');
                      }}
+                     prefix="$"
                      name="importDutyAndCustomsClearance"
                   />
                </Grid>
@@ -264,6 +260,7 @@ const LongTermRentalSection = () => {
                      onChange={(e) => {
                         handleChangeInputValue(e, 'miscellaneous');
                      }}
+                     prefix="$"
                      name="miscellaneous"
                   />
                </Grid>
@@ -282,6 +279,7 @@ const LongTermRentalSection = () => {
                      value={totalTruckPrice}
                      onChange={(e) => {}}
                      disabled
+                     prefix="$"
                      name="totalTruckPrice"
                   />
                </Grid>
@@ -301,7 +299,7 @@ const LongTermRentalSection = () => {
             >
                <Typography>{t('longTermRental.termsMonths')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
-                  <AppNumberField value={primaryTerm} disabled onChange={() => {}} />
+                  <AppNumberField value={Number(primaryTerm)} disabled onChange={() => {}} />
                </Grid>
             </Box>
             <Box
@@ -313,7 +311,12 @@ const LongTermRentalSection = () => {
             >
                <Typography>{t('longTermRental.interestRate')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
-                  <AppNumberField value={customerLoanRatePercentage} disabled onChange={() => {}} />
+                  <AppNumberField
+                     value={customerLoanRatePercentage}
+                     suffix="%"
+                     disabled
+                     onChange={() => {}}
+                  />
                </Grid>
             </Box>
             <Box
@@ -344,9 +347,10 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.servicePerHour')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
-                     value={inputValues.servicePerHour}
+                     value={servicePerHour}
+                     prefix="$"
                      onChange={(e) => {
-                        handleChangeInputValue(e, 'servicePerHour');
+                        dispatch(longTermRentalStore.actions.setServicePerHours(Number(e.value)));
                      }}
                      name="servicePerHour"
                   />
@@ -366,6 +370,7 @@ const LongTermRentalSection = () => {
                      onChange={(e) => {
                         handleChangeInputValue(e, 'utilisation');
                      }}
+                     suffix="%"
                      name="utilisation"
                   />
                </Grid>
@@ -381,7 +386,12 @@ const LongTermRentalSection = () => {
             >
                <Typography>{t('longTermRental.unitRecurringRevenue')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
-                  <AppNumberField value={70910} onChange={(e) => {}} disabled />
+                  <AppNumberField
+                     prefix="$"
+                     value={unitRecurringRevenue}
+                     onChange={(e) => {}}
+                     disabled
+                  />
                </Grid>
             </Box>
             <Box
@@ -389,12 +399,21 @@ const LongTermRentalSection = () => {
                   justifyContent: 'space-between',
                   display: 'flex',
                   paddingX: 20,
+                  position: 'relative',
                }}
             >
                <Typography>{t('longTermRental.estimatedResale')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
-                  <AppNumberField value={70910} onChange={(e) => {}} disabled />
+                  <AppNumberField
+                     prefix="$"
+                     value={estimatedResale}
+                     onChange={(e) => {}}
+                     disabled
+                  />
                </Grid>
+               <Typography sx={{ position: 'absolute', right: 50 }}>
+                  {`${(residualPercentage * 100).toFixed(1)}%`}
+               </Typography>
             </Box>
             <Box
                sx={{
@@ -405,7 +424,11 @@ const LongTermRentalSection = () => {
             >
                <Typography>{t('longTermRental.totalUnitInterestIncomeRevenue')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
-                  <AppNumberField value={70910} onChange={(e) => {}} disabled />
+                  <AppNumberField
+                     value={totalUnitInterestIncomeRevenue}
+                     onChange={(e) => {}}
+                     disabled
+                  />
                </Grid>
             </Box>
             <Divider />
@@ -418,7 +441,12 @@ const LongTermRentalSection = () => {
             >
                <Typography>{t('longTermRental.grossIncomeOverTerm')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
-                  <AppNumberField value={70910} onChange={(e) => {}} disabled />
+                  <AppNumberField
+                     prefix="$"
+                     value={grossIncomeOverTerm}
+                     onChange={(e) => {}}
+                     disabled
+                  />
                </Grid>
             </Box>
             <Divider />
@@ -428,11 +456,26 @@ const LongTermRentalSection = () => {
 };
 
 const ShortTermRentalSection = () => {
-   const [discountPercent, setDiscountPercent] = useState('' as any);
-   const dataFilter = {} as any;
-   const initDataFilter = {} as any;
+   const [inputValues, setInputValues] = useState({} as any);
+   //event handling
+   const handleChangeInputValue = ({ value }, field) => {
+      setInputValues({ ...inputValues, [field]: Number(value) });
+   };
+   const servicePerHour = useSelector(longTermRentalStore.selectServicePerHour);
+   const { monthlyRentalPrice = 0, utilisation = 0 } = inputValues;
+   //selector
+   const { seccondTerm, serviceRateCostPercentage } = useSelector(
+      longTermRentalStore.selectGeneralInputValues
+   );
    const { t } = useTranslation();
    const dispatch = useDispatch();
+   //calculate data
+   const servicePerHourShortTerm = (servicePerHour * serviceRateCostPercentage) / 100;
+   const unitRecurringRevenue = (monthlyRentalPrice * seccondTerm * utilisation) / 100;
+   const estimatedResale = 0;
+   const totalIncomeOverTerm = unitRecurringRevenue + estimatedResale;
+   const sectionTitle = `${t('longTermRental.seccondLifeTitle')}${seccondTerm ? `+ ${seccondTerm} ${seccondTerm > 1 ? 'months' : 'month'}` : ''}`;
+
    return (
       <Grid
          item
@@ -451,7 +494,7 @@ const ShortTermRentalSection = () => {
                fontWeight: 'bold',
             }}
          >
-            {t('longTermRental.seccondLifeTitle')}
+            {sectionTitle}
          </Typography>
          <Box sx={{ paddingY: 4, display: 'flex', gap: 1, flexDirection: 'column' }}>
             <Box
@@ -464,14 +507,12 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.monthlyRentalPrice')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
-                     value={discountPercent}
+                     value={inputValues.monthlyRentalPrice}
+                     prefix="$"
                      onChange={(e) => {
-                        setDiscountPercent(parseFloat(e.value));
+                        handleChangeInputValue(e, 'monthlyRentalPrice');
                      }}
-                     suffix="%"
-                     name="HYGLoanRate"
-                     label={`${t('longTermRental.HYGLoanRate')}`}
-                     placeholder={`${t('longTermRental.inputHYGLoanRate')}`}
+                     name="monthlyRentalPrice"
                   />
                </Grid>
             </Box>
@@ -484,13 +525,13 @@ const ShortTermRentalSection = () => {
                }}
             >
                <Typography>{t('longTermRental.acquisitionCostAndRefurb')}</Typography>
-               <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
+               <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
-                     value={discountPercent}
+                     value={inputValues.acquisitionCostAndRefurb}
+                     prefix="$"
                      onChange={(e) => {
-                        setDiscountPercent(parseFloat(e.value));
+                        handleChangeInputValue(e, 'acquisitionCostAndRefurb');
                      }}
-                     disabled
                      name="acquisitionCostAndRefurb"
                   />
                </Grid>
@@ -510,13 +551,7 @@ const ShortTermRentalSection = () => {
             >
                <Typography>{t('longTermRental.termsMonths')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
-                  <AppNumberField
-                     value={70910}
-                     onChange={(e) => {
-                        setDiscountPercent(parseFloat(e.value));
-                     }}
-                     disabled
-                  />
+                  <AppNumberField value={seccondTerm} onChange={(e) => {}} disabled />
                </Grid>
             </Box>
             <Box
@@ -529,11 +564,11 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.interestRate')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
-                     value={70910}
+                     value={inputValues.interestRate}
                      onChange={(e) => {
-                        setDiscountPercent(parseFloat(e.value));
+                        handleChangeInputValue(e, 'interestRate');
                      }}
-                     disabled
+                     suffix="%"
                   />
                </Grid>
             </Box>
@@ -547,9 +582,9 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.hours')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
-                     value={discountPercent}
+                     value={inputValues.hours}
                      onChange={(e) => {
-                        setDiscountPercent(parseFloat(e.value));
+                        handleChangeInputValue(e, 'hours');
                      }}
                      name="hours"
                   />
@@ -563,12 +598,12 @@ const ShortTermRentalSection = () => {
                }}
             >
                <Typography>{t('longTermRental.servicePerHour')}</Typography>
-               <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
+               <Grid item xs={4} sx={{ backgroundColor: '#f2f2f2' }}>
                   <AppNumberField
-                     value={discountPercent}
-                     onChange={(e) => {
-                        setDiscountPercent(parseFloat(e.value));
-                     }}
+                     value={servicePerHourShortTerm}
+                     prefix="$"
+                     onChange={() => {}}
+                     disabled
                      name="servicePerHour"
                   />
                </Grid>
@@ -583,11 +618,12 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.utilisation')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
-                     value={discountPercent}
+                     value={inputValues.utilisation}
                      onChange={(e) => {
-                        setDiscountPercent(parseFloat(e.value));
+                        handleChangeInputValue(e, 'utilisation');
                      }}
                      name="utilisation"
+                     suffix="%"
                   />
                </Grid>
             </Box>
@@ -603,10 +639,9 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.unitRecurringRevenue')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
-                     value={70910}
-                     onChange={(e) => {
-                        setDiscountPercent(parseFloat(e.value));
-                     }}
+                     prefix="$"
+                     value={unitRecurringRevenue}
+                     onChange={(e) => {}}
                      disabled
                   />
                </Grid>
@@ -616,37 +651,23 @@ const ShortTermRentalSection = () => {
                   justifyContent: 'space-between',
                   display: 'flex',
                   paddingX: 20,
+                  position: 'relative',
                }}
             >
                <Typography>{t('longTermRental.estimatedResale')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
-                     value={70910}
-                     onChange={(e) => {
-                        setDiscountPercent(parseFloat(e.value));
-                     }}
+                     prefix="$"
+                     value={estimatedResale}
+                     onChange={(e) => {}}
                      disabled
                   />
                </Grid>
+               <Typography
+                  sx={{ position: 'absolute', right: 50 }}
+               >{`${Number(0).toFixed(1)}%`}</Typography>
             </Box>
-            <Box
-               sx={{
-                  justifyContent: 'space-between',
-                  display: 'flex',
-                  paddingX: 20,
-               }}
-            >
-               <Typography>{t('longTermRental.totalUnitInterestIncomeRevenue')}</Typography>
-               <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
-                  <AppNumberField
-                     value={70910}
-                     onChange={(e) => {
-                        setDiscountPercent(parseFloat(e.value));
-                     }}
-                     disabled
-                  />
-               </Grid>
-            </Box>
+            <Box sx={{ height: '25px' }}></Box>
             <Divider />
             <Box
                sx={{
@@ -655,13 +676,12 @@ const ShortTermRentalSection = () => {
                   paddingX: 20,
                }}
             >
-               <Typography>{t('longTermRental.grossIncomeOverTerm')}</Typography>
+               <Typography>{t('longTermRental.totalIncomeOverTerm')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
-                     value={70910}
-                     onChange={(e) => {
-                        setDiscountPercent(parseFloat(e.value));
-                     }}
+                     prefix="$"
+                     value={totalIncomeOverTerm}
+                     onChange={(e) => {}}
                      disabled
                   />
                </Grid>
@@ -672,15 +692,22 @@ const ShortTermRentalSection = () => {
    );
 };
 const GeneralInput = () => {
-   const [discountPercent, setDiscountPercent] = useState('' as any);
-   const dataFilter = {} as any;
-   const initDataFilter = {} as any;
    const { t } = useTranslation();
    const dispatch = useDispatch();
    //selector
    const selectedFilter = useSelector(longTermRentalStore.selectSelectedFilters);
    const optionsFilter = useSelector(longTermRentalStore.selectFilterOptions);
    const generalInputValues = useSelector(longTermRentalStore.selectGeneralInputValues);
+   const {
+      cost,
+      quantity,
+      financingFinanceTerm,
+      primaryTerm,
+      seccondTerm,
+      streetPriceMargin,
+      HYGMargin,
+   } = generalInputValues;
+   const { modelCode } = selectedFilter;
 
    const fetchSelectOptions = async (selectedFilter) => {
       dispatch(longTermRentalStore.actions.setSelectedFilters(selectedFilter));
@@ -696,11 +723,13 @@ const GeneralInput = () => {
    //event handling
    const handleChangeDataFilter = (option, field) => {
       const newSelectedFilter = { ...selectedFilter, [field]: option.value };
-      console.log(newSelectedFilter, field, option);
       fetchSelectOptions(newSelectedFilter);
    };
    const handleCalculate = () => {};
-   const handleClearInput = () => {};
+   const handleClearInput = () => {
+      dispatch(longTermRentalStore.actions.setGeneralInputsValues({}));
+      dispatch(longTermRentalStore.actions.setSelectedFilters({}));
+   };
    //init options for selectbox
    useEffect(() => {
       fetchSelectOptions(defaultValueSelectedFilterLongTermRental).then(() => {
@@ -716,13 +745,41 @@ const GeneralInput = () => {
    }, []);
 
    const handleChangeInputValue = ({ value }, field) => {
-      dispatch(
-         longTermRentalStore.actions.setGeneralInputsValues({
-            ...generalInputValues,
-            [field]: Number(value),
-         })
-      );
+      const newGeneralInputValues = {
+         ...generalInputValues,
+         [field]: value ? Number(value) : null,
+      };
+      dispatch(longTermRentalStore.actions.setGeneralInputsValues(newGeneralInputValues));
    };
+   const checkValidCalculation = () => {
+      return ![
+         cost,
+         quantity,
+         financingFinanceTerm,
+         primaryTerm,
+         seccondTerm,
+         streetPriceMargin,
+         HYGMargin,
+         modelCode,
+      ].some((value) => value === null);
+   };
+   const isAbleToCalculate = checkValidCalculation();
+   useEffect(() => {
+      dispatch(longTermRentalStore.actions.setIsAbleToCalculate(isAbleToCalculate));
+   }, [generalInputValues, selectedFilter]);
+   useEffect(() => {
+      if (modelCode && primaryTerm) {
+         longTermRentalApi
+            .getResidualPercentage({ modelCode, longTermMonths: primaryTerm })
+            .then((result) => {
+               dispatch(
+                  longTermRentalStore.actions.setresidualPercentage(
+                     result?.data?.residualPercentage
+                  )
+               );
+            });
+      }
+   }, [modelCode, primaryTerm]);
    return (
       <>
          <Grid container spacing={1}>
@@ -745,22 +802,22 @@ const GeneralInput = () => {
             </Grid>
             <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                <AppAutocomplete
+                  defaultValue={null}
                   value={
                      selectedFilter?.series
                         ? {
                              value: selectedFilter.series,
                           }
-                        : ''
+                        : 'All'
                   }
-                  options={optionsFilter.series}
+                  options={[{ value: null }, ...(optionsFilter.series || [])]}
                   label={t('filters.series')}
-                  required
                   onChange={(e, option) => handleChangeDataFilter(option, 'series')}
                   limitTags={2}
                   disableListWrap
                   primaryKeyOption="value"
-                  renderOption={(prop, option) => `${option.value}`}
-                  getOptionLabel={(option) => `${option.value}`}
+                  renderOption={(prop, option) => `${option.value || 'All'}`}
+                  getOptionLabel={(option) => `${option.value || 'All'}`}
                />
             </Grid>
             <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
@@ -775,7 +832,7 @@ const GeneralInput = () => {
                   options={optionsFilter.modelCode}
                   required
                   label={t('filters.model')}
-                  onChange={(e, option) => handleChangeDataFilter(option, 'model')}
+                  onChange={(e, option) => handleChangeDataFilter(option, 'modelCode')}
                   limitTags={2}
                   disableListWrap
                   primaryKeyOption="value"
@@ -792,6 +849,7 @@ const GeneralInput = () => {
                      handleChangeInputValue(e, 'cost');
                   }}
                   name="cost"
+                  prefix="$"
                   required
                   label={`${t('longTermRental.cost')}`}
                   placeholder={`${t('longTermRental.inputCost')}`}
@@ -829,6 +887,8 @@ const GeneralInput = () => {
                   }}
                   required
                   name="primaryTerm"
+                  isDecimalScale
+                  decimalScale={0}
                   label={`${t('longTermRental.primaryTerm')}`}
                   placeholder={`${t('longTermRental.inputMonths')}`}
                />
@@ -839,6 +899,8 @@ const GeneralInput = () => {
                   onChange={(e) => {
                      handleChangeInputValue(e, 'seccondTerm');
                   }}
+                  isDecimalScale
+                  decimalScale={0}
                   required
                   name="seccondTerm"
                   label={`${t('longTermRental.seccondTerm')}`}

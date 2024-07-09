@@ -6,6 +6,9 @@ class LongTermRentalApi extends HttpService<any> {
    getSelectFilters = (data = {} as any) => {
       return this.post<any>(`filters/longTermRental`, { ...data });
    };
+   getResidualPercentage = (data = {} as any) => {
+      return this.post<any>(`longTermRental/getResidualPercentage`, {}, { ...data });
+   };
 }
 
 const longTermRentalApi = new LongTermRentalApi('longTermRental');
