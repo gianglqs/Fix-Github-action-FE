@@ -27,7 +27,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
 export function NumericCell({ value, type, fix = 1 }) {
-   if (value == null || typeof value != 'number') return <span></span>;
+   if (value == null || typeof value != 'number') return <span>-</span>;
    if (value < 0) {
       return (
          <span>
@@ -183,7 +183,7 @@ export default function GumReport() {
          datafield: 'actual-bkings-std-margin',
          format: {
             type: 'PERCENTAGE',
-            displayBlankAsNull: true,
+            displayBlankAsDash: true,
          },
       },
       {
@@ -191,7 +191,7 @@ export default function GumReport() {
          datafield: 'actual-bkings-adj-margin',
          format: {
             type: 'PERCENTAGE',
-            displayBlankAsNull: true,
+            displayBlankAsDash: true,
          },
       },
       {
@@ -200,7 +200,6 @@ export default function GumReport() {
          format: {
             type: 'NUMERIC',
             fix: 0,
-            displayBlankAsNull: true,
          },
       },
    ];
@@ -217,7 +216,7 @@ export default function GumReport() {
    const rowsList = tablesFormat.map(({ datafield, format }) => {
       const rows = [];
       const totalRow = { id: segments.length, segment: 'Total Classes' };
-      const nullValue = !format.displayBlankAsNull && 0;
+      const nullValue = !format.displayBlankAsDash ? 0 : '-';
       segments.forEach((segment, i) => {
          const row = { id: i, segment: segments[i] };
          regions.forEach((region) => {
