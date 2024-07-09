@@ -12,10 +12,12 @@ type LongTermRentalInitState = {
    filterOptions: FilterOptions;
    // user's selected data of chart
    selectedFilterOptions: {
-      series: string;
-      modelCode: string;
+      series?: string;
+      modelCode?: string;
    };
    generalInputValues: any;
+   longTermInputValues: any;
+   shortTermInputValues: any;
    isAbleToCalculate: boolean;
    servicePerHour: number;
    residualPercentage: number;
@@ -31,6 +33,8 @@ export const initialState: LongTermRentalInitState = {
    servicePerHour: 0,
    residualPercentage: 0,
    generalInputValues: {},
+   shortTermInputValues: {},
+   longTermInputValues: {},
    serverTimeZone: '',
    lastUpdatedTime: '',
    lastUpdatedBy: '',
@@ -49,6 +53,12 @@ const longTermRentalSlice = createSlice({
       },
       setGeneralInputsValues(state, { payload }: PayloadAction<any>) {
          state.generalInputValues = payload;
+      },
+      setLongTermInputsValues(state, { payload }: PayloadAction<any>) {
+         state.longTermInputValues = payload;
+      },
+      setShortTermInputsValues(state, { payload }: PayloadAction<any>) {
+         state.shortTermInputValues = payload;
       },
       setServicePerHours(state, { payload }: PayloadAction<number>) {
          state.servicePerHour = payload;
@@ -70,6 +80,17 @@ const longTermRentalSlice = createSlice({
       },
       setLoadingPage(state, { payload }: PayloadAction<boolean>) {
          state.loadingPage = payload;
+      },
+      resetInputValues(state) {
+         state.shortTermInputValues = {};
+         state.longTermInputValues = {};
+         state.generalInputValues = {};
+         state.selectedFilterOptions = {
+            modelCode: null,
+            series: null,
+         };
+         state.servicePerHour = 0;
+         state.residualPercentage = 0;
       },
    },
    extraReducers: {
@@ -99,6 +120,14 @@ export const selectResidualPercentage = createSelector(
 export const selectGeneralInputValues = createSelector(
    selectState,
    (state) => state.generalInputValues
+);
+export const selectShortTermInputValues = createSelector(
+   selectState,
+   (state) => state.shortTermInputValues
+);
+export const selectLongTermInputValues = createSelector(
+   selectState,
+   (state) => state.longTermInputValues
 );
 export const selectServicePerHour = createSelector(selectState, (state) => state.servicePerHour);
 
