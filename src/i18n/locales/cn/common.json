@@ -223,6 +223,7 @@
    "quotationMargin": {
       "totalListPrice": "总列表价格",
       "blendedDiscountPercentage": "混合折扣率 %",
+      "additionalDiscountPercentage": "额外折扣百分比 %",
       "marginPercentageAOPRate": "AOP利润率 @利率",
       "marginPercentageAOPRateInDialog": "利润 %",
       "marginAnalysisAOPRate": "利润分析",
