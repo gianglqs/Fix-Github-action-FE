@@ -849,7 +849,7 @@ const GeneralInput = () => {
    return (
       <>
          <Grid container spacing={1}>
-            <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+            <Grid item xs={0} sx={{ zIndex: 10, height: 25 }}>
                {/*<AppAutocomplete
                      value={_.map(dataFilter.region, (item) => {
                         return { value: item };
