@@ -72,19 +72,34 @@ function* getDataViewPrevious() {
       yield put(marginAnalysisStore.actions.setMarginData(data));
       console.log(data);
       yield put(
-         marginAnalysisStore.actions.setCurrency(data.MarginAnalystSummary.annually.id.currency)
+         marginAnalysisStore.actions.setCurrency(data?.MarginAnalystSummary.annually.id.currency)
       );
    } catch (error) {
-      console.log(error);
+      yield put(commonStore.actions.setErrorMessage(error.message));
+   }
+}
+
+function* getExampleUploadFile() {
+   try {
+      const { data } = yield call(marginAnalysisApi.getExampleUploadFile);
+      yield put(
+         marginAnalysisStore.actions.setExampleUploadFile(JSON.parse(data).exampleUploadFile)
+      );
+   } catch (error) {
+      yield put(commonStore.actions.setErrorMessage(error.message));
    }
 }
 
 function* fetchLoadingQuotationMarginPage() {
-   yield takeEvery(marginAnalysisStore.sagaGetList, getLoadingPage);
+   //yield takeEvery(marginAnalysisStore.sagaGetList, getLoadingPage);
 }
 
 function* fetchDataViewPrevious() {
-   yield takeEvery(marginAnalysisStore.sagaGetList, getDataViewPrevious);
+   // yield takeEvery(marginAnalysisStore.sagaGetList, getDataViewPrevious);
 }
 
-export { fetchDataViewPrevious, fetchLoadingQuotationMarginPage };
+function* fetchExampleUploadFile() {
+   yield takeEvery(marginAnalysisStore.sagaGetList, getExampleUploadFile);
+}
+
+export { fetchDataViewPrevious, fetchLoadingQuotationMarginPage, fetchExampleUploadFile };

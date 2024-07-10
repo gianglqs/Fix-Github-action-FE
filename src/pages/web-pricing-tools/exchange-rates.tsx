@@ -1,9 +1,17 @@
 import { AppAutocomplete, AppDateField, AppLayout } from '@/components';
-import { Button, Grid, RadioGroup, FormControlLabel, Radio, CircularProgress } from '@mui/material';
+import {
+   Button,
+   Grid,
+   RadioGroup,
+   FormControlLabel,
+   Radio,
+   CircularProgress,
+   Typography,
+   Box,
+} from '@mui/material';
 import { produce } from 'immer';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
-
 import {
    Chart as ChartJS,
    LinearScale,
@@ -14,8 +22,27 @@ import {
    CategoryScale,
    Title,
 } from 'chart.js';
+import { hexToRGBA } from '@/utils/mapping';
 import ChartAnnotation from 'chartjs-plugin-annotation';
-
+const crossHairPlugin = {
+   id: 'crossHairPlugin',
+   afterDraw: (chart) => {
+      if (chart.tooltip?._active?.length) {
+         let x = chart.tooltip._active[0].element.x;
+         let yAxis = chart.scales.y;
+         let ctx = chart.ctx;
+         ctx.save();
+         ctx.beginPath();
+         ctx.setLineDash([3, 3]);
+         ctx.moveTo(x, yAxis.top);
+         ctx.lineTo(x, yAxis.bottom);
+         ctx.lineWidth = 1;
+         ctx.strokeStyle = '#333';
+         ctx.stroke();
+         ctx.restore();
+      }
+   },
+};
 ChartJS.register(
    CategoryScale,
    LinearScale,
@@ -24,7 +51,8 @@ ChartJS.register(
    Tooltip,
    Legend,
    Title,
-   ChartAnnotation
+   ChartAnnotation,
+   crossHairPlugin
 );
 
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
@@ -37,6 +65,8 @@ import { useDropzone } from 'react-dropzone';
 import { parseCookies } from 'nookies';
 import { CURRENCY } from '@/utils/constant';
 import { useTranslation } from 'react-i18next';
+import { downloadFileByURL } from '@/utils/handleDownloadFile';
+import { EXCHANGE_RATE } from '@/utils/modelType';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -86,6 +116,7 @@ export default function ExchangeRate() {
    const [chartData, setChartData] = useState([]);
    const [uploadedFile, setUploadedFile] = useState();
    const [exchangeRateSource, setExchangeRateSource] = useState('Database');
+   const [exampleUploadFile, setExampleUploadFile] = useState(null);
 
    useEffect(() => {
       exchangeRatesApi
@@ -96,6 +127,10 @@ export default function ExchangeRate() {
          .catch((error) => {
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
+
+      exchangeRatesApi.getExampleUploadFile().then((res) => {
+         setExampleUploadFile(JSON.parse(String(res.data)).exampleUploadFile);
+      });
    }, []);
 
    const handleChangeDataFilter = (option, field) => {
@@ -104,9 +139,7 @@ export default function ExchangeRate() {
             if (_.includes(['currentCurrency'], field)) {
                draft[field] = { value: option.value, error: false };
             } else if (_.includes(['fromDate', 'toDate'], field)) {
-               exchangeRateSource === 'Database'
-                  ? (draft[field].value = option.slice(0, -3))
-                  : (draft[field].value = option.slice(0));
+               draft[field].value = option.slice(0, -3);
             } else {
                draft[field].value = option.map(({ value }) => value);
                draft[field].error = false;
@@ -144,7 +177,9 @@ export default function ExchangeRate() {
             return;
          }
          if (dataFilter.comparisonCurrencies.value.length == 0) {
-            dispatch(commonStore.actions.setErrorMessage('Please select the currencies to exchange to'));
+            dispatch(
+               commonStore.actions.setErrorMessage('Please select the currencies to exchange to')
+            );
             setDataFilter((prev) =>
                produce(prev, (draft) => {
                   draft['comparisonCurrencies'] = { value: [], error: true };
@@ -182,7 +217,6 @@ export default function ExchangeRate() {
                      .compareCurrency(request)
                      .then((response) => {
                         const data = response.data.compareCurrency;
-
                         // Setting Labels for chart
                         const labels = data[dataFilter.comparisonCurrencies.value[0]]
                            .map((item) => {
@@ -195,7 +229,6 @@ export default function ExchangeRate() {
                               }
                            })
                            .reverse();
-
                         let datasets = [];
                         dataFilter.comparisonCurrencies.value.forEach((item) => {
                            datasets.push({
@@ -204,8 +237,12 @@ export default function ExchangeRate() {
                               borderColor: CURRENCY[item],
                               backgroundColor: CURRENCY[item],
                               pointStyle: 'circle',
-                              pointRadius: 5,
-                              pointHoverRadius: 10,
+                              pointRadius: 0,
+                              lineTension: 0.05,
+                              borderWidth: 1.5,
+                              pointHoverRadius: 2,
+                              hoverBorderWidth: 12,
+                              hoverBorderColor: hexToRGBA(CURRENCY[item], 0.3),
                               yAxisID: item == 'JPY' ? 'y1' : 'y',
                            });
                         });
@@ -238,12 +275,12 @@ export default function ExchangeRate() {
                   setLoading(false);
                   dispatch(
                      commonStore.actions.setErrorMessage(
-                        'Time exceeds 12 months, please choose a shorter range'
+                        t('commonErrorMessage.timeExceedsTwelveMonths')
                      )
                   );
                }
             } else {
-               if (dayDiff < 30) {
+               if (monthDiff < 4) {
                   exchangeRatesApi
                      .compareCurrency(request)
                      .then((response) => {
@@ -270,8 +307,12 @@ export default function ExchangeRate() {
                               borderColor: CURRENCY[item],
                               backgroundColor: CURRENCY[item],
                               pointStyle: 'circle',
-                              pointRadius: 5,
-                              pointHoverRadius: 10,
+                              pointRadius: 0,
+                              lineTension: 0.05,
+                              borderWidth: 1.5,
+                              pointHoverRadius: 2,
+                              hoverBorderWidth: 12,
+                              hoverBorderColor: hexToRGBA(CURRENCY[item], 0.3),
                               yAxisID: item == 'JPY' ? 'y1' : 'y',
                            });
                         });
@@ -304,7 +345,7 @@ export default function ExchangeRate() {
                   setLoading(false);
                   dispatch(
                      commonStore.actions.setErrorMessage(
-                        'Time exceeds 30 days, please choose a shorter range'
+                        t('commonErrorMessage.timeExceedsThreeMonths')
                      )
                   );
                }
@@ -336,8 +377,12 @@ export default function ExchangeRate() {
                         borderColor: CURRENCY[item],
                         backgroundColor: CURRENCY[item],
                         pointStyle: 'circle',
-                        pointRadius: 5,
-                        pointHoverRadius: 10,
+                        pointRadius: 0,
+                        lineTension: 0.05,
+                        borderWidth: 1.5,
+                        pointHoverRadius: 2,
+                        hoverBorderWidth: 12,
+                        hoverBorderColor: hexToRGBA(CURRENCY[item], 0.3),
                         yAxisID: item == 'JPY' ? 'y1' : 'y',
                      });
                   });
@@ -557,39 +602,44 @@ export default function ExchangeRate() {
                   </RadioGroup>
                </Grid>
 
-               <Grid item xs={1}>
-                  <AppDateField
-                     views={
-                        exchangeRateSource === 'Database'
-                           ? ['month', 'year']
-                           : ['day', 'month', 'year']
-                     }
-                     label={t('filters.fromDate')}
-                     name="fromDate"
-                     onChange={(e, value) =>
-                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
-                     }
-                     value={dataFilter.fromDate.value}
-                     maxDate={new Date().toISOString().slice(0, 10)}
-                     sx={{ marginTop: 1 }}
-                  />
-               </Grid>
-               <Grid item xs={1}>
-                  <AppDateField
-                     views={
-                        exchangeRateSource === 'Database'
-                           ? ['month', 'year']
-                           : ['day', 'month', 'year']
-                     }
-                     label={t('filters.toDate')}
-                     name="toDate"
-                     onChange={(e, value) =>
-                        handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
-                     }
-                     value={dataFilter.toDate.value}
-                     maxDate={new Date().toISOString().slice(0, 10)}
-                     sx={{ marginTop: 1 }}
-                  />
+               <Grid item xs={2}>
+                  <Box sx={{ display: 'flex', gap: '5px' }}>
+                     <AppDateField
+                        views={['month', 'year']}
+                        label={t('filters.fromDate')}
+                        name="fromDate"
+                        onChange={(e, value) =>
+                           handleChangeDataFilter(_.isNil(value) ? '' : value, 'fromDate')
+                        }
+                        value={dataFilter.fromDate.value}
+                        maxDate={new Date().toISOString().slice(0, 10)}
+                        sx={{ marginTop: 1 }}
+                     />
+
+                     <AppDateField
+                        views={['month', 'year']}
+                        label={t('filters.toDate')}
+                        name="toDate"
+                        onChange={(e, value) =>
+                           handleChangeDataFilter(_.isNil(value) ? '' : value, 'toDate')
+                        }
+                        value={dataFilter.toDate.value}
+                        maxDate={new Date().toISOString().slice(0, 10)}
+                        sx={{ marginTop: 1 }}
+                     />
+                  </Box>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 15,
+                        margin: '0 30px 0 10px',
+                        cursor: 'pointer',
+                        marginTop: '10px',
+                     }}
+                     onClick={() => downloadFileByURL(exampleUploadFile[EXCHANGE_RATE])}
+                  >
+                     {t('link.getExampleUploadFile')}
+                  </Typography>
                </Grid>
 
                <CurrencyReport

@@ -54,6 +54,7 @@ export default function CompareMarginDialog(props) {
          currency: value.currency,
          region: value.region,
          durationUnit: 'annually',
+         additionalDiscountPercentage: value.additionalDiscountPercentage,
       };
 
       const transformedDataMonthly = {
@@ -64,6 +65,7 @@ export default function CompareMarginDialog(props) {
          currency: value.currency,
          region: value.region,
          durationUnit: 'monthly',
+         additionalDiscountPercentage: value.additionalDiscountPercentage,
       };
       const annually = (await marginAnalysisApi.viewHistoryMargin(transformedDataAnnually)).data;
       const monthly = (await marginAnalysisApi.viewHistoryMargin(transformedDataMonthly)).data;
@@ -288,6 +290,23 @@ const MarginPercentageAOPRateBox = (props) => {
                      {_.isNil(data.monthly?.blendedDiscountPercentage)
                         ? ''
                         : `${(data.monthly?.blendedDiscountPercentage * 100).toFixed(2)}%`}
+                  </Typography>
+               </div>
+            </div>
+            <div className="space-between-element">
+               <Typography variant="body1" component="span" sx={{ marginLeft: 1 }}>
+                  {t('quotationMargin.additionalDiscountPercentage')}
+               </Typography>
+               <div className="space-between-element" style={{ width: '50%' }}>
+                  <Typography variant="body1" component="span" sx={{ marginRight: 1 }}>
+                     {_.isNil(data.annually?.blendedDiscountPercentage)
+                        ? ''
+                        : `${(data.annually?.id?.additionalDiscountPercentage * 100).toFixed(2)}%`}
+                  </Typography>
+                  <Typography variant="body1" component="span" sx={{ marginRight: 1 }}>
+                     {_.isNil(data.monthly?.blendedDiscountPercentage)
+                        ? ''
+                        : `${(data.monthly?.id?.additionalDiscountPercentage * 100).toFixed(2)}%`}
                   </Typography>
                </div>
             </div>

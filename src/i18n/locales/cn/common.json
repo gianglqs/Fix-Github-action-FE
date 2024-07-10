@@ -223,6 +223,7 @@
    "quotationMargin": {
       "totalListPrice": "总列表价格",
       "blendedDiscountPercentage": "混合折扣率 %",
+      "additionalDiscountPercentage": "额外折扣百分比 %",
       "marginPercentageAOPRate": "AOP利润率 @利率",
       "marginPercentageAOPRateInDialog": "利润 %",
       "marginAnalysisAOPRate": "利润分析",
@@ -304,7 +305,9 @@
       "seriesNotSelected": "尚未选择系列。请先选择一个模型代码再继续操作。",
       "typeOrOrderNumberNotSelected": "尚未选择订单编号和类型。请先选择一个有效的订单编号或类型再继续操作。",
       "cannotConnectToServer": "后台服务没有响应。请稍后再试或联系支持。",
-      "pageNotFound": "未找到页面。正在自动重定向到主页。"
+      "pageNotFound": "未找到页面。正在自动重定向到主页。",
+      "timeExceedsThreeMonths": "时间超过3个月，请选择较短的范围。",
+      "timeExceedsTwelveMonths": "时间超过12个月，请选择较短的范围。"
    },
 
    "gumReport": {
@@ -318,6 +321,16 @@
       "actualBkingAdjMargin": "估计实际预订调整利润率（百分比）- 价格和成本调整",
       "YTDActualBooking": "年度累计实际预订"
    },
+
+   "link": {
+      "getExampleUploadFile": "获取示例上传文件",
+      "getProductDimensionExampleUploadFile": "获取产品尺寸示例文件",
+      "getProductAPACExampleUploadFile": "获取产品亚太地区序列示例文件",
+      "getNOVOExampleUploadFile": "获取NOVO示例上传文件",
+      "getMarginAnalystMacroTemplateExampleUploadFile": "获取边际分析师宏模板示例上传文件",
+      "getPowerBIExampleUploadFile": "获取Power BI示例上传文件"
+   },
+
    "yes": "是",
    "no": "否",
    "or": "或",

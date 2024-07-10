@@ -1,4 +1,4 @@
-import { AppAutocomplete, AppLayout, DataTable } from '@/components';
+import { AppAutocomplete, AppLayout, AppNumberField, DataTable } from '@/components';
 
 import _ from 'lodash';
 
@@ -7,28 +7,38 @@ import CompareMarginDialog from '@/components/Dialog/Module/MarginHistoryDialog/
 import { commonStore, marginAnalysisStore } from '@/store/reducers';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import {
+   Box,
    Button,
    CircularProgress,
    FormControlLabel,
    Paper,
    Radio,
    RadioGroup,
+   styled,
    Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { GetServerSidePropsContext } from 'next';
 import { parseCookies } from 'nookies';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { formatNumberPercentage } from '@/utils/formatCell';
 import { v4 as uuidv4 } from 'uuid';
+import { downloadFileByURL } from '@/utils/handleDownloadFile';
+import { MACRO, NOVO, PART } from '@/utils/modelType';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
+
+const StyledAppNumberField = styled(AppNumberField)(() => ({
+   '& .MuiInputBase-input': {
+      textAlign: 'end',
+   },
+}));
 export default function MarginAnalysis() {
    const dispatch = useDispatch();
    const { t } = useTranslation();
@@ -48,6 +58,8 @@ export default function MarginAnalysis() {
    const marginCalculateData = useSelector(marginAnalysisStore.selectMarginData);
    const fileName = useSelector(marginAnalysisStore.selectFileName);
    const calculatedCurrency = useSelector(marginAnalysisStore.selectCurrency);
+   const [additionalDiscount, setAdditionalDiscount] = useState(0);
+   const exampleFile = useSelector(marginAnalysisStore.selectExampleUploadFile);
 
    const handleUpdateDataFilterStore = (field: string, data: any) => {
       const newDataFilter = JSON.parse(JSON.stringify(dataFilter));
@@ -103,6 +115,7 @@ export default function MarginAnalysis() {
             region: dataFilter.region,
             subRegion: dataFilter.subRegion,
             delivery: dataFilter.delivery,
+            additionalDiscount,
          };
 
          setLoading(true);
@@ -126,7 +139,6 @@ export default function MarginAnalysis() {
             margin.manufacturingCost = margin.manufacturingCost.toLocaleString();
             margin.dealerNet = margin.dealerNet.toLocaleString();
          });
-         console.log(marginAnalystData);
 
          const marginData = {
             targetMargin: data?.TargetMargin,
@@ -398,11 +410,10 @@ export default function MarginAnalysis() {
    const setFileName = (fileName: string) => {
       dispatch(marginAnalysisStore.actions.setFileName(fileName));
    };
-   console.log();
 
    return (
       <>
-         <AppLayout entity="not-refresh-data">
+         <AppLayout entity="margin_analysis">
             {loading ? (
                <div
                   style={{
@@ -596,16 +607,57 @@ export default function MarginAnalysis() {
                   </>
                )}
             </Grid>
+            <Box sx={{ display: 'flex' }}>
+               <Typography
+                  sx={{
+                     color: 'blue',
+                     fontSize: 15,
+                     marginRight: '20px',
+                     cursor: 'pointer',
+                  }}
+                  onClick={() => downloadFileByURL(exampleFile[NOVO])}
+               >
+                  {t('link.getNOVOExampleUploadFile')}
+               </Typography>
+               <Typography
+                  sx={{
+                     color: 'blue',
+                     fontSize: 15,
+                     marginRight: '20px',
+                     cursor: 'pointer',
+                  }}
+                  onClick={() => downloadFileByURL(exampleFile[MACRO])}
+               >
+                  {t('link.getMarginAnalystMacroTemplateExampleUploadFile')}
+               </Typography>
+               <Typography
+                  sx={{
+                     color: 'blue',
+                     fontSize: 15,
+                     marginRight: '20px',
+                     cursor: 'pointer',
+                  }}
+                  onClick={() => downloadFileByURL(exampleFile[PART])}
+               >
+                  {t('link.getPowerBIExampleUploadFile')}
+               </Typography>
+            </Box>
 
             <Grid container spacing={1} sx={{ marginTop: 1 }}>
                <MarginPercentageAOPRateBox
                   data={marginCalculateData.marginAnalysisSummary?.annually}
                   valueCurrency={calculatedCurrency}
                   isAOPBox={true}
+                  additionalDiscount={additionalDiscount}
+                  setAdditionalDiscount={setAdditionalDiscount}
+                  handleCaclulate={handleCalculateMargin}
                />
                <MarginPercentageAOPRateBox
                   data={marginCalculateData.marginAnalysisSummary?.monthly}
                   valueCurrency={calculatedCurrency}
+                  additionalDiscount={additionalDiscount}
+                  setAdditionalDiscount={setAdditionalDiscount}
+                  handleCaclulate={handleCalculateMargin}
                />
                <Grid item xs={4}>
                   <Paper elevation={3} sx={{ padding: 2, height: 'fit-content', minWidth: 300 }}>
@@ -724,7 +776,14 @@ export default function MarginAnalysis() {
 
 const MarginPercentageAOPRateBox = (props) => {
    const { t } = useTranslation();
-   const { data, valueCurrency, isAOPBox } = props;
+   const {
+      data,
+      valueCurrency,
+      isAOPBox,
+      additionalDiscount,
+      setAdditionalDiscount,
+      handleCaclulate,
+   } = props;
    return (
       <Grid item xs={4}>
          <Paper elevation={3} sx={{ padding: 2, height: 'fit-content' }}>
@@ -754,6 +813,19 @@ const MarginPercentageAOPRateBox = (props) => {
                      ? ''
                      : `${(data?.blendedDiscountPercentage * 100).toFixed(2)}%`}
                </Typography>
+            </div>
+            <div className="space-between-element" style={{ alignItems: 'center' }}>
+               <Typography variant="body1" component="span" sx={{ marginLeft: 1 }}>
+                  {t('quotationMargin.additionalDiscountPercentage')}
+               </Typography>
+               <StyledAppNumberField
+                  value={additionalDiscount}
+                  sx={{ maxWidth: '100px', textAlign: 'end' }}
+                  onChange={(e) => setAdditionalDiscount(e.value)}
+                  suffix="%"
+                  onPressEnter={handleCaclulate}
+                  debounceDelay={0.05}
+               />
             </div>
             <div className="space-between-element">
                <Typography variant="body1" component="span" sx={{ marginLeft: 1 }}>

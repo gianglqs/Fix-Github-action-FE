@@ -39,6 +39,8 @@ import { defaultValueChartSelectedFilterIndicator } from '@/utils/defaultValues'
 import indicatorV2Api from '@/api/indicatorV2.api';
 //mapping
 import { mappingCompetitorFiltersToOptionValues } from '@/utils/mapping';
+import { downloadFileByURL } from '@/utils/handleDownloadFile';
+import { COMPETITOR, FORECAST_PRICING } from '@/utils/modelType';
 const getOrCreateLegendList = (chart, id) => {
    const legendContainer = document.getElementById(id);
    if (!legendContainer) return null;
@@ -208,6 +210,8 @@ export default function IndicatorsV2() {
    const { dataset, trendline, modeline, maxX, maxY } = useSelector(
       indicatorV2Store.selectChartData
    );
+
+   const exampleFile = useSelector(indicatorV2Store.selectExampleUploadFile);
 
    //setting chart Data
    const [sliderLeadTime, setSliderLeadTime] = useState([0, 0]);
@@ -590,6 +594,7 @@ export default function IndicatorsV2() {
          },
       },
    };
+
    return (
       <div>
          <AppLayout entity="indicatorV2">
@@ -763,19 +768,42 @@ export default function IndicatorsV2() {
 
                {userRole === 'ADMIN' && (
                   <>
-                     <Grid item xs={2}>
+                     <Grid item xs={3} sx={{ display: 'flex' }}>
                         <UploadFileDropZone
                            handleUploadFile={handleImportFile}
                            buttonName={`${t('button.import')} Competitor File`}
-                           sx={{ width: '100%', height: 24, minWidth: 165 }}
+                           sx={{ height: 24, minWidth: 165 }}
                         />
+                        <Typography
+                           sx={{
+                              color: 'blue',
+                              fontSize: 15,
+                              margin: '0 30px 0 10px',
+                              cursor: 'pointer',
+                           }}
+                           onClick={() => downloadFileByURL(exampleFile[COMPETITOR])}
+                        >
+                           {t('link.getExampleUploadFile')}
+                        </Typography>
                      </Grid>
-                     <Grid item xs={2}>
+
+                     <Grid item xs={3} sx={{ display: 'flex' }}>
                         <UploadFileDropZone
                            handleUploadFile={handleUploadForecastFile}
                            buttonName={`${t('button.import')} Forecast File`}
-                           sx={{ width: '100%', height: 24, minWidth: 165 }}
+                           sx={{ height: 24, minWidth: 165 }}
                         />
+                        <Typography
+                           sx={{
+                              color: 'blue',
+                              fontSize: 15,
+                              margin: '0 30px 0 10px',
+                              cursor: 'pointer',
+                           }}
+                           onClick={() => downloadFileByURL(exampleFile[FORECAST_PRICING])}
+                        >
+                           {t('link.getExampleUploadFile')}
+                        </Typography>
                      </Grid>
                   </>
                )}

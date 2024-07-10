@@ -37,7 +37,11 @@ function* getDataShipment() {
       if (!isValidDate(toDateFilter)) {
          throw new Error('To date is invalid!');
       }
-      if (isBefore(toDateFilter, fromDateFilter))
+      if (
+         !isValidDate(fromDateFilter) &&
+         !isValidDate(toDateFilter) &&
+         isBefore(toDateFilter, fromDateFilter)
+      )
          throw new Error('The To Date value cannot be earlier than the From Date value');
 
       yield put(shipmentStore.actions.setLoadingData(true));
@@ -53,6 +57,7 @@ function* getDataShipment() {
       const dataServerTimeZone = JSON.parse(String(data)).data.serverTimeZone;
       const dataLastUpdatedTime = JSON.parse(String(data)).data.lastUpdatedTime;
       const dataLastUpdatedBy = JSON.parse(String(data)).data.lastUpdatedBy;
+      const exampleUploadFile = JSON.parse(String(data)).data.exampleUploadFile;
 
       yield put(
          shipmentStore.actions.setLastUpdatedTime(
@@ -65,6 +70,7 @@ function* getDataShipment() {
       yield put(shipmentStore.actions.setTotalRow(dataTotalRow));
       yield put(shipmentStore.actions.setServerTimeZone(dataServerTimeZone));
       yield put(shipmentStore.actions.setLastUpdatedBy(dataLastUpdatedBy));
+      yield put(shipmentStore.actions.setExampleUploadFile(exampleUploadFile));
 
       yield put(
          commonStore.actions.setTableState({

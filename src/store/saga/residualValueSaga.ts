@@ -29,6 +29,14 @@ function* fetchAllInitDataFilter() {
       )
    );
 
+   // example upload file
+   const exampleUploadFile = yield* call(residualValueApi.getExampleUuploadFile);
+   yield put(
+      residualValueStore.actions.setExampleUploadFile(
+         JSON.parse(exampleUploadFile.data).exampleUploadFile
+      )
+   );
+
    // fetch data ResidualValue if dataFilter has modelCode
    const dataFilterString = localStorage.getItem('residualValueFilter');
    if (dataFilterString) {
@@ -47,6 +55,7 @@ function* fetchAllInitDataFilter() {
    );
 
    const dataModelCodeFilter = JSON.parse(data);
+   yield;
 
    yield put(residualValueStore.actions.setInitDataFilterModelCode(dataModelCodeFilter));
    yield* fetchDataResidualValue();

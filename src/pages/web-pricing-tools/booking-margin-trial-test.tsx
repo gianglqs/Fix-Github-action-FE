@@ -46,6 +46,8 @@ import {
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
 import { componentType } from '@/theme/paperStyle';
+import { downloadFileByURL } from '@/utils/handleDownloadFile';
+import { BOOKING_FPA } from '@/utils/modelType';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -100,6 +102,7 @@ export default function Shipment() {
    const serverTimeZone = useSelector(bookingMarginTrialTestStore.selectServerTimeZone);
    const serverLastUpdatedTime = useSelector(bookingMarginTrialTestStore.selectLastUpdatedTime);
    const serverLastUpdatedBy = useSelector(bookingMarginTrialTestStore.selectLastUpdatedBy);
+   const exampleFile = useSelector(bookingMarginTrialTestStore.selectExampleUploadFile);
 
    const [currency, setCurrency] = useState('USD');
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
@@ -732,7 +735,7 @@ export default function Shipment() {
                </Grid>
             </Grid>
             {userRoleState === 'ADMIN' && (
-               <Grid container spacing={1} sx={{ marginTop: '3px' }}>
+               <Grid container spacing={1} sx={{ marginTop: '3px', alignItems: 'end' }}>
                   <Grid item xs={1}>
                      <UploadFileDropZone
                         uploadedFile={uploadedFile}
@@ -749,6 +752,17 @@ export default function Shipment() {
                         {t('button.import')}
                      </Button>
                   </Grid>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 15,
+                        margin: '0 30px 0 10px',
+                        cursor: 'pointer',
+                     }}
+                     onClick={() => downloadFileByURL(exampleFile[BOOKING_FPA])}
+                  >
+                     {t('link.getExampleUploadFile')}
+                  </Typography>
                   <Grid item xs={4} sx={{ display: 'flex' }}>
                      {uploadedFile &&
                         uploadedFile.map((file) => (
