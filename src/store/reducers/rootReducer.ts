@@ -21,6 +21,7 @@ import residualValue from './residualValue.reducer';
 import importTracking from './importTracking.reducer';
 import gum from './gum.reducer';
 import indicatorV2 from './indicatorV2.reducer';
+import longTermRental from './longTermRental.reducer';
 const rootReducers = combineReducers({
    [common.name]: common.reducer,
    [user.name]: user.reducer,
@@ -43,7 +44,8 @@ const rootReducers = combineReducers({
    [importTracking.name]: importTracking.reducer,
    [gum.name]: gum.reducer,
    [manageCompetitor.name]: manageCompetitor.reducer,
-   [indicatorV2.name] : indicatorV2.reducer
+   [indicatorV2.name]: indicatorV2.reducer,
+   [longTermRental.name]: longTermRental.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;

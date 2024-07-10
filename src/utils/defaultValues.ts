@@ -111,3 +111,8 @@ export const defaultValueChartSelectedFilterIndicator: ChartSelectedFilters = {
    groups: [],
    leadTime: null,
 };
+
+export const defaultValueSelectedFilterLongTermRental = {
+   series: null,
+   modelCode: null,
+};

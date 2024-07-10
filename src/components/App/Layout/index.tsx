@@ -88,6 +88,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       'gum-report': t('title.gumReport'),
       // 'price-volume-sensitivity': t('title.priceVolumeSensitivity'),
       'residual-value': t('title.residualValue'),
+      'long-term-rental': t('title.longTermRental'),
    };
 
    const renderMenu = () => {
