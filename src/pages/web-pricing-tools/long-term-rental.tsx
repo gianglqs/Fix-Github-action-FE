@@ -862,6 +862,7 @@ const GeneralInput = () => {
    return (
       <>
          <Grid container spacing={1}>
+            <div></div>
             <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                <AppAutocomplete
                   defaultValue={'All'}
@@ -980,6 +981,10 @@ const GeneralInput = () => {
                      handleChangeInputValue(e, 'dealerLoanRatePercentage');
                   }}
                   suffix="%"
+                  isAllowed={(values) => {
+                     const { formattedValue, floatValue } = values;
+                     return formattedValue === '' || floatValue <= 100;
+                  }}
                   required
                   name="dealerLoanRatePercentage"
                   label={`${t('longTermRental.dealerLoanRatePercentage')}`}
@@ -991,6 +996,10 @@ const GeneralInput = () => {
                   value={generalInputValues?.customerLoanRatePercentage || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'customerLoanRatePercentage');
+                  }}
+                  isAllowed={(values) => {
+                     const { formattedValue, floatValue } = values;
+                     return formattedValue === '' || floatValue <= 100;
                   }}
                   required
                   name="customerLoanRatePercentage"
