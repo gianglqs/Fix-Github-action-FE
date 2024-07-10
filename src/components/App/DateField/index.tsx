@@ -61,6 +61,7 @@ const AppDateField: React.FC<AppDateFieldProps> = (props) => {
             open={openCalendar}
             onClose={handleCloseCalendar}
             onChange={handleSelectDate}
+            hiddenButtonOk
          />
       </>
    );

@@ -7,4 +7,5 @@ export interface DialogCalendarProps extends Omit<AppDialogProps, 'onChange'> {
    minDate?: Date | string;
    maxDate?: Date | string;
    views: any;
+   hiddenButtonOk?: boolean;
 }
