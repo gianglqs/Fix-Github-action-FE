@@ -41,6 +41,7 @@ const AppDialog: React.FC<any> = (props) => {
       closeText,
       disableOK,
       disableClose,
+      hiddenButtonOk,
       ...dialogProps
    } = props;
    const classes = useStyles(props);
@@ -64,6 +65,7 @@ const AppDialog: React.FC<any> = (props) => {
                form={id}
                disabled={loading || disableOK}
                onClick={onOk}
+               sx={hiddenButtonOk && { display: 'none' }}
                {...okButtonProps}
             >
                {okText}
