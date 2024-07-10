@@ -149,6 +149,7 @@ export default function ResidualValue() {
       setImage(undefined);
       dispatch(residualValueStore.actions.setDataFilter(defaultValueFilterResidualValue));
       dispatch(residualValueStore.reloadModelCode());
+      dispatch(residualValueStore.actions.resetListResidualValue());
    };
 
    //TODO: this should be dynamic, getting from apis
