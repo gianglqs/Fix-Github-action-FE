@@ -43,10 +43,10 @@ export const defaultValueFilterTrends = {
    years: [],
 };
 export const defaultValueCaculatorForAjustmentCost = {
-   costAdjPercentage: '',
-   freightAdj: '',
-   fxAdj: '',
-   dnAdjPercentage: '',
+   costAdjPercentage: '0',
+   freightAdj: '0',
+   fxAdj: '0',
+   dnAdjPercentage: '0',
 };
 
 export const defaultValueFilterProduct = {
