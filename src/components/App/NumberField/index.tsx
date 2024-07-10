@@ -13,6 +13,7 @@ const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) =>
       debounceDelay,
       decimalScale,
       isDecimalScale,
+      max,
       ...numberFieldProps
    } = props;
 
