@@ -49,6 +49,9 @@ const residualvalueSlice = createSlice({
       setExampleUploadFile(state, { payload }: PayloadAction<any>) {
          state.exampleUploadFile = payload;
       },
+      resetListResidualValue(state) {
+         state.listResidualValue = [];
+      },
    },
    extraReducers: {
       [resetState.type]() {
