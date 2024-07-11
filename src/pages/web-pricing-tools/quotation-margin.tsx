@@ -825,6 +825,7 @@ const MarginPercentageAOPRateBox = (props) => {
                   suffix="%"
                   onPressEnter={handleCaclulate}
                   debounceDelay={0.05}
+                  max={data ? 100 - data?.blendedDiscountPercentage * 100 : 100}
                />
             </div>
             <div className="space-between-element">
