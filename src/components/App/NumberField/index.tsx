@@ -60,6 +60,10 @@ const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) =>
          fixedDecimalScale={false}
          decimalScale={isDecimalScale ? decimalScale : 10}
          value={numberValue}
+         isAllowed={(value) => {
+            const { floatValue } = value;
+            return !floatValue || !max || floatValue <= Number(max);
+         }}
       />
    );
 });
