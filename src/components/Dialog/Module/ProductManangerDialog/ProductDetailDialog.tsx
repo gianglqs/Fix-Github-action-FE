@@ -423,7 +423,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                   />
                </Grid>
             </Grid>
-            <When condition={orderNumber === null || orderNumber === undefined}>
+            {/* <When condition={orderNumber === null || orderNumber === undefined}>
                <Grid container spacing={2} sx={{ marginBottom: '7px' }}>
                   <Grid item xs={4} sx={{ zIndex: 10, height: 25 }}>
                      <AppAutocomplete
@@ -486,7 +486,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                      onChangePerPage={handleChangePerPage}
                   />
                </Paper>
-            </Grid>
+            </Grid> */}
          </Grid>
       </Dialog>
    );
