@@ -42,22 +42,20 @@ function* fetchBookingTrialTest() {
          throw new Error('The To Date value cannot be earlier than the From Date value');
 
       yield put(bookingMarginTrialTestStore.actions.setLoadingData(true));
-      const { data } = yield* call(
-         bookingMarginTrialTestApi.getBookingMarginTrialTest,
-         dataFilter,
-         {
-            pageNo: tableState.pageNo,
-            perPage: tableState.perPage,
-         }
-      );
+      const res = yield* call(bookingMarginTrialTestApi.getBookingMarginTrialTest, dataFilter, {
+         pageNo: tableState.pageNo,
+         perPage: tableState.perPage,
+      });
 
-      const dataOrder = JSON.parse(String(data)).listOrder;
+      const data = JSON.parse(JSON.stringify(res.data));
+
+      const dataOrder = data.listOrder;
       //const dataTotalRow = JSON.parse(String(data)).total;
       // const dataExchangeRate = JSON.parse(String(data)).listExchangeRate;
-      const dataServerTimeZone = JSON.parse(String(data)).serverTimeZone;
-      const dataLastUpdatedTime = JSON.parse(String(data)).lastUpdatedTime;
-      const dataLastUpdatedBy = JSON.parse(String(data)).lastUpdatedBy;
-      const exampleUploadFile = JSON.parse(String(data)).exampleUploadFile;
+      const dataServerTimeZone = data.serverTimeZone;
+      const dataLastUpdatedTime = data.lastUpdatedTime;
+      const dataLastUpdatedBy = data.lastUpdatedBy;
+      const exampleUploadFile = data.exampleUploadFile;
 
       yield put(
          bookingMarginTrialTestStore.actions.setInitDataFilter(
@@ -74,7 +72,7 @@ function* fetchBookingTrialTest() {
 
       yield put(
          commonStore.actions.setTableState({
-            totalItems: JSON.parse(String(data)).totalItems,
+            totalItems: data.totalItems,
          })
       );
       yield put(bookingMarginTrialTestStore.actions.setExampleUploadFile(exampleUploadFile));
@@ -82,6 +80,7 @@ function* fetchBookingTrialTest() {
    } catch (error) {
       yield put(bookingMarginTrialTestStore.actions.setLoadingData(false));
       yield put(commonStore.actions.setErrorMessage(error.message));
+      console.log(error);
    }
 }
 
