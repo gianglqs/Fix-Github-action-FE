@@ -796,8 +796,17 @@ const GeneralInput = () => {
          dispatch(commonStore.actions.setErrorMessage(t('Required fields must be filled !')));
       }
    };
+   const handleRemoveCached = () => {
+      localStorage.removeItem('generalFilterLongTermRental');
+      localStorage.removeItem('generalInputLongTermRental');
+      localStorage.removeItem('longTermInputRental');
+      localStorage.removeItem('shortTermInputRental');
+      localStorage.removeItem('servicePerHour');
+   };
    const handleClearInput = () => {
       dispatch(longTermRentalStore.actions.resetInputValues());
+      handleRemoveCached();
+      fetchSelectOptions({ series: null, modelCode: null });
    };
    //init options for selectbox
    useEffect(() => {
