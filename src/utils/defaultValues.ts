@@ -83,7 +83,7 @@ export const defaultValueFilterResidualValue = {
    modelType: null,
    brand: null,
    modelCode: null,
-   year: 2,
+   year: '2',
    price: 0,
 } as ResidualValueDataFilter;
 
