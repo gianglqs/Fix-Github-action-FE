@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 //components
 import { AppLayout, AppTextField, AppNumberField, AppAutocomplete } from '@/components';
 import { Button, Typography } from '@mui/material';
@@ -47,13 +47,20 @@ const LongTermRentalSection = () => {
    } = inputValues;
    //event handling
    const handleChangeInputValue = (e, field) => {
-      dispatch(
-         longTermRentalStore.actions.setLongTermInputsValues({
-            ...inputValues,
-            [field]: Number(e.value),
-         })
-      );
+      const newInputValues = {
+         ...inputValues,
+         [field]: Number(e.value),
+      };
+      localStorage.setItem('longTermInputRental', JSON.stringify(newInputValues));
+      dispatch(longTermRentalStore.actions.setLongTermInputsValues(newInputValues));
    };
+
+   useEffect(() => {
+      const servicePerHour = localStorage.getItem('servicePerHour');
+      if (servicePerHour) {
+         dispatch(longTermRentalStore.actions.setServicePerHours(Number(servicePerHour)));
+      }
+   }, []);
    //calculation values
    const truckPrice = (1 + streetPriceMargin) * cost || 0;
    const totalTruckPrice =
@@ -140,7 +147,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? truckPrice || 0 : ' '}
                      onChange={(e) => {}}
                      prefix="$"
-                     decimalScale={3}
+                     decimalScale={2}
                      isDecimalScale
                      disabled
                   />
@@ -293,7 +300,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? totalTruckPrice || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
-                     decimalScale={3}
+                     decimalScale={2}
                      isDecimalScale
                      prefix="$"
                      name="totalTruckPrice"
@@ -335,7 +342,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? customerLoanRatePercentage || 0 : ' '}
                      suffix="%"
                      disabled
-                     decimalScale={3}
+                     decimalScale={2}
                      isDecimalScale
                      onChange={() => {}}
                   />
@@ -372,6 +379,7 @@ const LongTermRentalSection = () => {
                      value={servicePerHour || 0}
                      prefix="$"
                      onChange={(e) => {
+                        localStorage.setItem('servicePerHour', e.value);
                         dispatch(longTermRentalStore.actions.setServicePerHours(Number(e.value)));
                      }}
                      name="servicePerHour"
@@ -413,7 +421,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? unitRecurringRevenue || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
-                     decimalScale={3}
+                     decimalScale={2}
                      isDecimalScale
                   />
                </Grid>
@@ -433,12 +441,12 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? estimatedResale || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
-                     decimalScale={3}
+                     decimalScale={2}
                      isDecimalScale
                   />
                </Grid>
                <Typography sx={{ position: 'absolute', right: 50 }}>
-                  {isAbleToCalculate && `${(residualPercentage * 100).toFixed(1)}%`}
+                  {isAbleToCalculate && `${(residualPercentage * 100).toFixed(2)}%`}
                </Typography>
             </Box>
             <Box
@@ -454,7 +462,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? totalUnitInterestIncomeRevenue || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
-                     decimalScale={3}
+                     decimalScale={2}
                      isDecimalScale
                   />
                </Grid>*/}
@@ -474,7 +482,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? grossIncomeOverTerm || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
-                     decimalScale={3}
+                     decimalScale={2}
                      isDecimalScale
                   />
                </Grid>
@@ -499,12 +507,12 @@ const ShortTermRentalSection = () => {
    const { monthlyRentalPrice = 0, utilisation = 0 } = inputValues;
    //event handling
    const handleChangeInputValue = ({ value }, field) => {
-      dispatch(
-         longTermRentalStore.actions.setShortTermInputsValues({
-            ...inputValues,
-            [field]: Number(value),
-         })
-      );
+      const newInputValues = {
+         ...inputValues,
+         [field]: Number(value),
+      };
+      localStorage.setItem('shortTermInputRental', JSON.stringify(newInputValues));
+      dispatch(longTermRentalStore.actions.setShortTermInputsValues(newInputValues));
    };
 
    //calculate data
@@ -520,7 +528,7 @@ const ShortTermRentalSection = () => {
          sx={{
             flex: 1,
             backgroundColor: '#fffff7',
-            borderRadius: 1,
+            borderRadius: 5,
             boxShadow: 3,
             padding: 2,
             marginTop: 1,
@@ -646,7 +654,7 @@ const ShortTermRentalSection = () => {
                      prefix="$"
                      onChange={() => {}}
                      disabled
-                     decimalScale={3}
+                     decimalScale={2}
                      isDecimalScale
                      name="servicePerHour"
                   />
@@ -687,7 +695,7 @@ const ShortTermRentalSection = () => {
                      value={isAbleToCalculate ? unitRecurringRevenue || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
-                     decimalScale={3}
+                     decimalScale={2}
                      isDecimalScale
                   />
                </Grid>
@@ -707,12 +715,12 @@ const ShortTermRentalSection = () => {
                      value={isAbleToCalculate ? estimatedResale || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
-                     decimalScale={3}
+                     decimalScale={2}
                      isDecimalScale
                   />
                </Grid>
                <Typography sx={{ position: 'absolute', right: 50 }}>
-                  {isAbleToCalculate && `${Number(0).toFixed(1)}%`}
+                  {isAbleToCalculate && `${Number(0)}%`}
                </Typography>
             </Box>
             <Box sx={{ height: '25px' }}></Box>
@@ -731,7 +739,7 @@ const ShortTermRentalSection = () => {
                      value={isAbleToCalculate ? totalIncomeOverTerm || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
-                     decimalScale={3}
+                     decimalScale={2}
                      isDecimalScale
                   />
                </Grid>
@@ -755,6 +763,9 @@ const GeneralInput = () => {
       financingFinanceTerm,
       primaryTerm,
       seccondTerm,
+      dealerLoanRatePercentage,
+      customerLoanRatePercentage,
+      serviceRateCostPercentage,
       streetPriceMargin,
       HYGMargin,
    } = generalInputValues;
@@ -777,6 +788,7 @@ const GeneralInput = () => {
          ...selectedFilter,
          [field]: option.value === 'All' ? null : option.value,
       };
+      localStorage.setItem('generalFilterLongTermRental', JSON.stringify(newSelectedFilter));
       fetchSelectOptions(newSelectedFilter);
    };
    const handleCalculate = () => {
@@ -784,8 +796,17 @@ const GeneralInput = () => {
          dispatch(commonStore.actions.setErrorMessage(t('Required fields must be filled !')));
       }
    };
+   const handleRemoveCached = () => {
+      localStorage.removeItem('generalFilterLongTermRental');
+      localStorage.removeItem('generalInputLongTermRental');
+      localStorage.removeItem('longTermInputRental');
+      localStorage.removeItem('shortTermInputRental');
+      localStorage.removeItem('servicePerHour');
+   };
    const handleClearInput = () => {
       dispatch(longTermRentalStore.actions.resetInputValues());
+      handleRemoveCached();
+      fetchSelectOptions({ series: null, modelCode: null });
    };
    //init options for selectbox
    useEffect(() => {
@@ -806,19 +827,8 @@ const GeneralInput = () => {
          ...generalInputValues,
          [field]: value ? Number(value) : null,
       };
+      localStorage.setItem('generalInputLongTermRental', JSON.stringify(newGeneralInputValues));
       dispatch(longTermRentalStore.actions.setGeneralInputsValues(newGeneralInputValues));
-   };
-   const checkValidCalculation = () => {
-      return ![
-         cost,
-         quantity,
-         financingFinanceTerm,
-         primaryTerm,
-         seccondTerm,
-         streetPriceMargin,
-         HYGMargin,
-         modelCode,
-      ].some((value) => value === null);
    };
    useEffect(() => {
       const isAbleToCalculate = [
@@ -827,8 +837,9 @@ const GeneralInput = () => {
          financingFinanceTerm,
          primaryTerm,
          seccondTerm,
-         streetPriceMargin,
-         HYGMargin,
+         dealerLoanRatePercentage,
+         customerLoanRatePercentage,
+         serviceRateCostPercentage,
          modelCode,
       ].every((value) => value !== null && value !== undefined);
       dispatch(longTermRentalStore.actions.setIsAbleToCalculate(isAbleToCalculate));
@@ -846,26 +857,21 @@ const GeneralInput = () => {
             });
       }
    }, [modelCode, primaryTerm]);
+
+   useEffect(() => {
+      const generalFilterLongTermRental = localStorage.getItem('generalFilterLongTermRental');
+      if (generalFilterLongTermRental) {
+         console.log(generalFilterLongTermRental);
+         dispatch(
+            longTermRentalStore.actions.setSelectedFilters(JSON.parse(generalFilterLongTermRental))
+         );
+      }
+   }, []);
+
    return (
       <>
          <Grid container spacing={1}>
-            <Grid item xs={0} sx={{ zIndex: 10, height: 25 }}>
-               {/*<AppAutocomplete
-                     value={_.map(dataFilter.region, (item) => {
-                        return { value: item };
-                     })}
-                     options={optionsFilter.}
-                     label={t('filters.region')}
-                     onChange={(e, option) => handleChangeDataFilter(option, 'region')}
-                     limitTags={2}
-                     disableListWrap
-                     primaryKeyOption="value"
-                     multiple
-                     disableCloseOnSelect
-                     renderOption={(prop, option) => `${option.value}`}
-                     getOptionLabel={(option) => `${option.value}`}
-                  />*/}
-            </Grid>
+            <div></div>
             <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
                <AppAutocomplete
                   defaultValue={'All'}
@@ -941,6 +947,8 @@ const GeneralInput = () => {
                   onChange={(e) => {
                      handleChangeInputValue(e, 'financingFinanceTerm');
                   }}
+                  isDecimalScale
+                  decimalScale={0}
                   name="financingFinanceTerm"
                   required
                   label={`${t('longTermRental.financingFinanceTerm')}`}
@@ -981,10 +989,15 @@ const GeneralInput = () => {
                   onChange={(e) => {
                      handleChangeInputValue(e, 'dealerLoanRatePercentage');
                   }}
+                  suffix="%"
+                  isAllowed={(values) => {
+                     const { formattedValue, floatValue } = values;
+                     return formattedValue === '' || floatValue <= 100;
+                  }}
+                  required
                   name="dealerLoanRatePercentage"
                   label={`${t('longTermRental.dealerLoanRatePercentage')}`}
                   placeholder={`${t('longTermRental.inputDealerLoanRate')}`}
-                  suffix="%"
                />
             </Grid>
             <Grid item xs={2}>
@@ -993,6 +1006,11 @@ const GeneralInput = () => {
                   onChange={(e) => {
                      handleChangeInputValue(e, 'customerLoanRatePercentage');
                   }}
+                  isAllowed={(values) => {
+                     const { formattedValue, floatValue } = values;
+                     return formattedValue === '' || floatValue <= 100;
+                  }}
+                  required
                   name="customerLoanRatePercentage"
                   label={`${t('longTermRental.customerLoanRatePercentage')}`}
                   placeholder={`${t('longTermRental.inputCustomerLoanRate')}`}
@@ -1005,6 +1023,7 @@ const GeneralInput = () => {
                   onChange={(e) => {
                      handleChangeInputValue(e, 'serviceRateCostPercentage');
                   }}
+                  required
                   name="serviceRateCostPercentage"
                   label={`${t('longTermRental.serviceRateCostPercentage')}`}
                   placeholder={`${t('longTermRental.inputServiceRateCostPercentage')}`}
@@ -1018,7 +1037,6 @@ const GeneralInput = () => {
                      handleChangeInputValue(e, 'HYGMargin');
                   }}
                   name="HYGMargin"
-                  required
                   label={`${t('longTermRental.HYGMargin')}`}
                   placeholder={`${t('longTermRental.inputHYGMargin')}`}
                />
@@ -1030,7 +1048,6 @@ const GeneralInput = () => {
                      handleChangeInputValue(e, 'streetPriceMargin');
                   }}
                   name="streetPriceMargin"
-                  required
                   label={`${t('longTermRental.streetPriceMargin')}`}
                   placeholder={`${t('longTermRental.inputStreetPriceMargin')}`}
                />
@@ -1052,7 +1069,6 @@ const GeneralInput = () => {
                   onChange={(e) => {
                      handleChangeInputValue(e, 'HYGLoanRate');
                   }}
-                  suffix="%"
                   name="HYGLoanRate"
                   label={`${t('longTermRental.HYGLoanRate')}`}
                   placeholder={`${t('longTermRental.inputHYGLoanRate')}`}
@@ -1085,11 +1101,33 @@ const GeneralInput = () => {
 export default function LongtermRental() {
    const { t } = useTranslation();
    const dispatch = useDispatch();
+   useLayoutEffect(() => {
+      const generalInputLongTermRental = localStorage.getItem('generalInputLongTermRental');
+      if (generalInputLongTermRental) {
+         dispatch(
+            longTermRentalStore.actions.setGeneralInputsValues(
+               JSON.parse(generalInputLongTermRental)
+            )
+         );
+      }
+      const longTermInputRental = localStorage.getItem('longTermInputRental');
+      if (longTermInputRental) {
+         dispatch(
+            longTermRentalStore.actions.setLongTermInputsValues(JSON.parse(longTermInputRental))
+         );
+      }
+      const shortTermInputRental = localStorage.getItem('shortTermInputRental');
+      if (shortTermInputRental) {
+         dispatch(
+            longTermRentalStore.actions.setShortTermInputsValues(JSON.parse(shortTermInputRental))
+         );
+      }
+   }, []);
    return (
       <>
          <AppLayout entity="longTermRental">
             <GeneralInput />
-            <Grid container sx={{ display: 'flex', flexDirection: 'row' }} gap={5}>
+            <Grid container sx={{ display: 'flex', flexDirection: 'row', marginY: 2 }} gap={5}>
                <LongTermRentalSection />
                <ShortTermRentalSection />
             </Grid>
