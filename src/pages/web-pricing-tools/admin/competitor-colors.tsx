@@ -137,8 +137,8 @@ export default function competitorColors() {
    });
 
    const reloadData = async (event) => {
+      dispatch(competitorColorStore.actions.setCompetitorColorSearch(''));
       handleChangePage(1);
-      dispatch(competitorColorStore.sagaGetList());
    };
    const handleSearch = async (event, searchQuery) => {
       dispatch(competitorColorStore.actions.setCompetitorColorSearch(searchQuery));
