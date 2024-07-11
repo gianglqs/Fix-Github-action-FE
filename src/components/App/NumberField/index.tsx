@@ -24,7 +24,7 @@ const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) =>
 
    const debouceHandleOnChange = useCallback(
       _.debounce((event) => {
-         onChange(event);
+         if (event.value !== '.') onChange(event);
       }, debounceDelay || 700),
       [onChange]
    );
