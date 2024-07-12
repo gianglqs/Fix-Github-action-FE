@@ -47,7 +47,11 @@ function* fetchAdjustment() {
       if (!isValidDate(toDateFilter)) {
          throw new Error('To date is invalid!');
       }
-      if (isBefore(toDateFilter, fromDateFilter))
+      if (
+         isValidDate(fromDateFilter) &&
+         isValidDate(toDateFilter) &&
+         isBefore(toDateFilter, fromDateFilter)
+      )
          throw new Error('The To Date value cannot be earlier than the From Date value');
 
       yield put(adjustmentStore.actions.setLoadingData(true));
