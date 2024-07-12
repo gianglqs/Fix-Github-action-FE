@@ -85,9 +85,8 @@ const DialogUpdateCompetitor: React.FC<any> = (props) => {
                   control={updateColorForm.control}
                   name="competitorName"
                   label={t('competitors.competitorName')}
-                  required
                   disabled
-                  defaultValue={chosenColor}
+                  defaultValue={detail?.groupName}
                />
                <div style={{ width: 20, height: 20 }}></div>
 

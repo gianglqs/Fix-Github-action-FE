@@ -160,7 +160,6 @@ export default function competitorColors() {
          // Get init data
 
          const { data } = await competitorColorApi.getCompetitorColorById({ id });
-
          // Open form
          setUpdateColorState({
             open: true,
