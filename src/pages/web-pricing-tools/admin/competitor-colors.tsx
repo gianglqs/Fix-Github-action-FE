@@ -35,7 +35,7 @@ import { DialogChangePassword } from '@/components/Dialog/Module/Dashboard/Chang
 import { checkTokenBeforeLoadPageAdmin } from '@/utils/checkTokenBeforeLoadPage';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
-
+import { useRef } from 'react';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const logo = require('@/public/logo.svg');
 
@@ -101,7 +101,7 @@ export default function competitorColors() {
    const entityApp = 'competitorColors';
    const getListAction = useMemo(() => createAction(`${entityApp}/GET_LIST`), [entityApp]);
    const resetStateAction = useMemo(() => createAction(`${entityApp}/RESET_STATE`), [entityApp]);
-
+   const searchRef = useRef(null);
    const cookies = parseCookies();
    const [userName, setUserName] = useState('');
 
@@ -137,8 +137,9 @@ export default function competitorColors() {
    });
 
    const reloadData = async (event) => {
+      searchRef.current.clearSearchQuery();
+      dispatch(competitorColorStore.actions.setCompetitorColorSearch(''));
       handleChangePage(1);
-      dispatch(competitorColorStore.sagaGetList());
    };
    const handleSearch = async (event, searchQuery) => {
       dispatch(competitorColorStore.actions.setCompetitorColorSearch(searchQuery));
@@ -358,7 +359,11 @@ export default function competitorColors() {
                   </Button>
                </Grid>
                <Grid container sx={{ padding: 1, paddingLeft: 1.5 }}>
-                  <AppSearchBar onSearch={handleSearch} placeholder={t('search')}></AppSearchBar>
+                  <AppSearchBar
+                     ref={searchRef}
+                     onSearch={handleSearch}
+                     placeholder={t('search')}
+                  ></AppSearchBar>
                </Grid>
                <Paper elevation={1} sx={{ marginLeft: 1.5, marginRight: 1.5 }}>
                   <Grid container>
