@@ -307,8 +307,8 @@ const EditDataIndicator: React.FC<any> = (props) => {
                <Grid item xs={3}>
                   <StyleAppTextField
                      label={t('competitors.series')}
-                     onChange={(e) => handleChangeDataFilter(e.target.value, 'series')}
-                     value={data?.series}
+                     onChange={(e) => handleChangeDataFilter(e.target.value, 'series.series')}
+                     value={data?.series?.series}
                   />
                </Grid>
                <Grid item xs={3}>
