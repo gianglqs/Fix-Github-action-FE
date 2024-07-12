@@ -106,7 +106,8 @@ export default function competitorColors() {
    const [userName, setUserName] = useState('');
 
    useEffect(() => {
-      setUserName(cookies['name']);
+      const userName = localStorage.getItem('name');
+      setUserName(userName);
    }, []);
 
    useEffect(() => {

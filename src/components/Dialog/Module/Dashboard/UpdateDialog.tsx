@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { parseCookies, setCookie } from 'nookies';
 
 const DialogUpdateUser: React.FC<any> = (props) => {
-   const { open, onClose, detail } = props;
+   const { open, onClose, detail, setUserName } = props;
 
    let cookies = parseCookies();
    let openerRole = cookies['role'];
@@ -35,7 +35,6 @@ const DialogUpdateUser: React.FC<any> = (props) => {
    };
 
    const handleSubmitForm = updateUserForm.handleSubmit(async (formData: any) => {
-      
       if (formData.name === '') {
          dispatch(commonStore.actions.setErrorMessage('Username must be at least 2 characters'));
          return;
@@ -46,21 +45,20 @@ const DialogUpdateUser: React.FC<any> = (props) => {
          role: role,
          defaultLocale: formData.defaultLocale,
       };
-      
+
       try {
-         setLoading(true);        
-         const { data } = await dashboardApi.updateUser(detail?.id, transformData);        
-        
+         setLoading(true);
+         const { data } = await dashboardApi.updateUser(detail?.id, transformData);
          if (userId == detail?.id) {
             i18n.changeLanguage(formData.defaultLocale);
             setCookie(null, 'defaultLocale', formData.defaultLocale, { maxAge: 604800, path: '/' });
+            localStorage.setItem('name', transformData?.name);
+            setUserName && setUserName(transformData?.name);
          }
-
          const userList = await dashboardApi.getUser({ search: '' });
          dispatch(userStore.actions.setUserList(JSON.parse(userList?.data)?.userList));
-        
          dispatch(commonStore.actions.setSuccessMessage(data));
-         
+
          onClose();
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error?.message));
