@@ -268,6 +268,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
             <Grid spacing={3} container>
                <Grid item xs={3}>
                   <StyleAppTextField
+                     required
                      id="outlined-read-only-input"
                      label={t('competitors.competitorName')}
                      value={data?.competitorName}
@@ -306,6 +307,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                </Grid>
                <Grid item xs={3}>
                   <StyleAppTextField
+                     required
                      label={t('competitors.series')}
                      onChange={(e) => handleChangeDataFilter(e.target.value, 'series')}
                      value={data?.series}
@@ -313,6 +315,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                </Grid>
                <Grid item xs={3}>
                   <StyledAutoComplete
+                     required
                      value={data?.country?.countryName}
                      options={initDataFilter.countries}
                      label={t('filters.country')}
@@ -358,6 +361,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      value={data?.clazz?.clazzName}
                      options={initDataFilter.classes}
                      label={t('filters.class')}
+                     required
                      onChange={(e, option) =>
                         handleChangeDataFilter(option.value, 'clazz.clazzName')
                      }
@@ -454,6 +458,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                </Grid>
                <Grid item xs={3}>
                   <StyledAutoCompleteHasCreateNew
+                     required
                      value={data?.color?.groupName}
                      options={initDataFilter.groups}
                      label={t('filters.group')}
