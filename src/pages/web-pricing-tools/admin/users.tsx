@@ -122,7 +122,8 @@ export default function Dashboard() {
    const [userName, setUserName] = useState('');
 
    useEffect(() => {
-      setUserName(cookies['name']);
+      const userName = localStorage.getItem('name');
+      setUserName(userName);
    }, []);
 
    const handleChangePage = (pageNo: number) => {
@@ -493,7 +494,11 @@ export default function Dashboard() {
 
          <DialogCreateUser {...dialogCreateUser} onClose={handleCloseCreateDialog} />
          <DeactiveUserDialog {...deactivateUserState} onClose={handleCloseDeactiveUser} />
-         <DialogUpdateUser {...updateUserState} onClose={handleCloseUpdateUserDialog} />
+         <DialogUpdateUser
+            {...updateUserState}
+            setUserName={setUserName}
+            onClose={handleCloseUpdateUserDialog}
+         />
          <DialogChangePassword {...changePasswordState} onClose={handleCloseChangePasswordDialog} />
       </>
    );

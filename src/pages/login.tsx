@@ -97,6 +97,7 @@ export default function LoginPage(props) {
 
             setCookie(null, 'role', role, { maxAge: 604800, path: '/' });
             setCookie(null, 'name', name, { maxAge: 604800, path: '/' });
+            localStorage.setItem('name', name);
             setCookie(null, 'defaultLocale', defaultLocale, { maxAge: 604800, path: '/' });
             setCookie(null, 'id', userId, { maxAge: 604800, path: '/' });
 

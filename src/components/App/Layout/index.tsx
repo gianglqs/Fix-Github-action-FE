@@ -58,7 +58,8 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
    const [userName, setUserName] = useState('');
 
    useEffect(() => {
-      setUserName(cookies['name']);
+      const userName = localStorage.getItem('name');
+      setUserName(userName);
    }, []);
 
    useEffect(() => {
@@ -271,7 +272,11 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
          </Popover>
          <AppFooter />
          <DialogChangePassword {...changePasswordState} onClose={handleCloseChangePasswordDialog} />
-         <DialogUpdateUser {...updateUserState} onClose={handleCloseUpdateUserDialog} />
+         <DialogUpdateUser
+            {...updateUserState}
+            setUserName={setUserName}
+            onClose={handleCloseUpdateUserDialog}
+         />
       </>
    );
 };

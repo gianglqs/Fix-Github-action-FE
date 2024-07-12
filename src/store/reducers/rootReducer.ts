@@ -22,6 +22,7 @@ import importTracking from './importTracking.reducer';
 import gum from './gum.reducer';
 import indicatorV2 from './indicatorV2.reducer';
 import longTermRental from './longTermRental.reducer';
+import auth from './auth.reducer';
 const rootReducers = combineReducers({
    [common.name]: common.reducer,
    [user.name]: user.reducer,
@@ -46,6 +47,7 @@ const rootReducers = combineReducers({
    [manageCompetitor.name]: manageCompetitor.reducer,
    [indicatorV2.name]: indicatorV2.reducer,
    [longTermRental.name]: longTermRental.reducer,
+   [auth.name]: auth.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;
