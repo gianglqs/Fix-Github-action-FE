@@ -773,7 +773,11 @@ const GeneralInput = () => {
 
    const fetchSelectOptions = async (selectedFilter) => {
       dispatch(longTermRentalStore.actions.setSelectedFilters(selectedFilter));
-      longTermRentalApi.getSelectFilters(selectedFilter).then((rs) => {
+      const requestPayload = {
+         modelCode: selectedFilter?.modelCode,
+         seriez: selectedFilter?.series,
+      };
+      longTermRentalApi.getSelectFilters(requestPayload).then((rs) => {
          dispatch(
             longTermRentalStore.actions.setFilterOptions({
                ...optionsFilter,
