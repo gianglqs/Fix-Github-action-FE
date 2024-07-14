@@ -42,6 +42,13 @@ export default function ResidualValue() {
    const { t } = useTranslation();
    useEffect(() => {
       createAction(`residualValue/reloadModelCode`);
+      //set initial last updated info for first load page
+      residualValueApi.getLastUpdatedInfo().then((result) => {
+         const parsedResult = JSON.parse(result?.data);
+         dispatch(residualValueStore.actions.setLastUpdatedBy(parsedResult.lastUpdatedBy));
+         dispatch(residualValueStore.actions.setServerTimeZone(parsedResult.serverTimeZone));
+         dispatch(residualValueStore.actions.setLastUpdatedTime(parsedResult.lastUpdatedTime));
+      });
    }, []);
 
    const listResidualValue = useSelector(residualValueStore.selectListResidualValue);
@@ -211,9 +218,13 @@ export default function ResidualValue() {
       convertTimezone();
    }, [listResidualValue]);
 
+   useEffect(() => {
+      convertTimezone();
+   }, [serverLastUpdatedTime, serverLastUpdatedTime]);
+
    // show latest updated time
    const convertTimezone = () => {
-      if (serverLastUpdatedTime && serverTimeZone) {
+      if (serverLastUpdatedTime && serverLastUpdatedTime) {
          setClientLatestUpdatedTime(
             convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
          );
