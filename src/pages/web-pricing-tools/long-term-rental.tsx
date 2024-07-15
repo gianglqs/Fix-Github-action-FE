@@ -793,7 +793,9 @@ const GeneralInput = () => {
    };
    const handleCalculate = () => {
       if (!isAbleToCalculate) {
-         dispatch(commonStore.actions.setErrorMessage(t('Required fields must be filled !')));
+         dispatch(
+            commonStore.actions.setErrorMessage(t('commonErrorMessage.requiredFieldsMustBeFilled'))
+         );
       }
    };
    const handleRemoveCached = () => {

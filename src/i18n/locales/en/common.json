@@ -314,7 +314,8 @@
       "cannotConnectToServer": "The Server did not respond. Please try again later or contact support.",
       "pageNotFound": "Page not found. Automatically redirecting to the Home Page.",
       "timeExceedsThreeMonths": "Time exceeds 3 months, please choose a shorter range.",
-      "timeExceedsTwelveMonths": "Time exceeds 12 months, please choose a shorter range."
+      "timeExceedsTwelveMonths": "Time exceeds 12 months, please choose a shorter range.",
+      "requiredFieldsMustBeFilled": "Required fields must be filled !"
    },
 
    "gumReport": {
