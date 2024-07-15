@@ -18,7 +18,6 @@ const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) =>
    } = props;
 
    const [numberValue, setNumberValue] = useState(value || 0);
-
    useEffect(() => {
       setNumberValue(value);
    }, [value]);
@@ -44,7 +43,7 @@ const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) =>
 
    const handleKeyDown = (event) => {
       if (event.key === 'Enter') {
-         onPressEnter();
+         onPressEnter && onPressEnter();
       }
    };
 
