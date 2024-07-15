@@ -12,7 +12,9 @@ class ResidualValueApi extends HttpService<any> {
    getListResidualValue = (modelCode: string) => {
       return this.getDataList<any>('residualValue/getResidualValueData', { modelCode });
    };
-
+   getLastUpdatedInfo = () => {
+      return this.get('residualValue/getLastUpdatedInfo');
+   };
    importDataResidualValue = (data: any) => {
       return this.importData<any>('residualValue/importData', data);
    };
