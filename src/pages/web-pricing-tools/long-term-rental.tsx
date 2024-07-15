@@ -612,7 +612,7 @@ const ShortTermRentalSection = () => {
                }}
             >
                <Typography>{t('longTermRental.interestRate')}</Typography>
-               <Grid item xs={4}>
+               <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
                      value={inputValues.interestRate || 0}
                      onChange={(e) => {
