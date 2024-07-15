@@ -1088,7 +1088,7 @@ const GeneralInput = () => {
                   onClick={handleCalculate}
                   sx={{ width: '100%', height: 24 }}
                >
-                  {t('button.filter')}
+                  {t('button.calculate')}
                </Button>
             </Grid>
             <Grid item xs={1}>
