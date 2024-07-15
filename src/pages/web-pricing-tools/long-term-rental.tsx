@@ -90,6 +90,7 @@ const LongTermRentalSection = () => {
             justifyContent: 'center',
             alignItems: 'center',
             marginTop: 1,
+            minWidth: '600px',
          }}
       >
          <Typography
@@ -106,7 +107,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.monthlyRentalPrice')}</Typography>
@@ -126,7 +127,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                   marginTop: 3,
                }}
             >
@@ -138,7 +139,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.truckPrice')}</Typography>
@@ -157,7 +158,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.battery')}</Typography>
@@ -176,7 +177,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.charger')}</Typography>
@@ -195,7 +196,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.localFit')}</Typography>
@@ -214,7 +215,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.telemetry')}</Typography>
@@ -233,7 +234,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.freight')}</Typography>
@@ -252,7 +253,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.importDutyAndCustomsClearance')}</Typography>
@@ -271,7 +272,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.miscellaneous')}</Typography>
@@ -291,7 +292,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.totalTruckPrice')}</Typography>
@@ -317,7 +318,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.termsMonths')}</Typography>
@@ -333,7 +334,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.interestRate')}</Typography>
@@ -352,7 +353,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.hours')}</Typography>
@@ -370,7 +371,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.servicePerHour')}</Typography>
@@ -390,7 +391,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.utilisation')}</Typography>
@@ -411,7 +412,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.unitRecurringRevenue')}</Typography>
@@ -430,7 +431,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                   position: 'relative',
                }}
             >
@@ -445,7 +446,7 @@ const LongTermRentalSection = () => {
                      isDecimalScale
                   />
                </Grid>
-               <Typography sx={{ position: 'absolute', right: 50 }}>
+               <Typography sx={{ position: 'absolute', right: 30 }}>
                   {isAbleToCalculate && `${(residualPercentage * 100).toFixed(2)}%`}
                </Typography>
             </Box>
@@ -453,7 +454,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.totalUnitInterestIncomeRevenue')}</Typography>
@@ -472,7 +473,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.grossIncomeOverTerm')}</Typography>
@@ -532,6 +533,7 @@ const ShortTermRentalSection = () => {
             boxShadow: 3,
             padding: 2,
             marginTop: 1,
+            minWidth: '600px',
          }}
       >
          <Typography
@@ -547,7 +549,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.monthlyRentalPrice')}</Typography>
@@ -567,7 +569,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.acquisitionCostAndRefurb')}</Typography>
@@ -592,7 +594,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.termsMonths')}</Typography>
@@ -608,7 +610,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.interestRate')}</Typography>
@@ -626,7 +628,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.hours')}</Typography>
@@ -644,7 +646,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.servicePerHour')}</Typography>
@@ -664,7 +666,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.utilisation')}</Typography>
@@ -685,7 +687,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.unitRecurringRevenue')}</Typography>
@@ -704,7 +706,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                   position: 'relative',
                }}
             >
@@ -719,7 +721,7 @@ const ShortTermRentalSection = () => {
                      isDecimalScale
                   />
                </Grid>
-               <Typography sx={{ position: 'absolute', right: 50 }}>
+               <Typography sx={{ position: 'absolute', right: 30 }}>
                   {isAbleToCalculate && `${Number(0)}%`}
                </Typography>
             </Box>
@@ -729,7 +731,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.totalIncomeOverTerm')}</Typography>
