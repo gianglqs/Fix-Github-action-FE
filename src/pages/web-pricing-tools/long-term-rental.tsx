@@ -775,7 +775,7 @@ const GeneralInput = () => {
       dispatch(longTermRentalStore.actions.setSelectedFilters(selectedFilter));
       const requestPayload = {
          modelCode: selectedFilter?.modelCode,
-         seriez: selectedFilter?.series,
+         series: [selectedFilter?.series],
       };
       longTermRentalApi.getSelectFilters(requestPayload).then((rs) => {
          dispatch(
