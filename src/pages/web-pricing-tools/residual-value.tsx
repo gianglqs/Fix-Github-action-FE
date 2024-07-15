@@ -220,11 +220,11 @@ export default function ResidualValue() {
 
    useEffect(() => {
       convertTimezone();
-   }, [serverLastUpdatedTime, serverLastUpdatedTime]);
+   }, [serverLastUpdatedTime, serverTimeZone]);
 
    // show latest updated time
    const convertTimezone = () => {
-      if (serverLastUpdatedTime && serverLastUpdatedTime) {
+      if (serverLastUpdatedTime && serverTimeZone) {
          setClientLatestUpdatedTime(
             convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
          );
