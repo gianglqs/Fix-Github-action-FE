@@ -186,6 +186,11 @@ export default function ResidualValue() {
    const showResidualValue = () => {
       selectedResidualValue.sort((n1, n2) => n1.id.hours - n2.id.hours);
       return selectedResidualValue.map((residualValue) => {
+         const priceAfterResidualValue = residualValue.residualPercentage * dataFilter?.price;
+         const formattedPriceAfterResidualValue =
+            priceAfterResidualValue < Math.pow(10, 12)
+               ? formatNumberTwoPercentDigit(priceAfterResidualValue)
+               : priceAfterResidualValue.toPrecision(12);
          return (
             <Box sx={{ ...boxStyle, width: 200 }} key={residualValue.id}>
                <p style={{ fontWeight: 900, fontSize: 16, margin: 0 }}>
@@ -193,7 +198,7 @@ export default function ResidualValue() {
                </p>
                <Typography>{`${formatNumberTwoPercentDigit(residualValue.residualPercentage * 100)} %`}</Typography>
                {dataFilter?.price !== 0 && (
-                  <Typography>{`$ ${formatNumberTwoPercentDigit(residualValue.residualPercentage * dataFilter?.price)}`}</Typography>
+                  <Typography>{`$ ${formattedPriceAfterResidualValue}`}</Typography>
                )}
             </Box>
          );
