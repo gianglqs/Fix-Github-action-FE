@@ -116,7 +116,7 @@ const DataTablePagination = (props) => {
             >
                {lastUpdatedAt && (
                   <div>
-                     {t('table.lastUpdatedBy')} {lastUpdatedBy} {t('table.lastUpdatedAt')}{' '}
+                     {t('Last uploaded by ')} {lastUpdatedBy} {t('table.lastUpdatedAt')}{' '}
                      {lastUpdatedAt}
                   </div>
                )}
