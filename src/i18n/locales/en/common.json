@@ -115,7 +115,8 @@
       "delete": "Delete",
       "add": "Add",
       "bookedFile": "Upload Booked File",
-      "costDataFile": "Upload Cost Data File"
+      "costDataFile": "Upload Cost Data File",
+      "calculate": "Calculate"
    },
 
    "table": {

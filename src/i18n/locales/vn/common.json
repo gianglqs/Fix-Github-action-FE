@@ -107,7 +107,8 @@
       "close": "Đóng",
       "update": "Cập nhập",
       "delete": "Xóa",
-      "add": "Thêm"
+      "add": "Thêm",
+      "calculate": "Tính toán"
    },
 
    "table": {
