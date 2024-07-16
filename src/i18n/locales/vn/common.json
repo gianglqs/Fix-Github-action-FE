@@ -21,7 +21,7 @@
       "dataScraping": "Thu nhập dữ liệu",
       "gumReport": "Bao cao",
       "volumeDiscountAnalysis": "Phân tích số lượng giảm giá",
-      "bookingMarginTrialTest": "So Sánh Lợi Nhuận",
+      "bookingMarginTrialTest": "Hóa đơn API và Biên lợi nhuận ghi sổ",
       "priceVolumeSensitivity": "Tương quan giá và số lượng",
       "redidualValue": "Bảng giá trị khấu hao"
    },
