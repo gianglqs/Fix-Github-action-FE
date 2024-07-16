@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { produce } from 'immer';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import _ from 'lodash';
+import _, { forEach } from 'lodash';
 import {
    Chart as ChartJS,
    LinearScale,
@@ -122,7 +122,13 @@ export default function ExchangeRate() {
       exchangeRatesApi
          .getCurrencyFilter()
          .then((response) => {
-            setCurrencyFilter(JSON.parse(String(response.data)).currencyFilter);
+            // Set 'CNY' to 'RMB'
+            var listCurrency = JSON.parse(String(response.data)).currencyFilter;
+            listCurrency.forEach((currency) => {
+               currency.value = currency.value === 'CNY' ? 'RMB' : currency.value;
+            });
+            listCurrency.sort((a, b) => a.value > b.value);
+            setCurrencyFilter(listCurrency);
          })
          .catch((error) => {
             dispatch(commonStore.actions.setErrorMessage(error.message));
@@ -186,10 +192,19 @@ export default function ExchangeRate() {
                })
             );
             return;
+         } else {
+            // Copy object, not reference
+            var listComparisionCurrency = { ...dataFilter.comparisonCurrencies };
+            listComparisionCurrency.value = listComparisionCurrency.value.map((currency) => {
+               return currency == 'RMB' ? 'CNY' : currency;
+            });
          }
          const request = {
-            currentCurrency: dataFilter.currentCurrency.value,
-            comparisonCurrencies: dataFilter.comparisonCurrencies.value,
+            currentCurrency:
+               dataFilter.currentCurrency.value === 'RMB'
+                  ? 'CNY'
+                  : dataFilter.currentCurrency.value,
+            comparisonCurrencies: listComparisionCurrency.value,
             fromDate: dataFilter.fromDate.value,
             toDate: dataFilter.toDate.value,
             fromRealTime: exchangeRateSource == 'Database' ? false : true,
@@ -218,7 +233,11 @@ export default function ExchangeRate() {
                      .then((response) => {
                         const data = response.data.compareCurrency;
                         // Setting Labels for chart
-                        const labels = data[dataFilter.comparisonCurrencies.value[0]]
+                        const labels = data[
+                           dataFilter.comparisonCurrencies.value[0] == 'RMB'
+                              ? 'CNY'
+                              : dataFilter.comparisonCurrencies.value[0]
+                        ]
                            .map((item) => {
                               if (exchangeRateSource === 'Database') {
                                  return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
@@ -231,6 +250,8 @@ export default function ExchangeRate() {
                            .reverse();
                         let datasets = [];
                         dataFilter.comparisonCurrencies.value.forEach((item) => {
+                           // Change RMB to CNY to handle
+                           item = item == 'RMB' ? 'CNY' : item;
                            datasets.push({
                               label: item,
                               data: data[item].reverse().map((obj) => obj.rate),
@@ -249,9 +270,7 @@ export default function ExchangeRate() {
 
                         const newChartData = {
                            title: `${
-                              dataFilter.currentCurrency.value == 'CNY'
-                                 ? 'RMB'
-                                 : dataFilter.currentCurrency.value
+                              dataFilter.currentCurrency.value
                            } to${_.map(dataFilter.comparisonCurrencies.value, (item) => ` ${item}`)}`,
                            data: {
                               labels: labels,
@@ -264,7 +283,13 @@ export default function ExchangeRate() {
                            },
                            lastUpdated: data.lastUpdated,
                         };
-                        setChartData((prev) => [...prev, newChartData]);
+
+                        // Reverse change CNY to RMB to display chart
+                        var tmpChart = { ...newChartData };
+                        tmpChart.conclusion.stable = tmpChart.conclusion.stable.map((item) => {
+                           return item == 'CNY' ? 'RMB' : item;
+                        });
+                        setChartData((prev) => [...prev, tmpChart]);
                      })
                      .catch((error) => {
                         dispatch(commonStore.actions.setErrorMessage(error.message));
@@ -287,7 +312,11 @@ export default function ExchangeRate() {
                         const data = response.data.compareCurrency;
 
                         // Setting Labels for chart
-                        const labels = data[dataFilter.comparisonCurrencies.value[0]]
+                        const labels = data[
+                           dataFilter.comparisonCurrencies.value[0] == 'RMB'
+                              ? 'CNY'
+                              : dataFilter.comparisonCurrencies.value[0]
+                        ]
                            .map((item) => {
                               if (exchangeRateSource === 'Database') {
                                  return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
@@ -301,6 +330,8 @@ export default function ExchangeRate() {
 
                         let datasets = [];
                         dataFilter.comparisonCurrencies.value.forEach((item) => {
+                           // Change RMB to CNY to handle
+                           item = item == 'RMB' ? 'CNY' : item;
                            datasets.push({
                               label: item,
                               data: data[item].reverse().map((obj) => obj.rate),
@@ -319,9 +350,7 @@ export default function ExchangeRate() {
 
                         const newChartData = {
                            title: `${
-                              dataFilter.currentCurrency.value == 'CNY'
-                                 ? 'RMB'
-                                 : dataFilter.currentCurrency.value
+                              dataFilter.currentCurrency.value
                            } to${_.map(dataFilter.comparisonCurrencies.value, (item) => ` ${item}`)}`,
                            data: {
                               labels: labels,
@@ -334,7 +363,13 @@ export default function ExchangeRate() {
                            },
                            lastUpdated: data.lastUpdated,
                         };
-                        setChartData((prev) => [...prev, newChartData]);
+
+                        // Reverse change CNY to RMB to display chart
+                        var tmpChart = { ...newChartData };
+                        tmpChart.conclusion.stable = tmpChart.conclusion.stable.map((item) => {
+                           return item == 'CNY' ? 'RMB' : item;
+                        });
+                        setChartData((prev) => [...prev, tmpChart]);
                      })
                      .catch((error) => {
                         dispatch(commonStore.actions.setErrorMessage(error.message));
@@ -357,7 +392,11 @@ export default function ExchangeRate() {
                   const data = response.data.compareCurrency;
 
                   // Setting Labels for chart
-                  const labels = data[dataFilter.comparisonCurrencies.value[0]]
+                  const labels = data[
+                     dataFilter.comparisonCurrencies.value[0] == 'RMB'
+                        ? 'CNY'
+                        : dataFilter.comparisonCurrencies.value[0]
+                  ]
                      .map((item) => {
                         if (exchangeRateSource === 'Database') {
                            return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
@@ -371,6 +410,8 @@ export default function ExchangeRate() {
 
                   let datasets = [];
                   dataFilter.comparisonCurrencies.value.forEach((item) => {
+                     // Change RMB to CNY to handle
+                     item = item == 'RMB' ? 'CNY' : item;
                      datasets.push({
                         label: item,
                         data: data[item].reverse().map((obj) => obj.rate),
@@ -389,9 +430,7 @@ export default function ExchangeRate() {
 
                   const newChartData = {
                      title: `${
-                        dataFilter.currentCurrency.value == 'CNY'
-                           ? 'RMB'
-                           : dataFilter.currentCurrency.value
+                        dataFilter.currentCurrency.value
                      } to${_.map(dataFilter.comparisonCurrencies.value, (item) => ` ${item}`)}`,
                      data: {
                         labels: labels,
@@ -404,7 +443,13 @@ export default function ExchangeRate() {
                      },
                      lastUpdated: data.lastUpdated,
                   };
-                  setChartData((prev) => [...prev, newChartData]);
+
+                  // Reverse change CNY to RMB to display chart
+                  var tmpChart = { ...newChartData };
+                  tmpChart.conclusion.stable = tmpChart.conclusion.stable.map((item) => {
+                     return item == 'CNY' ? 'RMB' : item;
+                  });
+                  setChartData((prev) => [...prev, tmpChart]);
                })
                .catch((error) => {
                   dispatch(commonStore.actions.setErrorMessage(error.message));
