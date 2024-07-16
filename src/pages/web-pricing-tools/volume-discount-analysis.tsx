@@ -6,6 +6,7 @@ import { commonStore, volumeDiscountStore } from '@/store/reducers';
 import { Button } from '@mui/material';
 
 import { AppAutocomplete, AppLayout, AppNumberField, AppTextField } from '@/components';
+import AppDataTable from '@/components/DataTable/AppDataGridPro';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
@@ -547,7 +548,34 @@ export default function VolumeDiscountAnalysis() {
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: '48vh', minHeight: '200px' }}>
-                  <DataGridPro
+                  <AppDataTable
+                     sx={{
+                        '& .MuiDataGrid-columnHeaderTitle': {
+                           textOverflow: 'clip',
+                           whiteSpace: 'break-spaces',
+                           lineHeight: 1.2,
+                        },
+                     }}
+                     entity={'volume-discount-analysis'}
+                     currency="USD"
+                     dataFilter={{
+                        pricePerUnit: dataFilter.pricePerUnit?.value,
+                        costOfGoodSold: dataFilter.costOfGoodSold?.value,
+                        discountPercentage: dataFilter.discountPercentage?.value / 100,
+                        lever: dataFilter.lever?.value,
+                        expectedUnitSales: dataFilter.expectedUnitSales?.value,
+                        ocos: dataFilter.ocos?.value,
+                     }}
+                     columnHeaderHeight={70}
+                     hideFooter
+                     disableColumnMenu
+                     rowHeight={35}
+                     rows={volumeDiscountData}
+                     rowBufferPx={35}
+                     columns={columns}
+                     getRowId={(params) => params.id}
+                  />
+                  {/*<DataGridPro
                      sx={{
                         '& .MuiDataGrid-columnHeaderTitle': {
                            textOverflow: 'clip',
@@ -566,7 +594,7 @@ export default function VolumeDiscountAnalysis() {
                      rowBufferPx={35}
                      columns={columns}
                      getRowId={(params) => params.id}
-                  />
+                  />*/}
                </Grid>
 
                <AppBackDrop open={loading} hightHeaderTable={'100px'} />

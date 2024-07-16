@@ -19,7 +19,7 @@ import {
    AppTextField,
    DataTablePagination,
 } from '@/components';
-
+import AppDataTable from '@/components/DataTable/AppDataGridPro';
 import { produce } from 'immer';
 import _ from 'lodash';
 
@@ -601,7 +601,7 @@ export default function Shipment() {
    const handleClearAllFilters = () => {
       setDataFilter(defaultValueFilterOrder);
    };
-
+   console.log(dataFilter);
    return (
       <>
          <AppLayout entity="bookingMarginTrialTest">
@@ -802,7 +802,28 @@ export default function Shipment() {
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
-                  <DataGridPro
+                  <AppDataTable
+                     hideFooter
+                     entity="booking-margin-trial-test"
+                     disableColumnMenu
+                     sx={{
+                        '& .MuiDataGrid-columnHeaderTitle': {
+                           whiteSpace: 'break-spaces',
+                           lineHeight: 1.2,
+                        },
+                     }}
+                     currency="USD"
+                     columnHeaderHeight={40}
+                     dataFilter={dataFilter}
+                     rowHeight={30}
+                     rowBufferPx={35}
+                     getRowId={(params) => params.booking.orderNo}
+                     onCellClick={handleOnCellClick}
+                     columnGroupingModel={columnGroupingModel}
+                     columns={columns}
+                     rows={listOrder}
+                  />
+                  {/*<DataGridPro
                      hideFooter
                      disableColumnMenu
                      sx={{
@@ -822,7 +843,7 @@ export default function Shipment() {
                      columnGroupingModel={columnGroupingModel}
                      columns={columns}
                      rows={listOrder}
-                  />
+                  />*/}
                </Grid>
                <DataTablePagination
                   page={tableState.pageNo}
