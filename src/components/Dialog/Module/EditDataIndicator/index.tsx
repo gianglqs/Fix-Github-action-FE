@@ -175,6 +175,10 @@ const EditDataIndicator: React.FC<any> = (props) => {
       setOpenSelectColor(false);
    };
 
+   const handleCloseForm = () => {
+      onClose();
+   };
+
    const updateColor = (color: string) => {
       console.log('update Color', color);
       setData((prev) => ({ ...prev, color: { ...prev.color, colorCode: color } }));
@@ -222,13 +226,16 @@ const EditDataIndicator: React.FC<any> = (props) => {
          .updateCompetitor(isCreate, data)
          .then((res) => {
             dispatch(commonStore.actions.setSuccessMessage(res.data.message));
+
             dispatch(indicatorStore.sagaGetList());
+            dispatch(manageCompetitorStore.sagaGetList());
             dispatch(indicatorStore.actions.setLoadingPage(false));
          })
          .catch((error) => {
             dispatch(commonStore.actions.setErrorMessage(error.message));
             dispatch(indicatorStore.actions.setLoadingPage(false));
          });
+      handleCloseForm();
    };
 
    const handleOpenConfirmDeleteDialog = () => {
