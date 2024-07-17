@@ -20,7 +20,7 @@
       "exchangeRates": "Exchange Rates",
       "dataScraping": "Data Scraping",
       "volumeDiscountAnalysis": "Volume Discount Analysis",
-      "bookingMarginTrialTest": "Booking Margin Trial Test",
+      "bookingMarginTrialTest": "API Invoice vs Booked Margin",
       "priceVolumeSensitivity": "Price Volume Sensitivity",
       "error404": "Error 404",
       "residualValue": "Residual Value",

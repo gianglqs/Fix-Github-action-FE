@@ -422,7 +422,7 @@ export default function ResidualValue() {
                      ModelCode: {dataFilter.modelCode}
                   </Typography>
                   <Typography sx={{ bottom: '30px', position: 'absolute' }}>
-                     {t('table.lastUpdatedBy')} {serverLastUpdatedBy} {t('table.lastUpdatedAt')}{' '}
+                     {t('Last uploaded by')} {serverLastUpdatedBy} {t('table.lastUpdatedAt')}{' '}
                      {clientLatestUpdatedTime}
                   </Typography>
                </Grid>
