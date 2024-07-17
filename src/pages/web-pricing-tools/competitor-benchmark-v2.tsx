@@ -868,7 +868,7 @@ export default function IndicatorsV2() {
                </div>
 
                <div style={{ flex: 1, position: 'relative' }}>
-                  <LoadingCurtain isLoading={loadingPage} /> :
+                  <LoadingCurtain isLoading={loadingPage} />
                   {!loadingPage && (
                      <div
                         style={{
