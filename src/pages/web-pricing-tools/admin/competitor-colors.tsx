@@ -331,7 +331,7 @@ export default function competitorColors() {
                </Toolbar>
                <Divider />
                <List component="nav">
-                  <NavBar />
+                  < />
                </List>
             </Drawer>
             <Box
