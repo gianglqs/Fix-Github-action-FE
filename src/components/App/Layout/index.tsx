@@ -57,9 +57,15 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
    let userId = cookies['id'];
    const [userName, setUserName] = useState('');
 
+   // get user role
+   const [role, setRole] = useState('');
+   const logoUrl = `/web-pricing-tools/${role === 'ADMIN' ? `admin/users` : `financial-bookings`}`;
    useEffect(() => {
       const userName = localStorage.getItem('name');
       setUserName(userName);
+      let cookies = parseCookies();
+      let role = cookies['role'];
+      setRole(role);
    }, []);
 
    useEffect(() => {
@@ -185,12 +191,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
          </Head>
 
          <AppBar className={classes.header__container} position="static">
-            <a
-               href={`/web-pricing-tools/${
-                  userRoleCookies === 'ADMIN' ? `admin/users` : `financial-bookings`
-               }`}
-               style={{ width: 35, height: 35 }}
-            >
+            <a href={logoUrl} style={{ width: 35, height: 35 }}>
                <Image
                   src={smallLogo}
                   width={35}
