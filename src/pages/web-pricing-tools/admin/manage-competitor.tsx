@@ -136,7 +136,8 @@ export default function ImportTracking() {
    const serverLastUpdatedBy = useSelector(manageCompetitorStore.selectLastUpdatedBy);
 
    useEffect(() => {
-      setUserName(cookies['name']);
+      const userName = localStorage.getItem('name');
+      setUserName(userName);
    }, []);
 
    useEffect(() => {

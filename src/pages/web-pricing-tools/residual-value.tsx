@@ -42,6 +42,13 @@ export default function ResidualValue() {
    const { t } = useTranslation();
    useEffect(() => {
       createAction(`residualValue/reloadModelCode`);
+      //set initial last updated info for first load page
+      residualValueApi.getLastUpdatedInfo().then((result) => {
+         const parsedResult = JSON.parse(result?.data);
+         dispatch(residualValueStore.actions.setLastUpdatedBy(parsedResult.lastUpdatedBy));
+         dispatch(residualValueStore.actions.setServerTimeZone(parsedResult.serverTimeZone));
+         dispatch(residualValueStore.actions.setLastUpdatedTime(parsedResult.lastUpdatedTime));
+      });
    }, []);
 
    const listResidualValue = useSelector(residualValueStore.selectListResidualValue);
@@ -179,6 +186,11 @@ export default function ResidualValue() {
    const showResidualValue = () => {
       selectedResidualValue.sort((n1, n2) => n1.id.hours - n2.id.hours);
       return selectedResidualValue.map((residualValue) => {
+         const priceAfterResidualValue = residualValue.residualPercentage * dataFilter?.price;
+         const formattedPriceAfterResidualValue =
+            priceAfterResidualValue < Math.pow(10, 12)
+               ? formatNumberTwoPercentDigit(priceAfterResidualValue)
+               : priceAfterResidualValue.toPrecision(12);
          return (
             <Box sx={{ ...boxStyle, width: 200 }} key={residualValue.id}>
                <p style={{ fontWeight: 900, fontSize: 16, margin: 0 }}>
@@ -186,7 +198,7 @@ export default function ResidualValue() {
                </p>
                <Typography>{`${formatNumberTwoPercentDigit(residualValue.residualPercentage * 100)} %`}</Typography>
                {dataFilter?.price !== 0 && (
-                  <Typography>{`$ ${formatNumberTwoPercentDigit(residualValue.residualPercentage * dataFilter?.price)}`}</Typography>
+                  <Typography>{`$ ${formattedPriceAfterResidualValue}`}</Typography>
                )}
             </Box>
          );
@@ -210,6 +222,10 @@ export default function ResidualValue() {
       setImage(listResidualValue[0]?.id.product.image);
       convertTimezone();
    }, [listResidualValue]);
+
+   useEffect(() => {
+      convertTimezone();
+   }, [serverLastUpdatedTime, serverTimeZone]);
 
    // show latest updated time
    const convertTimezone = () => {

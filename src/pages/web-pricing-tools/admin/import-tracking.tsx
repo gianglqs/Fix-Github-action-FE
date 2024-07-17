@@ -117,7 +117,8 @@ export default function ImportTracking() {
    const [dataFilter, setDataFilter] = useState(initDataFilter);
 
    useEffect(() => {
-      setUserName(cookies['name']);
+      const userName = localStorage.getItem('name');
+      setUserName(userName);
    }, []);
 
    useEffect(() => {

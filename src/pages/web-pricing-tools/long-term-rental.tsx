@@ -112,6 +112,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.monthlyRentalPrice')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      defaultValue={0}
                      value={inputValues.monthlyRentalPrice || 0}
                      onChange={(e) => {
@@ -144,6 +145,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.truckPrice')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={isAbleToCalculate ? truckPrice || 0 : ' '}
                      onChange={(e) => {}}
                      prefix="$"
@@ -163,6 +165,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.battery')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      prefix="$"
                      value={inputValues.battery || 0}
                      onChange={(e) => {
@@ -182,6 +185,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.charger')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      prefix="$"
                      value={inputValues.charger || 0}
                      onChange={(e) => {
@@ -201,6 +205,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.localFit')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      prefix="$"
                      value={inputValues.localFit || 0}
                      onChange={(e) => {
@@ -220,6 +225,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.telemetry')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      prefix="$"
                      value={inputValues.telemetry || 0}
                      onChange={(e) => {
@@ -239,6 +245,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.freight')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      prefix="$"
                      value={inputValues.freight || 0}
                      onChange={(e) => {
@@ -258,6 +265,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.importDutyAndCustomsClearance')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={inputValues.importDutyAndCustomsClearance || 0}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'importDutyAndCustomsClearance');
@@ -277,6 +285,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.miscellaneous')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={inputValues.miscellaneous || 0}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'miscellaneous');
@@ -298,6 +307,7 @@ const LongTermRentalSection = () => {
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
                      value={isAbleToCalculate ? totalTruckPrice || 0 : ' '}
+                     debounceDelay={1}
                      onChange={(e) => {}}
                      disabled
                      decimalScale={2}
@@ -323,6 +333,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.termsMonths')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={isAbleToCalculate ? Number(primaryTerm) || 0 : ' '}
                      disabled
                      onChange={() => {}}
@@ -339,6 +350,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.interestRate')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={isAbleToCalculate ? customerLoanRatePercentage || 0 : ' '}
                      suffix="%"
                      disabled
@@ -358,6 +370,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.hours')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={inputValues.hours || 0}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'hours');
@@ -376,6 +389,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.servicePerHour')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={servicePerHour || 0}
                      prefix="$"
                      onChange={(e) => {
@@ -396,6 +410,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.utilisation')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={inputValues.utilisation || 0}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'utilisation');
@@ -417,6 +432,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.unitRecurringRevenue')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      prefix="$"
                      value={isAbleToCalculate ? unitRecurringRevenue || 0 : ' '}
                      onChange={(e) => {}}
@@ -437,6 +453,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.estimatedResale')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      prefix="$"
                      value={isAbleToCalculate ? estimatedResale || 0 : ' '}
                      onChange={(e) => {}}
@@ -478,6 +495,7 @@ const LongTermRentalSection = () => {
                <Typography>{t('longTermRental.grossIncomeOverTerm')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      prefix="$"
                      value={isAbleToCalculate ? grossIncomeOverTerm || 0 : ' '}
                      onChange={(e) => {}}
@@ -553,6 +571,7 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.monthlyRentalPrice')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={inputValues.monthlyRentalPrice || 0}
                      prefix="$"
                      onChange={(e) => {
@@ -573,6 +592,7 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.acquisitionCostAndRefurb')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={inputValues.acquisitionCostAndRefurb || 0}
                      prefix="$"
                      onChange={(e) => {
@@ -598,6 +618,7 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.termsMonths')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={isAbleToCalculate ? seccondTerm || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
@@ -612,8 +633,9 @@ const ShortTermRentalSection = () => {
                }}
             >
                <Typography>{t('longTermRental.interestRate')}</Typography>
-               <Grid item xs={4}>
+               <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={inputValues.interestRate || 0}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'interestRate');
@@ -632,6 +654,7 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.hours')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={inputValues.hours || 0}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'hours');
@@ -650,6 +673,7 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.servicePerHour')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: '#f2f2f2' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={isAbleToCalculate ? servicePerHourShortTerm || 0 : ' '}
                      prefix="$"
                      onChange={() => {}}
@@ -670,6 +694,7 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.utilisation')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: 'white' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      value={inputValues.utilisation || 0}
                      onChange={(e) => {
                         handleChangeInputValue(e, 'utilisation');
@@ -691,6 +716,7 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.unitRecurringRevenue')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      prefix="$"
                      value={isAbleToCalculate ? unitRecurringRevenue || 0 : ' '}
                      onChange={(e) => {}}
@@ -711,6 +737,7 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.estimatedResale')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      prefix="$"
                      value={isAbleToCalculate ? estimatedResale || 0 : ' '}
                      onChange={(e) => {}}
@@ -735,6 +762,7 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.totalIncomeOverTerm')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
+                     debounceDelay={1}
                      prefix="$"
                      value={isAbleToCalculate ? totalIncomeOverTerm || 0 : ' '}
                      onChange={(e) => {}}
@@ -773,7 +801,11 @@ const GeneralInput = () => {
 
    const fetchSelectOptions = async (selectedFilter) => {
       dispatch(longTermRentalStore.actions.setSelectedFilters(selectedFilter));
-      longTermRentalApi.getSelectFilters(selectedFilter).then((rs) => {
+      const requestPayload = {
+         modelCode: selectedFilter?.modelCode,
+         series: [selectedFilter?.series],
+      };
+      longTermRentalApi.getSelectFilters(requestPayload).then((rs) => {
          dispatch(
             longTermRentalStore.actions.setFilterOptions({
                ...optionsFilter,
@@ -793,7 +825,9 @@ const GeneralInput = () => {
    };
    const handleCalculate = () => {
       if (!isAbleToCalculate) {
-         dispatch(commonStore.actions.setErrorMessage(t('Required fields must be filled !')));
+         dispatch(
+            commonStore.actions.setErrorMessage(t('commonErrorMessage.requiredFieldsMustBeFilled'))
+         );
       }
    };
    const handleRemoveCached = () => {
@@ -823,12 +857,13 @@ const GeneralInput = () => {
    }, []);
 
    const handleChangeInputValue = ({ value }, field) => {
+      console.log(field + ' ' + value);
       const newGeneralInputValues = {
          ...generalInputValues,
          [field]: value ? Number(value) : null,
       };
-      localStorage.setItem('generalInputLongTermRental', JSON.stringify(newGeneralInputValues));
       dispatch(longTermRentalStore.actions.setGeneralInputsValues(newGeneralInputValues));
+      localStorage.setItem('generalInputLongTermRental', JSON.stringify(newGeneralInputValues));
    };
    useEffect(() => {
       const isAbleToCalculate = [
@@ -916,6 +951,7 @@ const GeneralInput = () => {
          <Grid container spacing={1} marginTop={1}>
             <Grid item xs={2}>
                <AppNumberField
+                  debounceDelay={1}
                   value={generalInputValues?.cost || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'cost');
@@ -929,6 +965,7 @@ const GeneralInput = () => {
             </Grid>
             <Grid item xs={2}>
                <AppNumberField
+                  debounceDelay={1}
                   value={generalInputValues?.quantity || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'quantity');
@@ -943,6 +980,7 @@ const GeneralInput = () => {
             </Grid>
             <Grid item xs={2}>
                <AppNumberField
+                  debounceDelay={1}
                   value={generalInputValues?.financingFinanceTerm || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'financingFinanceTerm');
@@ -957,6 +995,7 @@ const GeneralInput = () => {
             </Grid>
             <Grid item xs={2}>
                <AppNumberField
+                  debounceDelay={1}
                   value={generalInputValues?.primaryTerm || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'primaryTerm');
@@ -971,6 +1010,7 @@ const GeneralInput = () => {
             </Grid>
             <Grid item xs={2}>
                <AppNumberField
+                  debounceDelay={1}
                   value={generalInputValues?.seccondTerm || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'seccondTerm');
@@ -985,6 +1025,7 @@ const GeneralInput = () => {
             </Grid>
             <Grid item xs={2}>
                <AppNumberField
+                  debounceDelay={1}
                   value={generalInputValues?.dealerLoanRatePercentage || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'dealerLoanRatePercentage');
@@ -1002,6 +1043,7 @@ const GeneralInput = () => {
             </Grid>
             <Grid item xs={2}>
                <AppNumberField
+                  debounceDelay={1}
                   value={generalInputValues?.customerLoanRatePercentage || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'customerLoanRatePercentage');
@@ -1019,6 +1061,7 @@ const GeneralInput = () => {
             </Grid>
             <Grid item xs={2}>
                <AppNumberField
+                  debounceDelay={1}
                   value={generalInputValues?.serviceRateCostPercentage || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'serviceRateCostPercentage');
@@ -1032,6 +1075,7 @@ const GeneralInput = () => {
             </Grid>
             <Grid item xs={2}>
                <AppNumberField
+                  debounceDelay={1}
                   value={generalInputValues?.HYGMargin || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'HYGMargin');
@@ -1043,6 +1087,7 @@ const GeneralInput = () => {
             </Grid>
             <Grid item xs={2}>
                <AppNumberField
+                  debounceDelay={1}
                   value={generalInputValues?.streetPriceMargin || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'streetPriceMargin');
@@ -1054,6 +1099,7 @@ const GeneralInput = () => {
             </Grid>
             <Grid item xs={2}>
                <AppNumberField
+                  debounceDelay={1}
                   value={generalInputValues?.SPVLoanRate || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'SPVLoanRate');
@@ -1065,6 +1111,7 @@ const GeneralInput = () => {
             </Grid>
             <Grid item xs={2}>
                <AppNumberField
+                  debounceDelay={1}
                   value={generalInputValues?.HYGLoanRate || ''}
                   onChange={(e) => {
                      handleChangeInputValue(e, 'HYGLoanRate');
@@ -1082,7 +1129,7 @@ const GeneralInput = () => {
                   onClick={handleCalculate}
                   sx={{ width: '100%', height: 24 }}
                >
-                  {t('button.filter')}
+                  {t('button.calculate')}
                </Button>
             </Grid>
             <Grid item xs={1}>

@@ -114,7 +114,8 @@ export default function HistoricalImport() {
    const serverTimeZone = useSelector(historicalImportStore.selectServerTimeZone);
 
    useEffect(() => {
-      setUserName(cookies['name']);
+      const userName = localStorage.getItem('name');
+      setUserName(userName);
    }, []);
 
    const handleChangePage = (pageNo: number) => {
