@@ -310,7 +310,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
                      required
                      label={t('competitors.series')}
                      onChange={(e) => handleChangeDataFilter(e.target.value, 'series')}
-                     value={data?.series}
+                     value={data.series?.series}
                   />
                </Grid>
                <Grid item xs={3}>
