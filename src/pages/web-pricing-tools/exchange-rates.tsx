@@ -214,7 +214,7 @@ export default function ExchangeRate() {
             comparisonCurrencies: listComparisionCurrency.value,
             fromDate: dataFilter.fromDate.value,
             toDate: dataFilter.toDate.value,
-            fromRealTime: exchangeRateSource == 'Database' ? false : true,
+            fromExchangeRateAPIs: exchangeRateSource == 'Database' ? false : true,
          };
          setLoading(true);
 
@@ -224,13 +224,12 @@ export default function ExchangeRate() {
          const monthDiff: number =
             (td.getFullYear() - fd.getFullYear()) * 12 + (td.getMonth() - fd.getMonth());
 
-         console.log('month' + monthDiff);
          const timeDiff: number = td.getTime() - fd.getTime();
          const dayDiff: number = timeDiff / (1000 * 3600 * 24) + 1;
-         console.log('day:' + dayDiff);
+
 
          if (request.fromDate != '' && request.toDate != '') {
-            if (request.fromRealTime == false) {
+            if (request.fromExchangeRateAPIs == false) {
                if (monthDiff < 12) {
                   exchangeRatesApi
                      .compareCurrency(request)
@@ -309,7 +308,7 @@ export default function ExchangeRate() {
                   );
                }
             } else {
-               if (monthDiff < 4) {
+               if (monthDiff < 13) {
                   exchangeRatesApi
                      .compareCurrency(request)
                      .then((response) => {

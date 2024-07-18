@@ -10,6 +10,11 @@ export function ProductImage(props) {
       if (isImageChoose) {
          setCorrectImageUrl(imageUrl);
       } else if (checkNoneEmptyString(imageUrl)) {
+
+         console.log("NEXT_PUBLIC_BACKEND_URL" + process.env.NEXT_PUBLIC_BACKEND_URL);
+         console.log("PRODUCT_IMAGE_FOLDER" + PRODUCT_IMAGE_FOLDER);
+         console.log("imageUrl" + imageUrl);
+
          fetch(process.env.NEXT_PUBLIC_BACKEND_URL + PRODUCT_IMAGE_FOLDER + imageUrl).then(
             (res) => {
                if (res.ok) {
