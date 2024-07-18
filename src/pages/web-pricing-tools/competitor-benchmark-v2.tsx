@@ -272,17 +272,21 @@ export default function IndicatorsV2() {
    };
    const handleChangeDataFilter = (option, field) => {
       const newSelectedFilter =
-         field === 'region' || field === 'leadTime'
-            ? { ...selectedFilter, [field]: option.value }
-            : { ...selectedFilter, [field]: option?.map(({ value }) => value) };
+         field === 'region'
+            ? { ...selectedFilter, countries: [], [field]: option.value }
+            : field === 'leadTime'
+              ? { ...selectedFilter, [field]: option.value }
+              : { ...selectedFilter, [field]: option?.map(({ value }) => value) };
       handleFetchFilter(newSelectedFilter);
    };
 
    const handleClearFilter = () => {
+      dispatch(indicatorV2Store.actions.setChartFilterOptions({}));
       handleFetchFilter(defaultValueChartSelectedFilterIndicator);
    };
 
    const handleChangePage = (pageNo: number) => {
+      // reset options
       dispatch(commonStore.actions.setTableState({ pageNo }));
       //prefetch table when page change
       dispatch(indicatorV2Store.fetchTable());
