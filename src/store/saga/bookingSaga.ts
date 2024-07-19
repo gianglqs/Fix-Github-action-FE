@@ -30,6 +30,8 @@ function* getDataBooking() {
       const fromDateFilter = dataFilter.fromDate;
       const toDateFilter = dataFilter.toDate;
 
+      console.log('fromDate, toDate: ', fromDateFilter, toDateFilter);
+
       if (!isValidDate(fromDateFilter)) {
          throw new Error('From date is invalid!');
       }
