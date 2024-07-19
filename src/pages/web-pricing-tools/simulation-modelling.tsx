@@ -931,6 +931,7 @@ export default function Adjustment() {
                         label={`${t('table.adjustedCost')} %`}
                         placeholder={`${t('table.adjustedCost')} %`}
                         suffix="%"
+                        max={100}
                      />
                   </Grid>
                </Grid>
@@ -957,6 +958,7 @@ export default function Adjustment() {
                         label={`${t('table.adjustedFX')} %`}
                         placeholder={`${t('table.adjustedFX')} %`}
                         suffix="%"
+                        max={100}
                      />
                   </Grid>
                </Grid>{' '}
@@ -970,6 +972,7 @@ export default function Adjustment() {
                         label={`${t('table.adjustedDealerNet')} %`}
                         placeholder={`${t('table.adjustedDealerNet')} %`}
                         suffix="%"
+                        max={100}
                      />
                   </Grid>
                </Grid>
