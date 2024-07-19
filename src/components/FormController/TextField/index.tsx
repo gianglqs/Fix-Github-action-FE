@@ -1,14 +1,13 @@
-import { forwardRef } from "react"
-import { useController } from "react-hook-form"
+import { forwardRef } from 'react';
+import { useController } from 'react-hook-form';
 
-import { AppTextField } from "@/components/index"
-import _ from "lodash"
+import { AppTextField } from '@/components/index';
+import _ from 'lodash';
 
-import type { ControlledTextFieldProps } from "./type"
+import type { ControlledTextFieldProps } from './type';
 
-const FormControlledTextField = forwardRef<any, ControlledTextFieldProps>(
-  (props, ref) => {
-    const {
+const FormControlledTextField = forwardRef<any, ControlledTextFieldProps>((props, ref) => {
+   const {
       control,
       name,
       defaultValue,
@@ -17,50 +16,50 @@ const FormControlledTextField = forwardRef<any, ControlledTextFieldProps>(
       limitText,
       disabled,
       ...textFieldProps
-    } = props
+   } = props;
 
-    const {
+   const {
       field: { onChange: onChangeController, value, ...inputProps },
       fieldState: { invalid, error },
-    } = useController({
+   } = useController({
       name,
       rules,
       defaultValue,
       control,
-    })
+   });
 
-    const onChangeValue = (event) => {
+   const onChangeValue = (event) => {
       if (disabled) {
-        return
+         return;
       }
-      const { value } = event.target
-      const transformVal = transformValue(value)
+      const { value } = event.target;
+      const transformVal = transformValue(value);
       if (limitText && _.size(value) > limitText) {
-        return
+         return;
       }
-      onChangeController(transformVal)
-    }
+      onChangeController(transformVal);
+   };
 
-    return (
+   return (
       <AppTextField
-        {...inputProps}
-        {...(textFieldProps as any)}
-        ref={ref}
-        disabled={disabled}
-        name={name}
-        onChange={onChangeValue}
-        error={Boolean(invalid)}
-        helperText={error?.message}
-        value={_.toString(value)}
+         {...inputProps}
+         {...(textFieldProps as any)}
+         ref={ref}
+         disabled={disabled}
+         name={name}
+         onChange={onChangeValue}
+         error={Boolean(invalid)}
+         helperText={error?.message}
+         value={_.toString(value)}
+         debounceDelay={0}
       />
-    )
-  }
-)
+   );
+});
 
 FormControlledTextField.defaultProps = {
-  rules: {},
-  transformValue: (value) => value,
-  limitText: null,
-}
+   rules: {},
+   transformValue: (value) => value,
+   limitText: null,
+};
 
-export default FormControlledTextField
+export default FormControlledTextField;
