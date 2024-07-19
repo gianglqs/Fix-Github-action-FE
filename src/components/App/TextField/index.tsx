@@ -22,6 +22,7 @@ const AppTextField: React.FC<AppTextFieldProps> = (props) => {
       isFocus,
       value,
       onChange,
+      debounceDelay,
       ...textFieldProps
    } = props;
 
@@ -47,7 +48,7 @@ const AppTextField: React.FC<AppTextFieldProps> = (props) => {
    const debouceHandleOnChange = useCallback(
       _.debounce((event, value) => {
          onChange(event);
-      }, 400),
+      }, debounceDelay || 400),
       [onChange]
    );
 
