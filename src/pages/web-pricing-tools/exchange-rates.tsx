@@ -227,7 +227,6 @@ export default function ExchangeRate() {
          const timeDiff: number = td.getTime() - fd.getTime();
          const dayDiff: number = timeDiff / (1000 * 3600 * 24) + 1;
 
-
          if (request.fromDate != '' && request.toDate != '') {
             if (request.fromExchangeRateAPIs == false) {
                if (monthDiff < 12) {
@@ -670,18 +669,20 @@ export default function ExchangeRate() {
                         sx={{ marginTop: 1 }}
                      />
                   </Box>
-                  <Typography
-                     sx={{
-                        color: 'blue',
-                        fontSize: 15,
-                        margin: '0 30px 0 10px',
-                        cursor: 'pointer',
-                        marginTop: '10px',
-                     }}
-                     onClick={() => downloadFileByURL(exampleUploadFile[EXCHANGE_RATE])}
-                  >
-                     {t('link.getExampleUploadFile')}
-                  </Typography>
+                  {userRole === 'ADMIN' && (
+                     <Typography
+                        sx={{
+                           color: 'blue',
+                           fontSize: 15,
+                           margin: '0 30px 0 10px',
+                           cursor: 'pointer',
+                           marginTop: '10px',
+                        }}
+                        onClick={() => downloadFileByURL(exampleUploadFile[EXCHANGE_RATE])}
+                     >
+                        {t('link.getExampleUploadFile')}
+                     </Typography>
+                  )}
                </Grid>
 
                <CurrencyReport
