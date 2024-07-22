@@ -607,41 +607,43 @@ export default function MarginAnalysis() {
                   </>
                )}
             </Grid>
-            <Box sx={{ display: 'flex' }}>
-               <Typography
-                  sx={{
-                     color: 'blue',
-                     fontSize: 15,
-                     marginRight: '20px',
-                     cursor: 'pointer',
-                  }}
-                  onClick={() => downloadFileByURL(exampleFile[NOVO])}
-               >
-                  {t('link.getNOVOExampleUploadFile')}
-               </Typography>
-               <Typography
-                  sx={{
-                     color: 'blue',
-                     fontSize: 15,
-                     marginRight: '20px',
-                     cursor: 'pointer',
-                  }}
-                  onClick={() => downloadFileByURL(exampleFile[MACRO])}
-               >
-                  {t('link.getMarginAnalystMacroTemplateExampleUploadFile')}
-               </Typography>
-               <Typography
-                  sx={{
-                     color: 'blue',
-                     fontSize: 15,
-                     marginRight: '20px',
-                     cursor: 'pointer',
-                  }}
-                  onClick={() => downloadFileByURL(exampleFile[PART])}
-               >
-                  {t('link.getPowerBIExampleUploadFile')}
-               </Typography>
-            </Box>
+            {userRole === 'ADMIN' && (
+               <Box sx={{ display: 'flex' }}>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 15,
+                        marginRight: '20px',
+                        cursor: 'pointer',
+                     }}
+                     onClick={() => downloadFileByURL(exampleFile[NOVO])}
+                  >
+                     {t('link.getNOVOExampleUploadFile')}
+                  </Typography>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 15,
+                        marginRight: '20px',
+                        cursor: 'pointer',
+                     }}
+                     onClick={() => downloadFileByURL(exampleFile[MACRO])}
+                  >
+                     {t('link.getMarginAnalystMacroTemplateExampleUploadFile')}
+                  </Typography>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 15,
+                        marginRight: '20px',
+                        cursor: 'pointer',
+                     }}
+                     onClick={() => downloadFileByURL(exampleFile[PART])}
+                  >
+                     {t('link.getPowerBIExampleUploadFile')}
+                  </Typography>
+               </Box>
+            )}
 
             <Grid container spacing={1} sx={{ marginTop: 1 }}>
                <MarginPercentageAOPRateBox
