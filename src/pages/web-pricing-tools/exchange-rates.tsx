@@ -382,7 +382,7 @@ export default function ExchangeRate() {
                   setLoading(false);
                   dispatch(
                      commonStore.actions.setErrorMessage(
-                        t('commonErrorMessage.timeExceedsThreeMonths')
+                        t('commonErrorMessage.timeExceedsTwelveMonths')
                      )
                   );
                }
