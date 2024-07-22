@@ -30,6 +30,8 @@ import { useTranslation } from 'react-i18next';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { RESIDUAL_VALUE } from '@/utils/modelType';
 
+import GetAppIcon from '@mui/icons-material/GetApp';
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
@@ -346,14 +348,21 @@ export default function ResidualValue() {
                   <Typography
                      sx={{
                         color: 'blue',
-                        fontSize: 15,
+                        fontSize: 5,
                         margin: '0 30px 0 10px',
                         cursor: 'pointer',
                         marginTop: '10px',
                      }}
                      onClick={() => downloadFileByURL(exampleFile[RESIDUAL_VALUE])}
                   >
-                     {t('link.getExampleUploadFile')}
+                     <GetAppIcon
+                        sx={{
+                           color: 'black',
+                           marginTop: '2px',
+                           fontSize: 'large',
+                           '&:hover': { color: 'red' },
+                        }}
+                     />
                   </Typography>
                   <Grid item xs={4} sx={{ display: 'flex' }}>
                      {uploadedFile &&

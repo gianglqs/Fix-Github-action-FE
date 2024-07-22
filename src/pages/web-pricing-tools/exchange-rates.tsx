@@ -72,6 +72,7 @@ import { useTranslation } from 'react-i18next';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { EXCHANGE_RATE } from '@/utils/modelType';
 import { useSelector } from 'react-redux';
+import GetAppIcon from '@mui/icons-material/GetApp';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -226,7 +227,6 @@ export default function ExchangeRate() {
 
          const timeDiff: number = td.getTime() - fd.getTime();
          const dayDiff: number = timeDiff / (1000 * 3600 * 24) + 1;
-
 
          if (request.fromDate != '' && request.toDate != '') {
             if (request.fromExchangeRateAPIs == false) {
@@ -669,19 +669,26 @@ export default function ExchangeRate() {
                         maxDate={new Date().toISOString().slice(0, 10)}
                         sx={{ marginTop: 1 }}
                      />
+                     <Typography
+                        sx={{
+                           color: 'blue',
+                           fontSize: 8,
+                           margin: '0 30px 0 10px',
+                           cursor: 'pointer',
+                           marginTop: '10px',
+                        }}
+                        onClick={() => downloadFileByURL(exampleUploadFile[EXCHANGE_RATE])}
+                     >
+                        <GetAppIcon
+                           sx={{
+                              color: 'black',
+                              marginTop: '2px',
+                              fontSize: 'large',
+                              '&:hover': { color: 'red' },
+                           }}
+                        />
+                     </Typography>
                   </Box>
-                  <Typography
-                     sx={{
-                        color: 'blue',
-                        fontSize: 15,
-                        margin: '0 30px 0 10px',
-                        cursor: 'pointer',
-                        marginTop: '10px',
-                     }}
-                     onClick={() => downloadFileByURL(exampleUploadFile[EXCHANGE_RATE])}
-                  >
-                     {t('link.getExampleUploadFile')}
-                  </Typography>
                </Grid>
 
                <CurrencyReport
