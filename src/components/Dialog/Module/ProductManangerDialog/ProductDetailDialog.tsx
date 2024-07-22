@@ -19,9 +19,12 @@ import { produce } from 'immer';
 import { When } from 'react-if';
 import { ProductImage } from '@/components/App/Image/ProductImage';
 import { useTranslation } from 'react-i18next';
+import { imageDialogStore } from '@/store/reducers';
 
 const ProductDetailDialog: React.FC<any> = (props) => {
-   const { open, onClose, model, _series, orderNo, handleOpenImageDialog } = props;
+   const { open, onClose, model, _series, orderNo } = props;
+
+   const dispath = useDispatch();
 
    // ======== info product detail ========
    const [modelCode, setModelCode] = useState();
@@ -206,19 +209,37 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       setSeries(null);
    };
 
+   const handleOpenImageDialog = (imageURL: string) => {
+      dispath(imageDialogStore.actions.setImageURL(imageURL));
+      dispath(imageDialogStore.actions.openDialog());
+   };
+
    return (
       <Dialog
          open={open}
          onClose={handleClose}
          draggable
          fullWidth={true}
-         maxWidth="lg"
+         maxWidth="md"
          PaperProps={{ sx: { borderRadius: '10px' } }}
       >
          <Grid container sx={{ padding: '40px' }}>
-            <Grid container sx={{ marginBottom: '7px' }}>
-               <Grid spacing={1} container xs={10}>
-                  <Grid item xs={3}>
+            <Grid container spacing={3}>
+               <Grid item xs={6} style={{ paddingLeft: '15px', overflow: 'hidden' }}>
+                  <ProductImage
+                     imageUrl={productDetail?.image}
+                     style={{
+                        objectFit: 'contain',
+                        borderRadius: '5px',
+                        //maxHeight: '180px',
+                        height: '100%',
+                        width: '100%',
+                     }}
+                     onClick={() => handleOpenImageDialog(productDetail?.image)}
+                  />
+               </Grid>
+               <Grid spacing={1} item xs={6}>
+                  <Grid item xs={12}>
                      <TextField
                         id="outlined-read-only-input"
                         label={t('table.models')}
@@ -239,7 +260,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                         margin="dense"
                      />
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={12}>
                      <TextField
                         id="outlined-read-only-input"
                         label={t('table.brand')}
@@ -260,7 +281,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                         margin="dense"
                      />
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={12}>
                      <TextField
                         id="outlined-read-only-input"
                         label={t('table.truckType')}
@@ -281,7 +302,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                         margin="dense"
                      />
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={12}>
                      <TextField
                         id="outlined-read-only-input"
                         label={t('table.plant')}
@@ -302,7 +323,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                         margin="dense"
                      />
                   </Grid>
-                  <Grid item xs={2}>
+                  <Grid item xs={12}>
                      <TextField
                         id="outlined-read-only-input"
                         label={t('table.series')}
@@ -323,7 +344,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                         margin="dense"
                      />
                   </Grid>
-                  <Grid item xs={5}>
+                  <Grid item xs={12}>
                      <TextField
                         id="outlined-read-only-input"
                         label={t('table.segment')}
@@ -344,7 +365,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                         margin="dense"
                      />
                   </Grid>
-                  <Grid item xs={3}>
+                  <Grid item xs={12}>
                      <TextField
                         id="outlined-read-only-input"
                         label={t('table.family')}
@@ -365,7 +386,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                         margin="dense"
                      />
                   </Grid>
-                  <Grid item xs={2}>
+                  <Grid item xs={12}>
                      <TextField
                         id="outlined-read-only-input"
                         label={t('table.class')}
@@ -408,19 +429,6 @@ const ProductDetailDialog: React.FC<any> = (props) => {
                         multiline
                      />
                   </Grid>
-               </Grid>
-               <Grid container xs={2} style={{ paddingLeft: '15px', overflow: 'hidden' }}>
-                  <ProductImage
-                     imageUrl={productDetail?.image}
-                     style={{
-                        objectFit: 'contain',
-                        borderRadius: '5px',
-                        maxHeight: '180px',
-                        height: '100%',
-                        width: '100%',
-                     }}
-                     onClick={() => handleOpenImageDialog(productDetail?.image)}
-                  />
                </Grid>
             </Grid>
             {/* <When condition={orderNumber === null || orderNumber === undefined}>
