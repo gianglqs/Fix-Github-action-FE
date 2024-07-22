@@ -47,7 +47,6 @@ function* fetchBookingTrialTest() {
          perPage: tableState.perPage,
       });
       const data = JSON.parse(String(res.data));
-      console.log(data);
       const dataOrder = data.listOrder;
       //const dataTotalRow = JSON.parse(String(data)).total;
       // const dataExchangeRate = JSON.parse(String(data)).listExchangeRate;
