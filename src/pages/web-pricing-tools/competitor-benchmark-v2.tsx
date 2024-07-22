@@ -939,6 +939,7 @@ export default function IndicatorsV2() {
                         columnHeaderHeight={90}
                         currency="USD"
                         entity="competitor-pricing"
+                        dataFilter={selectedFilter}
                         rows={dataTable}
                         columns={columns}
                         getRowId={(params) => params.id}
