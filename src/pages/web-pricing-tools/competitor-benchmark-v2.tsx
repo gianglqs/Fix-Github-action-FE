@@ -43,6 +43,7 @@ import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { COMPETITOR, FORECAST_PRICING } from '@/utils/modelType';
 
 import GetAppIcon from '@mui/icons-material/GetApp';
+import { Margin } from '@mui/icons-material';
 const getOrCreateLegendList = (chart, id) => {
    const legendContainer = document.getElementById(id);
    if (!legendContainer) return null;
@@ -762,7 +763,7 @@ export default function IndicatorsV2() {
                      getOptionLabel={(option) => `${option.value || 'Others'}`}
                   />
                </Grid>
-               <Grid item xs={1}>
+               <Grid item xs={2}>
                   <Button
                      variant="contained"
                      onClick={handleClearFilter}
@@ -773,19 +774,16 @@ export default function IndicatorsV2() {
                </Grid>
                {userRole === 'ADMIN' && (
                   <>
-                     <Grid item xs={1} sx={{ display: 'flex', marginRight: '16px' }}>
+                     <Grid item xs={1} sx={{ display: 'flex' }}>
                         <UploadFileDropZone
                            handleUploadFile={handleImportFile}
                            buttonName={`${t('button.import')} Competitor File`}
                            sx={{ height: 24, minWidth: 165 }}
                         />
-                     </Grid>
-
-                     <Grid item xs={1} sx={{ display: 'flex' }}>
                         <UploadFileDropZone
                            handleUploadFile={handleUploadForecastFile}
                            buttonName={`${t('button.import')} Forecast File`}
-                           sx={{ height: 24, minWidth: 165 }}
+                           sx={{ height: 24, minWidth: 165, ml: 1 }}
                         />
                         <Typography
                            sx={{
