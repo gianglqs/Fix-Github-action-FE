@@ -10,7 +10,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 
 import { AccountCircle } from '@mui/icons-material';
-import { AppBar, Button, Grid, Popover, Typography } from '@mui/material';
+import { AppBar, Grid, Popover, Typography } from '@mui/material';
 import { usePopupState, bindPopover, bindTrigger } from 'material-ui-popup-state/hooks';
 import { AppLayoutProps } from './type';
 import AppFooter from '../Footer';
@@ -22,10 +22,6 @@ import { useTranslation } from 'react-i18next';
 import { DialogUpdateUser } from '@/components/Dialog/Module/Dashboard/UpdateDialog';
 import { commonStore } from '@/store/reducers';
 import dashboardApi from '@/api/dashboard.api';
-
-import * as React from 'react';
-import { Menu, MenuItem, ListItemIcon, Divider } from '@mui/material';
-
 const smallLogo = require('@/public/smallLogo.svg');
 
 const removeAllCookies = () => {
@@ -96,92 +92,24 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       'long-term-rental': t('title.longTermRental'),
    };
 
-   // Multilevel Menus
-
-   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-   const isMenuOpen = Boolean(anchorEl);
-
-   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-      setAnchorEl(event.currentTarget);
+   const renderMenu = () => {
+      const otherOptions = _.keysIn(menuObj);
+      return _.map(otherOptions, (name) => (
+         <Link
+            href={`/web-pricing-tools/${name}`}
+            style={{ textDecoration: 'none', cursor: 'pointer', color: '#000' }}
+         >
+            <Typography
+               variant="body1"
+               fontWeight="fontWeightMedium"
+               className={classes.label}
+               color={router.pathname === `/web-pricing-tools/${name}` ? '#e7a800' : ''}
+            >
+               {menuObj[name]}
+            </Typography>
+         </Link>
+      ));
    };
-
-   const handleMenuClose = () => {
-      setAnchorEl(null);
-   };
-
-   const renderBookingMenu = (
-      <Menu
-         anchorEl={anchorEl}
-         anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-         }}
-         id='booking-menu'
-         keepMounted
-         transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-         }}
-         open={isMenuOpen}
-         onClose={handleMenuClose}>
-         <MenuItem onClick={handleMenuClose}>
-            Orders
-         </MenuItem>
-         <Divider />
-         <MenuItem onClick={handleMenuClose}>
-            Financial Booking
-         </MenuItem>
-         <MenuItem onClick={handleMenuClose}>
-            Financial Shipment
-         </MenuItem>
-      </Menu>
-   );
-
-   const renderPricingMenu = (
-      <Menu
-         anchorEl={anchorEl}
-         anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-         }}
-         id='pricing-menu'
-         keepMounted
-         transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-         }}
-         open={isMenuOpen}
-         onClose={handleMenuClose}>
-         <MenuItem onClick={handleMenuClose}>
-            Pricing
-         </MenuItem>
-         <Divider />
-         <MenuItem onClick={handleMenuClose}>
-            Quotation Margin %
-         </MenuItem>
-         <MenuItem onClick={handleMenuClose}>
-            Volumn Discount Analysis
-         </MenuItem>
-         <MenuItem onClick={handleMenuClose}>
-            Competitor Benchmark
-         </MenuItem>
-         <MenuItem onClick={handleMenuClose}>
-            Simulate Modelling
-         </MenuItem>
-         <MenuItem onClick={handleMenuClose}>
-            Product Margin Analytics
-         </MenuItem>
-         <MenuItem onClick={handleMenuClose}>
-            Residulal Value
-         </MenuItem>
-         <MenuItem onClick={handleMenuClose}>
-            Longterm Rental
-         </MenuItem>
-         <MenuItem onClick={handleMenuClose}>
-            Booking Margin Trial Test
-         </MenuItem>
-      </Menu>
-   );
 
    const handleLogOut = () => {
       try {
@@ -272,16 +200,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
                />
             </a>
             <nav className={classes.navigation} role="nav">
-               <Button aria-controls="simple-menu"
-                  aria-haspopup="true"
-                  onClick={handleMenuOpen}>
-                  Orders
-               </Button>
-               <Button aria-controls="simple-menu"
-                  aria-haspopup="true"
-                  onClick={handleMenuOpen}>
-                  Pricing
-               </Button>
+               {renderMenu()}
             </nav>
             <div
                className={classes.profile__container}
@@ -292,10 +211,6 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
                <AccountCircle style={{ marginRight: 5, fontSize: 20 }} />
             </div>
          </AppBar>
-
-         {renderBookingMenu}
-         {renderPricingMenu}
-
          <Grid
             container
             style={{
