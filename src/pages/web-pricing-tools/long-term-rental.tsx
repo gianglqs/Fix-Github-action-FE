@@ -86,6 +86,7 @@ const LongTermRentalSection = () => {
             backgroundColor: '#fffff7',
             borderRadius: 5,
             boxShadow: 3,
+            border: '1px solid rgba(150,150,150,0.4)',
             padding: 2,
             justifyContent: 'center',
             alignItems: 'center',
@@ -528,6 +529,7 @@ const ShortTermRentalSection = () => {
          item
          sx={{
             flex: 1,
+            border: '1px solid rgba(150,150,150,0.4)',
             backgroundColor: '#fffff7',
             borderRadius: 5,
             boxShadow: 3,
@@ -725,7 +727,7 @@ const ShortTermRentalSection = () => {
                   {isAbleToCalculate && `${Number(0)}%`}
                </Typography>
             </Box>
-            <Box sx={{ height: '25px' }}></Box>
+            <Box sx={{ height: '20px' }}></Box>
             <Divider />
             <Box
                sx={{
