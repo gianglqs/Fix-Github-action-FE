@@ -191,7 +191,7 @@ export default function Shipment() {
          minWidth: 100,
          headerName: t('table.series'),
          renderCell(params) {
-            return <span>{params.row.booking.series.series}</span>;
+            return <span>{params.row.booking.product.series.series}</span>;
          },
       },
       {
