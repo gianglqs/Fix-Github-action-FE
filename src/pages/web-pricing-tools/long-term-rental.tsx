@@ -826,13 +826,6 @@ const GeneralInput = () => {
       localStorage.setItem('generalFilterLongTermRental', JSON.stringify(newSelectedFilter));
 
       fetchSelectOptions(newSelectedFilter);
-
-      /* //so we need to clear Model selection here
-      if (field == 'series') {
-         dispatch(
-            longTermRentalStore.actions.setSelectedFilters({ ...selectedFilter, modelCode: null })
-         );
-      }*/
    };
    const handleCalculate = () => {
       if (!isAbleToCalculate) {
