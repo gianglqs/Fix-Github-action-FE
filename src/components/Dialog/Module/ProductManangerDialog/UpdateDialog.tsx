@@ -12,7 +12,7 @@ import { json } from 'stream/consumers';
 import { gridColumnGroupsUnwrappedModelSelector } from '@mui/x-data-grid-pro';
 
 const DialogUpdateProduct: React.FC<any> = (props) => {
-   const { open, onClose, preValue } = props;
+   const { open, onClose, preValue, handleOpenImageDialog } = props;
 
    const dispatch = useDispatch();
 
@@ -90,10 +90,14 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
             sx={{ paddingTop: 0.8, paddingBottom: 0.8, alignItems: 'center' }}
             spacing={2}
          >
-            <Grid item xs={3}>
-               <ChooseImage image={newValue.image} setImage={setImageFile} />
+            <Grid item xs={4}>
+               <ChooseImage
+                  image={newValue.image}
+                  setImage={setImageFile}
+                  handleOpenImageDialog={handleOpenImageDialog}
+               />
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={8}>
                <Typography variant="h6" component="h2">
                   {newValue.modelCode}
                </Typography>
@@ -105,11 +109,12 @@ const DialogUpdateProduct: React.FC<any> = (props) => {
                   id="outlined-required"
                   label={t('table.description')}
                   defaultValue=" "
-                  maxRows={3}
+                  rows={3}
                   value={newValue.description}
                   onChange={(e) =>
                      setNewValue((prev) => ({ ...prev, description: e.target.value }))
                   }
+                  debounceDelay={0}
                   multiline
                />
             </Grid>

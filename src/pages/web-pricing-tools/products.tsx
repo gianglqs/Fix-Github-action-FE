@@ -677,13 +677,17 @@ export default function Product() {
                <AppBackDrop open={loadingTable} hightHeaderTable={'74px'} bottom={'43px'} />
             </Paper>
          </AppLayout>
-         <DialogUpdateProduct {...updateProductState} onClose={handleCloseUpdateProductDialog} />
+         <DialogUpdateProduct
+            {...updateProductState}
+            onClose={handleCloseUpdateProductDialog}
+            handleOpenImageDialog={handleOpenImageDialog}
+         />
          <ProductDetailDialog
             {...productDetailState}
             handleOpenImageDialog={handleOpenImageDialog}
             onClose={handleCloseProductDetail}
          />
-         <ShowImageDialog {...imageDialogState} onClose={handleCloseImageDialog} />
+         <ShowImageDialog />
          <LogImportFailureDialog />
          <Backdrop
             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

@@ -5,7 +5,8 @@
       "manageIndicator": "Manage Competitors",
       "users": "Users",
       "historicalImporting": "Historical Importing",
-      "importTracking": "Import Tracking"
+      "importTracking": "Import Tracking",
+      "help": "Helps"
    },
 
    "title": {
@@ -174,7 +175,6 @@
       "size": "Size",
       "total": "Total",
       "margin%": "Margin %",
-      "margin": "Margin",
       "type": "Type",
       "remark": "Remark",
       "cost": "Cost",

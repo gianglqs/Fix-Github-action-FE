@@ -929,8 +929,9 @@ export default function Adjustment() {
                         onChange={(e) => handleChangeDataCalculator(e.value, 'costAdjPercentage')}
                         name="costAdjPercentage"
                         label={`${t('table.adjustedCost')} %`}
-                        placeholder="Cost Adj %"
+                        placeholder={`${t('table.adjustedCost')} %`}
                         suffix="%"
+                        max={100}
                      />
                   </Grid>
                </Grid>
@@ -942,7 +943,7 @@ export default function Adjustment() {
                         onChange={(e) => handleChangeDataCalculator(e.value, 'freightAdj')}
                         name="freightAdj"
                         label={`${t('table.adjustedFreight')} ('000 USD)`}
-                        placeholder="Freight Adj ('000 USD)"
+                        placeholder={`${t('table.adjustedFreight')} ('000 USD)`}
                         prefix="$"
                      />
                   </Grid>
@@ -955,8 +956,9 @@ export default function Adjustment() {
                         onChange={(e) => handleChangeDataCalculator(e.value, 'fxAdj')}
                         name="fxAdj"
                         label={`${t('table.adjustedFX')} %`}
-                        placeholder="FX Adj %"
+                        placeholder={`${t('table.adjustedFX')} %`}
                         suffix="%"
+                        max={100}
                      />
                   </Grid>
                </Grid>{' '}
@@ -968,8 +970,9 @@ export default function Adjustment() {
                         onChange={(e) => handleChangeDataCalculator(e.value, 'dnAdjPercentage')}
                         name="dnAdjPercentage"
                         label={`${t('table.adjustedDealerNet')} %`}
-                        placeholder="DN Adj %"
+                        placeholder={`${t('table.adjustedDealerNet')} %`}
                         suffix="%"
+                        max={100}
                      />
                   </Grid>
                </Grid>

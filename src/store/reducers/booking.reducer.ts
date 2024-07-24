@@ -14,7 +14,7 @@ export const initialState = {
    serverTimeZone: '' as any,
    lastUpdatedTime: '' as any,
    lastUpdatedBy: '' as any,
-   dataFilter: {} as any,
+   dataFilter: defaultValueFilterOrder as any,
    currency: 'USD',
    loadingData: true as boolean,
    exampleUploadFile: {} as any,

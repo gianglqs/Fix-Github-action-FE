@@ -383,7 +383,7 @@ export default function ExchangeRate() {
                   setLoading(false);
                   dispatch(
                      commonStore.actions.setErrorMessage(
-                        t('commonErrorMessage.timeExceedsThreeMonths')
+                        t('commonErrorMessage.timeExceedsTwelveMonths')
                      )
                   );
                }
@@ -669,25 +669,27 @@ export default function ExchangeRate() {
                         maxDate={new Date().toISOString().slice(0, 10)}
                         sx={{ marginTop: 1 }}
                      />
-                     <Typography
-                        sx={{
-                           color: 'blue',
-                           fontSize: 8,
-                           margin: '0 30px 0 10px',
-                           cursor: 'pointer',
-                           marginTop: '10px',
-                        }}
-                        onClick={() => downloadFileByURL(exampleUploadFile[EXCHANGE_RATE])}
-                     >
-                        <GetAppIcon
+                     {userRole === 'ADMIN' && (
+                        <Typography
                            sx={{
-                              color: 'black',
-                              marginTop: '2px',
-                              fontSize: 'large',
-                              '&:hover': { color: 'red' },
+                              color: 'blue',
+                              fontSize: 8,
+                              margin: '0 30px 0 10px',
+                              cursor: 'pointer',
+                              marginTop: '10px',
                            }}
-                        />
-                     </Typography>
+                           onClick={() => downloadFileByURL(exampleUploadFile[EXCHANGE_RATE])}
+                        >
+                           <GetAppIcon
+                              sx={{
+                                 color: 'black',
+                                 marginTop: '2px',
+                                 fontSize: 'large',
+                                 '&:hover': { color: 'red' },
+                              }}
+                           />
+                        </Typography>
+                     )}
                   </Box>
                </Grid>
 

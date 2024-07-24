@@ -893,7 +893,7 @@ export default function Shipment() {
             handleOpenImageDialog={handleOpenImageDialog}
             onClose={handleCloseProductDetail}
          />
-         <ShowImageDialog {...imageDialogState} onClose={handleCloseImageDialog} />
+         <ShowImageDialog />
          <Backdrop
             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={loading}
