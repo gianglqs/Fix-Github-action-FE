@@ -484,8 +484,6 @@ export default function ExchangeRate() {
 
    const handleChangeRadioButton = (event) => {
       dispatch(exchangeRateStore.actions.setExchangeRateSource(event.target.value));
-      handleChangeDataFilter('', 'fromDate');
-      handleChangeDataFilter('', 'toDate');
    };
 
    const handleClearAllFilters = () => {
