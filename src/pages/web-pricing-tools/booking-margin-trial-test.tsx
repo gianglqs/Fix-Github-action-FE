@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 
 import { bookingMarginTrialTestStore, commonStore, importFailureStore } from '@/store/reducers';
-import { centerHeaderColumn, formatNumbericColumn } from '@/utils/columnProperties';
+import { centerColumn, centerHeaderColumn, formatNumbericColumn } from '@/utils/columnProperties';
 import { formatDate, formatNumber, formatNumberPercentage } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -48,6 +48,7 @@ import { useTranslation } from 'react-i18next';
 import { componentType } from '@/theme/paperStyle';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { BOOKING_FPA } from '@/utils/modelType';
+import GetAppIcon from '@mui/icons-material/GetApp';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -755,13 +756,20 @@ export default function Shipment() {
                   <Typography
                      sx={{
                         color: 'blue',
-                        fontSize: 15,
+                        fontSize: 5,
                         margin: '0 30px 0 10px',
                         cursor: 'pointer',
                      }}
                      onClick={() => downloadFileByURL(exampleFile[BOOKING_FPA])}
                   >
-                     {t('link.getExampleUploadFile')}
+                     <GetAppIcon
+                        sx={{
+                           color: 'black',
+                           marginTop: '2px',
+                           fontSize: 'large',
+                           '&:hover': { color: 'red' },
+                        }}
+                     />
                   </Typography>
                   <Grid item xs={4} sx={{ display: 'flex' }}>
                      {uploadedFile &&

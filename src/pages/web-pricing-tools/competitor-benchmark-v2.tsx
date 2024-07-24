@@ -41,6 +41,9 @@ import indicatorV2Api from '@/api/indicatorV2.api';
 import { mappingCompetitorFiltersToOptionValues } from '@/utils/mapping';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { COMPETITOR, FORECAST_PRICING } from '@/utils/modelType';
+
+import GetAppIcon from '@mui/icons-material/GetApp';
+import { Margin } from '@mui/icons-material';
 const getOrCreateLegendList = (chart, id) => {
    const legendContainer = document.getElementById(id);
    if (!legendContainer) return null;
@@ -760,7 +763,7 @@ export default function IndicatorsV2() {
                      getOptionLabel={(option) => `${option.value || 'Others'}`}
                   />
                </Grid>
-               <Grid item xs={1}>
+               <Grid item xs={2}>
                   <Button
                      variant="contained"
                      onClick={handleClearFilter}
@@ -769,44 +772,36 @@ export default function IndicatorsV2() {
                      {t('button.clear')}
                   </Button>
                </Grid>
-
                {userRole === 'ADMIN' && (
                   <>
-                     <Grid item xs={3} sx={{ display: 'flex' }}>
+                     <Grid item xs={1} sx={{ display: 'flex' }}>
                         <UploadFileDropZone
                            handleUploadFile={handleImportFile}
                            buttonName={`${t('button.import')} Competitor File`}
                            sx={{ height: 24, minWidth: 165 }}
                         />
-                        <Typography
-                           sx={{
-                              color: 'blue',
-                              fontSize: 15,
-                              margin: '0 30px 0 10px',
-                              cursor: 'pointer',
-                           }}
-                           onClick={() => downloadFileByURL(exampleFile[COMPETITOR])}
-                        >
-                           {t('link.getExampleUploadFile')}
-                        </Typography>
-                     </Grid>
-
-                     <Grid item xs={3} sx={{ display: 'flex' }}>
                         <UploadFileDropZone
                            handleUploadFile={handleUploadForecastFile}
                            buttonName={`${t('button.import')} Forecast File`}
-                           sx={{ height: 24, minWidth: 165 }}
+                           sx={{ height: 24, minWidth: 165, ml: 1 }}
                         />
                         <Typography
                            sx={{
                               color: 'blue',
-                              fontSize: 15,
+                              fontSize: 8,
                               margin: '0 30px 0 10px',
                               cursor: 'pointer',
                            }}
                            onClick={() => downloadFileByURL(exampleFile[FORECAST_PRICING])}
                         >
-                           {t('link.getExampleUploadFile')}
+                           <GetAppIcon
+                              sx={{
+                                 color: 'black',
+                                 marginTop: '2px',
+                                 fontSize: 'large',
+                                 '&:hover': { color: 'red' },
+                              }}
+                           />
                         </Typography>
                      </Grid>
                   </>

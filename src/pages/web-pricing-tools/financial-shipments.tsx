@@ -52,6 +52,8 @@ import AppDataTable from '@/components/DataTable/AppDataGridPro';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { SHIPMENT } from '@/utils/modelType';
 
+import GetAppIcon from '@mui/icons-material/GetApp';
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
@@ -785,13 +787,20 @@ export default function Shipment() {
                   <Typography
                      sx={{
                         color: 'blue',
-                        fontSize: 15,
+                        fontSize: 8,
                         margin: '0 30px 0 10px',
                         cursor: 'pointer',
                      }}
                      onClick={() => downloadFileByURL(exampleFile[SHIPMENT])}
                   >
-                     {t('link.getExampleUploadFile')}
+                     <GetAppIcon
+                        sx={{
+                           color: 'black',
+                           marginTop: '2px',
+                           fontSize: 'large',
+                           '&:hover': { color: 'red' },
+                        }}
+                     />
                   </Typography>
                   <Grid item xs={4} sx={{ display: 'flex' }}>
                      {uploadedFile &&

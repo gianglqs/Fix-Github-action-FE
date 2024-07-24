@@ -30,6 +30,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { MACRO, NOVO, PART } from '@/utils/modelType';
 
+import GetAppIcon from '@mui/icons-material/GetApp';
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
@@ -612,35 +614,20 @@ export default function MarginAnalysis() {
                   <Typography
                      sx={{
                         color: 'blue',
-                        fontSize: 15,
+                        fontSize: 5,
                         marginRight: '20px',
                         cursor: 'pointer',
                      }}
                      onClick={() => downloadFileByURL(exampleFile[NOVO])}
                   >
-                     {t('link.getNOVOExampleUploadFile')}
-                  </Typography>
-                  <Typography
-                     sx={{
-                        color: 'blue',
-                        fontSize: 15,
-                        marginRight: '20px',
-                        cursor: 'pointer',
-                     }}
-                     onClick={() => downloadFileByURL(exampleFile[MACRO])}
-                  >
-                     {t('link.getMarginAnalystMacroTemplateExampleUploadFile')}
-                  </Typography>
-                  <Typography
-                     sx={{
-                        color: 'blue',
-                        fontSize: 15,
-                        marginRight: '20px',
-                        cursor: 'pointer',
-                     }}
-                     onClick={() => downloadFileByURL(exampleFile[PART])}
-                  >
-                     {t('link.getPowerBIExampleUploadFile')}
+                     <GetAppIcon
+                        sx={{
+                           color: 'black',
+                           marginTop: '2px',
+                           fontSize: 'large',
+                           '&:hover': { color: 'red' },
+                        }}
+                     />
                   </Typography>
                </Box>
             )}
