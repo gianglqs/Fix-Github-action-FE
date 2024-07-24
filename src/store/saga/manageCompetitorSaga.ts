@@ -19,8 +19,6 @@ function* fetchmanageCompetitorStore() {
       const cookies = parseCookies();
       const jsonDataFilter = cookies['manageCompetitorStoreTableFilter'];
       let dataFilter;
-      console.log(jsonDataFilter);
-      console.log(defaultValueFilterIndicator);
       if (jsonDataFilter) {
          dataFilter = JSON.parse(String(jsonDataFilter));
          yield put(manageCompetitorStore.actions.setDataFilter(dataFilter));
