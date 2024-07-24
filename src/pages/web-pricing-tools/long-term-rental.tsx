@@ -4,9 +4,6 @@ import { AppLayout, AppTextField, AppNumberField, AppAutocomplete } from '@/comp
 import { Button, Typography } from '@mui/material';
 import { Grid, Paper } from '@mui/material';
 import { Box, Divider } from '@mui/material';
-//libs
-import _, { result } from 'lodash';
-import { NumberSchema } from 'yup';
 //hooks
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
@@ -19,10 +16,23 @@ import longTermRentalApi from '@/api/longTermRental.api';
 //others
 import { mappingFiltersToOptionValues } from '@/utils/mapping';
 import { defaultValueSelectedFilterLongTermRental } from '@/utils/defaultValues';
+import { makeStyles } from '@mui/styles';
 import { relative } from 'path';
+
+const useStyles = makeStyles((theme) => ({
+   customDisabledInput: {
+      '& .Mui-disabled ': {
+         textFillColor: 'rgba(0, 0, 0, 0.7)',
+         fontWeight: '500',
+      },
+   },
+}));
+
 const LongTermRentalSection = () => {
    const { t } = useTranslation();
    const dispatch = useDispatch();
+   const classes = useStyles();
+
    //selector
    const {
       cost = 0,
@@ -152,6 +162,7 @@ const LongTermRentalSection = () => {
                      decimalScale={2}
                      isDecimalScale
                      disabled
+                     className={classes.customDisabledInput}
                   />
                </Grid>
             </Box>
@@ -301,6 +312,7 @@ const LongTermRentalSection = () => {
                   <AppNumberField
                      value={isAbleToCalculate ? totalTruckPrice || 0 : ' '}
                      onChange={(e) => {}}
+                     className={classes.customDisabledInput}
                      disabled
                      decimalScale={2}
                      isDecimalScale
@@ -326,6 +338,7 @@ const LongTermRentalSection = () => {
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
                      value={isAbleToCalculate ? Number(primaryTerm) || 0 : ' '}
+                     className={classes.customDisabledInput}
                      disabled
                      onChange={() => {}}
                   />
@@ -344,6 +357,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? customerLoanRatePercentage || 0 : ' '}
                      suffix="%"
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                      onChange={() => {}}
@@ -423,6 +437,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? unitRecurringRevenue || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                   />
@@ -443,6 +458,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? estimatedResale || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                   />
@@ -484,6 +500,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? grossIncomeOverTerm || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                   />
@@ -498,6 +515,7 @@ const LongTermRentalSection = () => {
 const ShortTermRentalSection = () => {
    const { t } = useTranslation();
    const dispatch = useDispatch();
+   const classes = useStyles();
    //selector
    const { seccondTerm = 0, serviceRateCostPercentage = 0 } = useSelector(
       longTermRentalStore.selectGeneralInputValues
@@ -602,9 +620,11 @@ const ShortTermRentalSection = () => {
                <Typography>{t('longTermRental.termsMonths')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
+                     sx={{ color: 'black' }}
                      value={isAbleToCalculate ? seccondTerm || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                   />
                </Grid>
             </Box>
@@ -658,6 +678,7 @@ const ShortTermRentalSection = () => {
                      prefix="$"
                      onChange={() => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                      name="servicePerHour"
@@ -699,6 +720,7 @@ const ShortTermRentalSection = () => {
                      value={isAbleToCalculate ? unitRecurringRevenue || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                   />
@@ -719,6 +741,7 @@ const ShortTermRentalSection = () => {
                      value={isAbleToCalculate ? estimatedResale || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                   />
@@ -743,6 +766,7 @@ const ShortTermRentalSection = () => {
                      value={isAbleToCalculate ? totalIncomeOverTerm || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                   />
