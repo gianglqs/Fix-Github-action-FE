@@ -548,6 +548,7 @@ export default function Booking() {
                         name="orderNo"
                         label={t('filters.order#')}
                         placeholder={t('filters.searchOrderById')}
+                        isTrim
                         focused
                      />
                   </Grid>

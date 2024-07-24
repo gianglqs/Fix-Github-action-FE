@@ -20,6 +20,7 @@ const AppTextField: React.FC<AppTextFieldProps> = (props) => {
       loading,
       onGenerateCode,
       isFocus,
+      isTrim,
       value,
       onChange,
       debounceDelay,
@@ -53,7 +54,8 @@ const AppTextField: React.FC<AppTextFieldProps> = (props) => {
    );
 
    const handleOnChange = (event) => {
-      const newValue = event.target.value.trim();
+      let newValue = event.target.value;
+      if (isTrim) newValue = newValue.trim();
       setTextValue(newValue);
       debouceHandleOnChange(event, newValue);
    };
