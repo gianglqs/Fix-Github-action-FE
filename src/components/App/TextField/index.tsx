@@ -53,7 +53,7 @@ const AppTextField: React.FC<AppTextFieldProps> = (props) => {
    );
 
    const handleOnChange = (event) => {
-      const newValue = event.target.value;
+      const newValue = event.target.value.trim();
       setTextValue(newValue);
       debouceHandleOnChange(event, newValue);
    };
