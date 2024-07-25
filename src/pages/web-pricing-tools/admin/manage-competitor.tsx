@@ -739,25 +739,7 @@ export default function ImportTracking() {
                         getOptionLabel={(option) => `${option.value}`}
                      />
                   </Grid>
-                  <Grid item xs={2}>
-                     <AppAutocomplete
-                        value={_.map(dataFilter.models, (item) => {
-                           return { value: item };
-                        })}
-                        options={initDataFilter.models}
-                        label={t('filters.models')}
-                        sx={{ height: 25, zIndex: 10 }}
-                        onChange={(e, option) => handleChangeDataFilter(option, 'models')}
-                        limitTags={1}
-                        disableListWrap
-                        primaryKeyOption="value"
-                        multiple
-                        disableCloseOnSelect
-                        renderOption={(prop, option) => `${option.value}`}
-                        getOptionLabel={(option) => `${option.value}`}
-                     />
-                  </Grid>
-
+                 
                   <Grid item xs={2}>
                      <AppAutocomplete
                         value={
