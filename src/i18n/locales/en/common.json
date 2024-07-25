@@ -117,7 +117,8 @@
       "add": "Add",
       "bookedFile": "Upload Booked File",
       "costDataFile": "Upload Cost Data File",
-      "calculate": "Calculate"
+      "calculate": "Calculate",
+      "aopMargin": "Upload AOP Margin"
    },
 
    "table": {
