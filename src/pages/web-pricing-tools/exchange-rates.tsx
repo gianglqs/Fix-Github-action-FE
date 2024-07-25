@@ -10,8 +10,8 @@ import {
    Box,
 } from '@mui/material';
 import { produce } from 'immer';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import _ from 'lodash';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import _, { forEach } from 'lodash';
 import {
    Chart as ChartJS,
    LinearScale,
@@ -24,6 +24,10 @@ import {
 } from 'chart.js';
 import { hexToRGBA } from '@/utils/mapping';
 import ChartAnnotation from 'chartjs-plugin-annotation';
+//store
+import { exchangeRateStore } from '@/store/reducers';
+//others
+import { defaultValueSelectedFilterExchangeRate } from '@/utils/defaultValues';
 const crossHairPlugin = {
    id: 'crossHairPlugin',
    afterDraw: (chart) => {
@@ -67,6 +71,8 @@ import { CURRENCY } from '@/utils/constant';
 import { useTranslation } from 'react-i18next';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { EXCHANGE_RATE } from '@/utils/modelType';
+import { useSelector } from 'react-redux';
+import GetAppIcon from '@mui/icons-material/GetApp';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -81,48 +87,50 @@ export default function ExchangeRate() {
    const [userRole, setUserRole] = useState('');
 
    const [loading, setLoading] = useState(false);
-   const [dataFilter, setDataFilter] = useState({
-      fromDate: { value: '' },
-      toDate: { value: '' },
-      currentCurrency: { value: '', error: false },
-      comparisonCurrencies: {
-         value: [],
-         error: false,
-      },
-   });
-
+   const dataFilter = useSelector(exchangeRateStore.selectDataFilter);
    useEffect(() => {
       setUserRole(userRoleCookies);
    });
 
-   const [currencyFilter, setCurrencyFilter] = useState([{ value: '' }]);
+   const currencyFilter = useSelector(exchangeRateStore.selectCurrencyFilter);
+   const exchangeRateSource = useSelector(exchangeRateStore.selectExchangeRateSource);
+   const chartData = useSelector(exchangeRateStore.selectChartData);
 
-   const months = [
-      '',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-   ];
+   //const [currencyFilter, setCurrencyFilter] = useState([{ value: '' }]);
 
-   const [chartData, setChartData] = useState([]);
+   const months = useMemo(
+      () => [
+         '',
+         'Jan',
+         'Feb',
+         'Mar',
+         'Apr',
+         'May',
+         'Jun',
+         'Jul',
+         'Aug',
+         'Sep',
+         'Oct',
+         'Nov',
+         'Dec',
+      ],
+      []
+   );
+
    const [uploadedFile, setUploadedFile] = useState();
-   const [exchangeRateSource, setExchangeRateSource] = useState('Database');
    const [exampleUploadFile, setExampleUploadFile] = useState(null);
 
    useEffect(() => {
       exchangeRatesApi
          .getCurrencyFilter()
          .then((response) => {
-            setCurrencyFilter(JSON.parse(String(response.data)).currencyFilter);
+            // Set 'CNY' to 'RMB'
+            var listCurrency = JSON.parse(String(response.data)).currencyFilter;
+            listCurrency.forEach((currency) => {
+               currency.value = currency.value === 'CNY' ? 'RMB' : currency.value;
+            });
+            listCurrency.sort((a, b) => a.value > b.value);
+            dispatch(exchangeRateStore.actions.setCurrencyFilter(listCurrency));
          })
          .catch((error) => {
             dispatch(commonStore.actions.setErrorMessage(error.message));
@@ -134,17 +142,19 @@ export default function ExchangeRate() {
    }, []);
 
    const handleChangeDataFilter = (option, field) => {
-      setDataFilter((prev) =>
-         produce(prev, (draft) => {
-            if (_.includes(['currentCurrency'], field)) {
-               draft[field] = { value: option.value, error: false };
-            } else if (_.includes(['fromDate', 'toDate'], field)) {
-               draft[field].value = option.slice(0, -3);
-            } else {
-               draft[field].value = option.map(({ value }) => value);
-               draft[field].error = false;
-            }
-         })
+      dispatch(
+         exchangeRateStore.actions.setDataFilter(
+            produce(dataFilter, (draft) => {
+               if (_.includes(['currentCurrency'], field)) {
+                  draft[field] = { value: option.value, error: false };
+               } else if (_.includes(['fromDate', 'toDate'], field)) {
+                  draft[field].value = option.slice(0, -3);
+               } else {
+                  draft[field].value = option.map(({ value }) => value);
+                  draft[field].error = false;
+               }
+            })
+         )
       );
    };
 
@@ -169,10 +179,12 @@ export default function ExchangeRate() {
       try {
          if (dataFilter.currentCurrency.value == '') {
             dispatch(commonStore.actions.setErrorMessage('Please select the currency to exchange'));
-            setDataFilter((prev) =>
-               produce(prev, (draft) => {
-                  draft['currentCurrency'] = { value: '', error: true };
-               })
+            dispatch(
+               exchangeRateStore.actions.setDataFilter(
+                  produce(dataFilter, (draft) => {
+                     draft['currentCurrency'] = { value: '', error: true };
+                  })
+               )
             );
             return;
          }
@@ -180,45 +192,55 @@ export default function ExchangeRate() {
             dispatch(
                commonStore.actions.setErrorMessage('Please select the currencies to exchange to')
             );
-            setDataFilter((prev) =>
-               produce(prev, (draft) => {
-                  draft['comparisonCurrencies'] = { value: [], error: true };
-               })
+            dispatch(
+               exchangeRateStore.actions.setDataFilter(
+                  produce(dataFilter, (draft) => {
+                     draft['comparisonCurrencies'] = { value: [], error: true };
+                  })
+               )
             );
             return;
+         } else {
+            // Copy object, not reference
+            var listComparisionCurrency = { ...dataFilter.comparisonCurrencies };
+            listComparisionCurrency.value = listComparisionCurrency.value.map((currency) => {
+               return currency == 'RMB' ? 'CNY' : currency;
+            });
          }
          const request = {
-            currentCurrency: dataFilter.currentCurrency.value,
-            comparisonCurrencies: dataFilter.comparisonCurrencies.value,
+            currentCurrency:
+               dataFilter.currentCurrency.value === 'RMB'
+                  ? 'CNY'
+                  : dataFilter.currentCurrency.value,
+            comparisonCurrencies: listComparisionCurrency.value,
             fromDate: dataFilter.fromDate.value,
             toDate: dataFilter.toDate.value,
-            fromRealTime: exchangeRateSource == 'Database' ? false : true,
+            fromExchangeRateAPIs: exchangeRateSource == 'Database' ? false : true,
          };
          setLoading(true);
 
-         // const fd=Date.parse(request.fromDate);
          const fd = new Date(request.fromDate);
          const td = new Date(request.toDate);
-
-         // const td=Date.parse(request.toDate);
 
          const monthDiff: number =
             (td.getFullYear() - fd.getFullYear()) * 12 + (td.getMonth() - fd.getMonth());
 
-         console.log('month' + monthDiff);
          const timeDiff: number = td.getTime() - fd.getTime();
          const dayDiff: number = timeDiff / (1000 * 3600 * 24) + 1;
-         console.log('day:' + dayDiff);
 
          if (request.fromDate != '' && request.toDate != '') {
-            if (request.fromRealTime == false) {
+            if (request.fromExchangeRateAPIs == false) {
                if (monthDiff < 12) {
                   exchangeRatesApi
                      .compareCurrency(request)
                      .then((response) => {
                         const data = response.data.compareCurrency;
                         // Setting Labels for chart
-                        const labels = data[dataFilter.comparisonCurrencies.value[0]]
+                        const labels = data[
+                           dataFilter.comparisonCurrencies.value[0] == 'RMB'
+                              ? 'CNY'
+                              : dataFilter.comparisonCurrencies.value[0]
+                        ]
                            .map((item) => {
                               if (exchangeRateSource === 'Database') {
                                  return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
@@ -231,6 +253,8 @@ export default function ExchangeRate() {
                            .reverse();
                         let datasets = [];
                         dataFilter.comparisonCurrencies.value.forEach((item) => {
+                           // Change RMB to CNY to handle
+                           item = item == 'RMB' ? 'CNY' : item;
                            datasets.push({
                               label: item,
                               data: data[item].reverse().map((obj) => obj.rate),
@@ -249,9 +273,7 @@ export default function ExchangeRate() {
 
                         const newChartData = {
                            title: `${
-                              dataFilter.currentCurrency.value == 'CNY'
-                                 ? 'RMB'
-                                 : dataFilter.currentCurrency.value
+                              dataFilter.currentCurrency.value
                            } to${_.map(dataFilter.comparisonCurrencies.value, (item) => ` ${item}`)}`,
                            data: {
                               labels: labels,
@@ -264,7 +286,13 @@ export default function ExchangeRate() {
                            },
                            lastUpdated: data.lastUpdated,
                         };
-                        setChartData((prev) => [...prev, newChartData]);
+
+                        // Reverse change CNY to RMB to display chart
+                        var tmpChart = { ...newChartData };
+                        tmpChart.conclusion.stable = tmpChart.conclusion.stable.map((item) => {
+                           return item == 'CNY' ? 'RMB' : item;
+                        });
+                        dispatch(exchangeRateStore.actions.setChartData([...chartData, tmpChart]));
                      })
                      .catch((error) => {
                         dispatch(commonStore.actions.setErrorMessage(error.message));
@@ -280,14 +308,18 @@ export default function ExchangeRate() {
                   );
                }
             } else {
-               if (monthDiff < 4) {
+               if (monthDiff < 13) {
                   exchangeRatesApi
                      .compareCurrency(request)
                      .then((response) => {
                         const data = response.data.compareCurrency;
 
                         // Setting Labels for chart
-                        const labels = data[dataFilter.comparisonCurrencies.value[0]]
+                        const labels = data[
+                           dataFilter.comparisonCurrencies.value[0] == 'RMB'
+                              ? 'CNY'
+                              : dataFilter.comparisonCurrencies.value[0]
+                        ]
                            .map((item) => {
                               if (exchangeRateSource === 'Database') {
                                  return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
@@ -301,6 +333,8 @@ export default function ExchangeRate() {
 
                         let datasets = [];
                         dataFilter.comparisonCurrencies.value.forEach((item) => {
+                           // Change RMB to CNY to handle
+                           item = item == 'RMB' ? 'CNY' : item;
                            datasets.push({
                               label: item,
                               data: data[item].reverse().map((obj) => obj.rate),
@@ -319,9 +353,7 @@ export default function ExchangeRate() {
 
                         const newChartData = {
                            title: `${
-                              dataFilter.currentCurrency.value == 'CNY'
-                                 ? 'RMB'
-                                 : dataFilter.currentCurrency.value
+                              dataFilter.currentCurrency.value
                            } to${_.map(dataFilter.comparisonCurrencies.value, (item) => ` ${item}`)}`,
                            data: {
                               labels: labels,
@@ -334,7 +366,13 @@ export default function ExchangeRate() {
                            },
                            lastUpdated: data.lastUpdated,
                         };
-                        setChartData((prev) => [...prev, newChartData]);
+
+                        // Reverse change CNY to RMB to display chart
+                        var tmpChart = { ...newChartData };
+                        tmpChart.conclusion.stable = tmpChart.conclusion.stable.map((item) => {
+                           return item == 'CNY' ? 'RMB' : item;
+                        });
+                        dispatch(exchangeRateStore.actions.setChartData([...chartData, tmpChart]));
                      })
                      .catch((error) => {
                         dispatch(commonStore.actions.setErrorMessage(error.message));
@@ -345,7 +383,7 @@ export default function ExchangeRate() {
                   setLoading(false);
                   dispatch(
                      commonStore.actions.setErrorMessage(
-                        t('commonErrorMessage.timeExceedsThreeMonths')
+                        t('commonErrorMessage.timeExceedsTwelveMonths')
                      )
                   );
                }
@@ -357,7 +395,11 @@ export default function ExchangeRate() {
                   const data = response.data.compareCurrency;
 
                   // Setting Labels for chart
-                  const labels = data[dataFilter.comparisonCurrencies.value[0]]
+                  const labels = data[
+                     dataFilter.comparisonCurrencies.value[0] == 'RMB'
+                        ? 'CNY'
+                        : dataFilter.comparisonCurrencies.value[0]
+                  ]
                      .map((item) => {
                         if (exchangeRateSource === 'Database') {
                            return `${months[item.date[1]]} ${String(item.date[0]).substring(2)}`;
@@ -371,6 +413,8 @@ export default function ExchangeRate() {
 
                   let datasets = [];
                   dataFilter.comparisonCurrencies.value.forEach((item) => {
+                     // Change RMB to CNY to handle
+                     item = item == 'RMB' ? 'CNY' : item;
                      datasets.push({
                         label: item,
                         data: data[item].reverse().map((obj) => obj.rate),
@@ -389,9 +433,7 @@ export default function ExchangeRate() {
 
                   const newChartData = {
                      title: `${
-                        dataFilter.currentCurrency.value == 'CNY'
-                           ? 'RMB'
-                           : dataFilter.currentCurrency.value
+                        dataFilter.currentCurrency.value
                      } to${_.map(dataFilter.comparisonCurrencies.value, (item) => ` ${item}`)}`,
                      data: {
                         labels: labels,
@@ -404,7 +446,13 @@ export default function ExchangeRate() {
                      },
                      lastUpdated: data.lastUpdated,
                   };
-                  setChartData((prev) => [...prev, newChartData]);
+
+                  // Reverse change CNY to RMB to display chart
+                  var tmpChart = { ...newChartData };
+                  tmpChart.conclusion.stable = tmpChart.conclusion.stable.map((item) => {
+                     return item == 'CNY' ? 'RMB' : item;
+                  });
+                  dispatch(exchangeRateStore.actions.setChartData([...chartData, tmpChart]));
                })
                .catch((error) => {
                   dispatch(commonStore.actions.setErrorMessage(error.message));
@@ -424,7 +472,8 @@ export default function ExchangeRate() {
    }, [isCompareClicked.current]);
 
    const closeAReportItem = (index) => {
-      setChartData((prev) => prev.filter((item, i) => i != index));
+      const chartDataWithoutIndex = chartData.filter((item, i) => i != index);
+      dispatch(exchangeRateStore.actions.setChartData(chartDataWithoutIndex));
    };
 
    const ref = useRef(null);
@@ -435,26 +484,19 @@ export default function ExchangeRate() {
    };
 
    const handleChangeRadioButton = (event) => {
-      setExchangeRateSource(event.target.value);
+      dispatch(exchangeRateStore.actions.setExchangeRateSource(event.target.value));
       handleChangeDataFilter('', 'fromDate');
       handleChangeDataFilter('', 'toDate');
    };
 
    const handleClearAllFilters = () => {
-      setExchangeRateSource('Database');
-      setDataFilter({
-         fromDate: { value: '' },
-         toDate: { value: '' },
-         currentCurrency: { value: '', error: false },
-         comparisonCurrencies: {
-            value: [],
-            error: false,
-         },
-      });
+      //  setExchangeRateSource('Database');
+      dispatch(exchangeRateStore.actions.setExchangeRateSource('Database'));
+      dispatch(exchangeRateStore.actions.setDataFilter(defaultValueSelectedFilterExchangeRate));
    };
 
    const handleClearAllReports = () => {
-      setChartData([]);
+      dispatch(exchangeRateStore.actions.setChartData([]));
    };
 
    const currentYear = new Date().getFullYear();
@@ -627,19 +669,28 @@ export default function ExchangeRate() {
                         maxDate={new Date().toISOString().slice(0, 10)}
                         sx={{ marginTop: 1 }}
                      />
+                     {userRole === 'ADMIN' && (
+                        <Typography
+                           sx={{
+                              color: 'blue',
+                              fontSize: 8,
+                              margin: '0 30px 0 10px',
+                              cursor: 'pointer',
+                              marginTop: '10px',
+                           }}
+                           onClick={() => downloadFileByURL(exampleUploadFile[EXCHANGE_RATE])}
+                        >
+                           <GetAppIcon
+                              sx={{
+                                 color: 'black',
+                                 marginTop: '2px',
+                                 fontSize: 'large',
+                                 '&:hover': { color: 'red' },
+                              }}
+                           />
+                        </Typography>
+                     )}
                   </Box>
-                  <Typography
-                     sx={{
-                        color: 'blue',
-                        fontSize: 15,
-                        margin: '0 30px 0 10px',
-                        cursor: 'pointer',
-                        marginTop: '10px',
-                     }}
-                     onClick={() => downloadFileByURL(exampleUploadFile[EXCHANGE_RATE])}
-                  >
-                     {t('link.getExampleUploadFile')}
-                  </Typography>
                </Grid>
 
                <CurrencyReport

@@ -80,6 +80,22 @@ export const isValidDate = (dateString: string): boolean => {
    return day <= daysInMonth(year, month);
 };
 
+/**
+ * Checks if date1 is before date2. If either date is the default date (empty, null, or undefined), returns false.
+ * @param date1 - The first date string to compare.
+ * @param date2 - The second date string to compare.
+ * @returns {boolean} - True if date1 is before date2, otherwise false.
+ */
 export const isBefore = (date1: string, date2: string) => {
+   if (isDefaultDate(date1) || isDefaultDate(date2)) return false;
    return moment(date1).isBefore(date2);
+};
+
+/**
+ * Determines if the given date string is a default date (empty, null, or undefined).
+ * @param dateString - The date string to check.
+ * @returns {boolean} - True if the date string is a default date, otherwise false.
+ */
+const isDefaultDate = (dateString: string) => {
+   return !dateString;
 };

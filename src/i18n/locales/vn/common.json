@@ -5,7 +5,8 @@
       "manageIndicator": "Quản lý đối thủ cạnh tranh",
       "users": "Người dùng",
       "historicalImporting": "Lịch sử nhập dữ liệu",
-      "importTracking": "Theo dõi nhập dữ liệu"
+      "importTracking": "Theo dõi nhập dữ liệu",
+      "help": "Giúp đỡ"
    },
 
    "title": {
@@ -21,7 +22,7 @@
       "dataScraping": "Thu nhập dữ liệu",
       "gumReport": "Bao cao",
       "volumeDiscountAnalysis": "Phân tích số lượng giảm giá",
-      "bookingMarginTrialTest": "So Sánh Lợi Nhuận",
+      "bookingMarginTrialTest": "Hóa đơn API và Biên lợi nhuận ghi sổ",
       "priceVolumeSensitivity": "Tương quan giá và số lượng",
       "redidualValue": "Bảng giá trị khấu hao"
    },
@@ -107,7 +108,8 @@
       "close": "Đóng",
       "update": "Cập nhập",
       "delete": "Xóa",
-      "add": "Thêm"
+      "add": "Thêm",
+      "calculate": "Tính toán"
    },
 
    "table": {

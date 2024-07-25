@@ -30,6 +30,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { MACRO, NOVO, PART } from '@/utils/modelType';
 
+import GetAppIcon from '@mui/icons-material/GetApp';
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
@@ -607,41 +609,28 @@ export default function MarginAnalysis() {
                   </>
                )}
             </Grid>
-            <Box sx={{ display: 'flex' }}>
-               <Typography
-                  sx={{
-                     color: 'blue',
-                     fontSize: 15,
-                     marginRight: '20px',
-                     cursor: 'pointer',
-                  }}
-                  onClick={() => downloadFileByURL(exampleFile[NOVO])}
-               >
-                  {t('link.getNOVOExampleUploadFile')}
-               </Typography>
-               <Typography
-                  sx={{
-                     color: 'blue',
-                     fontSize: 15,
-                     marginRight: '20px',
-                     cursor: 'pointer',
-                  }}
-                  onClick={() => downloadFileByURL(exampleFile[MACRO])}
-               >
-                  {t('link.getMarginAnalystMacroTemplateExampleUploadFile')}
-               </Typography>
-               <Typography
-                  sx={{
-                     color: 'blue',
-                     fontSize: 15,
-                     marginRight: '20px',
-                     cursor: 'pointer',
-                  }}
-                  onClick={() => downloadFileByURL(exampleFile[PART])}
-               >
-                  {t('link.getPowerBIExampleUploadFile')}
-               </Typography>
-            </Box>
+            {userRole === 'ADMIN' && (
+               <Box sx={{ display: 'flex' }}>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 5,
+                        marginRight: '20px',
+                        cursor: 'pointer',
+                     }}
+                     onClick={() => downloadFileByURL(exampleFile[NOVO])}
+                  >
+                     <GetAppIcon
+                        sx={{
+                           color: 'black',
+                           marginTop: '2px',
+                           fontSize: 'large',
+                           '&:hover': { color: 'red' },
+                        }}
+                     />
+                  </Typography>
+               </Box>
+            )}
 
             <Grid container spacing={1} sx={{ marginTop: 1 }}>
                <MarginPercentageAOPRateBox
@@ -1115,7 +1104,7 @@ const ForUSPricingBox = (props) => {
             <div className="space-between-element">
                <Typography variant="body1" component="span">
                   {t('quotationMargin.manufacturingCost')}
-                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
+                  {data?.id?.currency ? ` (USD)` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.manufacturingCostUSD.toLocaleString()}
@@ -1124,7 +1113,7 @@ const ForUSPricingBox = (props) => {
             <div className="space-between-element">
                <Typography variant="body1" component="span">
                   {t('quotationMargin.addWarranty')}
-                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
+                  {data?.id?.currency ? ` (USD)` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.warrantyCost.toLocaleString()}
@@ -1133,7 +1122,7 @@ const ForUSPricingBox = (props) => {
             <div className="space-between-element">
                <Typography variant="body1" component="span">
                   {t('quotationMargin.surcharge')}
-                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
+                  {data?.id?.currency ? ` (USD)` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.surchargeCost.toLocaleString()}
@@ -1142,7 +1131,7 @@ const ForUSPricingBox = (props) => {
             <div className="space-between-element">
                <Typography variant="body1" component="span">
                   {t('quotationMargin.totalCost')} {t('quotationMargin.excludingFreight')}
-                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
+                  {data?.id?.currency ? ` (USD)` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCostWithoutFreight.toLocaleString()}
@@ -1151,7 +1140,7 @@ const ForUSPricingBox = (props) => {
             <div className="space-between-element">
                <Typography variant="body1" component="span">
                   {t('quotationMargin.totalCost')} {t('quotationMargin.withFreight')}
-                  {data?.id?.currency ? ` (${data?.id?.currency})` : ''}
+                  {data?.id?.currency ? ` (USD)` : ''}
                </Typography>
                <Typography variant="body1" component="span">
                   {data?.totalCostWithFreight.toLocaleString()}

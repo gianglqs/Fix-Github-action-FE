@@ -19,6 +19,7 @@ const NavBar = () => {
       users: t('navBar.users'),
       'historical-import': t('navBar.historicalImporting'),
       'import-tracking': t('navBar.importTracking'),
+      wiki: t('navBar.help'),
    };
 
    const renderOptions = () => {
@@ -26,9 +27,13 @@ const NavBar = () => {
 
       const navBar = _.map(otherOptions, (name) => (
          <Link
-            href={`/web-pricing-tools/${
-               name != 'financial-bookings' ? `admin/${name}` : `${name}`
-            }`}
+            href={
+               name === 'wiki'
+                  ? `${process.env.WIKI_URL}`
+                  : `/web-pricing-tools/${
+                       name != 'financial-bookings' ? `admin/${name}` : `${name}`
+                    }`
+            }
             sx={{
                textDecoration: 'none',
             }}

@@ -5,7 +5,8 @@
       "manageIndicator": "管理竞争对手",
       "users": "用户",
       "historicalImporting": "历史导入",
-      "importTracking": "进口追踪"
+      "importTracking": "进口追踪",
+      "help": "帮助"
    },
 
    "title": {
@@ -20,7 +21,7 @@
       "exchangeRates": "汇率",
       "dataScraping": "数据抓取",
       "volumeDiscountAnalysis": "数量折扣分析",
-      "bookingMarginTrialTest": "比较利润",
+      "bookingMarginTrialTest": "API 发票与已登记保证金",
       "priceVolumeSensitivity": "价格量敏感度",
       "redidualValue": "折旧值表"
    },
@@ -105,7 +106,8 @@
       "close": "关闭",
       "update": "更多的",
       "delete": "擦除",
-      "add": "更多的"
+      "add": "更多的",
+      "calculate": "计算"
    },
 
    "table": {

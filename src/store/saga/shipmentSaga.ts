@@ -38,8 +38,8 @@ function* getDataShipment() {
          throw new Error('To date is invalid!');
       }
       if (
-         !isValidDate(fromDateFilter) &&
-         !isValidDate(toDateFilter) &&
+         isValidDate(fromDateFilter) &&
+         isValidDate(toDateFilter) &&
          isBefore(toDateFilter, fromDateFilter)
       )
          throw new Error('The To Date value cannot be earlier than the From Date value');

@@ -15,7 +15,7 @@ export const initialState = {
    initDataFilter: {} as any,
    defaultValueFilterAdjustment: defaultValueFilterOrder as any,
    defaultValueCalculator: defaultValueCaculatorForAjustmentCost as any,
-   dataFilter: {} as any,
+   dataFilter: defaultValueFilterOrder as any,
    dataAdjustment: {} as any,
    serverTimeZone: '' as any,
    lastUpdatedTime: '' as any,

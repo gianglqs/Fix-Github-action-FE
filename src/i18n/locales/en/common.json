@@ -5,7 +5,8 @@
       "manageIndicator": "Manage Competitors",
       "users": "Users",
       "historicalImporting": "Historical Importing",
-      "importTracking": "Import Tracking"
+      "importTracking": "Import Tracking",
+      "help": "Helps"
    },
 
    "title": {
@@ -20,7 +21,7 @@
       "exchangeRates": "Exchange Rates",
       "dataScraping": "Data Scraping",
       "volumeDiscountAnalysis": "Volume Discount Analysis",
-      "bookingMarginTrialTest": "Booking Margin Trial Test",
+      "bookingMarginTrialTest": "API Invoice vs Booked Margin",
       "priceVolumeSensitivity": "Price Volume Sensitivity",
       "error404": "Error 404",
       "residualValue": "Residual Value",
@@ -106,7 +107,7 @@
       "uploadFile": "Upload File",
       "clearReports": "Clear Reports",
       "HYGexchangeRate": "HYG exchange rate",
-      "fromExchangeRateApi": "From exchangerate-api.com",
+      "fromExchangeRateApi": "Exchangerate-api.com",
       "scrape": "Scrape",
       "save": "Save",
       "close": "Close",
@@ -115,7 +116,8 @@
       "delete": "Delete",
       "add": "Add",
       "bookedFile": "Upload Booked File",
-      "costDataFile": "Upload Cost Data File"
+      "costDataFile": "Upload Cost Data File",
+      "calculate": "Calculate"
    },
 
    "table": {
@@ -173,7 +175,6 @@
       "size": "Size",
       "total": "Total",
       "margin%": "Margin %",
-      "margin": "Margin",
       "type": "Type",
       "remark": "Remark",
       "cost": "Cost",

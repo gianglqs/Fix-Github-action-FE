@@ -22,3 +22,5 @@ export * as manageCompetitorStore from './manageCompetitor.reducer';
 export * as indicatorV2Store from './indicatorV2.reducer';
 export * as longTermRentalStore from './longTermRental.reducer';
 export * as authStore from './auth.reducer';
+export * as exchangeRateStore from './exchangeRate.reducer';
+export * as imageDialogStore from './imageDialog.reducer';

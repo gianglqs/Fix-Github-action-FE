@@ -1,16 +1,23 @@
 name: Deploy QA Hyster-yale-frontend
 
 on:
-   release:
-      types:
-         - created
+   pull_request:
+   push:
+      branches:
+         - main
 
 jobs:
    deploy:
       runs-on: [deploy-QA-host]
-      if: github.event_name == 'release' && github.event.release.target_commitish == 'qa-deploy'
+      if: github.event_name == 'pull_request' && github.event.pull_request.merged == true || github.event_name == 'push'
 
       steps:
+         - name: Cancel previous pipeline
+           uses: styfle/cancel-workflow-action@0.9.1
+           with:
+              access_token: ${{ secrets.GHCR_TOKEN }}
+              all_but_latest: true
+
          - name: set env
            shell: bash
            run: |
@@ -29,23 +36,22 @@ jobs:
               echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
               echo 'WORK_DIR=/opt/hysteryale/hyster-yale-frontend' >> $GITHUB_ENV
 
-              echo "NEW_CONTAINER_NAME=hysteryale-fe_${{ github.event.release.tag_name }}" >> $GITHUB_ENV
-              echo "NEW_RELEASE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+              echo "NEW_CONTAINER_NAME=hysteryale-fe_${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+              echo "NEW_RELEASE_TAG=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
               echo "NEW_IMAGE_NAME=ghcr.io/phoenix-software-development/hyster-yale-frontend:latest" >> $GITHUB_ENV
 
          - name: Checkout code to get file compose.yml
            shell: bash
            run: |
               cd $WORK_DIR
-              git fetch
-              git checkout tags/$NEW_RELEASE_TAG
+              git pull origin main
 
          - name: build image
            shell: bash
            run: |
               cd $WORK_DIR
               yarn install
-              docker build -t $NEW_IMAGE_NAME --build-arg IMAGE_TAG=qa-deploy-${{ github.sha }} --build-arg RELEASE_TAG=${{ github.event.release.tag_name }} -f docker/Dockerfile .
+              docker build -t $NEW_IMAGE_NAME --build-arg IMAGE_TAG=qa-deploy-${{ github.sha }} --build-arg RELEASE_TAG=${{ github.event.pull_request.number }} -f docker/Dockerfile .
 
          - name: Stop old container is running
            shell: bash
