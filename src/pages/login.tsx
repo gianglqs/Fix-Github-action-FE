@@ -184,7 +184,6 @@ export default function LoginPage(props) {
                      control={loginForm.control}
                      sx={{ mt: 2 }}
                      label="Password"
-                     required
                      name="password"
                      autoComplete="current-password"
                      type="password"
