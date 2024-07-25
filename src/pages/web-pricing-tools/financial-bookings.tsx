@@ -780,6 +780,12 @@ export default function Booking() {
                         buttonName="button.costDataFile"
                      />
                   </Grid>
+                  <Grid item xs={2}>
+                     <UploadFileDropZone
+                        handleUploadFile={handleUploadAOPMarginFile}
+                        buttonName="button.aopMargin"
+                     />
+                  </Grid>
                   <Typography
                      sx={{
                         color: 'blue',
@@ -798,12 +804,6 @@ export default function Booking() {
                         }}
                      />
                   </Typography>
-                  <Grid item xs={2}>
-                     <UploadFileDropZone
-                        handleUploadFile={handleUploadAOPMarginFile}
-                        buttonName="button.aopMargin"
-                     />
-                  </Grid>
                </Grid>
             </When>
 
