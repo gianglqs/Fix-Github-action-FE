@@ -47,6 +47,8 @@ import { extractTextInParentheses } from '@/utils/getString';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { PRODUCT_APAC, PRODUCT_DIMENSION } from '@/utils/modelType';
 
+import GetAppIcon from '@mui/icons-material/GetApp';
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
@@ -414,6 +416,7 @@ export default function Product() {
                         label={t('filters.models')}
                         placeholder={t('filters.searchProductByModel')}
                         value={dataFilter.modelCode}
+                        isTrim
                         focused
                      />
                   </Grid>
@@ -585,24 +588,20 @@ export default function Product() {
                   <Typography
                      sx={{
                         color: 'blue',
-                        fontSize: 15,
+                        fontSize: 5,
                         margin: '0 30px 0 10px',
                         cursor: 'pointer',
                      }}
                      onClick={() => downloadFileByURL(exampleFile[PRODUCT_APAC])}
                   >
-                     {t('link.getProductAPACExampleUploadFile')}
-                  </Typography>
-                  <Typography
-                     sx={{
-                        color: 'blue',
-                        fontSize: 15,
-                        margin: '0 30px 0 10px',
-                        cursor: 'pointer',
-                     }}
-                     onClick={() => downloadFileByURL(exampleFile[PRODUCT_DIMENSION])}
-                  >
-                     {t('link.getProductDimensionExampleUploadFile')}
+                     <GetAppIcon
+                        sx={{
+                           color: 'black',
+                           marginTop: '2px',
+                           fontSize: 'large',
+                           '&:hover': { color: 'red' },
+                        }}
+                     />
                   </Typography>
                   <Grid item xs={4} sx={{ display: 'flex' }}>
                      {uploadedFile &&

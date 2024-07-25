@@ -45,6 +45,8 @@ import { useTranslation } from 'react-i18next';
 import { BOOKING, COST_DATA } from '@/utils/modelType';
 import aopmarginApi from '@/api/aopMargin.api';
 
+import GetAppIcon from '@mui/icons-material/GetApp';
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
@@ -542,6 +544,7 @@ export default function Booking() {
                         name="orderNo"
                         label={t('filters.order#')}
                         placeholder={t('filters.searchOrderById')}
+                        isTrim
                         focused
                      />
                   </Grid>
@@ -771,17 +774,6 @@ export default function Booking() {
                         buttonName="button.bookedFile"
                      />
                   </Grid>
-                  <Typography
-                     sx={{
-                        color: 'blue',
-                        fontSize: 15,
-                        margin: '0 30px 0 10px',
-                        cursor: 'pointer',
-                     }}
-                     onClick={() => downloadFileByURL(exampleFile[BOOKING])}
-                  >
-                     {t('link.getExampleUploadFile')}
-                  </Typography>
                   <Grid item xs={2}>
                      <UploadFileDropZone
                         handleUploadFile={handleUploadCostDataFile}
@@ -791,13 +783,20 @@ export default function Booking() {
                   <Typography
                      sx={{
                         color: 'blue',
-                        fontSize: 15,
+                        fontSize: 5,
                         margin: '0 30px 0 10px',
                         cursor: 'pointer',
                      }}
-                     onClick={() => downloadFileByURL(exampleFile[COST_DATA])}
+                     onClick={() => downloadFileByURL(exampleFile[BOOKING])}
                   >
-                     {t('link.getExampleUploadFile')}
+                     <GetAppIcon
+                        sx={{
+                           color: 'black',
+                           marginTop: '2px',
+                           fontSize: 'large',
+                           '&:hover': { color: 'red' },
+                        }}
+                     />
                   </Typography>
                   <Grid item xs={2}>
                      <UploadFileDropZone

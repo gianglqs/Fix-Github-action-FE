@@ -178,12 +178,12 @@ export default function LoginPage(props) {
                      sx={{ mt: 2 }}
                      label="Email"
                      name="email"
+                     isTrim
                   />
                   <FormControlledTextField
                      control={loginForm.control}
                      sx={{ mt: 2 }}
                      label="Password"
-                     required
                      name="password"
                      autoComplete="current-password"
                      type="password"
