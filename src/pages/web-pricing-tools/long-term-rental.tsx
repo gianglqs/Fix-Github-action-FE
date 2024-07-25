@@ -820,7 +820,11 @@ const GeneralInput = () => {
          ...selectedFilter,
          [field]: option.value === 'All' ? null : option.value,
       };
+      if (field === 'series') {
+         newSelectedFilter.modelCode = null;
+      }
       localStorage.setItem('generalFilterLongTermRental', JSON.stringify(newSelectedFilter));
+
       fetchSelectOptions(newSelectedFilter);
    };
    const handleCalculate = () => {
@@ -857,7 +861,6 @@ const GeneralInput = () => {
    }, []);
 
    const handleChangeInputValue = ({ value }, field) => {
-      console.log(field + ' ' + value);
       const newGeneralInputValues = {
          ...generalInputValues,
          [field]: value ? Number(value) : null,
