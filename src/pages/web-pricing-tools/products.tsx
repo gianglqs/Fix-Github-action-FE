@@ -416,6 +416,7 @@ export default function Product() {
                         label={t('filters.models')}
                         placeholder={t('filters.searchProductByModel')}
                         value={dataFilter.modelCode}
+                        isTrim
                         focused
                      />
                   </Grid>

@@ -615,6 +615,7 @@ export default function Shipment() {
                         name="orderNo"
                         label={t('filters.order#')}
                         placeholder={t('filters.searchOrderById')}
+                        isTrim
                         focused
                      />
                   </Grid>

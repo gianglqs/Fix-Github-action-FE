@@ -6,5 +6,6 @@ export interface AppTextFieldProps extends StandardTextFieldProps {
    loading?: boolean;
    onGenerateCode?: (event) => void;
    isFocus?: boolean;
+   isTrim?: boolean;
    debounceDelay?: number;
 }
