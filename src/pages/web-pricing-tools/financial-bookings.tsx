@@ -43,6 +43,7 @@ import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
 import { BOOKING, COST_DATA } from '@/utils/modelType';
+import aopmarginApi from '@/api/aopMargin.api';
 
 import GetAppIcon from '@mui/icons-material/GetApp';
 
@@ -340,41 +341,34 @@ export default function Booking() {
       heightComponentExcludingTable = 330;
    }
 
-   const handleUploadBookedFile = async (file) => {
+   const handleUploadFile = async (file: File, apiMethod: (formData: FormData) => Promise<any>) => {
       let formData = new FormData();
       formData.append('file', file);
       setLoading(true);
-      bookingApi
-         .importBookedFile(formData)
+
+      apiMethod(formData)
          .then((response) => {
             setLoading(false);
             handleWhenImportSuccessfully(response);
          })
          .catch((error) => {
-            // stop spiner
+            // stop spinner
             setLoading(false);
-            //show message
+            // show message
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
 
-   const handleUploadCostDataFile = async (file) => {
-      setLoading(true);
-      let formData = new FormData();
-      formData.append('file', file);
+   const handleUploadBookedFile = (file: File) => {
+      handleUploadFile(file, bookingApi.importBookedFile);
+   };
 
-      bookingApi
-         .importCostDataFile(formData)
-         .then((response) => {
-            setLoading(false);
-            handleWhenImportSuccessfully(response);
-         })
-         .catch((error) => {
-            // stop spiner
-            setLoading(false);
-            //show message
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
+   const handleUploadCostDataFile = (file: File) => {
+      handleUploadFile(file, bookingApi.importCostDataFile);
+   };
+
+   const handleUploadAOPMarginFile = (file: File) => {
+      handleUploadFile(file, aopmarginApi.importDataAOPMargin);
    };
 
    const handleWhenImportSuccessfully = (res) => {
@@ -784,6 +778,12 @@ export default function Booking() {
                      <UploadFileDropZone
                         handleUploadFile={handleUploadCostDataFile}
                         buttonName="button.costDataFile"
+                     />
+                  </Grid>
+                  <Grid item xs={2}>
+                     <UploadFileDropZone
+                        handleUploadFile={handleUploadAOPMarginFile}
+                        buttonName="button.aopMargin"
                      />
                   </Grid>
                   <Typography

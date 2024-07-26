@@ -109,7 +109,10 @@
       "update": "Cập nhập",
       "delete": "Xóa",
       "add": "Thêm",
-      "calculate": "Tính toán"
+      "bookedFile": "Tải lên Tệp Booked",
+      "costDataFile": "Tải lên Tệp Cost Data",
+      "calculate": "Tính toán",
+      "aopMargin": "Tải lên Tệp AOP Margin"
    },
 
    "table": {
