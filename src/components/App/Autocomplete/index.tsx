@@ -152,9 +152,6 @@ const AppAutocomplete: React.FC<AppAutocompleteProps<any>> = (props) => {
                '& .MuiInputBase-root': {
                   backgroundColor: '#fff',
                },
-               '& .MuiAutocomplete-root': {
-                  backgroundColor: 'black',
-               },
             }}
             InputProps={{
                ...params.InputProps,
@@ -176,9 +173,6 @@ const AppAutocomplete: React.FC<AppAutocompleteProps<any>> = (props) => {
                   root: classes.appAutocomplete__chip__container,
                   deleteIcon: classes.appAutocomplete__chip__icon,
                },
-            }}
-            sx={{
-               position: 'relative',
             }}
             isOptionEqualToValue={isOptionEqualToValue}
             multiple={multiple}
