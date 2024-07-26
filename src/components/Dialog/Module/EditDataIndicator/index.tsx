@@ -226,10 +226,7 @@ const EditDataIndicator: React.FC<any> = (props) => {
          .updateCompetitor(isCreate, data)
          .then((res) => {
             dispatch(commonStore.actions.setSuccessMessage(res.data.message));
-
-            dispatch(indicatorStore.sagaGetList());
             dispatch(manageCompetitorStore.sagaGetList());
-            dispatch(indicatorStore.actions.setLoadingPage(false));
          })
          .catch((error) => {
             dispatch(commonStore.actions.setErrorMessage(error.message));
