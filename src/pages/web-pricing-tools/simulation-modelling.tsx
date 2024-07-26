@@ -704,7 +704,7 @@ export default function Adjustment() {
             </Grid>
 
             <Grid container spacing={1}>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 20, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.regions, (item) => {
                         return { value: item };
@@ -721,7 +721,7 @@ export default function Adjustment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.plants, (item) => {
                         return { value: item };
@@ -746,7 +746,7 @@ export default function Adjustment() {
                      })}
                      options={initDataFilter.metaSeries}
                      label={t('filters.metaSeries')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
                      limitTags={1}
                      disableListWrap
@@ -757,7 +757,7 @@ export default function Adjustment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.dealers, (item) => {
                         return { value: item };
@@ -782,7 +782,7 @@ export default function Adjustment() {
                      })}
                      options={initDataFilter.classes}
                      label={t('filters.class')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
                      limitTags={1}
                      disableListWrap
@@ -800,7 +800,7 @@ export default function Adjustment() {
                      })}
                      options={initDataFilter.models}
                      label={t('filters.models')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'models')}
                      limitTags={1}
                      disableListWrap
@@ -811,7 +811,7 @@ export default function Adjustment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.segments, (item) => {
                         return { value: item };

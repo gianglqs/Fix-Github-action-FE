@@ -421,7 +421,7 @@ export default function Product() {
                      />
                   </Grid>
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 20, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.classes, (item) => {
                         return { value: item };
@@ -438,14 +438,14 @@ export default function Product() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.plants, (item) => {
                         return { value: item };
                      })}
                      options={initDataFilter.plants}
                      label={t('filters.plant')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'plants')}
                      limitTags={1}
                      disableListWrap
@@ -463,7 +463,7 @@ export default function Product() {
                      })}
                      options={initDataFilter.metaSeries}
                      label={t('filters.metaSeries')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
                      limitTags={1}
                      disableListWrap
@@ -474,14 +474,14 @@ export default function Product() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.family, (item) => {
                         return { value: item };
                      })}
                      options={initDataFilter.family}
                      label={t('filters.family')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'family')}
                      limitTags={1}
                      disableListWrap
@@ -499,7 +499,7 @@ export default function Product() {
                      })}
                      options={initDataFilter.segments}
                      label={t('filters.segment')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'segments')}
                      limitTags={1}
                      disableListWrap
@@ -517,7 +517,7 @@ export default function Product() {
                      })}
                      options={initDataFilter.brands}
                      label={t('filters.brand')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'brands')}
                      limitTags={1}
                      disableListWrap
@@ -535,7 +535,7 @@ export default function Product() {
                      })}
                      options={initDataFilter.truckType}
                      label={t('filters.truckType')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'truckType')}
                      limitTags={1}
                      disableListWrap

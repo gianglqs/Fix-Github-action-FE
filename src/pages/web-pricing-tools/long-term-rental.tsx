@@ -4,9 +4,6 @@ import { AppLayout, AppTextField, AppNumberField, AppAutocomplete } from '@/comp
 import { Button, Typography } from '@mui/material';
 import { Grid, Paper } from '@mui/material';
 import { Box, Divider } from '@mui/material';
-//libs
-import _, { result } from 'lodash';
-import { NumberSchema } from 'yup';
 //hooks
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
@@ -21,14 +18,27 @@ import { GetServerSidePropsContext } from 'next';
 //others
 import { mappingFiltersToOptionValues } from '@/utils/mapping';
 import { defaultValueSelectedFilterLongTermRental } from '@/utils/defaultValues';
+import { makeStyles } from '@mui/styles';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { relative } from 'path';
+
+const useStyles = makeStyles((theme) => ({
+   customDisabledInput: {
+      '& .Mui-disabled ': {
+         textFillColor: 'rgba(0, 0, 0, 0.7)',
+         fontWeight: '500',
+      },
+   },
+}));
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
 const LongTermRentalSection = () => {
    const { t } = useTranslation();
    const dispatch = useDispatch();
+   const classes = useStyles();
+
    //selector
    const {
       cost = 0,
@@ -91,11 +101,13 @@ const LongTermRentalSection = () => {
             flex: 1,
             backgroundColor: '#fffff7',
             borderRadius: 5,
-            boxShadow: 3,
+            boxShadow: 2,
+            border: '1px solid rgba(150,150,150,0.4)',
             padding: 2,
             justifyContent: 'center',
             alignItems: 'center',
             marginTop: 1,
+            minWidth: '600px',
          }}
       >
          <Typography
@@ -112,7 +124,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.monthlyRentalPrice')}</Typography>
@@ -133,7 +145,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                   marginTop: 3,
                }}
             >
@@ -145,7 +157,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.truckPrice')}</Typography>
@@ -158,6 +170,7 @@ const LongTermRentalSection = () => {
                      decimalScale={2}
                      isDecimalScale
                      disabled
+                     className={classes.customDisabledInput}
                   />
                </Grid>
             </Box>
@@ -165,7 +178,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.battery')}</Typography>
@@ -185,7 +198,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.charger')}</Typography>
@@ -205,7 +218,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.localFit')}</Typography>
@@ -225,7 +238,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.telemetry')}</Typography>
@@ -245,7 +258,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.freight')}</Typography>
@@ -265,7 +278,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.importDutyAndCustomsClearance')}</Typography>
@@ -285,7 +298,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.miscellaneous')}</Typography>
@@ -306,7 +319,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.totalTruckPrice')}</Typography>
@@ -315,6 +328,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? totalTruckPrice || 0 : ' '}
                      debounceDelay={1}
                      onChange={(e) => {}}
+                     className={classes.customDisabledInput}
                      disabled
                      decimalScale={2}
                      isDecimalScale
@@ -333,7 +347,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.termsMonths')}</Typography>
@@ -341,6 +355,7 @@ const LongTermRentalSection = () => {
                   <AppNumberField
                      debounceDelay={1}
                      value={isAbleToCalculate ? Number(primaryTerm) || 0 : ' '}
+                     className={classes.customDisabledInput}
                      disabled
                      onChange={() => {}}
                   />
@@ -350,7 +365,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.interestRate')}</Typography>
@@ -360,6 +375,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? customerLoanRatePercentage || 0 : ' '}
                      suffix="%"
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                      onChange={() => {}}
@@ -370,7 +386,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.hours')}</Typography>
@@ -389,7 +405,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.servicePerHour')}</Typography>
@@ -410,7 +426,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.utilisation')}</Typography>
@@ -432,7 +448,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.unitRecurringRevenue')}</Typography>
@@ -443,6 +459,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? unitRecurringRevenue || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                   />
@@ -452,7 +469,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                   position: 'relative',
                }}
             >
@@ -464,11 +481,12 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? estimatedResale || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                   />
                </Grid>
-               <Typography sx={{ position: 'absolute', right: 50 }}>
+               <Typography sx={{ position: 'absolute', right: 30 }}>
                   {isAbleToCalculate && `${(residualPercentage * 100).toFixed(2)}%`}
                </Typography>
             </Box>
@@ -476,7 +494,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.totalUnitInterestIncomeRevenue')}</Typography>
@@ -495,7 +513,7 @@ const LongTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.grossIncomeOverTerm')}</Typography>
@@ -506,6 +524,7 @@ const LongTermRentalSection = () => {
                      value={isAbleToCalculate ? grossIncomeOverTerm || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                   />
@@ -520,6 +539,7 @@ const LongTermRentalSection = () => {
 const ShortTermRentalSection = () => {
    const { t } = useTranslation();
    const dispatch = useDispatch();
+   const classes = useStyles();
    //selector
    const { seccondTerm = 0, serviceRateCostPercentage = 0 } = useSelector(
       longTermRentalStore.selectGeneralInputValues
@@ -551,11 +571,13 @@ const ShortTermRentalSection = () => {
          item
          sx={{
             flex: 1,
+            border: '1px solid rgba(150,150,150,0.4)',
             backgroundColor: '#fffff7',
             borderRadius: 5,
-            boxShadow: 3,
+            boxShadow: 2,
             padding: 2,
             marginTop: 1,
+            minWidth: '600px',
          }}
       >
          <Typography
@@ -571,7 +593,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.monthlyRentalPrice')}</Typography>
@@ -592,7 +614,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.acquisitionCostAndRefurb')}</Typography>
@@ -618,16 +640,18 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.termsMonths')}</Typography>
                <Grid item xs={4} sx={{ backgroundColor: ' #f2f2f2' }}>
                   <AppNumberField
                      debounceDelay={1}
+                     sx={{ color: 'black' }}
                      value={isAbleToCalculate ? seccondTerm || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                   />
                </Grid>
             </Box>
@@ -635,7 +659,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.interestRate')}</Typography>
@@ -654,7 +678,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.hours')}</Typography>
@@ -673,7 +697,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.servicePerHour')}</Typography>
@@ -684,6 +708,7 @@ const ShortTermRentalSection = () => {
                      prefix="$"
                      onChange={() => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                      name="servicePerHour"
@@ -694,7 +719,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.utilisation')}</Typography>
@@ -716,7 +741,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.unitRecurringRevenue')}</Typography>
@@ -727,6 +752,7 @@ const ShortTermRentalSection = () => {
                      value={isAbleToCalculate ? unitRecurringRevenue || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                   />
@@ -736,7 +762,7 @@ const ShortTermRentalSection = () => {
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                   position: 'relative',
                }}
             >
@@ -748,21 +774,22 @@ const ShortTermRentalSection = () => {
                      value={isAbleToCalculate ? estimatedResale || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                   />
                </Grid>
-               <Typography sx={{ position: 'absolute', right: 50 }}>
+               <Typography sx={{ position: 'absolute', right: 30 }}>
                   {isAbleToCalculate && `${Number(0)}%`}
                </Typography>
             </Box>
-            <Box sx={{ height: '25px' }}></Box>
+            <Box sx={{ height: '20px' }}></Box>
             <Divider />
             <Box
                sx={{
                   justifyContent: 'space-between',
                   display: 'flex',
-                  paddingX: 20,
+                  paddingX: 10,
                }}
             >
                <Typography>{t('longTermRental.totalIncomeOverTerm')}</Typography>
@@ -773,6 +800,7 @@ const ShortTermRentalSection = () => {
                      value={isAbleToCalculate ? totalIncomeOverTerm || 0 : ' '}
                      onChange={(e) => {}}
                      disabled
+                     className={classes.customDisabledInput}
                      decimalScale={2}
                      isDecimalScale
                   />

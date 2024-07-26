@@ -148,7 +148,6 @@ const AppAutocomplete: React.FC<AppAutocompleteProps<any>> = (props) => {
             inputRef={isFocus && focusRef}
             {...textFieldProps}
             sx={{
-               zIndex: 100,
                maxHeight: 25,
                '& .MuiInputBase-root': {
                   backgroundColor: '#fff',

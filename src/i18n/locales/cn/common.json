@@ -107,7 +107,10 @@
       "update": "更多的",
       "delete": "擦除",
       "add": "更多的",
-      "calculate": "计算"
+      "bookedFile": "上传已预订文件",
+      "costDataFile": "上传成本数据文件",
+      "calculate": "计算",
+      "aopMargin": "上传AOP边距"
    },
 
    "table": {
