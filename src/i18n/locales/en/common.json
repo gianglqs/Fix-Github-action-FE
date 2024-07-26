@@ -316,7 +316,11 @@
       "pageNotFound": "Page not found. Automatically redirecting to the Home Page.",
       "timeExceedsThreeMonths": "Time exceeds 3 months, please choose a shorter range.",
       "timeExceedsTwelveMonths": "Time exceeds 12 months, please choose a shorter range.",
-      "requiredFieldsMustBeFilled": "Required fields must be filled !"
+      "requiredFieldsMustBeFilled": "Required fields must be filled !",
+      "internalServerError": "Internal server error",
+      "internalServerErrorMessage": "Please try again later or feel free to contact us if the problem persists.",
+      "underMaintenance": "Under maintenance",
+      "underMaintenanceMessage": "Sorry, this page is under maintenance. Kindly be patient and try again."
    },
 
    "gumReport": {

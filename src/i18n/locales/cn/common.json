@@ -309,7 +309,11 @@
       "cannotConnectToServer": "后台服务没有响应。请稍后再试或联系支持。",
       "pageNotFound": "未找到页面。正在自动重定向到主页。",
       "timeExceedsThreeMonths": "时间超过3个月，请选择较短的范围。",
-      "timeExceedsTwelveMonths": "时间超过12个月，请选择较短的范围。"
+      "timeExceedsTwelveMonths": "时间超过12个月，请选择较短的范围。",
+      "internalServerError": "伺服器內部錯誤。",
+      "internalServerErrorMessage": "请稍后再试，如果问题仍然存在，请随时联系我们。",
+      "underMaintenance": "维护中。",
+      "underMaintenanceMessage": "对不起，这个页面正在维护中。请耐心等待，并稍后再试。"
    },
 
    "gumReport": {

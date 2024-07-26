@@ -26,6 +26,14 @@ export const refreshTokenForFunctionGetServerSideProps = async (
          props: {},
       };
    } catch (error) {
+      if (error.response?.status == null) {
+         return {
+            redirect: {
+               destination: '/505',
+               permanent: false,
+            },
+         };
+      }
       return {
          redirect: {
             destination: '/login',
@@ -83,7 +91,14 @@ export const refreshTokenForFunctionGetServerSidePropsLogin = async (
             },
          };
       }
-
+      if (error.response?.status == null) {
+         return {
+            redirect: {
+               destination: '/505',
+               permanent: false,
+            },
+         };
+      }
       const releaseTagFE = process.env.RELEASE_TAG_ENV;
       const imageTagFE = process.env.IMAGE_TAG_ENV;
 
