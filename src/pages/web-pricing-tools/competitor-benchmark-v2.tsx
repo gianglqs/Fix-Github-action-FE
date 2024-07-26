@@ -788,7 +788,7 @@ export default function IndicatorsV2() {
                         <Typography
                            sx={{
                               color: 'blue',
-                              fontSize: 8,
+                              fontSize: 5,
                               margin: '0 30px 0 10px',
                               cursor: 'pointer',
                            }}

@@ -788,7 +788,7 @@ export default function Shipment() {
                   <Typography
                      sx={{
                         color: 'blue',
-                        fontSize: 8,
+                        fontSize: 5,
                         margin: '0 30px 0 10px',
                         cursor: 'pointer',
                      }}
