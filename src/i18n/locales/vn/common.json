@@ -312,7 +312,11 @@
       "cannotConnectToServer": "Server không phản hồi. Vui lòng thử lại sau hoặc liên hệ hỗ trợ.",
       "pageNotFound": "Trang không được tìm thấy. Đang chuyển hướng tự động về Trang Chủ.",
       "timeExceedsThreeMonths": "Thời gian vượt quá 3 tháng, vui lòng chọn khoảng thời gian ngắn hơn.",
-      "timeExceedsTwelveMonths": "Thời gian vượt quá 12 tháng, vui lòng chọn khoảng thời gian ngắn hơn."
+      "timeExceedsTwelveMonths": "Thời gian vượt quá 12 tháng, vui lòng chọn khoảng thời gian ngắn hơn.",
+      "internalServerError": "Lỗi máy chủ nội bộ",
+      "internalServerErrorMessage": "Vui lòng thử lại sau hoặc liên hệ với chúng tôi nếu vấn đề vẫn tiếp tục xảy ra.",
+      "underMaintenance": "Hệ thống đang bảo trì.",
+      "underMaintenanceMessage": "Xin lỗi, trang này đang bảo trì. Vui lòng kiên nhẫn và thử lại sau."
    },
 
    "gumReport": {

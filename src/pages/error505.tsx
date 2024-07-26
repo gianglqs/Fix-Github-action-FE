@@ -1,10 +1,10 @@
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { useEffect } from 'react';
 import '@fontsource/poppins';
-import InternalServerError from './images/500-page';
 //hooks
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-const Custom500Page = () => {
+const Custom505Page = () => {
    const router = useRouter();
    const { t } = useTranslation();
    // Function to handle navigation back to the previous page
@@ -17,8 +17,9 @@ const Custom500Page = () => {
    };
 
    useEffect(() => {
-      document.title = '500 - Server Error'; // Set the page title
+      document.title = '505 - Under maintenance'; // Set the page title
    }, []);
+   const logo = require('src/pages/images/505-page.png');
    const fonts = {
       body: 'Poppins, sans-serif',
    };
@@ -34,7 +35,7 @@ const Custom500Page = () => {
       >
          <div
             style={{
-               width: '100%',
+               width: '50%',
                textAlign: 'center',
                display: 'flex',
                justifyContent: 'center',
@@ -42,7 +43,7 @@ const Custom500Page = () => {
                flexDirection: 'column',
             }}
          >
-            {<InternalServerError />}
+            <img alt="logo" style={{ width: 400, alignItems: 'center' }} src={String(logo)} />
             <h1
                style={{
                   fontSize: '60px',
@@ -51,10 +52,10 @@ const Custom500Page = () => {
                   fontFamily: 'Poppins',
                   alignItems: 'center',
                   lineHeight: '72px',
-                  marginTop: '30px',
+                  marginTop: '10px',
                }}
             >
-               {t('commonErrorMessage.internalServerError')}
+               {t('commonErrorMessage.underMaintenance')}
             </h1>
             <p
                style={{
@@ -67,7 +68,7 @@ const Custom500Page = () => {
                   marginTop: '-30px',
                }}
             >
-               {t('commonErrorMessage.internalServerErrorMessage')}
+               {t('commonErrorMessage.underMaintenanceMessage')}
             </p>
             <div>
                <button
@@ -123,4 +124,4 @@ const Custom500Page = () => {
 
 <style></style>;
 
-export default Custom500Page;
+export default Custom505Page;

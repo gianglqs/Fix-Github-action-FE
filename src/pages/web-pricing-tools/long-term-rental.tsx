@@ -13,10 +13,13 @@ import { longTermRentalStore } from '@/store/reducers';
 import { commonStore } from '@/store/reducers';
 //api
 import longTermRentalApi from '@/api/longTermRental.api';
+//type
+import { GetServerSidePropsContext } from 'next';
 //others
 import { mappingFiltersToOptionValues } from '@/utils/mapping';
 import { defaultValueSelectedFilterLongTermRental } from '@/utils/defaultValues';
 import { makeStyles } from '@mui/styles';
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { relative } from 'path';
 
 const useStyles = makeStyles((theme) => ({
@@ -28,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
    },
 }));
 
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+   return await checkTokenBeforeLoadPage(context);
+}
 const LongTermRentalSection = () => {
    const { t } = useTranslation();
    const dispatch = useDispatch();
