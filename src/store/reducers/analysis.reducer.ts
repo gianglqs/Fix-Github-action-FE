@@ -2,6 +2,10 @@ import { createSlice, PayloadAction, createSelector, createAction } from '@redux
 
 import type { RootReducerType } from './rootReducer';
 import { defaultDataFilterQuotationMargin } from '@/utils/defaultValues';
+import {
+   OptionFilterFromCalculateFile,
+   OptionsFilterQuotationMargin,
+} from '@/types/quotationMargin';
 
 export const name = 'margin_analysis';
 export const resetState = createAction(`${name}/RESET_STATE`);
@@ -26,7 +30,11 @@ export const initialState = {
       ],
       subRegion: [{ value: 'Australia' }, { value: 'None Australia' }],
       delivery: [{ value: 'DDP' }, { value: 'CIF' }],
-   } as any,
+      type: null,
+      orderNumber: null,
+      modelCode: null,
+      series: null,
+   } as OptionsFilterQuotationMargin,
    fileUUID: undefined,
    fileName: undefined,
    dataFilter: defaultDataFilterQuotationMargin as any,
@@ -43,11 +51,14 @@ const marginAnalysisSlice = createSlice({
          state.marginAnalystData = payload;
       },
 
-      setLoadingPage(state, { payload }: PayloadAction<any>) {
-         state.isLoadingPage = payload;
+      showLoadingPage(state) {
+         state.isLoadingPage = true;
+      },
+      hideLoadingPage(state) {
+         state.isLoadingPage = false;
       },
 
-      setInitDataFilter(state, { payload }: PayloadAction<any>) {
+      setInitDataFilter(state, { payload }: PayloadAction<OptionsFilterQuotationMargin>) {
          state.initDataFilter = payload;
       },
       setDataFilter(state, { payload }: PayloadAction<any>) {
@@ -76,6 +87,17 @@ const marginAnalysisSlice = createSlice({
       setExampleUploadFile(state, { payload }: PayloadAction<any>) {
          state.exampleUploadFile = payload;
       },
+
+      // setData for options filter
+      updateOptionFilterFromCalculateFile(
+         state,
+         { payload }: PayloadAction<OptionFilterFromCalculateFile>
+      ) {
+         state.initDataFilter.modelCode = payload.modelCode;
+         state.initDataFilter.series = payload.series;
+         state.initDataFilter.orderNumber = payload.orderNumber;
+         state.initDataFilter.type = payload.type;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -85,6 +107,8 @@ const marginAnalysisSlice = createSlice({
 });
 
 export const sagaGetList = createAction(`${name}/GET_LIST`);
+export const openCalculatorFile = createAction(`${name}/handleOpenCulculateFile`);
+export const calculateMargin = createAction(`${name}/handleCalculateMargin`);
 // Selectors
 export const selectState = (state: RootReducerType) => state[name];
 export const selectMarginData = createSelector(selectState, (state) => state.marginAnalystData);
