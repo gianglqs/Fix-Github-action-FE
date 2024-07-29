@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
       fontSize: theme.typography.body2.fontSize,
       backgroundColor: `${theme.palette.grey[200]} !important`,
       borderRadius: '8px !important',
+      maxWidth: 'calc(100% - 100px)!important',
    },
    appAutocomplete__chip__icon: {
       fontSize: '14px !important',

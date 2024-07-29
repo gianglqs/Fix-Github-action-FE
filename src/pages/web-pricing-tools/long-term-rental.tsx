@@ -882,15 +882,16 @@ const GeneralInput = () => {
    };
    //init options for selectbox
    useEffect(() => {
-      fetchSelectOptions(defaultValueSelectedFilterLongTermRental).then(() => {
-         let cachedFilters = null;
-         try {
-            cachedFilters = JSON.parse(localStorage.getItem('longTermRentalFilters'));
-         } catch (error) {}
-         if (cachedFilters) {
-            dispatch(longTermRentalStore.actions.setSelectedFilters(cachedFilters));
-         }
-      });
+      let cachedFilters = null;
+      try {
+         cachedFilters = JSON.parse(localStorage.getItem('generalFilterLongTermRental'));
+      } catch (error) {}
+      if (cachedFilters) {
+         dispatch(longTermRentalStore.actions.setSelectedFilters(cachedFilters));
+         fetchSelectOptions(cachedFilters);
+      } else {
+         fetchSelectOptions(defaultValueSelectedFilterLongTermRental);
+      }
       dispatch(longTermRentalStore.sagaGetList());
    }, []);
 
