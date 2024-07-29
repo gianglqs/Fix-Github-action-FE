@@ -576,26 +576,6 @@ export default function VolumeDiscountAnalysis() {
                      columns={columns}
                      getRowId={(params) => params.id}
                   />
-                  {/*<DataGridPro
-                     sx={{
-                        '& .MuiDataGrid-columnHeaderTitle': {
-                           textOverflow: 'clip',
-                           whiteSpace: 'break-spaces',
-                           lineHeight: 1.2,
-                        },
-                     }}
-                     columnHeaderHeight={70}
-                     hideFooter
-                     disableColumnMenu
-                     slots={{
-                        toolbar: GridToolbar,
-                     }}
-                     rowHeight={35}
-                     rows={volumeDiscountData}
-                     rowBufferPx={35}
-                     columns={columns}
-                     getRowId={(params) => params.id}
-                  />*/}
                </Grid>
 
                <AppBackDrop open={loading} hightHeaderTable={'100px'} />

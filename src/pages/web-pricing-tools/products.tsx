@@ -667,29 +667,6 @@ export default function Product() {
                         onCellClick={handleOnCellClick}
                      />
                   </Grid>
-                  {/* <DataTable
-                     hideFooter
-                     disableColumnMenu
-                     entity={'product'}
-                     sx={{
-                        '& .MuiDataGrid-columnHeaderTitle': {
-                           whiteSpace: 'break-spaces',
-                           lineHeight: 1.2,
-                        },
-                     }}
-                     tableHeight={`calc(100vh - ${heightComponentExcludingTable}px)`}
-                     columnHeaderHeight={60}
-                     rowHeight={30}
-                     slots={{
-                        toolbar: GridToolbar,
-                     }}
-                     rows={listProduct}
-                     rowBufferPx={35}
-                     columns={columns}
-                     getRowId={(params) => params.id}
-                     onRowClick={handleOpenProductDetailDialog}
-                     onCellClick={handleOnCellClick}
-                  />*/}
                </Grid>
 
                <DataTablePagination

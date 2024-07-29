@@ -832,27 +832,6 @@ export default function Shipment() {
                      columns={columns}
                      rows={listOrder}
                   />
-                  {/*<DataGridPro
-                     hideFooter
-                     disableColumnMenu
-                     sx={{
-                        '& .MuiDataGrid-columnHeaderTitle': {
-                           whiteSpace: 'break-spaces',
-                           lineHeight: 1.2,
-                        },
-                     }}
-                     slots={{
-                        toolbar: GridToolbar,
-                     }}
-                     columnHeaderHeight={40}
-                     rowHeight={30}
-                     rowBufferPx={35}
-                     getRowId={(params) => params.booking.orderNo}
-                     onCellClick={handleOnCellClick}
-                     columnGroupingModel={columnGroupingModel}
-                     columns={columns}
-                     rows={listOrder}
-                  />*/}
                </Grid>
                <DataTablePagination
                   page={tableState.pageNo}
