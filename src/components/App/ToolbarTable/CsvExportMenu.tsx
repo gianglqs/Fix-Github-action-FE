@@ -51,7 +51,7 @@ const CsvExportToolbar: React.FC<GridCsvExportMenuItemProps> = (props) => {
 
    return (
       <GridToolbarExportContainer>
-         <MenuItem onClick={handleExport}>Export as Excel</MenuItem>
+         <MenuItem onClick={handleExport}>Export File</MenuItem>
       </GridToolbarExportContainer>
    );
 };
