@@ -5,7 +5,8 @@
       "manageIndicator": "Quản lý đối thủ cạnh tranh",
       "users": "Người dùng",
       "historicalImporting": "Lịch sử nhập dữ liệu",
-      "importTracking": "Theo dõi nhập dữ liệu"
+      "importTracking": "Theo dõi nhập dữ liệu",
+      "help": "Giúp đỡ"
    },
 
    "title": {
@@ -21,7 +22,7 @@
       "dataScraping": "Thu nhập dữ liệu",
       "gumReport": "Bao cao",
       "volumeDiscountAnalysis": "Phân tích số lượng giảm giá",
-      "bookingMarginTrialTest": "So Sánh Lợi Nhuận",
+      "bookingMarginTrialTest": "Hóa đơn API và Biên lợi nhuận ghi sổ",
       "priceVolumeSensitivity": "Tương quan giá và số lượng",
       "redidualValue": "Bảng giá trị khấu hao"
    },
@@ -108,7 +109,10 @@
       "update": "Cập nhập",
       "delete": "Xóa",
       "add": "Thêm",
-      "calculate": "Tính toán"
+      "bookedFile": "Tải lên Tệp Booked",
+      "costDataFile": "Tải lên Tệp Cost Data",
+      "calculate": "Tính toán",
+      "aopMargin": "Tải lên Tệp AOP Margin"
    },
 
    "table": {
@@ -308,7 +312,11 @@
       "cannotConnectToServer": "Server không phản hồi. Vui lòng thử lại sau hoặc liên hệ hỗ trợ.",
       "pageNotFound": "Trang không được tìm thấy. Đang chuyển hướng tự động về Trang Chủ.",
       "timeExceedsThreeMonths": "Thời gian vượt quá 3 tháng, vui lòng chọn khoảng thời gian ngắn hơn.",
-      "timeExceedsTwelveMonths": "Thời gian vượt quá 12 tháng, vui lòng chọn khoảng thời gian ngắn hơn."
+      "timeExceedsTwelveMonths": "Thời gian vượt quá 12 tháng, vui lòng chọn khoảng thời gian ngắn hơn.",
+      "internalServerError": "Lỗi máy chủ nội bộ",
+      "internalServerErrorMessage": "Vui lòng thử lại sau hoặc liên hệ với chúng tôi nếu vấn đề vẫn tiếp tục xảy ra.",
+      "underMaintenance": "Hệ thống đang bảo trì.",
+      "underMaintenanceMessage": "Xin lỗi, trang này đang bảo trì. Vui lòng kiên nhẫn và thử lại sau."
    },
 
    "gumReport": {

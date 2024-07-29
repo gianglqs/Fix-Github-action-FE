@@ -163,7 +163,7 @@ export default function Outlier() {
          minWidth: 100,
          headerName: t('table.series'),
          renderCell(params) {
-            return <span>{params.row.series.series}</span>;
+            return <span>{params.row.product.series.series}</span>;
          },
       },
       {
@@ -549,7 +549,7 @@ export default function Outlier() {
                      })}
                      options={initDataFilter.metaSeries}
                      label={t('filters.metaSeries')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
                      limitTags={1}
                      disableListWrap
@@ -586,7 +586,7 @@ export default function Outlier() {
                      })}
                      options={initDataFilter.classes}
                      label={t('filters.class')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
                      limitTags={1}
                      disableListWrap

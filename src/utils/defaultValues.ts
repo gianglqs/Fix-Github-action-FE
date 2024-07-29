@@ -116,3 +116,13 @@ export const defaultValueSelectedFilterLongTermRental = {
    series: null,
    modelCode: null,
 };
+
+export const defaultValueSelectedFilterExchangeRate = {
+   fromDate: { value: '' },
+   toDate: { value: '' },
+   currentCurrency: { value: '', error: false },
+   comparisonCurrencies: {
+      value: [],
+      error: false,
+   },
+};

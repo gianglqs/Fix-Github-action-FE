@@ -41,6 +41,14 @@ export const checkTokenBeforeLoadPageAdmin = async (context: GetServerSidePropsC
          props: {},
       };
    } catch (error) {
+      if (error.response?.status == null)
+         return {
+            redirect: {
+               destination: '/505',
+               permanent: true,
+            },
+         };
+
       if (error.response?.status == 401) return refreshTokenForFunctionGetServerSideProps(context);
 
       var des = PATH_LOGIN;
@@ -82,6 +90,13 @@ export const checkTokenBeforeLoadPageLogin = async (context: GetServerSidePropsC
             },
          };
 
+      if (error.response?.status == null)
+         return {
+            redirect: {
+               destination: '/505',
+               permanent: true,
+            },
+         };
       const imageTagFE = process.env.IMAGE_TAG_ENV;
       const releaseTagFE = process.env.RELEASE_TAG_ENV;
 

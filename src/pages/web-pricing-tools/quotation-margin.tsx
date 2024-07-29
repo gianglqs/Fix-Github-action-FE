@@ -30,6 +30,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { MACRO, NOVO, PART } from '@/utils/modelType';
 
+import GetAppIcon from '@mui/icons-material/GetApp';
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
@@ -607,41 +609,28 @@ export default function MarginAnalysis() {
                   </>
                )}
             </Grid>
-            <Box sx={{ display: 'flex' }}>
-               <Typography
-                  sx={{
-                     color: 'blue',
-                     fontSize: 15,
-                     marginRight: '20px',
-                     cursor: 'pointer',
-                  }}
-                  onClick={() => downloadFileByURL(exampleFile[NOVO])}
-               >
-                  {t('link.getNOVOExampleUploadFile')}
-               </Typography>
-               <Typography
-                  sx={{
-                     color: 'blue',
-                     fontSize: 15,
-                     marginRight: '20px',
-                     cursor: 'pointer',
-                  }}
-                  onClick={() => downloadFileByURL(exampleFile[MACRO])}
-               >
-                  {t('link.getMarginAnalystMacroTemplateExampleUploadFile')}
-               </Typography>
-               <Typography
-                  sx={{
-                     color: 'blue',
-                     fontSize: 15,
-                     marginRight: '20px',
-                     cursor: 'pointer',
-                  }}
-                  onClick={() => downloadFileByURL(exampleFile[PART])}
-               >
-                  {t('link.getPowerBIExampleUploadFile')}
-               </Typography>
-            </Box>
+            {userRole === 'ADMIN' && (
+               <Box sx={{ display: 'flex' }}>
+                  <Typography
+                     sx={{
+                        color: 'blue',
+                        fontSize: 5,
+                        marginRight: '20px',
+                        cursor: 'pointer',
+                     }}
+                     onClick={() => downloadFileByURL(exampleFile[NOVO])}
+                  >
+                     <GetAppIcon
+                        sx={{
+                           color: 'black',
+                           marginTop: '2px',
+                           fontSize: 'large',
+                           '&:hover': { color: 'red' },
+                        }}
+                     />
+                  </Typography>
+               </Box>
+            )}
 
             <Grid container spacing={1} sx={{ marginTop: 1 }}>
                <MarginPercentageAOPRateBox

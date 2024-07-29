@@ -11,7 +11,7 @@ export const initialState = {
    totalRow: [] as any[],
    initDataFilter: {} as any,
    defaultValueFilterOutlier: defaultValueFilterOrder as any,
-   dataFilter: {} as any,
+   dataFilter: defaultValueFilterOrder as any,
    serverTimeZone: '' as any,
    lastUpdatedTime: '' as any,
    lastUpdatedBy: '' as any,

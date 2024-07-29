@@ -474,6 +474,7 @@ export default function VolumeDiscountAnalysis() {
                      label={t('filters.discountPercentagePerOneNewItem')}
                      placeholder={t('filters.discountPercentagePerOneNewItem')}
                      suffix="%"
+                     max={100}
                   />
                </Grid>
 

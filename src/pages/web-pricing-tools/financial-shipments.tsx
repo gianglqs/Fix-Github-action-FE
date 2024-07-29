@@ -52,6 +52,8 @@ import AppDataTable from '@/components/DataTable/AppDataGridPro';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { SHIPMENT } from '@/utils/modelType';
 
+import GetAppIcon from '@mui/icons-material/GetApp';
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
 }
@@ -543,11 +545,12 @@ export default function Shipment() {
                         name="orderNo"
                         label={t('filters.order#')}
                         placeholder={t('filters.searchOrderById')}
+                        isTrim
                         focused
                      />
                   </Grid>
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 20, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.regions, (item) => {
                         return { value: item };
@@ -564,14 +567,14 @@ export default function Shipment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.plants, (item) => {
                         return { value: item };
                      })}
                      options={initDataFilter.plants}
                      label={t('filters.plant')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'plants')}
                      limitTags={1}
                      disableListWrap
@@ -589,7 +592,7 @@ export default function Shipment() {
                      })}
                      options={initDataFilter.metaSeries}
                      label={t('filters.metaSeries')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
                      limitTags={1}
                      disableListWrap
@@ -600,14 +603,14 @@ export default function Shipment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.dealers, (item) => {
                         return { value: item };
                      })}
                      options={initDataFilter.dealers}
                      label={t('filters.dealerName')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'dealers')}
                      limitTags={1}
                      disableListWrap
@@ -626,7 +629,7 @@ export default function Shipment() {
                      })}
                      options={initDataFilter.classes}
                      label={t('filters.class')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
                      limitTags={1}
                      disableListWrap
@@ -644,7 +647,7 @@ export default function Shipment() {
                      })}
                      options={initDataFilter.models}
                      label={t('filters.models')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'models')}
                      limitTags={1}
                      disableListWrap
@@ -655,14 +658,14 @@ export default function Shipment() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.segments, (item) => {
                         return { value: item };
                      })}
                      options={initDataFilter.segments}
                      label={t('filters.segment')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'segments')}
                      limitTags={1}
                      disableListWrap
@@ -785,13 +788,20 @@ export default function Shipment() {
                   <Typography
                      sx={{
                         color: 'blue',
-                        fontSize: 15,
+                        fontSize: 5,
                         margin: '0 30px 0 10px',
                         cursor: 'pointer',
                      }}
                      onClick={() => downloadFileByURL(exampleFile[SHIPMENT])}
                   >
-                     {t('link.getExampleUploadFile')}
+                     <GetAppIcon
+                        sx={{
+                           color: 'black',
+                           marginTop: '2px',
+                           fontSize: 'large',
+                           '&:hover': { color: 'red' },
+                        }}
+                     />
                   </Typography>
                   <Grid item xs={4} sx={{ display: 'flex' }}>
                      {uploadedFile &&
@@ -884,7 +894,7 @@ export default function Shipment() {
             handleOpenImageDialog={handleOpenImageDialog}
             onClose={handleCloseProductDetail}
          />
-         <ShowImageDialog {...imageDialogState} onClose={handleCloseImageDialog} />
+         <ShowImageDialog />
          <Backdrop
             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={loading}

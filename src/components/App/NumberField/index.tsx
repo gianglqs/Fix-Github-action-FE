@@ -4,6 +4,7 @@ import { TextField } from '@mui/material';
 import _ from 'lodash';
 import { NumericFormat } from 'react-number-format';
 import type { AppNumberFieldProps } from './type';
+import { makeStyles } from '@mui/styles';
 
 const AppNumberField: React.FC<AppNumberFieldProps> = forwardRef((props, ref) => {
    const {

@@ -43,6 +43,9 @@ import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
 import { BOOKING, COST_DATA } from '@/utils/modelType';
+import aopmarginApi from '@/api/aopMargin.api';
+
+import GetAppIcon from '@mui/icons-material/GetApp';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -221,7 +224,7 @@ export default function Booking() {
          minWidth: 100,
          headerName: t('table.series'),
          renderCell(params) {
-            return <span>{params.row.series.series}</span>;
+            return <span>{params.row.product.series.series}</span>;
          },
       },
       {
@@ -338,41 +341,34 @@ export default function Booking() {
       heightComponentExcludingTable = 330;
    }
 
-   const handleUploadBookedFile = async (file) => {
+   const handleUploadFile = async (file: File, apiMethod: (formData: FormData) => Promise<any>) => {
       let formData = new FormData();
       formData.append('file', file);
       setLoading(true);
-      bookingApi
-         .importBookedFile(formData)
+
+      apiMethod(formData)
          .then((response) => {
             setLoading(false);
             handleWhenImportSuccessfully(response);
          })
          .catch((error) => {
-            // stop spiner
+            // stop spinner
             setLoading(false);
-            //show message
+            // show message
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
 
-   const handleUploadCostDataFile = async (file) => {
-      setLoading(true);
-      let formData = new FormData();
-      formData.append('file', file);
+   const handleUploadBookedFile = (file: File) => {
+      handleUploadFile(file, bookingApi.importBookedFile);
+   };
 
-      bookingApi
-         .importCostDataFile(formData)
-         .then((response) => {
-            setLoading(false);
-            handleWhenImportSuccessfully(response);
-         })
-         .catch((error) => {
-            // stop spiner
-            setLoading(false);
-            //show message
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
+   const handleUploadCostDataFile = (file: File) => {
+      handleUploadFile(file, bookingApi.importCostDataFile);
+   };
+
+   const handleUploadAOPMarginFile = (file: File) => {
+      handleUploadFile(file, aopmarginApi.importDataAOPMargin);
    };
 
    const handleWhenImportSuccessfully = (res) => {
@@ -548,12 +544,14 @@ export default function Booking() {
                         name="orderNo"
                         label={t('filters.order#')}
                         placeholder={t('filters.searchOrderById')}
+                        isTrim
                         focused
                      />
                   </Grid>
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2}>
                   <AppAutocomplete
+                     sx={{ zIndex: 20, height: 25, position: 'relative' }}
                      value={_.map(dataFilter.regions, (item) => {
                         return { value: item };
                      })}
@@ -569,7 +567,7 @@ export default function Booking() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.plants, (item) => {
                         return { value: item };
@@ -587,14 +585,13 @@ export default function Booking() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2}>
+               <Grid item xs={2} sx={{ height: 25, zIndex: 10, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.metaSeries, (item) => {
                         return { value: item };
                      })}
                      options={initDataFilter.metaSeries}
                      label={t('filters.metaSeries')}
-                     sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'metaSeries')}
                      limitTags={1}
                      disableListWrap
@@ -605,14 +602,13 @@ export default function Booking() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.dealers, (item) => {
                         return { value: item };
                      })}
                      options={initDataFilter.dealers}
                      label={t('filters.dealerName')}
-                     sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'dealers')}
                      limitTags={1}
                      disableListWrap
@@ -623,14 +619,13 @@ export default function Booking() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2}>
+               <Grid item xs={2} sx={{ height: 25, zIndex: 10, position: 'relative' }}>
                   <AppAutocomplete
                      value={_.map(dataFilter.classes, (item) => {
                         return { value: item };
                      })}
                      options={initDataFilter.classes}
                      label={t('filters.class')}
-                     sx={{ height: 25, zIndex: 10 }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'classes')}
                      limitTags={1}
                      disableListWrap
@@ -648,7 +643,7 @@ export default function Booking() {
                      })}
                      options={initDataFilter.models}
                      label={t('filters.models')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'models')}
                      limitTags={1}
                      disableListWrap
@@ -659,14 +654,14 @@ export default function Booking() {
                      getOptionLabel={(option) => `${option.value}`}
                   />
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25 }}>
+               <Grid item xs={2}>
                   <AppAutocomplete
                      value={_.map(dataFilter.segments, (item) => {
                         return { value: item };
                      })}
                      options={initDataFilter.segments}
                      label={t('filters.segment')}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ zIndex: 10, height: 25, position: 'relative' }}
                      onChange={(e, option) => handleChangeDataFilter(option, 'segments')}
                      limitTags={1}
                      disableListWrap
@@ -777,33 +772,35 @@ export default function Booking() {
                         buttonName="button.bookedFile"
                      />
                   </Grid>
-                  <Typography
-                     sx={{
-                        color: 'blue',
-                        fontSize: 15,
-                        margin: '0 30px 0 10px',
-                        cursor: 'pointer',
-                     }}
-                     onClick={() => downloadFileByURL(exampleFile[BOOKING])}
-                  >
-                     {t('link.getExampleUploadFile')}
-                  </Typography>
                   <Grid item xs={2}>
                      <UploadFileDropZone
                         handleUploadFile={handleUploadCostDataFile}
                         buttonName="button.costDataFile"
                      />
                   </Grid>
+                  <Grid item xs={2}>
+                     <UploadFileDropZone
+                        handleUploadFile={handleUploadAOPMarginFile}
+                        buttonName="button.aopMargin"
+                     />
+                  </Grid>
                   <Typography
                      sx={{
                         color: 'blue',
-                        fontSize: 15,
+                        fontSize: 5,
                         margin: '0 30px 0 10px',
                         cursor: 'pointer',
                      }}
-                     onClick={() => downloadFileByURL(exampleFile[COST_DATA])}
+                     onClick={() => downloadFileByURL(exampleFile[BOOKING])}
                   >
-                     {t('link.getExampleUploadFile')}
+                     <GetAppIcon
+                        sx={{
+                           color: 'black',
+                           marginTop: '2px',
+                           fontSize: 'large',
+                           '&:hover': { color: 'red' },
+                        }}
+                     />
                   </Typography>
                </Grid>
             </When>
@@ -848,7 +845,7 @@ export default function Booking() {
             handleOpenImageDialog={handleOpenImageDialog}
             onClose={handleCloseProductDetail}
          />
-         <ShowImageDialog {...imageDialogState} onClose={handleCloseImageDialog} />
+         <ShowImageDialog />
          <Backdrop
             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={loading}

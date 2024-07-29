@@ -5,7 +5,8 @@
       "manageIndicator": "管理竞争对手",
       "users": "用户",
       "historicalImporting": "历史导入",
-      "importTracking": "进口追踪"
+      "importTracking": "进口追踪",
+      "help": "帮助"
    },
 
    "title": {
@@ -20,7 +21,7 @@
       "exchangeRates": "汇率",
       "dataScraping": "数据抓取",
       "volumeDiscountAnalysis": "数量折扣分析",
-      "bookingMarginTrialTest": "比较利润",
+      "bookingMarginTrialTest": "API 发票与已登记保证金",
       "priceVolumeSensitivity": "价格量敏感度",
       "redidualValue": "折旧值表"
    },
@@ -106,7 +107,10 @@
       "update": "更多的",
       "delete": "擦除",
       "add": "更多的",
-      "calculate": "计算"
+      "bookedFile": "上传已预订文件",
+      "costDataFile": "上传成本数据文件",
+      "calculate": "计算",
+      "aopMargin": "上传AOP边距"
    },
 
    "table": {
@@ -308,7 +312,11 @@
       "cannotConnectToServer": "后台服务没有响应。请稍后再试或联系支持。",
       "pageNotFound": "未找到页面。正在自动重定向到主页。",
       "timeExceedsThreeMonths": "时间超过3个月，请选择较短的范围。",
-      "timeExceedsTwelveMonths": "时间超过12个月，请选择较短的范围。"
+      "timeExceedsTwelveMonths": "时间超过12个月，请选择较短的范围。",
+      "internalServerError": "伺服器內部錯誤。",
+      "internalServerErrorMessage": "请稍后再试，如果问题仍然存在，请随时联系我们。",
+      "underMaintenance": "维护中。",
+      "underMaintenanceMessage": "对不起，这个页面正在维护中。请耐心等待，并稍后再试。"
    },
 
    "gumReport": {
