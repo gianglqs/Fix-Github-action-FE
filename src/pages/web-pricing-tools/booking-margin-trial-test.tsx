@@ -19,7 +19,7 @@ import {
    AppTextField,
    DataTablePagination,
 } from '@/components';
-
+import AppDataTable from '@/components/DataTable/AppDataGridPro';
 import { produce } from 'immer';
 import _ from 'lodash';
 
@@ -146,7 +146,6 @@ export default function Shipment() {
    useEffect(() => {
       const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
          if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
-            console.log('hehe, ', dataFilter);
             setCookie(null, 'bookingMarginTrialTestFilter', JSON.stringify(dataFilter), {
                maxAge: 604800,
                path: '/',
@@ -602,7 +601,6 @@ export default function Shipment() {
    const handleClearAllFilters = () => {
       setDataFilter(defaultValueFilterOrder);
    };
-
    return (
       <>
          <AppLayout entity="bookingMarginTrialTest">
@@ -811,8 +809,9 @@ export default function Shipment() {
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
-                  <DataGridPro
+                  <AppDataTable
                      hideFooter
+                     entity="booking-margin-trial-test"
                      disableColumnMenu
                      sx={{
                         '& .MuiDataGrid-columnHeaderTitle': {
@@ -820,10 +819,9 @@ export default function Shipment() {
                            lineHeight: 1.2,
                         },
                      }}
-                     slots={{
-                        toolbar: GridToolbar,
-                     }}
+                     currency="USD"
                      columnHeaderHeight={40}
+                     dataFilter={dataFilter}
                      rowHeight={30}
                      rowBufferPx={35}
                      getRowId={(params) => params.booking.orderNo}

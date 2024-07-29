@@ -17,7 +17,7 @@ import {
    DataTablePagination,
    EditIcon,
 } from '@/components';
-
+import AppDataTable from '@/components/DataTable/AppDataGridPro';
 import _ from 'lodash';
 import { produce } from 'immer';
 
@@ -642,28 +642,31 @@ export default function Product() {
 
             <Paper elevation={1} sx={{ marginTop: 2, position: 'relative' }}>
                <Grid container>
-                  <DataTable
-                     hideFooter
-                     disableColumnMenu
-                     sx={{
-                        '& .MuiDataGrid-columnHeaderTitle': {
-                           whiteSpace: 'break-spaces',
-                           lineHeight: 1.2,
-                        },
-                     }}
-                     tableHeight={`calc(100vh - ${heightComponentExcludingTable}px)`}
-                     columnHeaderHeight={60}
-                     rowHeight={30}
-                     slots={{
-                        toolbar: GridToolbar,
-                     }}
-                     rows={listProduct}
-                     rowBufferPx={35}
-                     columns={columns}
-                     getRowId={(params) => params.id}
-                     onRowClick={handleOpenProductDetailDialog}
-                     onCellClick={handleOnCellClick}
-                  />
+                  <Grid
+                     container
+                     sx={{ height: `calc(100vh - ${heightComponentExcludingTable}px)` }}
+                  >
+                     <AppDataTable
+                        hideFooter
+                        currency="USD"
+                        entity={'product'}
+                        sx={{
+                           '& .MuiDataGrid-columnHeaderTitle': {
+                              whiteSpace: 'break-spaces',
+                              lineHeight: 1.2,
+                           },
+                        }}
+                        dataFilter={dataFilter}
+                        columnHeaderHeight={60}
+                        rowHeight={30}
+                        rows={listProduct}
+                        rowBufferPx={35}
+                        columns={columns}
+                        getRowId={(params) => params.id}
+                        onRowClick={handleOpenProductDetailDialog}
+                        onCellClick={handleOnCellClick}
+                     />
+                  </Grid>
                </Grid>
 
                <DataTablePagination

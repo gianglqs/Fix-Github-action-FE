@@ -36,6 +36,7 @@ const AppDataTable: React.FC<any> = (props) => {
       getRowId,
       ...rest
    } = props;
+
    return (
       <DataGridPro
          hideFooter

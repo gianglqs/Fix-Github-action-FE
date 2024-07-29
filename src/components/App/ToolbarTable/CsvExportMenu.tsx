@@ -18,7 +18,10 @@ const CsvExportToolbar: React.FC<GridCsvExportMenuItemProps> = (props) => {
    const { hideMenu, optionsFilter, modelType, currency } = props;
 
    const handleExport = async () => {
-      const dataFilter = { modelType, optionsFilter: optionsFilter };
+      const dataFilter =
+         modelType === 'volume-discount-analysis'
+            ? { modelType, volumeDiscountRequest: optionsFilter, optionsFilter: { currency } }
+            : { modelType, optionsFilter: optionsFilter };
       if (modelType === 'simulation-modeling') {
          commonApi
             .exportSimulationModelingTableToExcelFile(optionsFilter)
@@ -48,7 +51,7 @@ const CsvExportToolbar: React.FC<GridCsvExportMenuItemProps> = (props) => {
 
    return (
       <GridToolbarExportContainer>
-         <MenuItem onClick={handleExport}>Export as Excel</MenuItem>
+         <MenuItem onClick={handleExport}>Export File</MenuItem>
       </GridToolbarExportContainer>
    );
 };
