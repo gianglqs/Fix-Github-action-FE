@@ -105,9 +105,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
                   transition: 'text-shadow 0.25s ease',
                   '&:hover ': {
                      textShadow:
-                        router.pathname === `/web-pricing-tools/${name}`
-                           ? 'none'
-                           : '0 0 1px rgba(0,0,0,1)',
+                        router.pathname === `/web-pricing-tools/${name}` ? 'none' : '0 0 0 black',
                   },
                }}
             >
@@ -115,7 +113,11 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
                   variant="body1"
                   fontWeight="fontWeightMedium"
                   className={classes.label}
-                  color={router.pathname === `/web-pricing-tools/${name}` ? '#e7a800' : ''}
+                  color={
+                     router.pathname === `/web-pricing-tools/${name}`
+                        ? '#e7a800'
+                        : 'rgba(0,0,0,0.8)'
+                  }
                >
                   {menuObj[name]}
                </Typography>
