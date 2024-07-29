@@ -3,6 +3,7 @@ import userSaga from './userSaga';
 import { fetchBooking, switchCurrencyBooking } from './bookingSaga';
 import {
    handleUploadMacroFileSaga,
+   handleUploadPowerBIFileSaga,
    handleEstimateMarginSaga,
    fetchExampleUploadFile,
    handleOpenCalculateFileSaga,
@@ -36,6 +37,7 @@ function* rootSaga() {
    yield fork(fetchBooking);
    yield fork(switchCurrencyBooking);
    yield fork(handleUploadMacroFileSaga);
+   yield fork(handleUploadPowerBIFileSaga);
    yield fork(handleEstimateMarginSaga);
    yield fork(handleOpenCalculateFileSaga);
    yield fork(fetchExampleUploadFile);

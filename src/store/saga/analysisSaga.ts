@@ -1,9 +1,13 @@
 import marginAnalysisApi from '@/api/marginAnalysis.api';
 import { OptionFilterFromCalculateFile } from '@/types/quotationMargin';
+import { formatNumberPercentage } from '@/utils/formatCell';
+import { PayloadAction } from '@reduxjs/toolkit';
+import { AxiosResponse } from 'axios';
 import { put, takeEvery } from 'redux-saga/effects';
 import { all, call, select } from 'typed-redux-saga';
 import { commonStore, marginAnalysisStore } from '../reducers';
-import { formatNumberPercentage } from '@/utils/formatCell';
+
+type ApiFunction = (formData: FormData) => Promise<AxiosResponse<any>>;
 
 function* handleEstimateMargin() {
    yield put(marginAnalysisStore.actions.showLoadingPage());
@@ -73,14 +77,21 @@ function* getExampleUploadFile() {
    }
 }
 
-function* handleUploadMacroFile(action) {
+function* handleUploadMacroFile(action: PayloadAction<File>) {
+   yield* handleUploadFile(marginAnalysisApi.importMacroFile, action.payload);
+}
+
+function* handleUploadPowerBIFile(action: PayloadAction<File>) {
+   yield* handleUploadFile(marginAnalysisApi.importPowerBiFile, action.payload);
+}
+
+function* handleUploadFile(api: ApiFunction, file: File) {
    try {
       yield put(marginAnalysisStore.actions.showLoadingPage());
-      const file = action.payload;
       let formData = new FormData();
       formData.append('file', file);
 
-      const { data } = yield* call(marginAnalysisApi.importMacroFile, formData);
+      const { data } = yield* call(api, formData);
 
       yield put(commonStore.actions.setSuccessMessage(data.message));
       yield put(marginAnalysisStore.actions.hideLoadingPage());
@@ -90,7 +101,7 @@ function* handleUploadMacroFile(action) {
    }
 }
 
-function* handleOpenCulculateFile(action) {
+function* handleOpenCulculateFile(action: PayloadAction<File>) {
    const file = action.payload;
    try {
       yield put(marginAnalysisStore.actions.showLoadingPage());
@@ -144,6 +155,10 @@ function* handleUploadMacroFileSaga() {
    yield takeEvery(marginAnalysisStore.uploadMacroFile, handleUploadMacroFile);
 }
 
+function* handleUploadPowerBIFileSaga() {
+   yield takeEvery(marginAnalysisStore.uploadPowerBIFile, handleUploadPowerBIFile);
+}
+
 function* handleOpenCalculateFileSaga() {
    yield takeEvery(marginAnalysisStore.openCalculatorFile, handleOpenCulculateFile);
 }
@@ -158,7 +173,8 @@ function* fetchExampleUploadFile() {
 
 export {
    fetchExampleUploadFile,
-   handleUploadMacroFileSaga,
    handleEstimateMarginSaga,
    handleOpenCalculateFileSaga,
+   handleUploadMacroFileSaga,
+   handleUploadPowerBIFileSaga,
 };

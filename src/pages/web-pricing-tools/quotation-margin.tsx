@@ -98,28 +98,16 @@ export default function MarginAnalysis() {
       dispatch(marginAnalysisStore.estimateMargin());
    };
 
-   const handleOpenMarginFile = async (file) => {
+   const handleOpenMarginFile = async (file: File) => {
       dispatch(marginAnalysisStore.openCalculatorFile(file));
    };
 
-   const handleImportMacroFile = async (file) => {
+   const handleImportMacroFile = async (file: File) => {
       dispatch(marginAnalysisStore.uploadMacroFile(file));
    };
 
-   const handleImportPowerBi = async (file) => {
-      let formData = new FormData();
-      formData.append('file', file);
-      dispatch(marginAnalysisStore.actions.showLoadingPage());
-      marginAnalysisApi
-         .importPowerBiFile(formData)
-         .then((response) => {
-            dispatch(marginAnalysisStore.actions.hideLoadingPage());
-            dispatch(commonStore.actions.setSuccessMessage('Import successfully'));
-         })
-         .catch((error) => {
-            dispatch(marginAnalysisStore.actions.hideLoadingPage());
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
+   const handleImportPowerBi = async (file: File) => {
+      dispatch(marginAnalysisStore.uploadPowerBIFile(file));
    };
 
    const getCurrencyForManufacturingCost = (data: any) => {
