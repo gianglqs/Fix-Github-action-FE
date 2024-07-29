@@ -36,7 +36,7 @@ const DeactiveUserDialog: React.FC<any> = (props) => {
          if (getCookie('id') != detail.id) {
             const { data } = await dashboardApi.getUser({ search: '' });
             dispatch(userStore.actions.setUserList(JSON.parse(data)?.userList));
-         }
+         } else window.location.href = '/login';
          dispatch(
             commonStore.actions.setSuccessMessage(
                detail?.isActive ? 'Deactivate user successfully' : 'Activate user successfully'
