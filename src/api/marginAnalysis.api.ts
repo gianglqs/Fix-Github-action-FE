@@ -25,8 +25,8 @@ class MarginAnalysisApi extends HttpService<any> {
       return this.importData<any>('marginData/readNOVOFile', data);
    };
 
-   importMacroFile = (requestId: string, data: any) => {
-      return this.importData<any>('importMacroFile', data, { requestId });
+   importMacroFile = (data: any) => {
+      return this.importData<any>('importMacroFile', data);
    };
 
    importPowerBiFile = (data: any) => {

@@ -73,6 +73,23 @@ function* getExampleUploadFile() {
    }
 }
 
+function* handleUploadMacroFile(action) {
+   try {
+      yield put(marginAnalysisStore.actions.showLoadingPage());
+      const file = action.payload;
+      let formData = new FormData();
+      formData.append('file', file);
+
+      const { data } = yield* call(marginAnalysisApi.importMacroFile, formData);
+
+      yield put(commonStore.actions.setSuccessMessage(data.message));
+      yield put(marginAnalysisStore.actions.hideLoadingPage());
+   } catch (error) {
+      yield put(marginAnalysisStore.actions.hideLoadingPage());
+      yield put(commonStore.actions.setErrorMessage(error.message));
+   }
+}
+
 function* handleOpenCulculateFile(action) {
    const file = action.payload;
    try {
@@ -123,12 +140,12 @@ function* handleOpenCulculateFile(action) {
    }
 }
 
-function* handleOpenCalculateFileSaga() {
-   yield takeEvery(marginAnalysisStore.openCalculatorFile, handleOpenCulculateFile);
+function* handleUploadMacroFileSaga() {
+   yield takeEvery(marginAnalysisStore.uploadMacroFile, handleUploadMacroFile);
 }
 
-function* fetchLoadingQuotationMarginPage() {
-   //yield takeEvery(marginAnalysisStore.sagaGetList, getLoadingPage);
+function* handleOpenCalculateFileSaga() {
+   yield takeEvery(marginAnalysisStore.openCalculatorFile, handleOpenCulculateFile);
 }
 
 function* handleEstimateMarginSaga() {
@@ -141,7 +158,7 @@ function* fetchExampleUploadFile() {
 
 export {
    fetchExampleUploadFile,
-   fetchLoadingQuotationMarginPage,
+   handleUploadMacroFileSaga,
    handleEstimateMarginSaga,
    handleOpenCalculateFileSaga,
 };

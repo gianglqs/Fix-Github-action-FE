@@ -38,7 +38,6 @@ export const initialState = {
    fileUUID: undefined,
    fileName: undefined,
    dataFilter: defaultDataFilterQuotationMargin as any,
-   requestId: undefined,
    currency: undefined,
    exampleUploadFile: {} as any,
 };
@@ -73,10 +72,6 @@ const marginAnalysisSlice = createSlice({
          state.fileName = payload;
       },
 
-      setRequestId(state, { payload }: PayloadAction<any>) {
-         state.requestId = payload;
-      },
-
       setCurrency(state, { payload }: PayloadAction<any>) {
          state.currency = payload;
       },
@@ -109,6 +104,8 @@ const marginAnalysisSlice = createSlice({
 export const sagaGetList = createAction(`${name}/GET_LIST`);
 export const openCalculatorFile = createAction(`${name}/openCulculateFile`);
 export const estimateMargin = createAction(`${name}/estimateMarginAnalysis`);
+export const uploadMacroFile = createAction(`${name}/uploadMacroFile`);
+export const uploadPowerBIFile = createAction(`${name}/uploadPowerBIFile`);
 // Selectors
 export const selectState = (state: RootReducerType) => state[name];
 export const selectMarginData = createSelector(selectState, (state) => state.marginAnalystData);
@@ -118,7 +115,6 @@ export const selectInitDataFilter = createSelector(selectState, (state) => state
 export const selectDataFilter = createSelector(selectState, (state) => state.dataFilter);
 export const selectFileUUID = createSelector(selectState, (state) => state.fileUUID);
 export const selectFileName = createSelector(selectState, (state) => state.fileName);
-export const selectRequestId = createSelector(selectState, (state) => state.requestId);
 export const selectCurrency = createSelector(selectState, (state) => state.currency);
 export const selectExampleUploadFile = createSelector(
    selectState,

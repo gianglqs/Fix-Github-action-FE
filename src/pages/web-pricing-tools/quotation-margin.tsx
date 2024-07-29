@@ -103,23 +103,7 @@ export default function MarginAnalysis() {
    };
 
    const handleImportMacroFile = async (file) => {
-      let formData = new FormData();
-      formData.append('file', file);
-      dispatch(marginAnalysisStore.actions.showLoadingPage());
-
-      const requestId = uuidv4();
-      dispatch(marginAnalysisStore.actions.setRequestId(requestId));
-
-      marginAnalysisApi
-         .importMacroFile(requestId, formData)
-         .then((response) => {
-            dispatch(marginAnalysisStore.actions.hideLoadingPage());
-            dispatch(commonStore.actions.setSuccessMessage('Import successfully'));
-         })
-         .catch((error) => {
-            dispatch(marginAnalysisStore.actions.hideLoadingPage());
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
+      dispatch(marginAnalysisStore.uploadMacroFile(file));
    };
 
    const handleImportPowerBi = async (file) => {

@@ -2,7 +2,7 @@ import { fork } from 'redux-saga/effects';
 import userSaga from './userSaga';
 import { fetchBooking, switchCurrencyBooking } from './bookingSaga';
 import {
-   fetchLoadingQuotationMarginPage,
+   handleUploadMacroFileSaga,
    handleEstimateMarginSaga,
    fetchExampleUploadFile,
    handleOpenCalculateFileSaga,
@@ -35,7 +35,7 @@ function* rootSaga() {
    yield fork(userSaga);
    yield fork(fetchBooking);
    yield fork(switchCurrencyBooking);
-   yield fork(fetchLoadingQuotationMarginPage);
+   yield fork(handleUploadMacroFileSaga);
    yield fork(handleEstimateMarginSaga);
    yield fork(handleOpenCalculateFileSaga);
    yield fork(fetchExampleUploadFile);
