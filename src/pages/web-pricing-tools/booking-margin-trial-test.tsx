@@ -877,7 +877,9 @@ function UploadFileDropZone(props) {
             reader.onload = () => {
                if (props.uploadedFile.length + acceptedFiles.length >= 2) {
                   dispatch(
-                     commonStore.actions.setErrorMessage(t('uploadSelectOnlyOneFileAtATime'))
+                     commonStore.actions.setErrorMessage(
+                        t('commonErrorMessage.uploadSelectOnlyOneFileAtATime')
+                     )
                   );
                } else {
                   props.setUploadedFile(file);
