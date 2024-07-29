@@ -10,7 +10,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 
 import { AccountCircle } from '@mui/icons-material';
-import { AppBar, Grid, Popover, Typography } from '@mui/material';
+import { AppBar, Grid, Popover, Typography, Box } from '@mui/material';
 import { usePopupState, bindPopover, bindTrigger } from 'material-ui-popup-state/hooks';
 import { AppLayoutProps } from './type';
 import AppFooter from '../Footer';
@@ -99,14 +99,27 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
             href={`/web-pricing-tools/${name}`}
             style={{ textDecoration: 'none', cursor: 'pointer', color: '#000' }}
          >
-            <Typography
-               variant="body1"
-               fontWeight="fontWeightMedium"
-               className={classes.label}
-               color={router.pathname === `/web-pricing-tools/${name}` ? '#e7a800' : ''}
+            {' '}
+            <Box
+               sx={{
+                  transition: 'text-shadow 0.25s ease',
+                  '&:hover ': {
+                     textShadow:
+                        router.pathname === `/web-pricing-tools/${name}`
+                           ? 'none'
+                           : '0 0 1px rgba(0,0,0,1)',
+                  },
+               }}
             >
-               {menuObj[name]}
-            </Typography>
+               <Typography
+                  variant="body1"
+                  fontWeight="fontWeightMedium"
+                  className={classes.label}
+                  color={router.pathname === `/web-pricing-tools/${name}` ? '#e7a800' : ''}
+               >
+                  {menuObj[name]}
+               </Typography>
+            </Box>
          </Link>
       ));
    };
