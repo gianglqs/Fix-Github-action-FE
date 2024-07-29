@@ -8,6 +8,8 @@ import { commonStore, userStore } from '@/store/reducers';
 
 import dashboardApi from '@/api/dashboard.api';
 import { useTranslation } from 'react-i18next';
+import { Cookie } from '@mui/icons-material';
+import { id } from 'date-fns/locale';
 
 const DeactiveUserDialog: React.FC<any> = (props) => {
    const { open, onClose, detail } = props;
@@ -19,12 +21,22 @@ const DeactiveUserDialog: React.FC<any> = (props) => {
       defaultValues: detail,
    });
 
+   function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+   }
+
    const handleDeactivateUser = deactivateUserForm.handleSubmit(async () => {
       try {
          setLoading(true);
          await dashboardApi.deactivateUser(detail.id);
-         const { data } = await dashboardApi.getUser({ search: '' });
-         dispatch(userStore.actions.setUserList(JSON.parse(data)?.userList));
+
+         //get id from cookie
+         if (getCookie('id') != detail.id) {
+            const { data } = await dashboardApi.getUser({ search: '' });
+            dispatch(userStore.actions.setUserList(JSON.parse(data)?.userList));
+         } else window.location.href = '/login';
          dispatch(
             commonStore.actions.setSuccessMessage(
                detail?.isActive ? 'Deactivate user successfully' : 'Activate user successfully'
