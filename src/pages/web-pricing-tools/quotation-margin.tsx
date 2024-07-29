@@ -279,22 +279,17 @@ export default function MarginAnalysis() {
                      top: 60,
                      left: 0,
                      right: 0,
-                     bottom: 0,
+                     bottom: -35,
                      backgroundColor: 'rgba(0,0,0, 0.3)',
                      position: 'absolute',
                      display: 'flex',
                      justifyContent: 'center',
                      alignItems: 'center',
                      zIndex: 1001,
+                     color: '#fff',
                   }}
                >
-                  <CircularProgress
-                     color="info"
-                     size={60}
-                     sx={{
-                        position: 'relative',
-                     }}
-                  />
+                  <CircularProgress color="inherit" />
                </div>
             ) : null}
             <Grid container spacing={1.1} display="flex" alignItems="center">
