@@ -146,7 +146,6 @@ export default function Shipment() {
    useEffect(() => {
       const debouncedHandleWhenChangeDataFilter = _.debounce(() => {
          if (!isEmptyObject(dataFilter) && dataFilter != cacheDataFilter) {
-            console.log('hehe, ', dataFilter);
             setCookie(null, 'bookingMarginTrialTestFilter', JSON.stringify(dataFilter), {
                maxAge: 604800,
                path: '/',
@@ -602,7 +601,6 @@ export default function Shipment() {
    const handleClearAllFilters = () => {
       setDataFilter(defaultValueFilterOrder);
    };
-   console.log(dataFilter);
    return (
       <>
          <AppLayout entity="bookingMarginTrialTest">
