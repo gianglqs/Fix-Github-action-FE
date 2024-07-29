@@ -20,15 +20,14 @@ import {
 import Grid from '@mui/material/Grid';
 import { GetServerSidePropsContext } from 'next';
 import { parseCookies } from 'nookies';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { formatNumberPercentage } from '@/utils/formatCell';
-import { v4 as uuidv4 } from 'uuid';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
-import { MACRO, NOVO, PART } from '@/utils/modelType';
+import { NOVO } from '@/utils/modelType';
 
 import GetAppIcon from '@mui/icons-material/GetApp';
 
@@ -56,7 +55,6 @@ export default function MarginAnalysis() {
    const loading = useSelector(marginAnalysisStore.selectIsLoadingPage);
    const initDataFilter = useSelector(marginAnalysisStore.selectInitDataFilter);
    const dataFilter = useSelector(marginAnalysisStore.selectDataFilter);
-   const fileUUID = useSelector(marginAnalysisStore.selectFileUUID);
    const marginCalculateData = useSelector(marginAnalysisStore.selectMarginData);
    const fileName = useSelector(marginAnalysisStore.selectFileName);
    const calculatedCurrency = useSelector(marginAnalysisStore.selectCurrency);
@@ -78,145 +76,36 @@ export default function MarginAnalysis() {
    };
 
    const handleCalculateMargin = async () => {
-      try {
-         if (!dataFilter.modelCode) {
-            dispatch(
-               commonStore.actions.setErrorMessage(t('commonErrorMessage.modelCodeNotSelected'))
-            );
-            return;
-         }
-         if (!dataFilter.series) {
-            dispatch(
-               commonStore.actions.setErrorMessage(t('commonErrorMessage.seriesNotSelected'))
-            );
-            return;
-         }
-         if (!dataFilter.orderNumber && !dataFilter.type) {
-            dispatch(
-               commonStore.actions.setErrorMessage(
-                  t('commonErrorMessage.typeOrOrderNumberNotSelected')
-               )
-            );
-            return;
-         }
-
-         const transformData = {
-            marginData: {
-               id: {
-                  modelCode: dataFilter.modelCode,
-                  type: !dataFilter.type ? 0 : dataFilter.type,
-                  currency: dataFilter.currency,
-               },
-
-               fileUUID: fileUUID,
-               orderNumber: !dataFilter.orderNumber ? '' : dataFilter.orderNumber,
-               plant: 'SN',
-               series: dataFilter.series,
-               modelCode: dataFilter.modelCode,
-            },
-            region: dataFilter.region,
-            subRegion: dataFilter.subRegion,
-            delivery: dataFilter.delivery,
-            additionalDiscount,
-         };
-
-         setLoading(true);
-
-         const requestId = uuidv4();
-         dispatch(marginAnalysisStore.actions.setRequestId(requestId));
-
-         const { data } = await marginAnalysisApi.estimateMarginAnalystData(
-            {
-               ...transformData,
-            },
-            requestId
-         );
-
-         const analysisSummary = data?.MarginAnalystSummary;
-         const marginAnalystData = data?.MarginAnalystData;
-
-         marginAnalystData.forEach((margin) => {
-            margin.discount = formatNumberPercentage(margin.discount * 100);
-            margin.listPrice = margin.listPrice.toLocaleString();
-            margin.manufacturingCost = margin.manufacturingCost.toLocaleString();
-            margin.dealerNet = margin.dealerNet.toLocaleString();
-         });
-
-         const marginData = {
-            targetMargin: data?.TargetMargin,
-            listDataAnalysis: marginAnalystData,
-            marginAnalysisSummary: analysisSummary,
-         };
-
-         dispatch(marginAnalysisStore.actions.setMarginData(marginData));
-         dispatch(marginAnalysisStore.actions.setRequestId(undefined));
+      if (!dataFilter.modelCode) {
          dispatch(
-            marginAnalysisStore.actions.setCurrency(data.MarginAnalystSummary.annually.id.currency)
+            commonStore.actions.setErrorMessage(t('commonErrorMessage.modelCodeNotSelected'))
          );
-
-         setLoading(false);
-      } catch (error) {
-         dispatch(commonStore.actions.setErrorMessage(error.message));
-         setLoading(false);
+         return;
       }
+      if (!dataFilter.series) {
+         dispatch(commonStore.actions.setErrorMessage(t('commonErrorMessage.seriesNotSelected')));
+         return;
+      }
+      if (!dataFilter.orderNumber && !dataFilter.type) {
+         dispatch(
+            commonStore.actions.setErrorMessage(
+               t('commonErrorMessage.typeOrOrderNumberNotSelected')
+            )
+         );
+         return;
+      }
+
+      dispatch(marginAnalysisStore.estimateMargin());
    };
 
    const handleOpenMarginFile = async (file) => {
-      let formData = new FormData();
-      formData.append('file', file);
-      setLoading(true);
-
-      dispatch(marginAnalysisStore.actions.resetFilter());
-
-      marginAnalysisApi
-         .checkFilePlant(formData)
-         .then((response) => {
-            setLoading(false);
-
-            dispatch(marginAnalysisStore.actions.setFileUUID(response.data.fileUUID));
-
-            const types = response.data.marginFilters.types;
-            const modelCodes = response.data.marginFilters.modelCodes;
-            const series = response.data.marginFilters.series;
-            const orderNumbers = response.data.marginFilters.orderNumbers;
-
-            const sortCharacter = (a, b) => {
-               const nameA = a.value.toUpperCase(); // ignore upper and lowercase
-               const nameB = b.value.toUpperCase(); // ignore upper and lowercase
-               if (nameA < nameB) {
-                  return -1;
-               }
-               if (nameA > nameB) {
-                  return 1;
-               }
-               return 0;
-            };
-
-            types.sort((a, b) => a.value - b.value);
-            modelCodes.sort((a, b) => sortCharacter(a, b));
-            series.sort((a, b) => sortCharacter(a, b));
-            orderNumbers.sort((a, b) => sortCharacter(a, b));
-
-            const newInitDataFilter = { ...initDataFilter };
-            newInitDataFilter.type = types;
-            newInitDataFilter.modelCode = modelCodes;
-            newInitDataFilter.series = series;
-            newInitDataFilter.orderNumber = orderNumbers;
-
-            dispatch(marginAnalysisStore.actions.setInitDataFilter(newInitDataFilter));
-            // if (types.length !== 0) handleUpdateDataFilterStore('type', types[0].value);
-         })
-         .catch((error) => {
-            setLoading(false);
-            console.log(error);
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
+      dispatch(marginAnalysisStore.openCalculatorFile(file));
    };
 
    const handleImportMacroFile = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
-      setLoading(true);
+      dispatch(marginAnalysisStore.actions.showLoadingPage());
 
       const requestId = uuidv4();
       dispatch(marginAnalysisStore.actions.setRequestId(requestId));
@@ -224,11 +113,11 @@ export default function MarginAnalysis() {
       marginAnalysisApi
          .importMacroFile(requestId, formData)
          .then((response) => {
-            setLoading(false);
+            dispatch(marginAnalysisStore.actions.hideLoadingPage());
             dispatch(commonStore.actions.setSuccessMessage('Import successfully'));
          })
          .catch((error) => {
-            setLoading(false);
+            dispatch(marginAnalysisStore.actions.hideLoadingPage());
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
@@ -236,15 +125,15 @@ export default function MarginAnalysis() {
    const handleImportPowerBi = async (file) => {
       let formData = new FormData();
       formData.append('file', file);
-      setLoading(true);
+      dispatch(marginAnalysisStore.actions.showLoadingPage());
       marginAnalysisApi
          .importPowerBiFile(formData)
          .then((response) => {
-            setLoading(false);
+            dispatch(marginAnalysisStore.actions.hideLoadingPage());
             dispatch(commonStore.actions.setSuccessMessage('Import successfully'));
          })
          .catch((error) => {
-            setLoading(false);
+            dispatch(marginAnalysisStore.actions.hideLoadingPage());
             dispatch(commonStore.actions.setErrorMessage(error.message));
          });
    };
@@ -405,17 +294,13 @@ export default function MarginAnalysis() {
       setOpenCompareMargin(false);
    };
 
-   const setLoading = (status: boolean) => {
-      dispatch(marginAnalysisStore.actions.setLoadingPage(status));
-   };
-
    const setFileName = (fileName: string) => {
       dispatch(marginAnalysisStore.actions.setFileName(fileName));
    };
 
    return (
       <>
-         <AppLayout entity="margin_analysis">
+         <AppLayout entity="no reload ">
             {loading ? (
                <div
                   style={{

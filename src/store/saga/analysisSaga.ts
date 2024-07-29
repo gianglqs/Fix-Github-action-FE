@@ -1,14 +1,12 @@
-import checkProcessingApi from '@/api/checkProcessing.api';
 import marginAnalysisApi from '@/api/marginAnalysis.api';
-import { delay, put, takeEvery } from 'redux-saga/effects';
+import { OptionFilterFromCalculateFile } from '@/types/quotationMargin';
+import { put, takeEvery } from 'redux-saga/effects';
 import { all, call, select } from 'typed-redux-saga';
 import { commonStore, marginAnalysisStore } from '../reducers';
-import {
-   OptionFilterFromCalculateFile,
-   OptionsFilterQuotationMargin,
-} from '@/types/quotationMargin';
+import { formatNumberPercentage } from '@/utils/formatCell';
 
-function* getDataViewPrevious() {
+function* handleEstimateMargin() {
+   yield put(marginAnalysisStore.actions.showLoadingPage());
    try {
       const { fileUUID } = yield* all({
          fileUUID: select(marginAnalysisStore.selectFileUUID),
@@ -33,19 +31,33 @@ function* getDataViewPrevious() {
          },
          region: dataFilter.region,
       };
-      const { data } = yield call(
-         marginAnalysisApi.estimateMarginAnalystData,
-         {
-            ...transformData,
-         },
-         'requestId'
-      );
-      yield put(marginAnalysisStore.actions.setMarginData(data));
-      console.log(data);
+      const { data } = yield call(marginAnalysisApi.estimateMarginAnalystData, {
+         ...transformData,
+      });
+
+      const analysisSummary = data?.MarginAnalystSummary;
+      const marginAnalystData = data?.MarginAnalystData;
+
+      marginAnalystData.forEach((margin) => {
+         margin.discount = formatNumberPercentage(margin.discount * 100);
+         margin.listPrice = margin.listPrice.toLocaleString();
+         margin.manufacturingCost = margin.manufacturingCost.toLocaleString();
+         margin.dealerNet = margin.dealerNet.toLocaleString();
+      });
+
+      const marginData = {
+         targetMargin: data?.TargetMargin,
+         listDataAnalysis: marginAnalystData,
+         marginAnalysisSummary: analysisSummary,
+      };
+
+      yield put(marginAnalysisStore.actions.setMarginData(marginData));
       yield put(
          marginAnalysisStore.actions.setCurrency(data?.MarginAnalystSummary.annually.id.currency)
       );
+      yield put(marginAnalysisStore.actions.hideLoadingPage());
    } catch (error) {
+      yield put(marginAnalysisStore.actions.hideLoadingPage());
       yield put(commonStore.actions.setErrorMessage(error.message));
    }
 }
@@ -61,16 +73,17 @@ function* getExampleUploadFile() {
    }
 }
 
-function* handleCalculateMarginAnalysis(action) {
-   const { chosenFile } = action.payload;
-   console.log(chosenFile);
+function* handleOpenCulculateFile(action) {
+   const file = action.payload;
    try {
       yield put(marginAnalysisStore.actions.showLoadingPage());
 
       let formData = new FormData();
-      formData.append(chosenFile, chosenFile);
+      formData.append('file', file);
 
       const { data } = yield* call(marginAnalysisApi.checkFilePlant, formData);
+
+      yield put(marginAnalysisStore.actions.setFileUUID(data.fileUUID));
       const types = data.marginFilters.types;
       const modelCodes = data.marginFilters.modelCodes;
       const series = data.marginFilters.series;
@@ -100,7 +113,9 @@ function* handleCalculateMarginAnalysis(action) {
          series: series,
       };
 
-      yield put(marginAnalysisStore.actions.updateOptionFilterFromCalculateFile(optionsFilter));
+      yield put(
+         marginAnalysisStore.actions.updateOptionsFilterAfterOpenCalculateFile(optionsFilter)
+      );
       yield put(marginAnalysisStore.actions.hideLoadingPage());
    } catch (error) {
       yield put(marginAnalysisStore.actions.hideLoadingPage());
@@ -108,16 +123,16 @@ function* handleCalculateMarginAnalysis(action) {
    }
 }
 
-function* handleCalculateMarginAnalysisSaga() {
-   yield takeEvery(marginAnalysisStore.openCalculatorFile, handleCalculateMarginAnalysis);
+function* handleOpenCalculateFileSaga() {
+   yield takeEvery(marginAnalysisStore.openCalculatorFile, handleOpenCulculateFile);
 }
 
 function* fetchLoadingQuotationMarginPage() {
    //yield takeEvery(marginAnalysisStore.sagaGetList, getLoadingPage);
 }
 
-function* fetchDataViewPrevious() {
-   // yield takeEvery(marginAnalysisStore.sagaGetList, getDataViewPrevious);
+function* handleEstimateMarginSaga() {
+   yield takeEvery(marginAnalysisStore.estimateMargin, handleEstimateMargin);
 }
 
 function* fetchExampleUploadFile() {
@@ -125,8 +140,8 @@ function* fetchExampleUploadFile() {
 }
 
 export {
-   fetchDataViewPrevious,
-   fetchLoadingQuotationMarginPage,
    fetchExampleUploadFile,
-   handleCalculateMarginAnalysisSaga,
+   fetchLoadingQuotationMarginPage,
+   handleEstimateMarginSaga,
+   handleOpenCalculateFileSaga,
 };

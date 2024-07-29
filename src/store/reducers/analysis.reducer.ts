@@ -89,7 +89,7 @@ const marginAnalysisSlice = createSlice({
       },
 
       // setData for options filter
-      updateOptionFilterFromCalculateFile(
+      updateOptionsFilterAfterOpenCalculateFile(
          state,
          { payload }: PayloadAction<OptionFilterFromCalculateFile>
       ) {
@@ -107,8 +107,8 @@ const marginAnalysisSlice = createSlice({
 });
 
 export const sagaGetList = createAction(`${name}/GET_LIST`);
-export const openCalculatorFile = createAction(`${name}/handleOpenCulculateFile`);
-export const calculateMargin = createAction(`${name}/handleCalculateMargin`);
+export const openCalculatorFile = createAction(`${name}/openCulculateFile`);
+export const estimateMargin = createAction(`${name}/estimateMarginAnalysis`);
 // Selectors
 export const selectState = (state: RootReducerType) => state[name];
 export const selectMarginData = createSelector(selectState, (state) => state.marginAnalystData);
