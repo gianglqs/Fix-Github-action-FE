@@ -792,7 +792,7 @@ export default function IndicatorsV2() {
                               margin: '0 30px 0 10px',
                               cursor: 'pointer',
                            }}
-                           onClick={() => downloadFileByURL(exampleFile[FORECAST_PRICING])}
+                           onClick={() => downloadFileByURL(exampleFile[COMPETITOR])}
                         >
                            <GetAppIcon
                               sx={{
