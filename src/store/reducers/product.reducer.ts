@@ -15,6 +15,7 @@ export const initialState = {
    lastUpdatedTime: '' as any,
    lastUpdatedBy: '' as any,
    exampleUploadFile: {} as any,
+   isLoadingPage: false as boolean,
 };
 
 const productSlice = createSlice({
@@ -48,6 +49,12 @@ const productSlice = createSlice({
       setExampleUploadFile(state, { payload }: PayloadAction<any>) {
          state.exampleUploadFile = payload;
       },
+      showLoadingPage(state) {
+         state.isLoadingPage = true;
+      },
+      hideLoadingPage(state) {
+         state.isLoadingPage = false;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -57,6 +64,7 @@ const productSlice = createSlice({
 });
 
 export const sagaGetList = createAction(`${name}/GET_LIST`);
+export const uploadProductFile = createAction<File>(`${name}/uploadProductFile`);
 // Selectors
 export const selectState = (state: RootReducerType) => state[name];
 export const selectProductList = createSelector(selectState, (state) => state.productList);
@@ -71,6 +79,7 @@ export const selectServerTimeZone = createSelector(selectState, (state) => state
 export const selectLastUpdatedTime = createSelector(selectState, (state) => state.lastUpdatedTime);
 
 export const selectLastUpdatedBy = createSelector(selectState, (state) => state.lastUpdatedBy);
+export const selectLoadingPage = createSelector(selectState, (state) => state.isLoadingPage);
 
 export const selectExampleUploadFile = createSelector(
    selectState,

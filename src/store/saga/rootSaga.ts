@@ -1,37 +1,37 @@
 import { fork } from 'redux-saga/effects';
-import userSaga from './userSaga';
-import { fetchBooking, switchCurrencyBooking } from './bookingSaga';
+import adjustmentSaga from './adjustmentSaga';
 import {
+   fetchExampleUploadFile,
+   handleEstimateMarginSaga,
+   handleOpenCalculateFileSaga,
    handleUploadMacroFileSaga,
    handleUploadPowerBIFileSaga,
-   handleEstimateMarginSaga,
-   fetchExampleUploadFile,
-   handleOpenCalculateFileSaga,
 } from './analysisSaga';
+import bookingMarginTrialTestSaga from './bookingMarginTrialTestSaga';
+import { fetchBooking, switchCurrencyBooking } from './bookingSaga';
+import competitorColorSaga from './competitorColorSaga';
+import gumSaga from './gumSaga';
+import historicalImportSaga from './historicalImportSaga';
+import importFailureSaga from './importFailureSaga';
 import indicatorSaga from './indicatorSaga';
+import { fetchDashboard, fetchTableIndicator } from './indicatorV2Saga';
+import outlierSaga from './outlierSaga';
+import partSaga from './partSaga';
+import priceVolumeSensitivitySaga from './priceVolumeSensitivitySaga';
+import { fetchProductDataForTableSaga, handleUploadProductFileSaga } from './productSaga';
+import {
+   fetchDataResidualValueSaga,
+   fetchFirstResidualValue,
+   fetchModelCodeSaga,
+} from './residualValueSaga';
 import {
    fetchShipment,
-   switchCurrencyShipment,
    handleUploadShipmentFileSaga,
+   switchCurrencyShipment,
 } from './shipmentSaga';
-import outlierSaga from './outlierSaga';
 import trendsSaga from './trendsSaga';
-import adjustmentSaga from './adjustmentSaga';
-import competitorColorSaga from './competitorColorSaga';
-import productSaga from './productSaga';
-import partSaga from './partSaga';
-import historicalImportSaga from './historicalImportSaga';
+import userSaga from './userSaga';
 import volumeDiscountSaga from './volumeDiscountSaga';
-import bookingMarginTrialTestSaga from './bookingMarginTrialTestSaga';
-import importFailureSaga from './importFailureSaga';
-import priceVolumeSensitivitySaga from './priceVolumeSensitivitySaga';
-import gumSaga from './gumSaga';
-import { fetchDashboard, fetchTableIndicator } from './indicatorV2Saga';
-import {
-   fetchModelCodeSaga,
-   fetchFirstResidualValue,
-   fetchDataResidualValueSaga,
-} from './residualValueSaga';
 
 import { fetchImportTracking } from './importTrackingSaga';
 import managerCompetitorSaga from './manageCompetitorSaga';
@@ -56,7 +56,11 @@ function* rootSaga() {
    yield fork(trendsSaga);
    yield fork(adjustmentSaga);
    yield fork(competitorColorSaga);
-   yield fork(productSaga);
+
+   // Product
+   yield fork(fetchProductDataForTableSaga);
+   yield fork(handleUploadProductFileSaga);
+
    yield fork(partSaga);
    yield fork(historicalImportSaga);
    yield fork(volumeDiscountSaga);
