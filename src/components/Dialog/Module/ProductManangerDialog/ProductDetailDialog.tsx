@@ -37,15 +37,17 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    // if there are any changes -> allow submit
    useEffect(() => {
-      if ((updatedDescription && updatedDescription !== productDetail?.description) || imageFile) {
+      if (updatedDescription !== productDetail?.description || imageFile) {
          setEnableSubmitForm(true);
       } else {
          setEnableSubmitForm(false);
       }
    }, [imageFile, updatedDescription]);
+
    useEffect(() => {
       setUpdatedDescription(productDetail?.description);
-   }, [productDetail?.description]);
+   }, [open]);
+
    const updateForm = new FormData();
 
    const handleSubmitForm = updateProduct.handleSubmit(async () => {
@@ -56,7 +58,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       imageFile && updateForm.append('image', imageFile);
 
       // if have change description
-      if (updatedDescription !== productDetail.description && updatedDescription)
+      if (updatedDescription !== productDetail.description)
          updateForm.append('description', updatedDescription);
 
       try {
