@@ -113,7 +113,8 @@
       "costDataFile": "Tải lên Tệp Cost Data",
       "calculate": "Tính toán",
       "aopMargin": "Tải lên Tệp AOP Margin",
-      "uploadShipment": "Tải lên Tệp Shipment"
+      "uploadShipment": "Tải lên Tệp Shipment",
+      "uploadResidual": "Tải lên Tệp RV APIC"
    },
 
    "table": {

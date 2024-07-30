@@ -23,6 +23,7 @@ import {
    fetchDataResidualValueSaga,
    fetchFirstResidualValue,
    fetchModelCodeSaga,
+   handleUploadRV_AICFileSaga,
 } from './residualValueSaga';
 import {
    fetchShipment,
@@ -68,9 +69,14 @@ function* rootSaga() {
    yield fork(gumSaga);
    yield fork(importFailureSaga);
    yield fork(priceVolumeSensitivitySaga);
+
+   // Residual value
    yield fork(fetchFirstResidualValue);
    yield fork(fetchModelCodeSaga);
    yield fork(fetchDataResidualValueSaga);
+   yield fork(handleUploadRV_AICFileSaga);
+
+   // import tracking
    yield fork(fetchImportTracking);
    yield fork(managerCompetitorSaga);
    //competitor benchmark

@@ -119,7 +119,8 @@
       "costDataFile": "Upload Cost Data File",
       "calculate": "Calculate",
       "aopMargin": "Upload AOP Margin",
-      "uploadShipment": "Upload Shipment file"
+      "uploadShipment": "Upload Shipment file",
+      "uploadResidual": "Upload RV APIC file"
    },
 
    "table": {

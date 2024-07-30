@@ -1,8 +1,8 @@
+import { createAction, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { defaultValueFilterResidualValue } from './../../utils/defaultValues';
-import { createSlice, PayloadAction, createSelector, createAction } from '@reduxjs/toolkit';
 
-import type { RootReducerType } from './rootReducer';
 import { ResidualValueDataFilter } from '@/types/defaultValue';
+import type { RootReducerType } from './rootReducer';
 
 export const name = 'residualValue';
 export const resetState = createAction(`${name}/RESET_STATE`);
@@ -16,6 +16,7 @@ export const initialState = {
    dataFilter: defaultValueFilterResidualValue as ResidualValueDataFilter,
    listResidualValue: [] as any[],
    exampleUploadFile: {} as any,
+   isLoadingPage: false as boolean,
 };
 
 const residualvalueSlice = createSlice({
@@ -52,6 +53,12 @@ const residualvalueSlice = createSlice({
       resetListResidualValue(state) {
          state.listResidualValue = [];
       },
+      showLoadingPage(state) {
+         state.isLoadingPage = true;
+      },
+      hideLoadingPage(state) {
+         state.isLoadingPage = false;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -63,6 +70,7 @@ const residualvalueSlice = createSlice({
 export const sagaGetList = createAction(`${name}/GET_LIST`);
 export const reloadModelCode = createAction(`${name}/reloadModelCode`);
 export const getDataResidualValue = createAction(`${name}/getDataResidualValue`);
+export const uploadResidualValueFile = createAction<File>(`${name}/uploadResidualValueFile`);
 
 // Selectors
 export const selectState = (state: RootReducerType) => state[name];
@@ -94,6 +102,8 @@ export const selectExampleUploadFile = createSelector(
    selectState,
    (state) => state.exampleUploadFile
 );
+
+export const selectLoadingPage = createSelector(selectState, (state) => state.isLoadingPage);
 
 export const { actions } = residualvalueSlice;
 
