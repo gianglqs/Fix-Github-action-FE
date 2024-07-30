@@ -1,25 +1,13 @@
-import { useCallback, useContext, useEffect, useState, useTransition } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
+import { commonStore, shipmentStore } from '@/store/reducers';
 import { formatNumbericColumn } from '@/utils/columnProperties';
-import { formatNumber, formatNumberPercentage, formatDate } from '@/utils/formatCell';
-import { useDispatch, useSelector } from 'react-redux';
-import { shipmentStore, commonStore, importFailureStore } from '@/store/reducers';
-import moment from 'moment-timezone';
+import { formatDate, formatNumber, formatNumberPercentage } from '@/utils/formatCell';
+import { Button, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import {
-   Backdrop,
-   Button,
-   CircularProgress,
-   FormControlLabel,
-   ListItem,
-   Radio,
-   RadioGroup,
-   Typography,
-} from '@mui/material';
-import { useDropzone } from 'react-dropzone';
 import { setCookie } from 'nookies';
-import ClearIcon from '@mui/icons-material/Clear';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
    AppAutocomplete,
@@ -29,36 +17,29 @@ import {
    DataTablePagination,
 } from '@/components';
 
-import _ from 'lodash';
 import { produce } from 'immer';
+import _ from 'lodash';
 
-import { defaultValueFilterOrder } from '@/utils/defaultValues';
-import { DataGridPro, GridToolbar } from '@mui/x-data-grid-pro';
-import { UserInfoContext } from '@/provider/UserInfoContext';
-import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
-import { GetServerSidePropsContext } from 'next';
-import shipmentApi from '@/api/shipment.api';
-import { convertCurrencyOfDataBookingOrder } from '@/utils/convertCurrency';
-import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
-import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
 import AppBackDrop from '@/components/App/BackDrop';
-import { isEmptyObject } from '@/utils/checkEmptyObject';
-import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
-import { paperStyle } from '@/theme/paperStyle';
-import { useTranslation } from 'react-i18next';
-import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
-import { extractTextInParentheses } from '@/utils/getString';
 import AppDataTable from '@/components/DataTable/AppDataGridPro';
+import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
+import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
+import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
+import { UserInfoContext } from '@/provider/UserInfoContext';
+import { paperStyle } from '@/theme/paperStyle';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import { defaultValueFilterOrder } from '@/utils/defaultValues';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { SHIPMENT } from '@/utils/modelType';
+import { GetServerSidePropsContext } from 'next';
+import { useTranslation } from 'react-i18next';
 
+import { UploadFileDropZone } from '@/components/App/UploadFileDropZone';
 import GetAppIcon from '@mui/icons-material/GetApp';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
-}
-interface FileChoosed {
-   name: string;
 }
 
 export default function Shipment() {
@@ -80,14 +61,12 @@ export default function Shipment() {
    const exampleFile = useSelector(shipmentStore.selectExampleUploadFile);
 
    //  const [uploadedFile, setUploadedFile] = useState({ name: '' });
-   const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
    // use importing to control spiner
-   const [loading, setLoading] = useState(false);
    const loadingTable = useSelector(shipmentStore.selectLoadingData);
+   const loadingPage = useSelector(shipmentStore.selectLoadingPage);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
 
    // import failure dialog
-   const importFailureDialogDataFilter = useSelector(importFailureStore.selectDataFilter);
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -361,59 +340,6 @@ export default function Shipment() {
       setUserRoleState(userRole);
    });
 
-   const handleUploadFile = async (file) => {
-      let formData = new FormData();
-      formData.append('file', file);
-      shipmentApi
-         .importDataShipment(formData)
-         .then((response) => {
-            setLoading(false);
-            handleWhenImportSuccessfully(response);
-         })
-         .catch((error) => {
-            // stop spiner
-            setLoading(false);
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
-   };
-   const handleWhenImportSuccessfully = (res) => {
-      //show message
-      dispatch(commonStore.actions.setSuccessMessage(res.data.message));
-
-      // update importFailureState, prepare to open dialog
-      dispatch(
-         importFailureStore.actions.setDataFilter({
-            ...importFailureDialogDataFilter,
-            fileUUID: res.data.data,
-         })
-      );
-      dispatch(
-         importFailureStore.actions.setImportFailureDialogState({
-            overview: extractTextInParentheses(res.data.message),
-         })
-      );
-
-      dispatch(shipmentStore.sagaGetList());
-   };
-
-   const handleImport = () => {
-      if (uploadedFile.length > 0) {
-         // resert message
-         setLoading(true);
-         handleUploadFile(uploadedFile[0]);
-      } else {
-         dispatch(commonStore.actions.setErrorMessage('No file choosed'));
-      }
-   };
-
-   const handleRemove = (fileName) => {
-      const updateUploaded = uploadedFile.filter((file) => file.name != fileName);
-      setUploadedFile(updateUploaded);
-   };
-   const appendFileIntoList = (file) => {
-      setUploadedFile((prevFiles) => [...prevFiles, file]);
-   };
-
    // ===== show Product detail =======
    const [productDetailState, setProductDetailState] = useState({
       open: false,
@@ -444,13 +370,6 @@ export default function Shipment() {
       });
    };
 
-   const handleCloseImageDialog = () => {
-      setImageDialogState({
-         open: false,
-         imageUrl: undefined,
-      });
-   };
-
    // handle prevent open ProductDetail Dialog when click button edit
    const handleOnCellClick = (params, event) => {
       if (params.field === 'model') {
@@ -468,6 +387,11 @@ export default function Shipment() {
    const handleClearAllFilters = () => {
       setDataFilter(defaultValueFilterOrder);
    };
+
+   const handleUploadShipmentFile = async (file: File) => {
+      dispatch(shipmentStore.uploadShipmentFile(file));
+   };
+
    return (
       <>
          <AppLayout entity="shipment">
@@ -769,21 +693,11 @@ export default function Shipment() {
             </Grid>
             {userRoleState === 'ADMIN' && (
                <Grid container spacing={1} sx={{ marginTop: '3px', alignItems: 'end' }}>
-                  <Grid item xs={1}>
+                  <Grid item xs={2}>
                      <UploadFileDropZone
-                        uploadedFile={uploadedFile}
-                        setUploadedFile={appendFileIntoList}
-                        handleUploadFile={handleUploadFile}
+                        handleUploadFile={handleUploadShipmentFile}
+                        buttonName="button.uploadShipment"
                      />
-                  </Grid>
-                  <Grid item xs={1}>
-                     <Button
-                        variant="contained"
-                        onClick={handleImport}
-                        sx={{ width: '100%', height: 24 }}
-                     >
-                        {t('button.import')}
-                     </Button>
                   </Grid>
                   <Typography
                      sx={{
@@ -803,40 +717,6 @@ export default function Shipment() {
                         }}
                      />
                   </Typography>
-                  <Grid item xs={4} sx={{ display: 'flex' }}>
-                     {uploadedFile &&
-                        uploadedFile.map((file) => (
-                           <ListItem
-                              sx={{
-                                 padding: 0,
-                                 backgroundColor: '#e3e3e3',
-                                 width: '75%',
-                                 display: 'flex',
-                                 justifyContent: 'space-between',
-                                 paddingLeft: '10px',
-                                 borderRadius: '3px',
-                                 marginLeft: '4px',
-                                 height: '26px',
-                              }}
-                           >
-                              <span
-                                 style={{
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                 }}
-                              >
-                                 {file.name}
-                              </span>
-                              <Button
-                                 onClick={() => handleRemove(file.name)}
-                                 sx={{ width: '20px' }}
-                              >
-                                 <ClearIcon />
-                              </Button>
-                           </ListItem>
-                        ))}
-                  </Grid>
                </Grid>
             )}
 
@@ -895,79 +775,9 @@ export default function Shipment() {
             onClose={handleCloseProductDetail}
          />
          <ShowImageDialog />
-         <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={loading}
-         >
-            <CircularProgress color="inherit" />
-         </Backdrop>
+         <AppBackDrop open={loadingPage} hightHeaderTable={60} bottom={1} />
 
          <LogImportFailureDialog />
       </>
-   );
-}
-
-// open file and check list column is exit
-//function checkColumn();
-
-function UploadFileDropZone(props) {
-   const { t } = useTranslation();
-   const onDrop = useCallback(
-      (acceptedFiles) => {
-         acceptedFiles.forEach((file) => {
-            const reader = new FileReader();
-
-            reader.onabort = () => console.log('file reading was aborted');
-            reader.onerror = () => console.log('file reading has failed');
-            reader.onload = () => {
-               if (props.uploadedFile.length + acceptedFiles.length >= 2) {
-                  dispatch(
-                     commonStore.actions.setErrorMessage(
-                        t('commonErrorMessage.uploadSelectOnlyOneFileAtATime')
-                     )
-                  );
-               } else {
-                  props.setUploadedFile(file);
-               }
-            };
-            reader.readAsArrayBuffer(file);
-         });
-      },
-      [props.uploadedFile, props.setUploadedFile]
-   );
-
-   const { getRootProps, getInputProps, open, fileRejections } = useDropzone({
-      noClick: true,
-      onDrop,
-      maxSize: 10485760, // < 10MB
-      maxFiles: 1,
-      accept: {
-         'excel/xlsx': ['.xlsx'],
-      },
-   });
-   const dispatch = useDispatch();
-   const isFileInvalid = fileRejections.length > 0 ? true : false;
-   if (isFileInvalid) {
-      const errors = fileRejections[0].errors;
-      dispatch(
-         commonStore.actions.setErrorMessage(
-            `${errors[0].message} ${_.isNil(errors[1]) ? '' : `or ${errors[1].message}`}`
-         )
-      );
-      fileRejections.splice(0, 1);
-   }
-
-   return (
-      <div {...getRootProps()}>
-         <input {...getInputProps()} />
-         <Button
-            type="button"
-            onClick={open}
-            variant="contained"
-            sx={{ width: '100%', height: 24 }}
-         >
-            {t('button.selectFile')}{' '}
-         </Button>
-      </div>
    );
 }

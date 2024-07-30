@@ -1,14 +1,11 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-import { commonStore, importFailureStore, residualValueStore } from '@/store/reducers';
+import { importFailureStore, residualValueStore } from '@/store/reducers';
 import { formatNumberTwoPercentDigit } from '@/utils/formatCell';
 import { useDispatch, useSelector } from 'react-redux';
 
-import ClearIcon from '@mui/icons-material/Clear';
-import { Backdrop, Box, Button, CircularProgress, ListItem, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { setCookie } from 'nookies';
-import { useDropzone } from 'react-dropzone';
 
 import { AppAutocomplete, AppLayout, AppNumberField } from '@/components';
 
@@ -19,24 +16,21 @@ import { ProductImage } from '@/components/App/Image/ProductImage';
 import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
 import { UserInfoContext } from '@/provider/UserInfoContext';
 import { boxStyle } from '@/theme/paperStyle';
-import { ResidualValueDataFilter } from '@/types/defaultValue';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { defaultValueFilterResidualValue } from '@/utils/defaultValues';
-import { extractTextInParentheses } from '@/utils/getString';
+import { downloadFileByURL } from '@/utils/handleDownloadFile';
+import { RESIDUAL_VALUE } from '@/utils/modelType';
 import { createAction } from '@reduxjs/toolkit';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
-import { downloadFileByURL } from '@/utils/handleDownloadFile';
-import { RESIDUAL_VALUE } from '@/utils/modelType';
 
+import AppBackDrop from '@/components/App/BackDrop';
+import { UploadFileDropZone } from '@/components/App/UploadFileDropZone';
 import GetAppIcon from '@mui/icons-material/GetApp';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
-}
-interface FileChoosed {
-   name: string;
 }
 
 export default function ResidualValue() {
@@ -66,16 +60,12 @@ export default function ResidualValue() {
    const serverLastUpdatedTime = useSelector(residualValueStore.selectLastUpdatedTime);
    const serverLastUpdatedBy = useSelector(residualValueStore.selectLastUpdatedBy);
    const exampleFile = useSelector(residualValueStore.selectExampleUploadFile);
+   const loadingPage = useSelector(residualValueStore.selectLoadingPage);
 
    const [clientLatestUpdatedTime, setClientLatestUpdatedTime] = useState('');
 
    const [selectedResidualValue, setSelectedResidualValue] = useState([]);
    const [image, setImage] = useState(undefined);
-
-   //  const [uploadedFile, setUploadedFile] = useState({ name: '' });
-   const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
-   // use importing to control spiner
-   const [loading, setLoading] = useState(false);
 
    // import failure dialog
    const importFailureDialogDataFilter = useSelector(importFailureStore.selectDataFilter);
@@ -92,64 +82,6 @@ export default function ResidualValue() {
       if (_.includes(['modelCode'], field)) {
          dispatch(residualValueStore.getDataResidualValue());
       }
-   };
-
-   const handleUploadFile = async (file) => {
-      let formData = new FormData();
-      formData.append('file', file);
-      residualValueApi
-         .importDataResidualValue(formData)
-         .then((response) => {
-            setLoading(false);
-            handleWhenImportSuccessfully(response);
-         })
-         .catch((error) => {
-            // stop spiner
-            setLoading(false);
-            //show message
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
-   };
-
-   const handleWhenImportSuccessfully = (res) => {
-      //show message
-      dispatch(commonStore.actions.setSuccessMessage(res.data.message));
-
-      // update importFailureState, prepare to open dialog
-      dispatch(
-         importFailureStore.actions.setDataFilter({
-            ...importFailureDialogDataFilter,
-            fileUUID: res.data.data,
-         })
-      );
-
-      dispatch(
-         importFailureStore.actions.setImportFailureDialogState({
-            overview: extractTextInParentheses(res.data.message),
-         })
-      );
-
-      dispatch(residualValueStore.sagaGetList());
-   };
-
-   const handleImport = () => {
-      if (uploadedFile.length > 0) {
-         // resert message
-         setLoading(true);
-         handleUploadFile(uploadedFile[0]);
-      } else {
-         //TODO: need to put this message into language file
-         dispatch(commonStore.actions.setErrorMessage('Please select file to upload first'));
-      }
-   };
-
-   const handleRemove = (fileName) => {
-      const updateUploaded = uploadedFile.filter((file) => file.name != fileName);
-      setUploadedFile(updateUploaded);
-   };
-
-   const appendFileIntoList = (file) => {
-      setUploadedFile((prevFiles) => [...prevFiles, file]);
    };
 
    // handle button to clear all filters
@@ -236,6 +168,10 @@ export default function ResidualValue() {
             convertServerTimeToClientTimeZone(serverLastUpdatedTime, serverTimeZone)
          );
       }
+   };
+
+   const handleUploadResidualFile = async (file: File) => {
+      dispatch(residualValueStore.uploadResidualValueFile(file));
    };
 
    return (
@@ -328,30 +264,23 @@ export default function ResidualValue() {
                </Grid>
             </Grid>
             {userRoleState === 'ADMIN' && (
-               <Grid container spacing={1} sx={{ marginTop: '3px' }}>
-                  <Grid item xs={1}>
-                     <UploadFileDropZone
-                        uploadedFile={uploadedFile}
-                        setUploadedFile={appendFileIntoList}
-                        handleUploadFile={handleUploadFile}
-                     />
-                  </Grid>
-                  <Grid item xs={1}>
-                     <Button
-                        variant="contained"
-                        onClick={handleImport}
-                        sx={{ width: '100%', height: 24 }}
-                     >
-                        {t('button.import')}
-                     </Button>
-                  </Grid>
+               <Grid
+                  container
+                  spacing={1}
+                  sx={{ margin: '10px 0px', display: 'flex', alignItems: 'end', gap: 1 }}
+               >
+                  <UploadFileDropZone
+                     handleUploadFile={handleUploadResidualFile}
+                     buttonName="button.uploadResidual"
+                     sx={{ padding: '0 30px' }}
+                  />
+
                   <Typography
                      sx={{
                         color: 'blue',
                         fontSize: 5,
-                        margin: '0 30px 0 10px',
+
                         cursor: 'pointer',
-                        marginTop: '10px',
                      }}
                      onClick={() => downloadFileByURL(exampleFile[RESIDUAL_VALUE])}
                   >
@@ -364,40 +293,6 @@ export default function ResidualValue() {
                         }}
                      />
                   </Typography>
-                  <Grid item xs={4} sx={{ display: 'flex' }}>
-                     {uploadedFile &&
-                        uploadedFile.map((file) => (
-                           <ListItem
-                              sx={{
-                                 padding: 0,
-                                 backgroundColor: '#e3e3e3',
-                                 width: '75%',
-                                 display: 'flex',
-                                 justifyContent: 'space-between',
-                                 paddingLeft: '10px',
-                                 borderRadius: '3px',
-                                 marginLeft: '4px',
-                                 height: '26px',
-                              }}
-                           >
-                              <span
-                                 style={{
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                 }}
-                              >
-                                 {file.name}
-                              </span>
-                              <Button
-                                 onClick={() => handleRemove(file.name)}
-                                 sx={{ width: '20px' }}
-                              >
-                                 <ClearIcon />
-                              </Button>
-                           </ListItem>
-                        ))}
-                  </Grid>
                </Grid>
             )}
 
@@ -453,78 +348,8 @@ export default function ResidualValue() {
                </Grid>
             </Grid>
          </AppLayout>
-         <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={loading}
-         >
-            <CircularProgress color="inherit" />
-         </Backdrop>
+         <AppBackDrop open={loadingPage} hightHeaderTable={60} bottom={1} />
          <LogImportFailureDialog />
       </>
-   );
-}
-
-// open file and check list column is exit
-//function checkColumn();
-
-function UploadFileDropZone(props) {
-   const { t } = useTranslation();
-   const onDrop = useCallback(
-      (acceptedFiles) => {
-         acceptedFiles.forEach((file) => {
-            const reader = new FileReader();
-
-            reader.onabort = () => console.log('file reading was aborted');
-            reader.onerror = () => console.log('file reading has failed');
-            reader.onload = () => {
-               if (props.uploadedFile.length + acceptedFiles.length >= 2) {
-                  dispatch(
-                     commonStore.actions.setErrorMessage(
-                        t('commonErrorMessage.uploadSelectOnlyOneFileAtATime')
-                     )
-                  );
-               } else {
-                  props.setUploadedFile(file);
-               }
-            };
-            reader.readAsArrayBuffer(file);
-         });
-      },
-      [props.uploadedFile, props.setUploadedFile]
-   );
-
-   const { getRootProps, getInputProps, open, fileRejections } = useDropzone({
-      noClick: true,
-      onDrop,
-      maxSize: 10485760, // < 10MB
-      maxFiles: 1,
-      accept: {
-         'excel/xlsx': ['.xlsx'],
-      },
-   });
-   const dispatch = useDispatch();
-   const isFileInvalid = fileRejections.length > 0 ? true : false;
-   if (isFileInvalid) {
-      const errors = fileRejections[0].errors;
-      dispatch(
-         commonStore.actions.setErrorMessage(
-            `${errors[0].message} ${_.isNil(errors[1]) ? '' : `or ${errors[1].message}`}`
-         )
-      );
-      fileRejections.splice(0, 1);
-   }
-
-   return (
-      <div {...getRootProps()}>
-         <input {...getInputProps()} />
-         <Button
-            type="button"
-            onClick={open}
-            variant="contained"
-            sx={{ width: '100%', height: 24 }}
-         >
-            {t('button.selectFile')}{' '}
-         </Button>
-      </div>
    );
 }

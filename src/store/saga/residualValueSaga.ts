@@ -1,9 +1,8 @@
-import { takeEvery, put } from 'redux-saga/effects';
-import { commonStore, residualValueStore } from '../reducers';
-import { select, call, all } from 'typed-redux-saga';
-import { parseCookies } from 'nookies';
 import residualValueApi from '@/api/residualValue.api';
-import { throws } from 'assert';
+import { PayloadAction } from '@reduxjs/toolkit';
+import { put, takeEvery } from 'redux-saga/effects';
+import { all, call, select } from 'typed-redux-saga';
+import { commonStore, residualValueStore } from '../reducers';
 
 function* fetchModelCode() {
    const dataFilter = yield* all({
@@ -97,6 +96,23 @@ function* fetchDataResidualValue() {
    }
 }
 
+function* handleUploadRV_AICFile(action: PayloadAction<File>) {
+   try {
+      yield put(residualValueStore.actions.showLoadingPage());
+      let formData = new FormData();
+      const file = action.payload;
+      formData.append('file', file);
+
+      const { data } = yield* call(residualValueApi.importDataResidualValue, formData);
+
+      yield put(commonStore.actions.setSuccessMessage(data.message));
+      yield put(residualValueStore.actions.hideLoadingPage());
+   } catch (error) {
+      yield put(residualValueStore.actions.hideLoadingPage());
+      yield put(commonStore.actions.setErrorMessage(error.message));
+   }
+}
+
 function* fetchFirstResidualValue() {
    yield takeEvery(residualValueStore.sagaGetList, fetchAllInitDataFilter);
 }
@@ -109,4 +125,13 @@ function* fetchDataResidualValueSaga() {
    yield takeEvery(residualValueStore.getDataResidualValue, fetchDataResidualValue);
 }
 
-export { fetchFirstResidualValue, fetchModelCodeSaga, fetchDataResidualValueSaga };
+function* handleUploadRV_AICFileSaga() {
+   yield takeEvery(residualValueStore.uploadResidualValueFile, handleUploadRV_AICFile);
+}
+
+export {
+   fetchDataResidualValueSaga,
+   fetchFirstResidualValue,
+   fetchModelCodeSaga,
+   handleUploadRV_AICFileSaga,
+};

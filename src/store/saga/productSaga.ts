@@ -1,8 +1,9 @@
-import { takeEvery, put } from 'redux-saga/effects';
-import { productStore, commonStore } from '../reducers';
-import { select, call, all } from 'typed-redux-saga';
 import productApi from '@/api/product.api';
+import { PayloadAction } from '@reduxjs/toolkit';
 import { parseCookies } from 'nookies';
+import { put, takeEvery } from 'redux-saga/effects';
+import { all, call, select } from 'typed-redux-saga';
+import { commonStore, productStore } from '../reducers';
 
 function* fetchProduct() {
    try {
@@ -52,8 +53,29 @@ function* fetchProduct() {
    } catch (error) {}
 }
 
-function* productSaga() {
+function* handleUploadProductFile(action: PayloadAction<File>) {
+   try {
+      yield put(productStore.actions.showLoadingPage());
+      let formData = new FormData();
+      const file = action.payload;
+      formData.append('file', file);
+
+      const { data } = yield* call(productApi.importDataProduct, formData);
+
+      yield put(commonStore.actions.setSuccessMessage(data.message));
+      yield put(productStore.actions.hideLoadingPage());
+   } catch (error) {
+      yield put(productStore.actions.hideLoadingPage());
+      yield put(commonStore.actions.setErrorMessage(error.message));
+   }
+}
+
+function* fetchProductDataForTableSaga() {
    yield takeEvery(productStore.sagaGetList, fetchProduct);
 }
 
-export default productSaga;
+function* handleUploadProductFileSaga() {
+   yield takeEvery(productStore.uploadProductFile, handleUploadProductFile);
+}
+
+export { fetchProductDataForTableSaga, handleUploadProductFileSaga };

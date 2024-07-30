@@ -9,7 +9,6 @@ import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import {
    Box,
    Button,
-   CircularProgress,
    FormControlLabel,
    Paper,
    Radio,
@@ -20,8 +19,7 @@ import {
 import Grid from '@mui/material/Grid';
 import { GetServerSidePropsContext } from 'next';
 import { parseCookies } from 'nookies';
-import { useCallback, useEffect, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -29,6 +27,8 @@ import { formatNumberPercentage } from '@/utils/formatCell';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { NOVO } from '@/utils/modelType';
 
+import AppBackDrop from '@/components/App/BackDrop';
+import { UploadFileDropZone } from '@/components/App/UploadFileDropZone';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import { createAction } from '@reduxjs/toolkit';
 
@@ -279,25 +279,7 @@ export default function MarginAnalysis() {
    return (
       <>
          <AppLayout entity="no reload ">
-            {loading ? (
-               <div
-                  style={{
-                     top: 60,
-                     left: 0,
-                     right: 0,
-                     bottom: -35,
-                     backgroundColor: 'rgba(0,0,0, 0.3)',
-                     position: 'absolute',
-                     display: 'flex',
-                     justifyContent: 'center',
-                     alignItems: 'center',
-                     zIndex: 1001,
-                     color: '#fff',
-                  }}
-               >
-                  <CircularProgress color="inherit" />
-               </div>
-            ) : null}
+            <AppBackDrop open={loading} hightHeaderTable={60} bottom={-35} />
             <Grid container spacing={1.1} display="flex" alignItems="center">
                <Grid item>
                   <UploadFileDropZone
@@ -1008,50 +990,3 @@ const ForUSPricingBox = (props) => {
       </Grid>
    );
 };
-
-function UploadFileDropZone(props) {
-   const onDrop = useCallback((acceptedFiles) => {
-      acceptedFiles.forEach((file) => {
-         const reader = new FileReader();
-
-         reader.onabort = () => console.log('file reading was aborted');
-         reader.onerror = () => console.log('file reading has failed');
-         reader.onload = () => {
-            // Do whatever you want with the file contents
-            props.setFileName(file.name);
-         };
-         reader.readAsArrayBuffer(file);
-         props.handleUploadFile(file);
-      });
-   }, []);
-
-   const { getRootProps, getInputProps, open, fileRejections } = useDropzone({
-      noClick: true,
-      onDrop,
-      maxSize: 50777216,
-      maxFiles: 1,
-      accept: {
-         'excel/xlsx': ['.xlsx', '.xlsb'],
-      },
-   });
-   const dispatch = useDispatch();
-   const isFileInvalid = fileRejections.length > 0 ? true : false;
-   if (isFileInvalid) {
-      const errors = fileRejections[0].errors;
-      dispatch(
-         commonStore.actions.setErrorMessage(
-            `${errors[0].message} ${_.isNil(errors[1]) ? '' : `or ${errors[1].message}`}`
-         )
-      );
-      fileRejections.splice(0, 1);
-   }
-
-   return (
-      <div {...getRootProps()}>
-         <input {...getInputProps()} />
-         <Button type="button" onClick={open} variant="contained" sx={props.sx}>
-            {props.buttonName}
-         </Button>
-      </div>
-   );
-}

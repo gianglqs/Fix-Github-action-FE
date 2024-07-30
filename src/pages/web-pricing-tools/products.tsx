@@ -1,60 +1,49 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
+import { commonStore, importFailureStore, productStore } from '@/store/reducers';
 import { useDispatch, useSelector } from 'react-redux';
-import { productStore, commonStore, importFailureStore } from '@/store/reducers';
-import { useDropzone } from 'react-dropzone';
-import moment from 'moment-timezone';
 
+import { Button, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Backdrop, Button, CircularProgress, ListItem, Typography } from '@mui/material';
 
 import {
    AppAutocomplete,
    AppLayout,
    AppTextField,
-   DataTable,
    DataTablePagination,
    EditIcon,
 } from '@/components';
 import AppDataTable from '@/components/DataTable/AppDataGridPro';
-import _ from 'lodash';
 import { produce } from 'immer';
+import _ from 'lodash';
 
 import { defaultValueFilterProduct } from '@/utils/defaultValues';
-import { GridToolbar } from '@mui/x-data-grid-pro';
 
-import ClearIcon from '@mui/icons-material/Clear';
-import React from 'react';
-import { When } from 'react-if';
 import { UserInfoContext } from '@/provider/UserInfoContext';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
+import { When } from 'react-if';
 
-import { GetServerSidePropsContext } from 'next';
-import { iconColumn } from '@/utils/columnProperties';
-import { DialogUpdateProduct } from '@/components/Dialog/Module/ProductManangerDialog/UpdateDialog';
-import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
-import { selectProductRowById } from '@/utils/selectRowById';
-import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
-import productApi from '@/api/product.api';
 import AppBackDrop from '@/components/App/BackDrop';
-import { isEmptyObject } from '@/utils/checkEmptyObject';
-import { setCookie } from 'nookies';
-import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
-import { useTranslation } from 'react-i18next';
 import { LogImportFailureDialog } from '@/components/Dialog/Module/importFailureLogDialog/ImportFailureLog';
-import { extractTextInParentheses } from '@/utils/getString';
+import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
+import { ProductDetailDialog } from '@/components/Dialog/Module/ProductManangerDialog/ProductDetailDialog';
+import { DialogUpdateProduct } from '@/components/Dialog/Module/ProductManangerDialog/UpdateDialog';
+import { isEmptyObject } from '@/utils/checkEmptyObject';
+import { iconColumn } from '@/utils/columnProperties';
+import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
-import { PRODUCT_APAC, PRODUCT_DIMENSION } from '@/utils/modelType';
+import { PRODUCT_APAC } from '@/utils/modelType';
+import { selectProductRowById } from '@/utils/selectRowById';
+import { GetServerSidePropsContext } from 'next';
+import { setCookie } from 'nookies';
+import { useTranslation } from 'react-i18next';
 
+import { UploadFileDropZone } from '@/components/App/UploadFileDropZone';
 import GetAppIcon from '@mui/icons-material/GetApp';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
-}
-
-interface FileChoosed {
-   name: string;
 }
 
 export default function Product() {
@@ -65,22 +54,16 @@ export default function Product() {
    const initDataFilter = useSelector(productStore.selectInitDataFilter);
    const cacheDataFilter = useSelector(productStore.selectDataFilter);
    const exampleFile = useSelector(productStore.selectExampleUploadFile);
+   const loadingPage = useSelector(productStore.selectLoadingPage);
 
    const [dataFilter, setDataFilter] = useState(cacheDataFilter);
 
-   const [loading, setLoading] = useState(false);
-
    const [loadingTable, setLoadingTable] = useState(false);
 
-   const [uploadedFile, setUploadedFile] = useState<FileChoosed[]>([]);
    const [hasSetDataFilter, setHasSetDataFilter] = useState(false);
 
    // import failure dialog
    const importFailureDialogDataFilter = useSelector(importFailureStore.selectDataFilter);
-
-   const appendFileIntoList = (file) => {
-      setUploadedFile((prevFiles) => [...prevFiles, file]);
-   };
 
    const handleChangeDataFilter = (option, field) => {
       setDataFilter((prev) =>
@@ -239,62 +222,6 @@ export default function Product() {
       },
    ];
 
-   const handleUploadFile = async (file) => {
-      let formData = new FormData();
-
-      formData.append('file', file[0]);
-
-      console.log(formData);
-
-      productApi
-         .importDataProduct(formData)
-         .then((response) => {
-            setLoading(false);
-            handleWhenImportSuccessfully(response);
-         })
-         .catch((error) => {
-            // stop spiner
-            setLoading(false);
-            //show message
-            dispatch(commonStore.actions.setErrorMessage(error.message));
-         });
-   };
-
-   const handleWhenImportSuccessfully = (res) => {
-      //show message
-      dispatch(commonStore.actions.setSuccessMessage(res.data.message));
-
-      dispatch(
-         importFailureStore.actions.setDataFilter({
-            ...importFailureDialogDataFilter,
-            fileUUID: res.data.data,
-         })
-      );
-      dispatch(
-         importFailureStore.actions.setImportFailureDialogState({
-            overview: extractTextInParentheses(res.data.message),
-         })
-      );
-
-      //refresh data table and paging
-      dispatch(productStore.sagaGetList());
-   };
-
-   const handleImport = () => {
-      if (uploadedFile.length > 0) {
-         // resert message
-         setLoading(true);
-         handleUploadFile(uploadedFile);
-      } else {
-         dispatch(commonStore.actions.setErrorMessage('No file choosed'));
-      }
-   };
-
-   const handleRemove = (fileName) => {
-      const updateUploaded = uploadedFile.filter((file) => file.name != fileName);
-      setUploadedFile(updateUploaded);
-   };
-
    const [updateProductState, setUpdateProductState] = useState({
       open: false,
       preValue: {} as any,
@@ -403,6 +330,10 @@ export default function Product() {
    useEffect(() => {
       convertTimezone();
    }, [serverLastUpdatedTime, serverTimeZone]);
+
+   const handleUploadProductFile = async (file: File) => {
+      dispatch(productStore.uploadProductFile(file));
+   };
 
    return (
       <>
@@ -571,20 +502,11 @@ export default function Product() {
                <Grid container spacing={1} sx={{ marginTop: '3px', alignItems: 'end' }}>
                   <Grid item xs={1}>
                      <UploadFileDropZone
-                        uploadedFile={uploadedFile}
-                        setUploadedFile={appendFileIntoList}
-                        handleUploadFile={handleUploadFile}
+                        handleUploadFile={handleUploadProductFile}
+                        buttonName="button.uploadFile"
                      />
                   </Grid>
-                  <Grid item xs={1}>
-                     <Button
-                        variant="contained"
-                        onClick={handleImport}
-                        sx={{ width: '100%', height: 24 }}
-                     >
-                        {t('button.import')}
-                     </Button>
-                  </Grid>
+
                   <Typography
                      sx={{
                         color: 'blue',
@@ -603,40 +525,6 @@ export default function Product() {
                         }}
                      />
                   </Typography>
-                  <Grid item xs={4} sx={{ display: 'flex' }}>
-                     {uploadedFile &&
-                        uploadedFile.map((file) => (
-                           <ListItem
-                              sx={{
-                                 padding: 0,
-                                 backgroundColor: '#e3e3e3',
-                                 width: '75%',
-                                 display: 'flex',
-                                 justifyContent: 'space-between',
-                                 paddingLeft: '10px',
-                                 borderRadius: '3px',
-                                 marginLeft: '4px',
-                                 height: '26px',
-                              }}
-                           >
-                              <span
-                                 style={{
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                 }}
-                              >
-                                 {file.name}
-                              </span>
-                              <Button
-                                 onClick={() => handleRemove(file.name)}
-                                 sx={{ width: '20px' }}
-                              >
-                                 <ClearIcon />
-                              </Button>
-                           </ListItem>
-                        ))}
-                  </Grid>
                </Grid>
             </When>
 
@@ -693,74 +581,7 @@ export default function Product() {
          />
          <ShowImageDialog />
          <LogImportFailureDialog />
-         <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={loading}
-         >
-            <CircularProgress color="inherit" />
-         </Backdrop>
+         <AppBackDrop open={loadingPage} hightHeaderTable={60} bottom={1} />
       </>
-   );
-}
-
-function UploadFileDropZone(props) {
-   const onDrop = useCallback(
-      (acceptedFiles) => {
-         acceptedFiles.forEach((file) => {
-            const reader = new FileReader();
-
-            reader.onabort = () => console.log('file reading was aborted');
-            reader.onerror = () => console.log('file reading has failed');
-            reader.onload = () => {
-               if (props.uploadedFile.length === 0 && acceptedFiles.length <= 1) {
-                  props.setUploadedFile(file);
-               } else {
-                  dispatch(
-                     commonStore.actions.setErrorMessage(
-                        t('commonErrorMessage.uploadSelectOnlyOneFileAtATime')
-                     )
-                  );
-               }
-            };
-            reader.readAsArrayBuffer(file);
-         });
-      },
-      [props.uploadedFile, props.setUploadedFile]
-   );
-
-   const { getRootProps, getInputProps, open, fileRejections } = useDropzone({
-      noClick: true,
-      onDrop,
-      maxSize: 10485760, // < 10MB
-      maxFiles: 1,
-      accept: {
-         'excel/xlsx': ['.xlsx'],
-      },
-   });
-   const dispatch = useDispatch();
-   const { t } = useTranslation();
-   const isFileInvalid = fileRejections.length > 0 ? true : false;
-   if (isFileInvalid) {
-      const errors = fileRejections[0].errors;
-      dispatch(
-         commonStore.actions.setErrorMessage(
-            `${errors[0].message} ${_.isNil(errors[1]) ? '' : `or ${errors[1].message}`}`
-         )
-      );
-      fileRejections.splice(0, 1);
-   }
-
-   return (
-      <div {...getRootProps()}>
-         <input {...getInputProps()} />
-         <Button
-            type="button"
-            onClick={open}
-            variant="contained"
-            sx={{ width: '100%', height: 24 }}
-         >
-            {t('button.selectFile')}
-         </Button>
-      </div>
    );
 }

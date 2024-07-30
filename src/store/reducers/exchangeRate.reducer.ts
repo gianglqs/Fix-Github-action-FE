@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction, createSelector, createAction } from '@reduxjs/toolkit';
+import { createAction, createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import type { RootReducerType } from './rootReducer';
 import { defaultValueSelectedFilterExchangeRate } from '@/utils/defaultValues';
+import type { RootReducerType } from './rootReducer';
 export const name = 'exchangeRate';
 export const resetState = createAction(`${name}/RESET_STATE`);
 
@@ -10,11 +10,13 @@ export const initialState: {
    currencyFilter: any;
    chartData: any;
    exchangeRateSource: string;
+   isLoadingPage: boolean;
 } = {
    dataFilter: defaultValueSelectedFilterExchangeRate,
    currencyFilter: [{ value: '' }],
    chartData: [],
    exchangeRateSource: 'Database',
+   isLoadingPage: false,
 };
 
 const exchangeRateSlice = createSlice({
@@ -33,10 +35,17 @@ const exchangeRateSlice = createSlice({
       setExchangeRateSource(state, { payload }: PayloadAction<any>) {
          state.exchangeRateSource = payload;
       },
+      showLoadingPage(state) {
+         state.isLoadingPage = true;
+      },
+      hideLoadingPage(state) {
+         state.isLoadingPage = false;
+      },
    },
 });
 
 export const sagaGetList = createAction(`${name}/GET_LIST`);
+export const uploadExchangeRateFile = createAction<File>(`${name}/uploadExchangeRateFile`);
 // Selectors
 export const selectState = (state: RootReducerType) => state[name];
 
@@ -50,6 +59,8 @@ export const selectExchangeRateSource = createSelector(
    selectState,
    (state) => state.exchangeRateSource
 );
+
+export const selectLoadingPage = createSelector(selectState, (state) => state.isLoadingPage);
 
 export const { actions } = exchangeRateSlice;
 

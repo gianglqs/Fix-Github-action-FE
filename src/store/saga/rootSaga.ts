@@ -1,34 +1,40 @@
 import { fork } from 'redux-saga/effects';
-import userSaga from './userSaga';
-import { fetchBooking, switchCurrencyBooking } from './bookingSaga';
+import adjustmentSaga from './adjustmentSaga';
 import {
+   fetchExampleUploadFile,
+   handleEstimateMarginSaga,
+   handleOpenCalculateFileSaga,
    handleUploadMacroFileSaga,
    handleUploadPowerBIFileSaga,
-   handleEstimateMarginSaga,
-   fetchExampleUploadFile,
-   handleOpenCalculateFileSaga,
 } from './analysisSaga';
-import indicatorSaga from './indicatorSaga';
-import { fetchShipment, switchCurrencyShipment } from './shipmentSaga';
-import outlierSaga from './outlierSaga';
-import trendsSaga from './trendsSaga';
-import adjustmentSaga from './adjustmentSaga';
-import competitorColorSaga from './competitorColorSaga';
-import productSaga from './productSaga';
-import partSaga from './partSaga';
-import historicalImportSaga from './historicalImportSaga';
-import volumeDiscountSaga from './volumeDiscountSaga';
 import bookingMarginTrialTestSaga from './bookingMarginTrialTestSaga';
-import importFailureSaga from './importFailureSaga';
-import priceVolumeSensitivitySaga from './priceVolumeSensitivitySaga';
+import { fetchBooking, switchCurrencyBooking } from './bookingSaga';
+import competitorColorSaga from './competitorColorSaga';
 import gumSaga from './gumSaga';
+import historicalImportSaga from './historicalImportSaga';
+import importFailureSaga from './importFailureSaga';
+import indicatorSaga from './indicatorSaga';
 import { fetchDashboard, fetchTableIndicator } from './indicatorV2Saga';
+import outlierSaga from './outlierSaga';
+import partSaga from './partSaga';
+import priceVolumeSensitivitySaga from './priceVolumeSensitivitySaga';
+import { fetchProductDataForTableSaga, handleUploadProductFileSaga } from './productSaga';
 import {
-   fetchModelCodeSaga,
-   fetchFirstResidualValue,
    fetchDataResidualValueSaga,
+   fetchFirstResidualValue,
+   fetchModelCodeSaga,
+   handleUploadRV_AICFileSaga,
 } from './residualValueSaga';
+import {
+   fetchShipment,
+   handleUploadShipmentFileSaga,
+   switchCurrencyShipment,
+} from './shipmentSaga';
+import trendsSaga from './trendsSaga';
+import userSaga from './userSaga';
+import volumeDiscountSaga from './volumeDiscountSaga';
 
+import { handleUploadExchangeRateFileSaga } from './exchangRateSaga';
 import { fetchImportTracking } from './importTrackingSaga';
 import managerCompetitorSaga from './manageCompetitorSaga';
 
@@ -45,11 +51,18 @@ function* rootSaga() {
    //shipment
    yield fork(fetchShipment);
    yield fork(switchCurrencyShipment);
+   yield fork(handleUploadShipmentFileSaga);
+
+   //outlier
    yield fork(outlierSaga);
    yield fork(trendsSaga);
    yield fork(adjustmentSaga);
    yield fork(competitorColorSaga);
-   yield fork(productSaga);
+
+   // Product
+   yield fork(fetchProductDataForTableSaga);
+   yield fork(handleUploadProductFileSaga);
+
    yield fork(partSaga);
    yield fork(historicalImportSaga);
    yield fork(volumeDiscountSaga);
@@ -57,14 +70,22 @@ function* rootSaga() {
    yield fork(gumSaga);
    yield fork(importFailureSaga);
    yield fork(priceVolumeSensitivitySaga);
+
+   // Residual value
    yield fork(fetchFirstResidualValue);
    yield fork(fetchModelCodeSaga);
    yield fork(fetchDataResidualValueSaga);
+   yield fork(handleUploadRV_AICFileSaga);
+
+   // import tracking
    yield fork(fetchImportTracking);
    yield fork(managerCompetitorSaga);
    //competitor benchmark
    yield fork(fetchDashboard);
    yield fork(fetchTableIndicator);
+
+   // exchange rate
+   yield fork(handleUploadExchangeRateFileSaga);
 }
 
 export default rootSaga;

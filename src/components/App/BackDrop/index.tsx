@@ -15,9 +15,9 @@ export default function AppBackDrop(props: any) {
             display: open ? 'flex' : 'none',
             justifyContent: 'center',
             alignItems: 'center',
-
             backgroundColor: 'black',
             opacity: '0.2',
+            zIndex: (theme) => theme.zIndex.drawer + 1,
          }}
       >
          <CircularProgress sx={{ color: 'white' }} />

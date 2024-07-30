@@ -1,14 +1,13 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { bookingStore, commonStore, importFailureStore } from '@/store/reducers';
 import { formatNumbericColumn } from '@/utils/columnProperties';
 import { formatDate, formatNumber, formatNumberPercentage } from '@/utils/formatCell';
-import { useDropzone } from 'react-dropzone';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setCookie } from 'nookies';
 
-import { Backdrop, Button, CircularProgress, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
@@ -30,6 +29,7 @@ import { UserInfoContext } from '@/provider/UserInfoContext';
 import { checkTokenBeforeLoadPage } from '@/utils/checkTokenBeforeLoadPage';
 import { When } from 'react-if';
 
+import aopmarginApi from '@/api/aopMargin.api';
 import AppBackDrop from '@/components/App/BackDrop';
 import AppDataTable from '@/components/DataTable/AppDataGridPro';
 import ShowImageDialog from '@/components/Dialog/Module/ProductManangerDialog/ImageDialog';
@@ -40,11 +40,11 @@ import { isEmptyObject } from '@/utils/checkEmptyObject';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { extractTextInParentheses } from '@/utils/getString';
 import { downloadFileByURL } from '@/utils/handleDownloadFile';
+import { BOOKING } from '@/utils/modelType';
 import { GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'react-i18next';
-import { BOOKING, COST_DATA } from '@/utils/modelType';
-import aopmarginApi from '@/api/aopMargin.api';
 
+import { UploadFileDropZone } from '@/components/App/UploadFileDropZone';
 import GetAppIcon from '@mui/icons-material/GetApp';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -338,7 +338,7 @@ export default function Booking() {
    const { userRole } = useContext(UserInfoContext);
    const [userRoleState, setUserRoleState] = useState('');
    if (userRoleState === 'ADMIN') {
-      heightComponentExcludingTable = 330;
+      heightComponentExcludingTable = 355;
    }
 
    const handleUploadFile = async (file: File, apiMethod: (formData: FormData) => Promise<any>) => {
@@ -815,7 +815,7 @@ export default function Booking() {
                   },
                }}
             >
-               <Grid container sx={{ height: `calc(95vh - ${heightComponentExcludingTable}px)` }}>
+               <Grid container sx={{ height: `calc(100vh - ${heightComponentExcludingTable}px)` }}>
                   <AppDataTable
                      columnHeaderHeight={90}
                      dataFilter={dataFilter}
@@ -846,67 +846,8 @@ export default function Booking() {
             onClose={handleCloseProductDetail}
          />
          <ShowImageDialog />
-         <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={loading}
-         >
-            <CircularProgress color="inherit" />
-         </Backdrop>
+         <AppBackDrop open={loading} hightHeaderTable={60} bottom={1} />
          <LogImportFailureDialog />
       </>
-   );
-}
-
-function UploadFileDropZone(props) {
-   const { t } = useTranslation();
-   const onDrop = useCallback(
-      (acceptedFiles) => {
-         acceptedFiles.forEach((file) => {
-            const reader = new FileReader();
-
-            reader.onabort = () => console.log('file reading was aborted');
-            reader.onerror = () => console.log('file reading has failed');
-            reader.onload = () => {
-               props.handleUploadFile(file);
-            };
-            reader.readAsArrayBuffer(file);
-         });
-      },
-      [props.uploadedFile, props.setUploadedFile]
-   );
-
-   const { getRootProps, getInputProps, open, fileRejections } = useDropzone({
-      noClick: true,
-      onDrop,
-      maxSize: 10485760, // < 10MB
-      maxFiles: 1,
-      accept: {
-         'excel/xlsx': ['.xlsx'],
-      },
-   });
-   const dispatch = useDispatch();
-   const isFileInvalid = fileRejections.length > 0 ? true : false;
-   if (isFileInvalid) {
-      const errors = fileRejections[0].errors;
-      dispatch(
-         commonStore.actions.setErrorMessage(
-            `${errors[0].message} ${_.isNil(errors[1]) ? '' : `or ${errors[1].message}`}`
-         )
-      );
-      fileRejections.splice(0, 1);
-   }
-
-   return (
-      <div {...getRootProps()}>
-         <input {...getInputProps()} />
-         <Button
-            type="button"
-            onClick={open}
-            variant="contained"
-            sx={{ width: '100%', height: 24 }}
-         >
-            {t(props.buttonName)}
-         </Button>
-      </div>
    );
 }
