@@ -34,6 +34,7 @@ import trendsSaga from './trendsSaga';
 import userSaga from './userSaga';
 import volumeDiscountSaga from './volumeDiscountSaga';
 
+import { handleUploadExchangeRateFileSaga } from './exchangRateSaga';
 import { fetchImportTracking } from './importTrackingSaga';
 import managerCompetitorSaga from './manageCompetitorSaga';
 
@@ -82,6 +83,9 @@ function* rootSaga() {
    //competitor benchmark
    yield fork(fetchDashboard);
    yield fork(fetchTableIndicator);
+
+   // exchange rate
+   yield fork(handleUploadExchangeRateFileSaga);
 }
 
 export default rootSaga;
