@@ -106,6 +106,7 @@ export const openCalculatorFile = createAction<File>(`${name}/openCulculateFile`
 export const estimateMargin = createAction(`${name}/estimateMarginAnalysis`);
 export const uploadMacroFile = createAction<File>(`${name}/uploadMacroFile`);
 export const uploadPowerBIFile = createAction<File>(`${name}/uploadPowerBIFile`);
+export const fetchExampleUploadFile = createAction(`${name}/fetchExampleUploadFile`);
 // Selectors
 export const selectState = (state: RootReducerType) => state[name];
 export const selectMarginData = createSelector(selectState, (state) => state.marginAnalystData);

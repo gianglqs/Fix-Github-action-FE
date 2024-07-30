@@ -168,7 +168,7 @@ function* handleEstimateMarginSaga() {
 }
 
 function* fetchExampleUploadFile() {
-   yield takeEvery(marginAnalysisStore.sagaGetList, getExampleUploadFile);
+   yield takeEvery(marginAnalysisStore.fetchExampleUploadFile, getExampleUploadFile);
 }
 
 export {

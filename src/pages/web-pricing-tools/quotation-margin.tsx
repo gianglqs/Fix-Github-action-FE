@@ -30,6 +30,7 @@ import { downloadFileByURL } from '@/utils/handleDownloadFile';
 import { NOVO } from '@/utils/modelType';
 
 import GetAppIcon from '@mui/icons-material/GetApp';
+import { createAction } from '@reduxjs/toolkit';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
    return await checkTokenBeforeLoadPage(context);
@@ -47,6 +48,11 @@ export default function MarginAnalysis() {
    let userRoleCookies = cookies['role'];
    const [userRole, setUserRole] = useState('');
    const currentYear = new Date().getFullYear();
+
+   useEffect(() => {
+      const actionFetchExampleUploadFile = createAction(`margin_analysis/fetchExampleUploadFile`);
+      dispatch(actionFetchExampleUploadFile());
+   }, []);
 
    useEffect(() => {
       setUserRole(userRoleCookies);
