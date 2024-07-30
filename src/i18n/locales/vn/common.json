@@ -112,7 +112,8 @@
       "bookedFile": "Tải lên Tệp Booked",
       "costDataFile": "Tải lên Tệp Cost Data",
       "calculate": "Tính toán",
-      "aopMargin": "Tải lên Tệp AOP Margin"
+      "aopMargin": "Tải lên Tệp AOP Margin",
+      "uploadShipment": "Tải lên Tệp Shipment"
    },
 
    "table": {

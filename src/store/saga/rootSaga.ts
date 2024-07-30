@@ -9,7 +9,11 @@ import {
    handleOpenCalculateFileSaga,
 } from './analysisSaga';
 import indicatorSaga from './indicatorSaga';
-import { fetchShipment, switchCurrencyShipment } from './shipmentSaga';
+import {
+   fetchShipment,
+   switchCurrencyShipment,
+   handleUploadShipmentFileSaga,
+} from './shipmentSaga';
 import outlierSaga from './outlierSaga';
 import trendsSaga from './trendsSaga';
 import adjustmentSaga from './adjustmentSaga';
@@ -45,6 +49,9 @@ function* rootSaga() {
    //shipment
    yield fork(fetchShipment);
    yield fork(switchCurrencyShipment);
+   yield fork(handleUploadShipmentFileSaga);
+
+   //outlier
    yield fork(outlierSaga);
    yield fork(trendsSaga);
    yield fork(adjustmentSaga);

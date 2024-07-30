@@ -18,6 +18,7 @@ export const initialState = {
    currency: 'USD',
    loadingData: true as boolean,
    exampleUploadFile: {} as any,
+   isLoadingPage: false as boolean,
 };
 
 const shipmentSlice = createSlice({
@@ -61,6 +62,12 @@ const shipmentSlice = createSlice({
       setExampleUploadFile(state, { payload }: PayloadAction<any>) {
          state.exampleUploadFile = payload;
       },
+      showLoadingPage(state) {
+         state.isLoadingPage = true;
+      },
+      hideLoadingPage(state) {
+         state.isLoadingPage = false;
+      },
    },
    extraReducers: {
       [resetState.type]() {
@@ -71,6 +78,7 @@ const shipmentSlice = createSlice({
 
 export const sagaGetList = createAction(`${name}/GET_LIST`);
 export const actionSwitchCurrency = createAction(`${name}/switchCurrency`);
+export const uploadShipmentFile = createAction<File>(`${name}/uploadShipmentFile`);
 
 // Selectors
 export const selectState = (state: RootReducerType) => state[name];
@@ -89,6 +97,7 @@ export const selectCurrency = createSelector(selectState, (state) => state.curre
 
 export const selectLastUpdatedBy = createSelector(selectState, (state) => state.lastUpdatedBy);
 export const selectLoadingData = createSelector(selectState, (state) => state.loadingData);
+export const selectLoadingPage = createSelector(selectState, (state) => state.isLoadingPage);
 export const selectExampleUploadFile = createSelector(
    selectState,
    (state) => state.exampleUploadFile

@@ -1,10 +1,11 @@
-import { takeEvery, put } from 'redux-saga/effects';
-import { shipmentStore, commonStore } from '../reducers';
-import { select, call, all } from 'typed-redux-saga';
 import shipmentApi from '@/api/shipment.api';
-import { parseCookies } from 'nookies';
 import { convertServerTimeToClientTimeZone } from '@/utils/convertTime';
 import { isBefore, isValidDate } from '@/utils/formatDateInput';
+import { PayloadAction } from '@reduxjs/toolkit';
+import { parseCookies } from 'nookies';
+import { put, takeEvery } from 'redux-saga/effects';
+import { all, call, select } from 'typed-redux-saga';
+import { commonStore, shipmentStore } from '../reducers';
 
 function* getDataShipment() {
    try {
@@ -84,6 +85,23 @@ function* getDataShipment() {
    }
 }
 
+function* handleUploadShipmentFile(action: PayloadAction<File>) {
+   try {
+      yield put(shipmentStore.actions.showLoadingPage());
+      let formData = new FormData();
+      const file = action.payload;
+      formData.append('file', file);
+
+      const { data } = yield* call(shipmentApi.importDataShipment, formData);
+
+      yield put(commonStore.actions.setSuccessMessage(data.message));
+      yield put(shipmentStore.actions.hideLoadingPage());
+   } catch (error) {
+      yield put(shipmentStore.actions.hideLoadingPage());
+      yield put(commonStore.actions.setErrorMessage(error.message));
+   }
+}
+
 function* fetchShipment() {
    yield takeEvery(shipmentStore.sagaGetList, getDataShipment);
 }
@@ -101,8 +119,12 @@ function* switchCurrency() {
    }
 }
 
+function* handleUploadShipmentFileSaga() {
+   yield takeEvery(shipmentStore.uploadShipmentFile, handleUploadShipmentFile);
+}
+
 function* switchCurrencyShipment() {
    yield takeEvery(shipmentStore.actionSwitchCurrency, switchCurrency);
 }
 
-export { fetchShipment, switchCurrencyShipment };
+export { fetchShipment, handleUploadShipmentFileSaga, switchCurrencyShipment };
