@@ -101,6 +101,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       dispatch(imageDialogStore.actions.setImageURL(imageURL));
       dispatch(imageDialogStore.actions.openDialog());
    };
+
    const dialogContent = (
       <Grid container sx={{ padding: '40px' }}>
          <Grid container spacing={3}>
@@ -320,6 +321,8 @@ const ProductDetailDialog: React.FC<any> = (props) => {
          </Grid>
       </Grid>
    );
+
+   if (!open) return;
 
    if (isEdit)
       return (
