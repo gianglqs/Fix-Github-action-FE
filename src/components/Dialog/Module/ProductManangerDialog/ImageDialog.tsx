@@ -1,8 +1,6 @@
 import { ProductImage } from '@/components/App/Image/ProductImage';
 import { imageDialogStore } from '@/store/reducers';
-import { WidthFull } from '@mui/icons-material';
 import { Dialog } from '@mui/material';
-import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 

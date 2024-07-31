@@ -45,6 +45,13 @@ const ProductDetailDialog: React.FC<any> = (props) => {
    }, [imageFile, updatedDescription]);
 
    useEffect(() => {
+      if (open) {
+         if (!productDetail && (model || _series)) {
+            productApi.getProductDetail(model, _series?.series).then((rs) => {
+               dispatch(productStore.actions.setProductList([JSON.parse(rs?.data)]));
+            });
+         }
+      }
       setUpdatedDescription(productDetail?.description);
    }, [open]);
 

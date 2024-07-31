@@ -43,7 +43,6 @@ export default function ChooseImage(props) {
       dispath(imageDialogStore.actions.setImageURL(imageURL));
       dispath(imageDialogStore.actions.openDialog());
    };
-
    return (
       <div
          style={{
@@ -76,7 +75,13 @@ export default function ChooseImage(props) {
             >
                <ProductImage
                   imageUrl={imageUrl}
-                  style={{ objectFit: 'cover', height: height || '100%', width: width || '100%' }}
+                  style={{
+                     objectFit: 'cover',
+                     minHeight: '150px',
+                     minWidth: '150px',
+                     height: height || '100%',
+                     width: width || '100%',
+                  }}
                   isImageChoose={isChoosingFile}
                />
             </Box>

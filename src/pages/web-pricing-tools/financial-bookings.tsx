@@ -447,7 +447,7 @@ export default function Booking() {
          setProductDetailState({
             open: true,
             model: params.row.product?.modelCode,
-            _series: params.row?.series,
+            _series: params.row?.product?.series,
             orderNo: params.id,
          });
       }
