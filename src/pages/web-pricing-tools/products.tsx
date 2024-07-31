@@ -209,12 +209,7 @@ export default function Product() {
             return (
                <EditIcon
                   onClick={() =>
-                     handleOpenUpdateColorDialog(
-                        params.row.modelCode,
-                        params.row.series.series,
-                        params.row.image,
-                        params.row.description
-                     )
+                     handleOpenUpdateColorDialog(params.row.modelCode, params.row.series)
                   }
                />
             );
@@ -224,28 +219,19 @@ export default function Product() {
 
    const [updateProductState, setUpdateProductState] = useState({
       open: false,
-      preValue: {} as any,
+      model: null,
+      _series: null,
    });
 
-   const handleOpenUpdateColorDialog = async (
-      modelCode: string,
-      series: string,
-      imageUrl: string,
-      des: string
-   ) => {
+   const handleOpenUpdateColorDialog = async (modelCode: string, series: string) => {
       try {
          // Open form
          setUpdateProductState({
             open: true,
-            preValue: {
-               modelCode: modelCode,
-               series: series,
-               image: imageUrl,
-               description: des,
-            },
+            model: modelCode,
+            _series: series,
          });
       } catch (error) {
-         console.log(error);
          // dispatch(commonStore.actions.setErrorMessage(error))
       }
    };
@@ -253,7 +239,8 @@ export default function Product() {
    const handleCloseUpdateProductDialog = () => {
       setUpdateProductState({
          open: false,
-         preValue: {},
+         model: null,
+         _series: null,
       });
    };
 
@@ -274,12 +261,11 @@ export default function Product() {
 
    const handleOpenProductDetailDialog = (row) => {
       const data = selectProductRowById(listProduct, row.id);
-      console.log(data);
       data &&
          setProductDetailState({
             open: true,
-            model: data[0].modelCode,
-            _series: data[0].series,
+            model: data[0]?.modelCode,
+            _series: data[0]?.series,
          });
    };
 
@@ -569,10 +555,12 @@ export default function Product() {
                <AppBackDrop open={loadingTable} hightHeaderTable={'74px'} bottom={'43px'} />
             </Paper>
          </AppLayout>
-         <DialogUpdateProduct
+         <ProductDetailDialog
+            sx={{ '& .MuiDialog-paper': { width: '900px', maxWidth: '900px' } }}
             {...updateProductState}
             onClose={handleCloseUpdateProductDialog}
             handleOpenImageDialog={handleOpenImageDialog}
+            isEdit
          />
          <ProductDetailDialog
             {...productDetailState}

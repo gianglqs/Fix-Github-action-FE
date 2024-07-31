@@ -40,6 +40,7 @@ const AppDialog: React.FC<any> = (props) => {
       okText,
       closeText,
       disableOK,
+      displayOK = true,
       disableClose,
       hiddenButtonOk,
       ...dialogProps
@@ -58,18 +59,20 @@ const AppDialog: React.FC<any> = (props) => {
             {children}
          </DialogContent>
          <DialogActions className={classes.appDialog__buttonActions}>
-            <Button
-               color="primary"
-               autoFocus
-               type="submit"
-               form={id}
-               disabled={loading || disableOK}
-               onClick={onOk}
-               sx={hiddenButtonOk && { display: 'none' }}
-               {...okButtonProps}
-            >
-               {okText}
-            </Button>
+            {displayOK && (
+               <Button
+                  color="primary"
+                  autoFocus
+                  type="submit"
+                  form={id}
+                  disabled={loading || disableOK}
+                  onClick={onOk}
+                  sx={hiddenButtonOk && { display: 'none' }}
+                  {...okButtonProps}
+               >
+                  {okText}
+               </Button>
+            )}
             <Button color="primary" autoFocus disabled={loading || disableClose} onClick={onClose}>
                {closeText}
             </Button>
