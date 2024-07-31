@@ -36,7 +36,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
    const { children, entity, heightBody } = props;
    const classes = useStyles();
    const { t } = useTranslation();
-
+   const [userRole, setUserRole] = useState(null);
    const popupState = usePopupState({
       variant: 'popover',
       popupId: 'demoPopover',
@@ -60,6 +60,8 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
    useEffect(() => {
       const userName = localStorage.getItem('name');
       setUserName(userName);
+      const userRole = cookies['role'];
+      setUserRole(userRole);
    }, []);
 
    useEffect(() => {
@@ -202,7 +204,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
          <AppBar className={classes.header__container} position="static">
             <a
                href={`/web-pricing-tools/${
-                  userRoleCookies === 'ADMIN' ? `admin/users` : `financial-bookings`
+                  userRole === 'ADMIN' ? `admin/users` : `financial-bookings`
                }`}
                style={{ width: 35, height: 35 }}
             >
@@ -222,7 +224,17 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
                {...bindTrigger(popupState)}
                data-testid="profile-testid"
             >
-               <div style={{ marginRight: 10, fontSize: 16 }}>{userName}</div>
+               <div
+                  style={{
+                     marginRight: 10,
+                     fontSize: 16,
+                     width: '120px',
+                     textOverflow: 'ellipsis',
+                     overflow: 'hidden',
+                  }}
+               >
+                  {userName}
+               </div>
                <AccountCircle style={{ marginRight: 5, fontSize: 20 }} />
             </div>
          </AppBar>
@@ -248,7 +260,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
             }}
             disableRestoreFocus
          >
-            {userRoleCookies === 'ADMIN' && (
+            {userRole === 'ADMIN' && (
                <>
                   <Typography
                      style={{ margin: 10, cursor: 'pointer' }}
