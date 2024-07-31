@@ -26,6 +26,5 @@ export function ProductImage(props) {
          setCorrectImageUrl(defaultProductImage);
       }
    }, [imageUrl]);
-
    return <img src={correctImageUrl} style={style} onClick={onClick} />;
 }
