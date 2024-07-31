@@ -34,6 +34,9 @@ function* handleEstimateMargin() {
             modelCode: dataFilter.modelCode,
          },
          region: dataFilter.region,
+         subRegion: dataFilter.subRegion,
+         delivery: dataFilter.delivery,
+         additionalDiscount: dataFilter.additionalDiscount,
       };
       const { data } = yield call(marginAnalysisApi.estimateMarginAnalystData, {
          ...transformData,
