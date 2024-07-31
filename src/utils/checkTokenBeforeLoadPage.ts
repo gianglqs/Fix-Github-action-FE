@@ -37,8 +37,10 @@ export const checkTokenBeforeLoadPageAdmin = async (context: GetServerSidePropsC
             Authorization: 'Bearer ' + accessToken,
          },
       });
+
+      const wikiURL = process.env.WIKI_URL;
       return {
-         props: {},
+         props: { wikiURL },
       };
    } catch (error) {
       if (error.response?.status == null)

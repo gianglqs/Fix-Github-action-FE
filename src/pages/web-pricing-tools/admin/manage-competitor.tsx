@@ -112,7 +112,7 @@ const Drawer = styled(MuiDrawer, {
    },
 }));
 
-export default function ImportTracking() {
+export default function ImportTracking(props) {
    const { t } = useTranslation();
 
    const [open, setOpen] = useState(true);
@@ -592,7 +592,7 @@ export default function ImportTracking() {
                </Toolbar>
                <Divider />
                <List component="nav">
-                  <NavBar />
+                  <NavBar wikiURL={props.wikiURL} />
                </List>
             </Drawer>
             <Box
@@ -739,7 +739,7 @@ export default function ImportTracking() {
                         getOptionLabel={(option) => `${option.value}`}
                      />
                   </Grid>
-                 
+
                   <Grid item xs={2}>
                      <AppAutocomplete
                         value={
