@@ -14,7 +14,6 @@ export default function ChooseImage(props) {
    const [imageUrl, setImageUrl] = useState(image);
    const [isChoosingFile, setIsChoosingFile] = useState(false);
    const dispath = useDispatch();
-
    const onDrop = (acceptedFiles) => {
       const file = acceptedFiles[0];
       const reader = new FileReader();
