@@ -17,6 +17,7 @@ const DialogUpdateCompetitor: React.FC<any> = (props) => {
    const dispatch = useDispatch();
    const { t } = useTranslation();
    const [loading, setLoading] = useState(false);
+   const tableState = useSelector(commonStore.selectTableState);
 
    const [chosenColor, setChosenColor] = useState(detail.colorCode);
 
@@ -38,6 +39,8 @@ const DialogUpdateCompetitor: React.FC<any> = (props) => {
 
          const competitorColorList = await competitorColorApi.getCompetitorColor({
             search: search,
+            pageNo: tableState.pageNo,
+            perPage: tableState.perPage,
          });
          dispatch(
             competitorColorStore.actions.setCompetitorColorList(
