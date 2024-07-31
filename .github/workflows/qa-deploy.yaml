@@ -50,6 +50,8 @@ jobs:
            shell: bash
            run: |
               cd $WORK_DIR
+              whoami
+
               yarn install
               docker build -t $NEW_IMAGE_NAME --build-arg IMAGE_TAG=qa-deploy-${{ github.sha }} --build-arg RELEASE_TAG=${{ github.event.pull_request.number }} -f docker/Dockerfile .
 
