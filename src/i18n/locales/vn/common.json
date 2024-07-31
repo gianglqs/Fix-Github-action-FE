@@ -24,7 +24,8 @@
       "volumeDiscountAnalysis": "Phân tích số lượng giảm giá",
       "bookingMarginTrialTest": "Hóa đơn API và Biên lợi nhuận ghi sổ",
       "priceVolumeSensitivity": "Tương quan giá và số lượng",
-      "redidualValue": "Bảng giá trị khấu hao"
+      "redidualValue": "Bảng giá trị khấu hao",
+      "detailProduct": "Chi tiết sản phẩm"
    },
 
    "user": {

@@ -26,7 +26,8 @@
       "error404": "Error 404",
       "residualValue": "Residual Value",
       "gumReport": "Gum Report",
-      "longTermRental": "Long Term Rental"
+      "longTermRental": "Long Term Rental",
+      "detailProduct": "Detail Product"
    },
 
    "user": {

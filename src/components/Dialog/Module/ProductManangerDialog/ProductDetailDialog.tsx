@@ -64,8 +64,20 @@ const ProductDetailDialog: React.FC<any> = (props) => {
       try {
          await productApi.updateProduct(updateForm);
 
-         dispatch(productStore.sagaGetList());
-
+         //update store
+         const newProduct = await productApi
+            .getProductDetail(productDetail?.modelCode, productDetail?.series?.series)
+            .then((res) => JSON.parse(res?.data));
+         console.log(newProduct);
+         const newProductList = [...productList];
+         const updatedProductIndex = newProductList.findIndex(
+            (product) =>
+               product.series.series === productDetail?.series?.series &&
+               product.modelCode === productDetail?.modelCode
+         );
+         newProductList[updatedProductIndex] = newProduct;
+         dispatch(productStore.actions.setProductList(newProductList));
+         //dispatch(productStore.sagaGetList());
          dispatch(commonStore.actions.setSuccessMessage('Update Product successfully!'));
       } catch (error) {
          dispatch(commonStore.actions.setErrorMessage(error?.message));
@@ -315,6 +327,7 @@ const ProductDetailDialog: React.FC<any> = (props) => {
             fullWidth={true}
             PaperProps={{ sx: { borderRadius: '10px' } }}
             maxWidth="md"
+            draggable={false}
          >
             {dialogContent}
          </AppDialog>
@@ -322,12 +335,13 @@ const ProductDetailDialog: React.FC<any> = (props) => {
 
    return (
       <AppDialog
-         title={'Detail Product'}
+         title={t('title.detailProduct')}
          open={open}
          onClose={handleCloseForm}
-         draggable
          fullWidth={true}
+         displayOK={false}
          maxWidth="md"
+         draggable={false}
          PaperProps={{ sx: { borderRadius: '10px' } }}
       >
          {dialogContent}
