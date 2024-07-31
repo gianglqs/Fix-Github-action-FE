@@ -64,7 +64,7 @@ export default function MarginAnalysis() {
    const marginCalculateData = useSelector(marginAnalysisStore.selectMarginData);
    const fileName = useSelector(marginAnalysisStore.selectFileName);
    const calculatedCurrency = useSelector(marginAnalysisStore.selectCurrency);
-   const [additionalDiscount, setAdditionalDiscount] = useState(0);
+
    const exampleFile = useSelector(marginAnalysisStore.selectExampleUploadFile);
 
    const handleUpdateDataFilterStore = (field: string, data: any) => {
@@ -477,15 +477,15 @@ export default function MarginAnalysis() {
                   data={marginCalculateData.marginAnalysisSummary?.annually}
                   valueCurrency={calculatedCurrency}
                   isAOPBox={true}
-                  additionalDiscount={additionalDiscount}
-                  setAdditionalDiscount={setAdditionalDiscount}
+                  additionalDiscount={dataFilter.additionalDiscount}
+                  handleUpdateDataFilterStore={handleUpdateDataFilterStore}
                   handleCaclulate={handleCalculateMargin}
                />
                <MarginPercentageAOPRateBox
                   data={marginCalculateData.marginAnalysisSummary?.monthly}
                   valueCurrency={calculatedCurrency}
-                  additionalDiscount={additionalDiscount}
-                  setAdditionalDiscount={setAdditionalDiscount}
+                  additionalDiscount={dataFilter.additionalDiscount}
+                  handleUpdateDataFilterStore={handleUpdateDataFilterStore}
                   handleCaclulate={handleCalculateMargin}
                />
                <Grid item xs={4}>
@@ -610,7 +610,7 @@ const MarginPercentageAOPRateBox = (props) => {
       valueCurrency,
       isAOPBox,
       additionalDiscount,
-      setAdditionalDiscount,
+      handleUpdateDataFilterStore,
       handleCaclulate,
    } = props;
    return (
@@ -650,7 +650,7 @@ const MarginPercentageAOPRateBox = (props) => {
                <StyledAppNumberField
                   value={additionalDiscount}
                   sx={{ maxWidth: '100px', textAlign: 'end' }}
-                  onChange={(e) => setAdditionalDiscount(e.value)}
+                  onChange={(e) => handleUpdateDataFilterStore('additionalDiscount', e.value)}
                   suffix="%"
                   onPressEnter={handleCaclulate}
                   debounceDelay={0.05}
