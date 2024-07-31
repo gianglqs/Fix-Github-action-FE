@@ -137,7 +137,6 @@ export default function Adjustment() {
    useEffect(() => {
       if (!hasSetDataFilter && cacheDataFilter) {
          setDataFilter(cacheDataFilter);
-
          setHasSetDataFilter(true);
       }
    }, [cacheDataFilter]);
@@ -145,7 +144,6 @@ export default function Adjustment() {
    useEffect(() => {
       if (!hasSetDataCalculator && cacheDataCalculator) {
          setDataCalculator(cacheDataCalculator);
-
          setHasSetDataCalculator(true);
       }
    }, [cacheDataCalculator]);
@@ -532,11 +530,11 @@ export default function Adjustment() {
    }, [costAdjColor, freightAdjColor, fxAdjColor, dnAdjColor]);
 
    // handle button to clear all filters
-   const handleClearAllFilters = () => {
+   const handleClearAllFilters = () => {     
       setDataFilter(defaultValueFilterOrder);
    };
 
-   const handleClearAllCalculators = () => {
+   const handleClearAllCalculators = () => {      
       setDataCalculator(defaultValueCaculatorForAjustmentCost);
    };
 
