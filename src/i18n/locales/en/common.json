@@ -98,11 +98,11 @@
    "button": {
       "filter": "Search",
       "clear": "Clear",
-      "clearCalculators": "Clear Calculators",
+      "clearCalculators": "Clear ",
       "selectFile": "Select File",
       "import": "Import",
       "openFile": "Open File",
-      "calculateData": "Calculate Data",
+      "calculateData": "Calculate ",
       "fileUploaded": "File Uploaded",
       "compare": "Compare",
       "uploadFile": "Upload File",
