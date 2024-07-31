@@ -8,7 +8,7 @@ import _ from 'lodash';
 import List from '@mui/material/List';
 import { useTranslation } from 'react-i18next';
 
-const NavBar = () => {
+const NavBar = (props) => {
    const router = useRouter();
    const { t } = useTranslation();
 
@@ -29,7 +29,7 @@ const NavBar = () => {
          <Link
             href={
                name === 'wiki'
-                  ? `${process.env.WIKI_URL}`
+                  ? `${props.wikiURL}`
                   : `/web-pricing-tools/${
                        name != 'financial-bookings' ? `admin/${name}` : `${name}`
                     }`

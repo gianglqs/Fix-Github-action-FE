@@ -93,7 +93,7 @@ const Drawer = styled(MuiDrawer, {
    },
 }));
 
-export default function competitorColors() {
+export default function competitorColors(props) {
    const { t } = useTranslation();
    const [open, setOpen] = useState(true);
    const router = useRouter();
@@ -331,7 +331,7 @@ export default function competitorColors() {
                </Toolbar>
                <Divider />
                <List component="nav">
-                  <NavBar />
+                  <NavBar wikiURL={props.wikiURL} />
                </List>
             </Drawer>
             <Box

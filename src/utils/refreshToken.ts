@@ -21,9 +21,10 @@ export const refreshTokenForFunctionGetServerSideProps = async (
          maxAge: 604800,
          path: '/',
       });
+      const wikiURL = process.env.WIKI_URL;
 
       return {
-         props: {},
+         props: { wikiURL },
       };
    } catch (error) {
       if (error.response?.status == null) {

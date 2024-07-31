@@ -107,7 +107,7 @@ const Drawer = styled(MuiDrawer, {
    },
 }));
 
-export default function Dashboard() {
+export default function Dashboard(props) {
    const { t } = useTranslation();
    const [open, setOpen] = useState(true);
    createAction(`user/GET_LIST`);
@@ -422,7 +422,7 @@ export default function Dashboard() {
                </Toolbar>
                <Divider />
                <List component="nav">
-                  <NavBar />
+                  <NavBar wikiURL={props.wikiURL} />
                </List>
             </Drawer>
             <Box
