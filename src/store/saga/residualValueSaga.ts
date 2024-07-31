@@ -2,7 +2,7 @@ import residualValueApi from '@/api/residualValue.api';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { put, takeEvery } from 'redux-saga/effects';
 import { all, call, select } from 'typed-redux-saga';
-import { commonStore, residualValueStore } from '../reducers';
+import { commonStore, importFailureStore, residualValueStore } from '../reducers';
 
 function* fetchModelCode() {
    const dataFilter = yield* all({
@@ -107,6 +107,7 @@ function* handleUploadRV_AICFile(action: PayloadAction<File>) {
 
       yield put(commonStore.actions.setSuccessMessage(data.message));
       yield put(residualValueStore.actions.hideLoadingPage());
+      yield put(importFailureStore.actions.setFileUUID(data.data));
    } catch (error) {
       yield put(residualValueStore.actions.hideLoadingPage());
       yield put(commonStore.actions.setErrorMessage(error.message));

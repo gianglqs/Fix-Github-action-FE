@@ -5,7 +5,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { parseCookies } from 'nookies';
 import { put, takeEvery } from 'redux-saga/effects';
 import { all, call, select } from 'typed-redux-saga';
-import { commonStore, shipmentStore } from '../reducers';
+import { commonStore, importFailureStore, shipmentStore } from '../reducers';
 
 function* getDataShipment() {
    try {
@@ -96,6 +96,7 @@ function* handleUploadShipmentFile(action: PayloadAction<File>) {
 
       yield put(commonStore.actions.setSuccessMessage(data.message));
       yield put(shipmentStore.actions.hideLoadingPage());
+      yield put(importFailureStore.actions.setFileUUID(data.data));
    } catch (error) {
       yield put(shipmentStore.actions.hideLoadingPage());
       yield put(commonStore.actions.setErrorMessage(error.message));

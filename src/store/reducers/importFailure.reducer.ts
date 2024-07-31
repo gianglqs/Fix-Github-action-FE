@@ -56,6 +56,9 @@ const importFailureSlice = createSlice({
             ...payload,
          };
       },
+      setFileUUID(state, { payload }: PayloadAction<string>) {
+         state.dataFilter.fileUUID = payload;
+      },
    },
    extraReducers: {
       [resetState.type]() {
