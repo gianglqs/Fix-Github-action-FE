@@ -177,7 +177,7 @@ export default function Product() {
          minWidth: 150,
          headerName: t('table.segment'),
          renderCell(params) {
-            return <span>{params.row?.segmentGroup.name}</span>;
+            return <span>{params.row?.segmentGroup?.name}</span>;
          },
       },
 
