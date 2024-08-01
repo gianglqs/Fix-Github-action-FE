@@ -229,7 +229,7 @@ export default function ExchangeRate() {
                            // Change RMB to CNY to handle
                            item = item == 'RMB' ? 'CNY' : item;
                            datasets.push({
-                              label: item,
+                              label: item === 'CNY' ? 'RMB' : item,
                               data: data[item].reverse().map((obj) => obj.rate),
                               borderColor: CURRENCY[item],
                               backgroundColor: CURRENCY[item],
@@ -309,7 +309,7 @@ export default function ExchangeRate() {
                            // Change RMB to CNY to handle
                            item = item == 'RMB' ? 'CNY' : item;
                            datasets.push({
-                              label: item,
+                              label: item === 'CNY' ? 'RMB' : item,
                               data: data[item].reverse().map((obj) => obj.rate),
                               borderColor: CURRENCY[item],
                               backgroundColor: CURRENCY[item],
@@ -389,7 +389,7 @@ export default function ExchangeRate() {
                      // Change RMB to CNY to handle
                      item = item == 'RMB' ? 'CNY' : item;
                      datasets.push({
-                        label: item,
+                        label: item === 'CNY' ? 'RMB' : item,
                         data: data[item].reverse().map((obj) => obj.rate),
                         borderColor: CURRENCY[item],
                         backgroundColor: CURRENCY[item],
