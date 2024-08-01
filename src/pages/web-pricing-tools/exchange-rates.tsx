@@ -523,10 +523,14 @@ export default function ExchangeRate() {
                >
                   To
                </Grid>
-               <Grid item xs={2} sx={{ zIndex: 10, height: 25, marginTop: 1 }}>
+               <Grid
+                  item
+                  xs={2}
+                  sx={{ zIndex: 10, position: 'relative', height: 25, marginTop: 1 }}
+               >
                   <AppAutocomplete
                      options={currencyFilter}
-                     sx={{ height: 25, zIndex: 10 }}
+                     sx={{ height: 25, zIndex: 10, position: 'relative' }}
                      onChange={(e, option) =>
                         handleChangeDataFilter(option, 'comparisonCurrencies')
                      }
