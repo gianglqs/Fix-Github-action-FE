@@ -86,11 +86,11 @@ export default function GumReport() {
    };
    useEffect(() => {
       dispatch(gumStore.actions.setDataFilter({ month: 4, year: 2023 }));
-      dispatch(gumStore.sagaGetList());
       gumApi.getGroupingCriteria().then((rst) => {
          const { regions, segments } = rst?.data || {};
          setSegments(segments);
          setRegions(regions.filter((region) => region != 'China'));
+         dispatch(gumStore.sagaGetList());
       });
    }, []);
 
