@@ -43,8 +43,12 @@ jobs:
          - name: Checkout code to get file compose.yml
            shell: bash
            run: |
+              whoami
+              node -v
+              which node
+
               cd $WORK_DIR
-              git pull origin main
+              git pull test main
 
          - name: build image
            shell: bash
