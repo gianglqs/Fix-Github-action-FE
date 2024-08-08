@@ -3,9 +3,10 @@ import { Line } from 'react-chartjs-2';
 import _, { isNil } from 'lodash';
 import { forwardRef } from 'react';
 const LineChart: React.FC<any> = forwardRef((props, ref: any) => {
-   const { chartData, scales, chartName, tooltip, subtitle, plugins, hover } = props;
+   const { chartData, scales, chartName, tooltip, subtitle, plugins, hover, id } = props;
    return (
       <Line
+         id={id}
          ref={ref}
          data={chartData}
          options={{

@@ -462,7 +462,7 @@ export default function ExchangeRate() {
 
    const handleClearAllFilters = () => {
       //  setExchangeRateSource('Database');
-      dispatch(exchangeRateStore.actions.setExchangeRateSource('Database'));
+      // dispatch(exchangeRateStore.actions.setExchangeRateSource('Database'));
       dispatch(exchangeRateStore.actions.setDataFilter(defaultValueSelectedFilterExchangeRate));
    };
 
@@ -523,11 +523,7 @@ export default function ExchangeRate() {
                >
                   To
                </Grid>
-               <Grid
-                  item
-                  xs={2}
-                  sx={{ zIndex: 10, position: 'relative', height: 25, marginTop: 1 }}
-               >
+               <Grid item xs={2} sx={{ zIndex: 10, height: 25, marginTop: 1 }}>
                   <AppAutocomplete
                      options={currencyFilter}
                      sx={{ height: 25, zIndex: 10, position: 'relative' }}
